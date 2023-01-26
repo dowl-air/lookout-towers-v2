@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import TowerCard from "./TowerCard";
 
 function HomePage() {
-  return (
-    <div>HomePage</div>
-  )
+    return (
+        <div className="m-9">
+            <TowerCard />
+        </div>
+    );
 }
 
-export default HomePage
+export default HomePage;
