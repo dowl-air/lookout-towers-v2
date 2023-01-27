@@ -9,7 +9,7 @@ const getTowerObjectFast = async (id: string) => {
 };
 
 async function HomePage() {
-    <div>tower</div>;
+    return <div>tower</div>;
 }
 
 export default HomePage;
