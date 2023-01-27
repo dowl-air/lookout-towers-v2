@@ -1,4 +1,5 @@
 import "./globals.css";
+
 import ThemeChanger from "./ThemeChanger";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
