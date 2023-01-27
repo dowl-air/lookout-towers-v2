@@ -1,11 +1,11 @@
 import React from "react";
-import Image from "next/image";
+import { Tower } from "@/typings";
 
 function TowerCard() {
     return (
-        <div className="card card-compact w-56">
+        <div className="card card-compact w-56 transition-transform duration-200 cursor-pointer hover:scale-105 ">
             <figure className="object-cover inline-block relative">
-                <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">350m</div>
+                <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">50 m</div>
                 <img src="https://www.regiontourist.cz/uploads/what_to_do/857/rozhledna-na-hradistskem-vrchu-wiki-Dingoa.jpg" alt="tower"></img>
             </figure>
             <div className="badge badge-accent absolute top-2 left-2 font-bold">NOVÁ</div>
