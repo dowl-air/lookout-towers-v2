@@ -1,17 +1,21 @@
 import React from "react";
 import { Tower } from "@/typings";
 
-function TowerCard() {
+type PageProps = {
+    tower: Tower;
+};
+
+function TowerCard({ tower }: PageProps) {
     return (
         <div className="card card-compact w-56 transition-transform duration-200 cursor-pointer hover:scale-105 ">
-            <figure className="object-cover inline-block relative">
-                <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">50 m</div>
-                <img src="https://www.regiontourist.cz/uploads/what_to_do/857/rozhledna-na-hradistskem-vrchu-wiki-Dingoa.jpg" alt="tower"></img>
+            <figure className="object-cover inline-block relative h-72">
+                <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">{tower.height} m</div>
+                <img src={tower.mainPhotoUrl} alt="tower" className="object-cover w-full h-full block"></img>
             </figure>
             <div className="badge badge-accent absolute top-2 left-2 font-bold">NOVÁ</div>
 
             <div className="card-body gap-0">
-                <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block">Hraniční vrch</h2>
+                <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block">{tower.name}</h2>
                 <div className="flex-row flex items-center">
                     <div className="rating rating-sm">
                         <input type="radio" name="rating-4" className="mask mask-star-2 bg-green-500" readOnly />
@@ -34,7 +38,7 @@ function TowerCard() {
                             </g>
                         </g>
                     </svg>
-                    <div className="ml-2">Olomouc</div>
+                    <div className="ml-2">{tower.county}</div>
                 </div>
             </div>
         </div>

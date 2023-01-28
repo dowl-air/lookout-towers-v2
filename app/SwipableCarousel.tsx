@@ -1,80 +1,59 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper";
+// swiper bundle styles
+import "swiper/swiper-bundle.min.css";
+// swiper core styles
+import "swiper/swiper.min.css";
 
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { Tower } from "@/typings";
+import TowerCard from "./TowerCard";
 
-//import TowerCard from "./TowerCard";
-//import { get8TopTowers } from "../../database/firestore";
-//import { Box } from "@mui/material";
+type PageProps = {
+    towers: Tower[];
+};
 
-function ImageSlider() {
-    const [state, setState] = useState([]);
-    useEffect(() => {
-        const getSliderData = async () => {
-            //const dataa = await get8TopTowers();
-            //setState(dataa);
-        };
-        getSliderData();
-    }, []);
-
-    const settings = {
-        arrows: false,
-        dots: true,
-        slidesToShow: 5,
-        autoplay: true,
-        autoplaySpeed: 5000,
-        pauseOnDotsHover: true,
-        responsive: [
-            {
-                breakpoint: 1272,
-                settings: {
-                    arrows: false,
-                    slidesToShow: 4,
-                },
-            },
-            {
-                breakpoint: 1024,
-                settings: {
-                    arrows: false,
-                    slidesToShow: 3,
-                },
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    arrows: false,
-                    slidesToShow: 2,
-                },
-            },
-            {
-                breakpoint: 510,
-                settings: {
-                    slidesToShow: 1,
-                },
-            },
-        ],
-    };
-
+export default function ImageSlider({ towers }: PageProps) {
     return (
-        <div
-            id={"slider-wrapper"}
-            style={{
-                display: "block",
+        <Swiper
+            slidesPerView="auto"
+            spaceBetween={20}
+            pagination={{
+                clickable: true,
             }}
+            grabCursor={true}
+            loop={true}
+            autoplay={{
+                delay: 2500,
+                disableOnInteraction: true,
+            }}
+            modules={[Autoplay]}
+            breakpoints={{
+                500: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                700: {
+                    slidesPerView: 3,
+                    spaceBetween: 40,
+                },
+                1000: {
+                    slidesPerView: 4,
+                    spaceBetween: 50,
+                },
+                1150: {
+                    slidesPerView: 5,
+                    spaceBetween: 50,
+                },
+            }}
+            className="max-w-screen-xl mt-10"
         >
-            {state.length > 0 ? (
-                <Slider {...settings}>
-                    {state.map((item, i) => (
-                        <div key={i}>{/*<TowerCard tower={item} key={i} />*/}</div>
-                    ))}
-                </Slider>
-            ) : (
-                <div style={{ width: "250px", height: "350px" }}></div>
-            )}
-        </div>
+            {towers.map((item, index) => (
+                <SwiperSlide key={index} className="mt-3">
+                    <TowerCard tower={item} />
+                </SwiperSlide>
+            ))}
+        </Swiper>
     );
 }
-
-export default ImageSlider;

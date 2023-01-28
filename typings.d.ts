@@ -1,10 +1,15 @@
+import { GeoPoint, Timestamp } from "firebase/firestore";
+
 export type Tower = {
     access?: string;
     country: string;
     county?: string;
-    created: Date;
+    created: Timestamp | Date;
     elevation?: number;
-    gps?: GeolocationCoordinates;
+    gps: GeoPoint | {
+        latitude: number,
+        longitude: number
+    };
     gpshash?: string;
     height?: 55;
     history?: string;
@@ -12,12 +17,12 @@ export type Tower = {
     locationText?: string;
     mainPhotoUrl: string;
     material?: [string];
-    modified?: Date;
+    modified: Timestamp | Date;
     name: string;
     nameID: string;
-    opened?: Date;
+    opened: Timestamp | Date;
     openingHours?: string; //todo
-    price?: number; //todo 
+    price?: number; //todo
     province?: string;
     stairs?: number;
     type: string;
