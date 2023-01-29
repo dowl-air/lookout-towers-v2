@@ -29,4 +29,14 @@ export type Tower = {
     urls?: [string];
     viewText?: string;
     visits?: number; //todo
+    rating?: {
+        avg: number;
+        count: number;
+    }
+}
+
+export type Rating = {
+    tower_id: string;
+    user_id: string;
+    value: number;
 }

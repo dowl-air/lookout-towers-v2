@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
 // swiper bundle styles
@@ -9,19 +10,18 @@ import "swiper/swiper.min.css";
 
 import { Tower } from "@/typings";
 import TowerCard from "./TowerCard";
+import Link from "next/link";
 
 type PageProps = {
     towers: Tower[];
 };
 
 export default function ImageSlider({ towers }: PageProps) {
+    const router = useRouter();
     return (
         <Swiper
-            slidesPerView="auto"
-            spaceBetween={20}
-            pagination={{
-                clickable: true,
-            }}
+            centeredSlides={true}
+            slidesPerView={"auto"}
             grabCursor={true}
             loop={true}
             autoplay={{
@@ -32,11 +32,11 @@ export default function ImageSlider({ towers }: PageProps) {
             breakpoints={{
                 500: {
                     slidesPerView: 2,
-                    spaceBetween: 20,
+                    spaceBetween: 10,
                 },
                 700: {
                     slidesPerView: 3,
-                    spaceBetween: 40,
+                    spaceBetween: 20,
                 },
                 1000: {
                     slidesPerView: 4,
@@ -47,11 +47,13 @@ export default function ImageSlider({ towers }: PageProps) {
                     spaceBetween: 50,
                 },
             }}
-            className="max-w-screen-xl mt-10"
+            className="max-w-[min(1280px,99vw)] mt-10"
         >
             {towers.map((item, index) => (
                 <SwiperSlide key={index} className="mt-3">
-                    <TowerCard tower={item} />
+                    <Link href={`/${item.type || "rozhledna"}/${item.nameID}`}>
+                        <TowerCard tower={item} />
+                    </Link>
                 </SwiperSlide>
             ))}
         </Swiper>

@@ -12,19 +12,46 @@ function TowerCard({ tower }: PageProps) {
                 <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">{tower.height} m</div>
                 <img src={tower.mainPhotoUrl} alt="tower" className="object-cover w-full h-full block"></img>
             </figure>
-            <div className="badge badge-accent absolute top-2 left-2 font-bold">NOVÁ</div>
-
+            {"getFullYear" in tower.opened &&
+                tower.opened.getFullYear() in [new Date().getFullYear(), new Date().getFullYear() - 1, new Date().getFullYear() - 2] && (
+                    <div className="badge badge-accent absolute top-2 left-2 font-bold">NOVÁ</div>
+                )}
             <div className="card-body gap-0">
                 <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block">{tower.name}</h2>
                 <div className="flex-row flex items-center">
                     <div className="rating rating-sm">
-                        <input type="radio" name="rating-4" className="mask mask-star-2 bg-green-500" readOnly />
-                        <input type="radio" name="rating-4" className="mask mask-star-2 bg-green-500" checked readOnly />
-                        <input type="radio" name="rating-4" className="mask mask-star-2 bg-green-500" readOnly />
-                        <input type="radio" name="rating-4" className="mask mask-star-2 bg-green-500" readOnly />
-                        <input type="radio" name="rating-4" className="mask mask-star-2 bg-green-500" readOnly />
+                        <input
+                            type="radio"
+                            name="rating-4"
+                            className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 0 && "bg-secondary"}`}
+                            readOnly
+                        />
+                        <input
+                            type="radio"
+                            name="rating-4"
+                            className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 1 && "bg-secondary"}`}
+                            readOnly
+                        />
+                        <input
+                            type="radio"
+                            name="rating-4"
+                            className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 2 && "bg-secondary"}`}
+                            readOnly
+                        />
+                        <input
+                            type="radio"
+                            name="rating-4"
+                            className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 3 && "bg-secondary"}`}
+                            readOnly
+                        />
+                        <input
+                            type="radio"
+                            name="rating-4"
+                            className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 4 && "bg-secondary"}`}
+                            readOnly
+                        />
                     </div>
-                    <div className="text-md text-gray-300 ml-2">21 hodnocení</div>
+                    <div className="text-md text-gray-300 ml-2">{`${tower.rating?.count || 0} hodnocení`}</div>
                 </div>
 
                 <div className="mt-2 flex-row flex items-center">
