@@ -8,7 +8,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="cs" className="font-sans">
             <head />
             <body>
-                <div className="navbar bg-base-100 max-w-screen-xl m-auto mt-3">
+                <div className="navbar bg-base-100 my-3 px-9">
                     <div className="navbar-start">
                         <div className="dropdown">
                             <label tabIndex={0} className="btn btn-ghost md:hidden">
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                 </li>
                             </ul>
                         </div>
-                        <Link href="/" className="btn btn-ghost normal-case text-lg md:text-xl lg:text-2xl">
+                        <Link href="/" className="btn btn-ghost normal-case text-lg md:text-xl lg:text-3xl ml-[-0.5rem]">
                             ROZHLEDNOVÝ SVĚT
                         </Link>
                     </div>

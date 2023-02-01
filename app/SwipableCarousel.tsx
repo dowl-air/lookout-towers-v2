@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
 // swiper bundle styles
@@ -17,7 +16,6 @@ type PageProps = {
 };
 
 export default function ImageSlider({ towers }: PageProps) {
-    const router = useRouter();
     return (
         <Swiper
             centeredSlides={true}

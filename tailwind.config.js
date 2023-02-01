@@ -9,6 +9,7 @@ module.exports = {
         extend: {},
     },
     plugins: [
+        require("@tailwindcss/typography"),
         require("daisyui"),
         function ({ addVariant }) {
             addVariant("child", "& > *");
@@ -16,6 +17,6 @@ module.exports = {
         },
     ],
     daisyui: {
-        darkTheme: "forest",
+        darkTheme: "dracula",
     },
 };
