@@ -51,7 +51,7 @@ function TowerCard({ tower }: PageProps) {
                             readOnly
                         />
                     </div>
-                    <div className="text-md text-gray-300 ml-2">{`${tower.rating?.count || 0} hodnocení`}</div>
+                    <div className="text-md text-gray-400 ml-2">{`${tower.rating?.count || 0} hodnocení`}</div>
                 </div>
 
                 <div className="mt-2 flex-row flex items-center">
