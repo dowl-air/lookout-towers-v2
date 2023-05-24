@@ -5,7 +5,9 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { listAll, ref } from "firebase/storage";
 import React from "react";
 import Carousel from "./Carousel";
+import HistoryText from "./HistoryText";
 import MainInfo from "./MainInfo";
+import Parameters from "./Parameters";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
@@ -57,8 +59,9 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                     <Carousel images={towerImages} />
                 </div>
             </div>
-            <div id={"bottom"} className={"max-w-screen-xl flex flex-col items-center mx-auto"}>
-                {" "}
+            <div id={"bottom"} className={"max-w-screen-xl flex flex-row gap-8 items-top mx-auto mt-5"}>
+                <HistoryText text={tower.history || ""} />
+                <Parameters />
             </div>
         </div>
     );
