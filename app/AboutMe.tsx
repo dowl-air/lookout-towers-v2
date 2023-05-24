@@ -7,8 +7,8 @@ function AboutMe() {
                 <div className="w-[180px] h-[180px] overflow-hidden rounded-full mt-[-90px] ">
                     <img alt={"selfie of web author"} className="w-[180px]" src="img/me.jpg" />
                 </div>
-                <h2 className="font-bold text-2xl text-white mt-8 text-secondary-content">Ahoj, já jsem Daniel</h2>
-                <p className="mt-8 text-white px-4 text-center text-secondary-content">
+                <h2 className="font-bold text-2xl mt-8 text-secondary-content">Ahoj, já jsem Daniel</h2>
+                <p className="mt-8 px-4 text-center text-secondary-content">
                     Miluju jízdu na kole, rozhledny a sovy. V současnosti studuji Informační technologie na vysoké škole a jsem autor tohoto webu.
                 </p>
                 <div className="flex mt-10 flex-row gap-3">
