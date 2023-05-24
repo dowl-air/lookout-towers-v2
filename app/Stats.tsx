@@ -47,24 +47,24 @@ async function Stats() {
     return (
         <div className="stats bg-secondary text-secondary-content stats-vertical md:stats-horizontal mt-10">
             <div className="stat">
-                <div className="stat-title">Rozhleden v databázi</div>
+                <div className="stat-title text-secondary-content">Rozhleden v databázi</div>
                 <div className="stat-value">{towersNumber}</div>
             </div>
 
             <div className="stat inline-grid md:hidden lg:inline-grid">
-                <div className="stat-title">Aktivních uživatelů</div>
+                <div className="stat-title text-secondary-content">Aktivních uživatelů</div>
                 <div className="stat-value">{usersNumber}</div>
             </div>
             <div className="stat">
-                <div className="stat-title">Provedených úprav</div>
+                <div className="stat-title text-secondary-content">Provedených úprav</div>
                 <div className="stat-value">{changesNumber}</div>
             </div>
             <div className="stat">
-                <div className="stat-title">Přidaných hodnocení</div>
+                <div className="stat-title text-secondary-content">Přidaných hodnocení</div>
                 <div className="stat-value">{ratingsNumber}</div>
             </div>
             <div className="stat">
-                <div className="stat-title">Poslední změna</div>
+                <div className="stat-title text-secondary-content">Poslední změna</div>
                 <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
             </div>
         </div>
