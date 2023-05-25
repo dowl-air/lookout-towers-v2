@@ -1,0 +1,23 @@
+{
+    "freelyAccessible": false,
+    "occasionally": true,
+    "onlyIfGoodWeather": false,
+    "changed": "12-05-2023",
+    "url": "string",
+    "ranges": [
+        {
+            "startMonth": 7,
+            "endMonth": 8,
+            "daysOpen": [5, 6, 7],
+            "hoursRange": [8, 16],
+            "lunchBreak": [12.5, 13]
+        },
+        {
+            "startMonth": 9,
+            "endMonth": 6,
+            "daysOpen": [5, 6, 7],
+            "hoursRange": [8, 16],
+            "lunchBreak": [12.5, 13]
+        }
+    ]
+}

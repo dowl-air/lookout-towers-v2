@@ -3,11 +3,15 @@ import { Tower } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { listAll, ref } from "firebase/storage";
+
 import React from "react";
 import Carousel from "./Carousel";
 import HistoryText from "./HistoryText";
 import MainInfo from "./MainInfo";
+import Map from "./Map";
 import Parameters from "./Parameters";
+import OpeningHours from "./OpeningHours";
+import Admission from "./Admission";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
@@ -43,7 +47,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
 
     return (
         <div className="flex flex-col">
-            <div id={"top"} className={"bg-secondary-content"}>
+            <div id={"top"} className={"mb-8"}>
                 <div id={"top-content"} className={"max-w-screen-xl flex flex-row justify-between mx-auto"}>
                     <MainInfo
                         name={tower.name}
@@ -59,9 +63,14 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                     <Carousel images={towerImages} />
                 </div>
             </div>
-            <div id={"bottom"} className={"max-w-screen-xl flex flex-row gap-8 items-top mx-auto mt-5"}>
+            <div id={"bottom"} className={"max-w-screen-xl flex flex-col gap-8 items-top mx-auto"}>
+                <div className={"flex flex-row w-full gap-8 justify-between"}>
+                    <OpeningHours />
+                    <Admission />
+                    <Parameters />
+                </div>
                 <HistoryText text={tower.history || ""} />
-                <Parameters />
+                <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>
         </div>
     );

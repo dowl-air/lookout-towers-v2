@@ -24,10 +24,12 @@
         "next-superjson-plugin": "^0.5.8",
         "react": "18.2.0",
         "react-dom": "18.2.0",
+        "react-simple-mapy-cz": "^0.0.7",
         "server-only": "^0.0.1",
         "superjson": "^1.12.3",
         "swiper": "8.4.6",
-        "typescript": "^5.0.4"
+        "typescript": "^5.0.4",
+        "wpify-mapy-cz": "^1.1.4"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.14",

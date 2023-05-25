@@ -1,6 +1,4 @@
 "use client";
-import { Tower } from "@/typings";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 type PageProps = {
@@ -9,22 +7,22 @@ type PageProps = {
 
 function Carousel({ images }: PageProps) {
     const [index, setIndex] = useState(0);
-    const router = useRouter();
 
     const moveForvard = () => {
-        setIndex(index !== images.length - 1 ? index + 1 : index);
-        console.log("current " + index.toString());
+        const idx = index !== images.length - 1 ? index + 1 : index;
+        setIndex(idx);
+        document?.getElementById(`image_${idx}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     };
     const moveBackwards = () => {
-        setIndex(index !== 0 ? index - 1 : 0);
-        console.log("current " + index.toString());
+        const idx = index !== 0 ? index - 1 : 0;
+        setIndex(idx);
+        document?.getElementById(`image_${idx}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     };
 
     return (
         <div className="max-w-screen-sm flex flex-col flex-1">
             <figure className="h-96">
-                <a
-                    href={`#image_${index !== images.length - 1 ? index + 1 : index}`}
+                <div
                     className={`btn btn-outline relative top-[calc(50%-24px+48px)] left-[85%] ${index === images.length - 1 && "btn-disabled"}`}
                     onClick={moveForvard}
                 >
@@ -35,9 +33,8 @@ function Carousel({ images }: PageProps) {
                             </g>
                         </g>
                     </svg>
-                </a>
-                <a
-                    href={`#image_${index !== 0 ? index - 1 : 0}`}
+                </div>
+                <div
                     className={`btn btn-outline relative top-[calc(50%-24px+48px)] right-[2%] ${index === 0 && "btn-disabled"}`}
                     onClick={moveBackwards}
                 >
@@ -48,10 +45,12 @@ function Carousel({ images }: PageProps) {
                             </g>
                         </g>
                     </svg>
-                </a>
-                <div className="h-full flex justify-center items-center">
-                    <img alt={"tower_todo"} src={images[index]} className="block object-scale-down max-h-[384px] mx-auto my-auto rounded-lg" />
                 </div>
+                <label className="cursor-pointer" htmlFor="my-modal-4">
+                    <div className="h-full flex justify-center items-center">
+                        <img alt={"tower_todo"} src={images[index]} className="block object-scale-down max-h-[384px] mx-auto my-auto rounded-lg" />
+                    </div>
+                </label>
             </figure>
             <div className="h-28  flex overflow-x-hidden max-w-screen-sm gap-2 scroll-smooth snap-center scroll-p-[280px] mt-16 mb-3">
                 {images.map((image, idx) => (
@@ -65,11 +64,16 @@ function Carousel({ images }: PageProps) {
                         }`}
                         onClick={() => {
                             setIndex(idx);
-                            document?.getElementById(`image_${idx}`)?.scrollIntoView();
+                            document?.getElementById(`image_${idx}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
                         }}
                     />
                 ))}
             </div>
+
+            <input type="checkbox" id="my-modal-4" className="modal-toggle" />
+            <label htmlFor="my-modal-4" className="modal cursor-pointer">
+                <img alt={"tower_todo"} src={images[index]}></img>
+            </label>
         </div>
     );
 }

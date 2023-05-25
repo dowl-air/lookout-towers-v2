@@ -6,10 +6,10 @@ type PageProps = {
 
 function HistoryText({ text }: PageProps) {
     return (
-        <div tabIndex={0} className="prose-xl collapse collapse-arrow border border-base-300 rounded-box w-full bg-secondary-content">
+        <div tabIndex={0} className="collapse collapse-arrow border border-base-content rounded-md w-full mx-auto">
             <input type="checkbox" className="peer" />
-            <div className="collapse-title">Podrobný popis a historie rozhledny</div>
-            <div className="collapse-content">
+            <div className="collapse-title text-xl font-bold">Podrobný popis a historie rozhledny</div>
+            <div className="collapse-content text-lg text-justify">
                 <p>{text}</p>
             </div>
         </div>

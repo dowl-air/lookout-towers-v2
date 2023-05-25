@@ -1,0 +1,14 @@
+{
+    "free": false,
+    "canPayByCard": false,
+    "tariffs": [
+        {
+            "name": "adult",
+            "price": 50
+        },
+        {
+            "name": "student",
+            "price": 30
+        }
+    ]
+}
