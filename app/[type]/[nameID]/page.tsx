@@ -63,13 +63,13 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                     <Carousel images={towerImages} />
                 </div>
             </div>
-            <div id={"bottom"} className={"max-w-screen-xl flex flex-col gap-8 items-top mx-auto"}>
-                <div className={"flex flex-row w-full gap-8 justify-between"}>
+            <div id={"bottom"} className={"max-w-screen-xl flex flex-col gap-12 items-top mx-auto mb-24 w-full"}>
+                <div className={"flex flex-row gap-8 justify-between w-full"}>
                     <OpeningHours />
                     <Admission />
                     <Parameters />
                 </div>
-                <HistoryText text={tower.history || ""} />
+                {tower.history && <HistoryText text={tower.history || ""} />}
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>
         </div>

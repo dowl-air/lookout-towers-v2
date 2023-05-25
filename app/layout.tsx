@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <div className="navbar-end">
                         <ThemeChanger />
 
-                        <Link href="/prihlaseni" className="btn btn-sm btn-secondary ml-3 md:btn-md">
+                        <Link href="/prihlaseni" className="btn btn-sm btn-primary ml-3 md:btn-md">
                             Přihlášení
                         </Link>
                     </div>

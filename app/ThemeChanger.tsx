@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const LIGHT_MODE = "emerald";
-const DARK_MODE = "dracula";
+const LIGHT_MODE = "garden";
+const DARK_MODE = "forest";
 
 function ThemeChanger() {
     const [theme, setTheme] = useState(LIGHT_MODE);

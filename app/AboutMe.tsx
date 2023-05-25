@@ -3,12 +3,12 @@ import React from "react";
 function AboutMe() {
     return (
         <div className="w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-36 flex-wrap md:flex-nowrap mb-10">
-            <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-secondary flex items-center rounded-lg flex-col">
+            <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
                 <div className="w-[180px] h-[180px] overflow-hidden rounded-full mt-[-90px] ">
                     <img alt={"selfie of web author"} className="w-[180px]" src="img/me.jpg" />
                 </div>
-                <h2 className="font-bold text-2xl mt-8 text-secondary-content">Ahoj, já jsem Daniel</h2>
-                <p className="mt-8 px-4 text-center text-secondary-content">
+                <h2 className="font-bold text-2xl mt-8 text-primary-content">Ahoj, já jsem Daniel</h2>
+                <p className="mt-8 px-4 text-center text-primary-content">
                     Miluju jízdu na kole, rozhledny a sovy. V současnosti studuji Informační technologie na vysoké škole a jsem autor tohoto webu.
                 </p>
                 <div className="flex mt-10 flex-row gap-3">
@@ -20,7 +20,7 @@ function AboutMe() {
                             id="Layer_1"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="-143 145 512 512"
-                            className="w-8 h-8 text-secondary-content"
+                            className="w-8 h-8 text-primary-content"
                             fill="currentColor"
                         >
                             <g>
@@ -46,7 +46,7 @@ function AboutMe() {
                             id="Layer_1"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="-143 145 512 512"
-                            className="w-8 h-8 text-secondary-content"
+                            className="w-8 h-8 text-primary-content"
                             fill="currentColor"
                         >
                             <g>
@@ -73,7 +73,7 @@ function AboutMe() {
                             id="Layer_1"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="-143 145 512 512"
-                            className="w-8 h-8 text-secondary-content"
+                            className="w-8 h-8 text-primary-content"
                             fill="currentColor"
                         >
                             <g>
@@ -108,7 +108,7 @@ function AboutMe() {
                 </article>
                 <div className="flex justify-start mt-4 md:mt-10">
                     <a href={"https://www.facebook.com/dp9898"} target="_blank" rel="noreferrer">
-                        <button className="btn btn-secondary">Napište mi</button>
+                        <button className="btn btn-primary">Napište mi</button>
                     </a>
                 </div>
             </div>

@@ -53,14 +53,14 @@ function MainInfo({ name, country, county, province, stairs, height, type, eleva
                     <span>V oblíbených</span>
                 </div>
             ) : (
-                <div className="btn btn-secondary w-1/2 mt-7">Přidat do oblíbených</div>
+                <div className="btn btn-primary w-1/2 mt-7">Přidat do oblíbených</div>
             )}
             {false ? (
                 <div className="btn btn-success w-1/2 mt-3 mb-5 [&>span]:hover:hidden hover:before:content-['Upravit_návštěvu'] hover:btn-warning ">
                     <span>V navštívených</span>
                 </div>
             ) : (
-                <div className="btn btn-secondary w-1/2 mt-3 mb-5">Zaznamenat návštěvu</div>
+                <div className="btn btn-primary w-1/2 mt-3 mb-5">Zaznamenat návštěvu</div>
             )}
         </div>
     );

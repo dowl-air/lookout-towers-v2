@@ -60,7 +60,7 @@ function Carousel({ images }: PageProps) {
                         src={image}
                         alt={"image"}
                         className={`block h-full object-scale-down rounded-lg border-solid border-2 p-1 cursor-pointer ${
-                            idx === index ? "border-secondary" : "border-transparent"
+                            idx === index ? "border-primary-focus" : "border-transparent"
                         }`}
                         onClick={() => {
                             setIndex(idx);
