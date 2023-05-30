@@ -3,7 +3,7 @@ import { collection, getDocs, limit, orderBy, query, where } from "firebase/fire
 
 import { db } from "./firebase";
 import ImageSlider from "./SwipableCarousel";
-import { Tower } from "@/typings";
+import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import Stats from "./Stats";
 import AboutMe from "./AboutMe";
@@ -32,7 +32,7 @@ const getEightRandomTowers = async (): Promise<Tower[]> => {
         const q = query(collection(db, "towers"), where("random", ">", rnd), orderBy("random"), limit(1));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-            if (!(doc.id in ids)) towers.push(normalizeTowerObject(doc.data() as Tower));
+            if (!(doc.id in ids)) towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
         });
     }
     // get rating for each tower
