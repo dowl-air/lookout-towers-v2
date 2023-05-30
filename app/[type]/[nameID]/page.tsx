@@ -1,5 +1,5 @@
 import { db, storage } from "@/app/firebase";
-import { Tower } from "@/typings";
+import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { listAll, ref } from "firebase/storage";
@@ -33,7 +33,7 @@ const getTowerObjectByNameID = async (name_id: string): Promise<Tower> => {
     snap.forEach((doc) => {
         obj = doc.data();
     });
-    return normalizeTowerObject(obj as Tower);
+    return normalizeTowerObject(obj as TowerFirebase);
 };
 
 const getUrlsOfGalleryImages = async (id: string): Promise<string[]> => {
@@ -67,7 +67,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 <div className={"flex flex-row gap-8 justify-between w-full"}>
                     <OpeningHours />
                     <Admission />
-                    <Parameters />
+                    <Parameters {...tower} />
                 </div>
                 {tower.history && <HistoryText text={tower.history || ""} />}
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />

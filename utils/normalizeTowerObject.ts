@@ -1,17 +1,9 @@
-import { Tower } from "@/typings";
+import { GPS, Tower, TowerFirebase } from "@/typings";
 
-export const normalizeTowerObject = (tower: Tower) => {
-    if ("toDate" in tower["created"]) {
-        tower["created"] = tower["created"].toDate()
-    }
-    if ("toDate" in tower["modified"]) {
-        tower["modified"] = tower["modified"].toDate()
-    }
-    if ("toDate" in tower["opened"]) {
-        tower["opened"] = tower["opened"].toDate()
-    }
-    if ("toJSON" in tower["gps"]) {
-        tower["gps"] = tower.gps.toJSON()
-    }
-    return tower
+export const normalizeTowerObject = (tower: TowerFirebase): Tower => {
+    const opened: Date = tower.opened.toDate();
+    const modified: Date = tower.opened.toDate();
+    const created: Date = tower.opened.toDate();
+    const gps: GPS = tower.gps.toJSON();
+    return {...tower, opened: opened, modified: modified, created: created, gps: gps} as Tower
 }
