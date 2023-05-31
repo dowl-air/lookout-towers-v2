@@ -17,6 +17,7 @@ module.exports = {
         },
     ],
     daisyui: {
-        darkTheme: "dracula",
+        lightTheme: "garden",
+        darkTheme: "forest",
     },
 };

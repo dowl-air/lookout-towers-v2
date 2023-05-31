@@ -5,6 +5,10 @@ export type GPS = {
     longitude: number
 }
 
+export type Filter = {
+    searchTerm: string;
+};
+
 
 export type TowerFirebase = {
     access?: string;

@@ -12,7 +12,20 @@ Vstupné
 Stav rozhledny - v provozu / v rekonstrukci / zaniklá / dočasně uzavřeno
  + nejaky info k tomu (webovy odkaz a popis asi)
 
-turisticky vizitky, znamky, whatever pridat....
+- pridat vysku vyhlidkove plosiny do parametrů
 
-pridat vysku vyhlidkove plosiny
- 
+TAB Vybavení
+    - občerstení u rozhledny
+    - prodej 
+    - výhledové tabule
+    - toaleta
+    - přístupné na kole
+    - bezbarierovy vystup?
+
+TAB kontakt?
+    - tel cislo
+    - email
+    - oficialni web
+
+
+ turisticky vizitky, znamky, whatever pridat.... no spis ani asi ne

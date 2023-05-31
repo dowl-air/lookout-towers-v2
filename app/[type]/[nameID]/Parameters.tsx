@@ -1,9 +1,8 @@
 import { GPS } from "@/typings";
-import { Timestamp } from "firebase/firestore";
 import React from "react";
 
 type ComponentParams = {
-    created: Date | Timestamp;
+    created: Date;
     elevation: number;
     gps: GPS;
     height: number;
@@ -110,6 +109,11 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div className="modal-action">
+                        <label htmlFor="params-modal" className="btn btn-warning btn-sm">
+                            Navrhnout úpravu
+                        </label>
                     </div>
                 </label>
             </label>
