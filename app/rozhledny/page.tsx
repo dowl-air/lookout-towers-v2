@@ -10,7 +10,7 @@ const initFilter = {
 function TowersPage() {
     const [filter, setFilter] = useState(initFilter);
     return (
-        <div className="flex">
+        <div className="flex gap-4 justify-center mt-4">
             <Results filter={filter} />
             <Filter applyFilter={setFilter} />
         </div>
