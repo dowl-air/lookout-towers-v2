@@ -49,9 +49,7 @@ export default function ImageSlider({ towers }: PageProps) {
         >
             {towers.map((item, index) => (
                 <SwiperSlide key={index} className="mt-3">
-                    <Link href={`/${item.type || "rozhledna"}/${item.nameID}`}>
-                        <TowerCard tower={item} />
-                    </Link>
+                    <TowerCard tower={item} />
                 </SwiperSlide>
             ))}
         </Swiper>
