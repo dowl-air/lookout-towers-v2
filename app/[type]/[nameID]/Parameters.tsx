@@ -2,7 +2,6 @@ import { GPS } from "@/typings";
 import React from "react";
 
 type ComponentParams = {
-    created: Date;
     elevation: number;
     gps: GPS;
     height: number;
