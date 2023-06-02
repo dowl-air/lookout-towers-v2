@@ -8,7 +8,6 @@ type ComponentProps = {
 
 function Filter({ applyFilter }: ComponentProps) {
     const createFilterObject = (): Filter => {
-        console.log("filter: " + searchTerm);
         return { searchTerm: searchTerm };
     };
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,11 +15,11 @@ function Filter({ applyFilter }: ComponentProps) {
     return (
         <div className="card w-96 bg-base-100 shadow-xl self-start">
             <div className="card-body">
-                <div className="flex gap-2">
+                <div className="flex gap-2 justify-between">
                     <input
                         placeholder="Vyhledat"
                         value={searchTerm}
-                        className="input input-ghost input-bordered text-primary focus:text-primary rounded-full focus:bg-transparent"
+                        className="input input-ghost input-bordered text-primary focus:text-primary rounded-full focus:bg-transparent flex-grow"
                         onChange={(t) => setSearchTerm(t.target.value)}
                     ></input>
                     <button
