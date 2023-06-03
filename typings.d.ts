@@ -7,6 +7,8 @@ export type GPS = {
 
 export type Filter = {
     searchTerm: string;
+    province: string;
+    county: string;
 };
 
 

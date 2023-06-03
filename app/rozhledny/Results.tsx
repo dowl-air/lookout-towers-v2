@@ -30,12 +30,14 @@ const createParams = (filter: Filter, startItemId: string): string => {
     type obj = {
         startItemId?: string;
         searchTerm?: string;
+        province?: string;
+        county?: string;
     };
     const data: obj = { ...filter, startItemId: startItemId };
 
-    if (!data.searchTerm) {
-        delete data.searchTerm;
-    }
+    if (!data.searchTerm) delete data.searchTerm;
+    if (!data.province) delete data.province;
+    if (!data.county) delete data.county;
 
     return new URLSearchParams(data).toString();
 };
@@ -46,27 +48,30 @@ function Results({ filter }: ComponentProps) {
     const [error, setError] = useState<any>(null);
     const [start, setStart] = useState<string>("");
 
-    const fetchData = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const towers: Tower[] = JSON.parse(
-                await fetch(API_URL + createParams(filter, start)).then((res) => res.text()),
-                jsonRetriever
-            ) as Tower[];
-            setTowers((prevItems) => [...prevItems, ...towers]);
-            setStart(towers[towers.length - 1].id);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [filter, start]);
+    const fetchData = useCallback(
+        async (empty?: boolean) => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const new_towers: Tower[] = JSON.parse(
+                    await fetch(API_URL + createParams(filter, empty ? "" : start)).then((res) => res.text()),
+                    jsonRetriever
+                ) as Tower[];
+                if (new_towers.length == 0) return;
+                empty ? setTowers(new_towers) : setTowers((prevItems) => [...prevItems, ...new_towers]);
+                setStart(new_towers[new_towers.length - 1].id);
+            } catch (error) {
+                console.log(error);
+                setError(error);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [filter, start]
+    );
 
     useEffect(() => {
-        setTowers([]);
-        setStart("");
-        fetchData();
+        fetchData(true);
     }, [filter]);
 
     const handleScroll = useCallback(() => {

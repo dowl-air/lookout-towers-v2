@@ -1,6 +1,7 @@
 "use client";
 import { Filter } from "@/typings";
-import React, { useState } from "react";
+import { countyShortList, provincesList, provincesMappedCounty } from "@/utils/constants";
+import React, { useEffect, useState } from "react";
 
 type ComponentProps = {
     applyFilter: Function;
@@ -8,9 +9,41 @@ type ComponentProps = {
 
 function Filter({ applyFilter }: ComponentProps) {
     const createFilterObject = (): Filter => {
-        return { searchTerm: searchTerm };
+        console.log(provinceSelected);
+        console.log(countySelected);
+        return {
+            searchTerm: searchTerm,
+            province: provinceSelected === "Všechny kraje" ? "" : provinceSelected,
+            county: countySelected === "Všechny okresy" ? "" : countySelected,
+        };
     };
-    const [searchTerm, setSearchTerm] = useState("");
+
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [provinceSelected, setProvinceSelected] = useState<string>("Všechny kraje");
+    const [countySelected, setCountySelected] = useState<string>("Všechny okresy");
+    const [countySelectable, setCountySelectable] = useState<string[]>(countyShortList);
+    const [nonstop, setNonstop] = useState<boolean>(false);
+
+    // province and county management
+    useEffect(() => {
+        if (
+            provinceSelected !== "Všechny kraje" &&
+            !countyShortList.filter((elm) => provincesMappedCounty[elm] === provinceSelected).includes(countySelected)
+        ) {
+            setCountySelected("Všechny okresy");
+        }
+
+        if (provinceSelected !== "Všechny kraje")
+            setCountySelectable(countyShortList.filter((elm) => provincesMappedCounty[elm] === provinceSelected));
+
+        if (provinceSelected === "Hlavní město Praha") setCountySelected("Praha");
+
+        if (provinceSelected === "Všechny kraje") setCountySelectable(countyShortList);
+
+        if (provinceSelected === "Všechny kraje" && countySelected !== "Všechny okresy") {
+            setProvinceSelected(provincesMappedCounty[countySelected]);
+        }
+    }, [provinceSelected, countySelected]);
 
     return (
         <div className="card w-96 bg-base-100 shadow-xl self-start">
@@ -31,7 +64,22 @@ function Filter({ applyFilter }: ComponentProps) {
                         </svg>
                     </button>
                 </div>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <select
+                    className="select select-bordered w-full max-w-xs"
+                    value={provinceSelected}
+                    onChange={(e) => setProvinceSelected(e.target.value)}
+                >
+                    <option>Všechny kraje</option>
+                    {provincesList.map((item, idx) => (
+                        <option key={idx}>{item}</option>
+                    ))}
+                </select>
+                <select className="select select-bordered w-full max-w-xs" value={countySelected} onChange={(e) => setCountySelected(e.target.value)}>
+                    <option>Všechny okresy</option>
+                    {countySelectable.map((item, idx) => (
+                        <option key={idx}>{item}</option>
+                    ))}
+                </select>
                 <div className="card-actions justify-end">
                     <button className="btn btn-primary" onClick={() => applyFilter(createFilterObject())}>
                         Použít
