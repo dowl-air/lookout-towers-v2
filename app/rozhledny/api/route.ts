@@ -48,8 +48,6 @@ const getFilteredTowers = async (filter: Filter, previousElm: DocumentSnapshot):
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
-    console.log(searchParams);
-
     const filter: Filter = {
         searchTerm: searchParams.get("searchTerm") || "",
         province: searchParams.get("province") || "",
@@ -62,7 +60,6 @@ export async function GET(request: Request) {
     }
 
     const towers: Tower[] = await getFilteredTowers(filter, previousElm);
-    console.log(towers.length);
 
     return NextResponse.json(towers);
 }
