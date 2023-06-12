@@ -1,6 +1,6 @@
 import "server-only";
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -14,7 +14,6 @@ export const firebaseConfig = {
     appId: process.env.FIREBASE_appId,
 };
 
-// Initialize Firebase
-export const firebase = initializeApp(firebaseConfig);
+export const firebase = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const db = getFirestore(firebase);
 export const storage = getStorage(firebase);

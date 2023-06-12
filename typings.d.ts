@@ -5,6 +5,17 @@ export type GPS = {
     longitude: number
 }
 
+export type Session = {
+    authenticated?: Boolean;
+    user?: User;
+}
+
+export type User = {
+    name?: string | undefined | null;
+    email?: string | undefined | null;
+    image?: string | undefined | null;
+} | undefined;
+
 export type Filter = {
     searchTerm: string;
     province: string;

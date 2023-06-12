@@ -2,8 +2,14 @@ import Link from "next/link";
 import "./globals.css";
 
 import ThemeChanger from "./ThemeChanger";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+import LoginButton from "./LoginButton";
+import ProfileIconButton from "./ProfileIconButton";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+    const session = await getServerSession(authOptions);
+
     return (
         <html lang="cs" className="font-sans">
             <head />
@@ -51,12 +57,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             </li>
                         </ul>
                     </div>
-                    <div className="navbar-end">
+                    <div className="navbar-end flex gap-3">
                         <ThemeChanger />
-
-                        <Link href="/prihlaseni" className="btn btn-sm btn-primary ml-3 md:btn-md">
-                            Přihlášení
-                        </Link>
+                        {session ? <ProfileIconButton user={session.user} /> : <LoginButton />}
                     </div>
                 </div>
                 {children}
