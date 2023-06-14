@@ -8,8 +8,8 @@ import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import Stats from "./Stats";
 import AboutMe from "./AboutMe";
 
-// every 10 mins new towers
-export const revalidate = 900;
+// every 1 hour new towers
+export const revalidate = 3600;
 
 const getTowerRatingAndCount = async (towerID: string) => {
     const ratings = collection(db, "ratings");

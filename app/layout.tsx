@@ -1,15 +1,11 @@
 import Link from "next/link";
 import "./globals.css";
-
 import ThemeChanger from "./ThemeChanger";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
-import LoginButton from "./LoginButton";
-import ProfileIconButton from "./ProfileIconButton";
+import NavbarUser from "./NavbarUser";
+
+export const revalidate = 3600;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const session = await getServerSession(authOptions);
-
     return (
         <html lang="cs" className="font-sans">
             <head />
@@ -59,7 +55,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     </div>
                     <div className="navbar-end flex gap-3">
                         <ThemeChanger />
-                        {session ? <ProfileIconButton user={session.user} /> : <LoginButton />}
+                        {/* @ts-expect-error Server Component */}
+                        <NavbarUser />
                     </div>
                 </div>
                 {children}
