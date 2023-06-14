@@ -27,7 +27,7 @@ const getEightRandomTowers = async (): Promise<Tower[]> => {
     // get 8 random towers
     const ids: string[] = [];
     const towers: Tower[] = [];
-    while (towers.length < 8) {
+    while (towers.length < 12) {
         const rnd = Math.random();
         const q = query(collection(db, "towers"), where("random", ">", rnd), orderBy("random"), limit(1));
         const querySnapshot = await getDocs(q);

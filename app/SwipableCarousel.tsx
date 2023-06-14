@@ -2,14 +2,11 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
-// swiper bundle styles
 import "swiper/swiper-bundle.min.css";
-// swiper core styles
 import "swiper/swiper.min.css";
 
 import { Tower } from "@/typings";
 import TowerCard from "./TowerCard";
-import Link from "next/link";
 
 type PageProps = {
     towers: Tower[];
