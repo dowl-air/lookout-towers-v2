@@ -1,6 +1,8 @@
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query } from "firebase/firestore";
 import React from "react";
 import { db } from "./firebase";
+import { Tower, TowerFirebase } from "@/typings";
+import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 
 export const revalidate = 3600;
 
@@ -15,18 +17,26 @@ const getRatingsNumber = async (): Promise<number> => {
 };
 
 const getUsersNumber = async (): Promise<number> => {
-    const docSnap = await getDoc(doc(db, "users", "meta"));
-    return docSnap.exists() ? docSnap.data().count : 0;
+    const usersCol = collection(db, "users");
+    const snapshot = await getCountFromServer(usersCol);
+    return snapshot.data().count;
 };
 
 const getTowersNumber = async (): Promise<number> => {
-    const docSnap = await getDoc(doc(db, "towers_base", "meta")); //todo change
-    return docSnap.exists() ? docSnap.data().count : 0;
+    const towersCol = collection(db, "towers");
+    const snapshot = await getCountFromServer(towersCol);
+    return snapshot.data().count;
 };
 
 const getTowersDate = async (): Promise<Date> => {
-    const docSnap = await getDoc(doc(db, "towers_base", "meta")); //todo change
-    return docSnap.exists() ? docSnap.data().changed.toDate() : new Date();
+    const q = query(collection(db, "towers"), orderBy("modified"), limit(1));
+    const querySnapshot = await getDocs(q);
+    let myDate = new Date();
+    querySnapshot.forEach((doc) => {
+        const tower: Tower = normalizeTowerObject(doc.data() as TowerFirebase);
+        myDate = tower.modified;
+    });
+    return myDate;
 };
 
 async function Stats() {
