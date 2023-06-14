@@ -1,6 +1,7 @@
 import React from "react";
 import { Tower } from "@/typings";
 import Link from "next/link";
+import Image from "next/image";
 
 type PageProps = {
     tower: Tower;
@@ -12,7 +13,7 @@ function TowerCard({ tower }: PageProps) {
             <div className="card card-compact w-56 transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-72">
                     <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">{tower.height} m</div>
-                    <img src={tower.mainPhotoUrl} alt="tower" className="object-cover w-full h-full block"></img>
+                    <Image fill src={tower.mainPhotoUrl} alt={tower.name} className="object-cover block" />
                 </figure>
                 {"getFullYear" in tower.opened &&
                     tower.opened.getFullYear() in [new Date().getFullYear(), new Date().getFullYear() - 1, new Date().getFullYear() - 2] && (
