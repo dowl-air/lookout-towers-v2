@@ -1,18 +1,20 @@
+import Image from "next/image";
 import React from "react";
+import selfie from "public/img/me.jpg";
 
 function AboutMe() {
     return (
         <div className="w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-36 flex-wrap md:flex-nowrap mb-10">
             <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
                 <div className="w-[180px] h-[180px] overflow-hidden rounded-full mt-[-90px] ">
-                    <img alt={"selfie of web author"} className="w-[180px]" src="img/me.jpg" />
+                    <Image alt={"Selfie of web author."} className="w-[180px] h-[180px]" src={selfie} placeholder="blur" />
                 </div>
                 <h2 className="font-bold text-2xl mt-8 text-primary-content">Ahoj, já jsem Daniel</h2>
                 <p className="mt-8 px-4 text-center text-primary-content">
                     Miluju jízdu na kole, rozhledny a sovy. V současnosti studuji Informační technologie na vysoké škole a jsem autor tohoto webu.
                 </p>
                 <div className="flex mt-10 flex-row gap-3">
-                    <a href={"https://www.facebook.com/dp9898"} target="_blank" rel="noreferrer">
+                    <a href={"https://www.facebook.com/dp9898"} target="_blank" rel="noreferrer" aria-label="Facebook">
                         <svg
                             height="800px"
                             width="800px"
@@ -38,7 +40,7 @@ function AboutMe() {
                             </g>
                         </svg>
                     </a>
-                    <a href={"https://www.instagram.com/dowl.air/"} target="_blank" rel="noreferrer">
+                    <a href={"https://www.instagram.com/dowl.air/"} target="_blank" rel="noreferrer" aria-label="Instagram">
                         <svg
                             height="800px"
                             width="800px"
@@ -67,7 +69,7 @@ function AboutMe() {
                             </g>
                         </svg>
                     </a>
-                    <a href={"https://www.linkedin.com/in/dowl/"} target="_blank" rel="noreferrer">
+                    <a href={"https://www.linkedin.com/in/dowl/"} target="_blank" rel="noreferrer" aria-label="Linkedin">
                         <svg
                             version="1.1"
                             id="Layer_1"
