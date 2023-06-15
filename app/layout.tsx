@@ -55,8 +55,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     </div>
                     <div className="navbar-end flex gap-3">
                         <ThemeChanger />
-                        {/* @ts-expect-error Server Component */}
-                        <NavbarUser />
+
+                        {/* <NavbarUser /> */}
                     </div>
                 </div>
                 {children}
