@@ -55,29 +55,105 @@ async function Stats() {
     ]);
 
     return (
-        <div className="stats bg-primary text-primary-content stats-vertical md:stats-horizontal mt-10">
-            <div className="stat">
-                <div className="stat-title text-primary-content">Rozhleden v databázi</div>
-                <div className="stat-value">{towersNumber}</div>
+        <>
+            <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden lg:inline-grid">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-value">{towersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-value">{usersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-value">{changesNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-value">{ratingsNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                </div>
             </div>
 
-            <div className="stat inline-grid md:hidden lg:inline-grid">
-                <div className="stat-title text-primary-content">Aktivních uživatelů</div>
-                <div className="stat-value">{usersNumber}</div>
+            <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden sm:inline-grid lg:hidden">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-value">{towersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-value">{usersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-value">{changesNumber}</div>
+                </div>
             </div>
-            <div className="stat">
-                <div className="stat-title text-primary-content">Provedených úprav</div>
-                <div className="stat-value">{changesNumber}</div>
+            <div className="stats bg-primary text-primary-content stats-horizontal mt-3 hidden sm:inline-grid lg:hidden">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-value">{ratingsNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                </div>
             </div>
-            <div className="stat">
-                <div className="stat-title text-primary-content">Přidaných hodnocení</div>
-                <div className="stat-value">{ratingsNumber}</div>
+
+            <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden min-[400px]:inline-grid sm:hidden">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-value">{towersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-value">{usersNumber}</div>
+                </div>
             </div>
-            <div className="stat">
-                <div className="stat-title text-primary-content">Poslední změna</div>
-                <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+            <div className="stats bg-primary text-primary-content stats-horizontal mt-3 hidden min-[400px]:inline-grid sm:hidden">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-value">{changesNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-value">{ratingsNumber}</div>
+                </div>
             </div>
-        </div>
+            <div className="stats bg-primary text-primary-content stats-vertical hidden mt-3 min-[400px]:inline-grid sm:hidden">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                </div>
+            </div>
+
+            <div className="stats bg-primary text-primary-content stats-vertical w-[calc(100%-25px)] mt-10 inline-grid min-[400px]:hidden">
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-value">{towersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-value">{usersNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-value">{changesNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-value">{ratingsNumber}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                </div>
+            </div>
+        </>
     );
 }
 
