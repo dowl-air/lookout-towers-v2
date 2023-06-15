@@ -15,31 +15,30 @@ type PageProps = {
 export default function ImageSlider({ towers }: PageProps) {
     return (
         <Swiper
-            centeredSlides={true}
-            slidesPerView={"auto"}
-            grabCursor={true}
-            loop={true}
+            centeredSlides
+            grabCursor
+            loop
+            spaceBetween={10}
             autoplay={{
                 delay: 2500,
                 disableOnInteraction: true,
             }}
             modules={[Autoplay]}
             breakpoints={{
-                500: {
+                0: {
+                    slidesPerView: 1,
+                },
+                460: {
                     slidesPerView: 2,
-                    spaceBetween: 10,
                 },
                 700: {
                     slidesPerView: 3,
-                    spaceBetween: 20,
                 },
                 1000: {
                     slidesPerView: 4,
-                    spaceBetween: 50,
                 },
                 1150: {
                     slidesPerView: 5,
-                    spaceBetween: 50,
                 },
             }}
             className="max-w-[min(1280px,99vw)] mt-10"

@@ -10,10 +10,17 @@ type PageProps = {
 function TowerCard({ tower }: PageProps) {
     return (
         <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`}>
-            <div className="card card-compact w-56 transition-transform duration-200 cursor-pointer hover:scale-105 ">
+            <div className="card card-compact w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-72">
+                    <Image
+                        src={tower.mainPhotoUrl}
+                        alt={tower.name}
+                        fill
+                        priority
+                        className="object-cover block"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    />
                     <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">{tower.height} m</div>
-                    <Image fill src={tower.mainPhotoUrl} alt={tower.name} className="object-cover block" />
                 </figure>
                 {"getFullYear" in tower.opened &&
                     tower.opened.getFullYear() in [new Date().getFullYear(), new Date().getFullYear() - 1, new Date().getFullYear() - 2] && (
