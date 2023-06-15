@@ -4,7 +4,7 @@ import selfie from "public/img/me.jpg";
 
 function AboutMe() {
     return (
-        <div className="w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-36 flex-wrap md:flex-nowrap mb-10">
+        <div className="md:w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-36 flex-wrap md:flex-nowrap mb-10">
             <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
                 <div className="w-[180px] h-[180px] overflow-hidden rounded-full mt-[-90px] ">
                     <Image alt={"Selfie of web author."} className="w-[180px] h-[180px]" src={selfie} placeholder="blur" />
