@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Filter, Tower } from "@/typings";
 import TowerCard from "../TowerCard";
 
-const API_URL = "/rozhledny/api?";
+const API_URL = "/api/rozhledny?";
 
 const jsonDateRegexp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/;
 
@@ -54,7 +54,7 @@ function Results({ filter }: ComponentProps) {
             setError(null);
             try {
                 const new_towers: Tower[] = JSON.parse(
-                    await fetch(API_URL + createParams(filter, empty ? "" : start)).then((res) => res.text()),
+                    await fetch(API_URL + createParams(filter, empty ? "" : start), { next: { revalidate: 3600 } }).then((res) => res.text()),
                     jsonRetriever
                 ) as Tower[];
                 if (new_towers.length == 0) return;
