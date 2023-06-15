@@ -29,3 +29,5 @@ TAB kontakt?
 
 
  turisticky vizitky, znamky, whatever pridat.... no spis ani asi ne
+
+ plaiceholder na obrazky?
