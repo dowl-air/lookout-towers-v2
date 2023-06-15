@@ -13,6 +13,7 @@ const nextConfig = {
                 pathname: "/lookout-towers.appspot.com/**",
             },
         ],
+        minimumCacheTTL: 2592000, // one month TTL for images
     },
 };
 
