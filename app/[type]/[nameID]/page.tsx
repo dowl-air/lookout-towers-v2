@@ -12,6 +12,7 @@ import Map from "./Map";
 import Parameters from "./Parameters";
 import OpeningHours from "./OpeningHours";
 import Admission from "./Admission";
+import Navbar from "@/app/Navbar";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
@@ -47,6 +48,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
 
     return (
         <div className="flex flex-col">
+            <Navbar />
             <div id={"top"} className={"mb-8"}>
                 <div id={"top-content"} className={"max-w-screen-xl flex flex-row justify-between mx-auto"}>
                     <MainInfo

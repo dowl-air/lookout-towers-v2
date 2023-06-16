@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 function NavbarUser() {
     const { data: session, status } = useSession();
 
-    if (status === "loading") return <div className="w-[48px] h-[48px]"></div>;
+    if (status === "loading") return <div className="sm:w-[48px] sm:h-[48px]"></div>;
 
     return <>{status === "authenticated" ? <ProfileIconButton user={session.user} /> : <LoginButton />}</>;
 }

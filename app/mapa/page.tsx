@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
+import Navbar from "../Navbar";
 
 // every 1 hour new towers
 export const revalidate = 3600;
@@ -20,9 +21,12 @@ const getAllTowers = async (): Promise<Tower[]> => {
 async function MapPage() {
     const towers: Tower[] = await getAllTowers();
     return (
-        <div className="flex justify-center items-stretch flex-grow h-[80vh] m-6">
-            <Map lat={49.8237572} long={15.6086383} name="Rozhlednový svět" towers={towers} />
-        </div>
+        <>
+            <Navbar />
+            <div className="flex justify-center items-stretch flex-grow h-[80vh] m-6">
+                <Map lat={49.8237572} long={15.6086383} name="Rozhlednový svět" towers={towers} />
+            </div>
+        </>
     );
 }
 

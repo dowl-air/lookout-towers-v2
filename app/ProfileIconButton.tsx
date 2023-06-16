@@ -2,6 +2,7 @@
 import { User } from "@/typings";
 import React from "react";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 type ComponentProps = {
     user: User;
@@ -15,7 +16,7 @@ function ProfileIconButton({ user }: ComponentProps) {
                     <label tabIndex={0}>
                         <div className="avatar cursor-pointer">
                             <div className="w-12 rounded-full">
-                                <img src={user?.image} alt={"profile picture"} referrerPolicy="no-referrer" />
+                                <Image src={user?.image} width={48} height={48} alt={"profile picture"} referrerPolicy="no-referrer" />
                             </div>
                         </div>
                     </label>

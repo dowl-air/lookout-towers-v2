@@ -55,7 +55,7 @@ async function Stats() {
     ]);
 
     return (
-        <>
+        <div className="max-w-screen-xl self-center flex flex-col">
             <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden lg:inline-grid">
                 <div className="stat">
                     <div className="stat-title text-primary-content">Rozhleden v databázi</div>
@@ -79,7 +79,7 @@ async function Stats() {
                 </div>
             </div>
 
-            <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden sm:inline-grid lg:hidden">
+            <div className="stats bg-primary self-center text-primary-content stats-horizontal mt-10 hidden sm:inline-grid lg:hidden">
                 <div className="stat">
                     <div className="stat-title text-primary-content">Rozhleden v databázi</div>
                     <div className="stat-value">{towersNumber}</div>
@@ -93,7 +93,7 @@ async function Stats() {
                     <div className="stat-value">{changesNumber}</div>
                 </div>
             </div>
-            <div className="stats bg-primary text-primary-content stats-horizontal mt-3 hidden sm:inline-grid lg:hidden">
+            <div className="stats bg-primary mx-auto text-primary-content stats-horizontal mt-3 hidden sm:inline-grid lg:hidden">
                 <div className="stat">
                     <div className="stat-title text-primary-content">Přidaných hodnocení</div>
                     <div className="stat-value">{ratingsNumber}</div>
@@ -153,7 +153,7 @@ async function Stats() {
                     <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

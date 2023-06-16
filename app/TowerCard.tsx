@@ -9,7 +9,7 @@ type PageProps = {
 
 function TowerCard({ tower }: PageProps) {
     return (
-        <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`}>
+        <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
             <div className="card card-compact w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-72">
                     <Image

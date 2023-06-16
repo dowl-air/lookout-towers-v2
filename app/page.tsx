@@ -7,6 +7,7 @@ import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import Stats from "./Stats";
 import AboutMe from "./AboutMe";
+import Navbar from "./Navbar";
 
 // every 1 hour new towers
 export const revalidate = 3600;
@@ -48,7 +49,8 @@ const getEightRandomTowers = async (): Promise<Tower[]> => {
 async function HomePage() {
     const towers: Tower[] = await getEightRandomTowers();
     return (
-        <div className="max-w-screen-xl flex flex-col items-center mx-auto">
+        <div className="flex flex-col justify-center">
+            <Navbar />
             <ImageSlider towers={towers} data-superjson />
             {/* @ts-expect-error Server Component */}
             <Stats />
