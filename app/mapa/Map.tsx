@@ -46,7 +46,7 @@ function Map({ lat, long, name, towers }: MapProps) {
         initMap().then(() => document.querySelectorAll("card-body").forEach((elm) => elm.remove()));
     }, [lat, long, name, towers]);
 
-    return <div className="flex flex-grow mx-auto bg-secondary rounded-xl overflow-hidden [&.card-body]:hidden" ref={mapElementRef}></div>;
+    return <div className="flex flex-grow mx-auto bg-secondary rounded-xl overflow-hidden [&.card-body]:hidden touch-none" ref={mapElementRef}></div>;
 }
 
 export default Map;
