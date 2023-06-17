@@ -13,12 +13,13 @@ import Parameters from "./Parameters";
 import OpeningHours from "./OpeningHours";
 import Admission from "./Admission";
 import Navbar from "@/app/Navbar";
+import MainInfoPhone from "./MainInfoPhone";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
 const PATH = "o/towers";
 
-export const revalidate = 1;
+export const revalidate = 3600;
 
 type PageProps = {
     params: {
@@ -49,8 +50,8 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
     return (
         <div className="flex flex-col">
             <Navbar />
-            <div id={"top"} className={"mb-8"}>
-                <div id={"top-content"} className={"max-w-screen-xl flex flex-row justify-between mx-auto"}>
+            <div id={"top"} className={"flex mb-8 flex-1"}>
+                <div id={"top-content"} className={"max-w-screen-xl hidden lg:flex flex-col lg:justify-between lg:flex-row mx-auto"}>
                     <MainInfo
                         name={tower.name}
                         province={tower.province || ""}
@@ -64,6 +65,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                     />
                     <Carousel images={towerImages} />
                 </div>
+                <MainInfoPhone tower={tower} images={towerImages} />
             </div>
             <div id={"bottom"} className={"max-w-screen-xl flex flex-col gap-12 items-top mx-auto mb-24 w-full"}>
                 <div className={"flex flex-row gap-8 justify-between w-full"}>

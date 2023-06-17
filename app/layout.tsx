@@ -2,6 +2,7 @@ import "./globals.css";
 import { NextAuthProvider, NextThemeProvider } from "./providers";
 import ClientLinkDrawerClose from "./ClientLinkDrawerClose";
 import { Unsign } from "./personalisedLinks";
+import ThemeChangerPhone from "./ThemeChangerPhone";
 
 export const revalidate = 3600;
 
@@ -30,6 +31,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                     <li>
                                         <Unsign />
                                     </li>
+
+                                    <ThemeChangerPhone />
                                 </ul>
                             </div>
                         </div>
