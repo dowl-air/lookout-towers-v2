@@ -63,7 +63,7 @@ export type Tower = {
     elevation: number;
     gps: GeoPoint | GPS;
     gpshash?: string;
-    height: 55;
+    height: number;
     history?: string;
     id: string;
     locationText?: string;
