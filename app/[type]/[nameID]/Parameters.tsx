@@ -25,7 +25,7 @@ function Parameters(params: ComponentParams) {
     return (
         <>
             <div
-                className="card prose w-full border border-secondary-focus overflow-hidden shadow-xl transition-transform duration-200 cursor-pointer hover:scale-105"
+                className="card card-compact sm:card-normal prose min-w-[300px] max-w-[410px] h-[220px] flex-1 overflow-hidden shadow-xl border border-secondary-focus transition-transform duration-200 cursor-pointer hover:scale-105"
                 title="Zobrazit všechny parametry"
             >
                 <label htmlFor="params-modal" className="cursor-pointer">

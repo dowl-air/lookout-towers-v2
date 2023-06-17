@@ -2,7 +2,7 @@ import React from "react";
 
 function Admission() {
     return (
-        <div className="card prose w-full border border-secondary-focus shadow-xl group">
+        <div className="card card-compact sm:card-normal prose min-w-[300px] max-w-[410px] h-[220px] flex-1 overflow-hidden shadow-xl border border-secondary-focus group">
             <div className="card-body items-center">
                 <h2 className="card-title text-xl">Vstupné</h2>
                 <p className="text-lg">Bezplatný vstup.</p>

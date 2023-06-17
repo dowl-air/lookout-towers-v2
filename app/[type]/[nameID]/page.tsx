@@ -52,23 +52,13 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
             <Navbar />
             <div id={"top"} className={"flex mb-8 flex-1"}>
                 <div id={"top-content"} className={"max-w-screen-xl hidden lg:flex flex-col lg:justify-between lg:flex-row mx-auto"}>
-                    <MainInfo
-                        name={tower.name}
-                        province={tower.province || ""}
-                        country={tower.country}
-                        county={tower.county || ""}
-                        type={tower.type}
-                        stairs={tower.stairs || -1}
-                        height={tower.height || -1}
-                        elevation={tower.elevation || -1}
-                        openingHours={tower.openingHours || "neznámé"}
-                    />
+                    <MainInfo tower={tower} />
                     <Carousel images={towerImages} />
                 </div>
                 <MainInfoPhone tower={tower} images={towerImages} />
             </div>
-            <div id={"bottom"} className={"max-w-screen-xl flex flex-col gap-12 items-top mx-auto mb-24 w-full"}>
-                <div className={"flex flex-row gap-8 justify-between w-full"}>
+            <div id={"bottom"} className={"flex flex-col gap-12 items-center justify-center self-center mb-24 mx-3 flex-1 max-w-screen-xl"}>
+                <div className={"flex flex-wrap gap-3 w-full items-center justify-center"}>
                     <OpeningHours />
                     <Admission />
                     <Parameters {...tower} />
