@@ -23,11 +23,30 @@ function Carousel({ images, phone }: PageProps) {
 
     return (
         <div className="max-w-screen-sm flex flex-col mb-7">
-            <figure className="hidden lg:block h-64 lg:h-96 my-0">
+            <figure className="hidden lg:block h-96 mt-10">
+                <div className="flex h-96 justify-center items-center">
+                    <label className="cursor-pointer relative w-full h-full" htmlFor={phone ? "phone-modal" : "my-modal-4"}>
+                        <Image
+                            priority
+                            fill
+                            alt={"rozhledna"}
+                            src={images[index]}
+                            sizes="(max-width: 1000px) 50vw, (max-width: 1300px) 40vw, 30vw"
+                            className="block object-contain w-auto h-auto rounded-lg"
+                        />
+                    </label>
+                </div>
+                <div className={`btn btn-outline relative bottom-[13rem] left-[3rem] ${index === 0 && "btn-disabled"}`} onClick={moveBackwards}>
+                    <svg fill="currentColor" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <g>
+                            <g>
+                                <polygon points="17.2,23.7 5.4,12 17.2,0.3 18.5,1.7 8.4,12 18.5,22.3" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
                 <div
-                    className={`btn btn-outline relative top-[calc(50%-24px+48px)] right-[-80%] lg:left-[85%] ${
-                        index === images.length - 1 && "btn-disabled"
-                    }`}
+                    className={`btn btn-outline relative bottom-[13rem] right-[-30rem] ${index === images.length - 1 && "btn-disabled"}`}
                     onClick={moveForvard}
                 >
                     <svg fill="currentColor" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -38,27 +57,6 @@ function Carousel({ images, phone }: PageProps) {
                         </g>
                     </svg>
                 </div>
-                <div
-                    className={`btn btn-outline relative top-[calc(50%-24px+48px)] lg:right-[2%] ${index === 0 && "btn-disabled"}`}
-                    onClick={moveBackwards}
-                >
-                    <svg fill="currentColor" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <g>
-                            <g>
-                                <polygon points="17.2,23.7 5.4,12 17.2,0.3 18.5,1.7 8.4,12 18.5,22.3" />
-                            </g>
-                        </g>
-                    </svg>
-                </div>
-                <label className="cursor-pointer" htmlFor={phone ? "phone-modal" : "my-modal-4"}>
-                    <div className="h-full flex justify-center items-center">
-                        <img
-                            alt={"tower_todo"}
-                            src={images[index]}
-                            className="block object-scale-down max-h-[250px] lg:max-h-[384px]  mx-auto my-auto rounded-lg"
-                        />
-                    </div>
-                </label>
             </figure>
 
             <div className="flex lg:hidden items-center gap-2">
@@ -94,13 +92,15 @@ function Carousel({ images, phone }: PageProps) {
                 </div>
             </div>
 
-            <div className="h-28 hidden lg:flex overflow-x-hidden max-w-screen-sm gap-2 scroll-smooth snap-center scroll-p-[280px] mt-16 mb-3">
+            <div className="h-28 hidden lg:flex overflow-x-hidden max-w-screen-sm gap-2 scroll-smooth snap-center scroll-p-[280px] my-3">
                 {images.map((image, idx) => (
-                    <img
+                    <Image
                         key={idx}
                         id={`image_${idx}`}
                         src={image}
-                        alt={"image"}
+                        alt={"rozhledna"}
+                        height={112}
+                        width={112}
                         className={`block h-full object-scale-down rounded-lg border-solid border-2 p-1 cursor-pointer ${
                             idx === index ? "border-primary-focus" : "border-transparent"
                         }`}
@@ -113,8 +113,10 @@ function Carousel({ images, phone }: PageProps) {
             </div>
 
             <input type="checkbox" id={phone ? "phone-modal" : "my-modal-4"} className="modal-toggle" />
-            <label htmlFor={phone ? "phone-modal" : "my-modal-4"} className="modal cursor-pointer">
-                <img alt={"tower_todo"} src={images[index]}></img>
+            <label htmlFor={phone ? "phone-modal" : "my-modal-4"} className="modal cursor-pointer w-full h-full">
+                <div className="relative w-full h-full max-w-[70vw] max-h-[80vh]">
+                    <Image fill alt={"tower_todo"} src={images[index]} className="block object-contain" />
+                </div>
             </label>
         </div>
     );
