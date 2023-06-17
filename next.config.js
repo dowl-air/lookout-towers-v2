@@ -15,6 +15,9 @@ const nextConfig = {
             {
                 hostname: "*.googleusercontent.com",
             },
+            {
+                hostname: "firebasestorage.googleapis.com",
+            },
         ],
         minimumCacheTTL: 2592000, // one month TTL for images
     },
