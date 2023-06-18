@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { Tower } from "@/typings";
+import ReactDOMServer from "react-dom/server";
+import Image from "next/image";
 
 type MapProps = {
     lat: number;
@@ -13,7 +15,7 @@ function Map({ lat, long, name, towers }: MapProps) {
     const mapElementRef = useRef(null);
     useEffect(() => {
         const initMap = async () => {
-            const { load } = await import("wpify-mapy-cz");
+            const { load, MapyCz } = await import("wpify-mapy-cz");
             const config = {
                 element: mapElementRef.current,
                 center: { latitude: lat, longitude: long },
@@ -31,22 +33,44 @@ function Map({ lat, long, name, towers }: MapProps) {
                         pin: "/img/marker.png",
                         pointer: false,
                         card: {
-                            header: `<a href="/${tower.type}/${tower.nameID}" target="_blank" class="link">${tower.name}</a>`,
+                            /* header: `<a href="/${tower.type}/${tower.nameID}" target="_blank" class="link">${tower.name}</a>`, */
+                            header: ReactDOMServer.renderToString(
+                                <a href={`/${tower.type}/${tower.nameID}`}>
+                                    <div className="prose">
+                                        <h3 className="text-center">{tower.name}</h3>
+                                    </div>
+                                </a>
+                            ),
+                            footer: ReactDOMServer.renderToString(
+                                <a href={`/${tower.type}/${tower.nameID}`}>
+                                    <div className="h-52 w-52">
+                                        <Image
+                                            src={tower.mainPhotoUrl}
+                                            alt={tower.name}
+                                            height={208}
+                                            width={208}
+                                            className="block object-cover !w-full !h-full rounded-md"
+                                        />
+                                    </div>
+                                </a>
+                            ),
                         },
-                        click: () =>
-                            setTimeout(() => {
-                                document.querySelectorAll(".card-body").forEach((elm) => elm.remove());
-                            }, 1),
                     };
                 });
                 mapycz.addDefaultControls();
                 mapycz.addMarkers(markers);
             });
         };
-        initMap().then(() => document.querySelectorAll("card-body").forEach((elm) => elm.remove()));
+        initMap();
     }, [lat, long, name, towers]);
 
-    return <div className="flex flex-grow mx-auto bg-secondary rounded-xl overflow-hidden [&.card-body]:hidden touch-none" ref={mapElementRef}></div>;
+    return (
+        <div
+            id="big_map"
+            className="flex flex-grow mx-auto bg-secondary rounded-xl overflow-hidden [&.card-body]:hidden touch-none"
+            ref={mapElementRef}
+        ></div>
+    );
 }
 
 export default Map;
