@@ -51,7 +51,7 @@ function Filter({ applyFilter, initFilter }: ComponentProps) {
     }, [provinceSelected, countySelected]);
 
     return (
-        <div className="card w-96 bg-base-100 shadow-xl self-start">
+        <div className="card w-96 bg-base-100 shadow-xl">
             <div className="card-body">
                 <div className="flex gap-2 justify-between">
                     <input

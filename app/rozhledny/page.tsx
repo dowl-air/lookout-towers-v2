@@ -15,9 +15,9 @@ function TowersPage() {
     return (
         <>
             <Navbar />
-            <div className="flex gap-4 justify-center mt-4">
-                <Results filter={filter} />
+            <div className="flex flex-col xl:flex-row-reverse gap-4 justify-center items-center xl:items-start mt-4">
                 <Filter applyFilter={setFilter} initFilter={initFilter} />
+                <Results filter={filter} />
             </div>
         </>
     );
