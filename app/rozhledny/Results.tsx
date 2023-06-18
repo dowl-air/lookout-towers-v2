@@ -88,7 +88,7 @@ function Results({ filter }: ComponentProps) {
 
     return (
         <div className="flex flex-wrap gap-3 justify-center max-w-[1200px]">
-            {towers && towers.map((item, idx) => <TowerCard key={idx} tower={item} />)}
+            {towers && towers.map((item, idx) => <TowerCard key={idx} tower={item} priority={false} />)}
         </div>
     );
 }

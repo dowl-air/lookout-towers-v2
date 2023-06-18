@@ -7,7 +7,7 @@ type PageProps = {
     tower: Tower;
 };
 
-function TowerCard({ tower }: PageProps) {
+function TowerCard({ tower, priority = false }: { tower: Tower; priority: boolean }) {
     return (
         <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
             <div className="card card-compact w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
@@ -16,7 +16,7 @@ function TowerCard({ tower }: PageProps) {
                         src={tower.mainPhotoUrl}
                         alt={tower.name}
                         fill
-                        priority
+                        priority={priority}
                         className="object-cover block"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
