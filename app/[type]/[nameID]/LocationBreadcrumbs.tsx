@@ -11,13 +11,19 @@ function LocationBreadcrumbs({ tower }: Props) {
             <div className="prose text-md lg:text-sm breadcrumbs">
                 <ul className="pl-4">
                     <li>
-                        <a className="link">{tower.country}</a>
+                        <a className="link" href="/rozhledny">
+                            {tower.country}
+                        </a>
                     </li>
                     <li>
-                        <a className="link">{tower.province}</a>
+                        <a className="link" href="/rozhledny">
+                            {tower.province}
+                        </a>
                     </li>
                     <li>
-                        <a className="link">{tower.county}</a>
+                        <a className="link" href="/rozhledny">
+                            {tower.county}
+                        </a>
                     </li>
                 </ul>
             </div>
