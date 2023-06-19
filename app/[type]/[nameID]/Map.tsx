@@ -34,7 +34,7 @@ function Map({ lat, long, name }: MapProps) {
         initMap();
     }, [lat, long, name]);
 
-    return <div className="mx-auto w-full max-w-6xl bg-secondary h-[32rem] rounded-xl overflow-hidden" ref={mapElementRef}></div>;
+    return <div className="mx-auto w-full max-w-6xl bg-secondary h-[32rem] rounded-xl overflow-hidden touch-none" ref={mapElementRef}></div>;
 }
 
 export default Map;
