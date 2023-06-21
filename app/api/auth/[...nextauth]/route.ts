@@ -4,6 +4,4 @@ import NextAuth from "next-auth/next";
 
 const handler = NextAuth(AO)
 
-export const authOptions : NextAuthOptions = AO
-
 export { handler as GET, handler as POST }
