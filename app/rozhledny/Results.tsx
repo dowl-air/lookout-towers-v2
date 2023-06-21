@@ -87,7 +87,7 @@ function Results({ filter }: ComponentProps) {
     }, [isLoading, handleScroll]);
 
     return (
-        <div className="flex flex-wrap gap-3 justify-center max-w-[1200px]">
+        <div className="flex flex-wrap gap-3 flex-1 justify-center max-w-[1200px]">
             {towers && towers.map((item, idx) => <TowerCard key={idx} tower={item} priority={false} />)}
         </div>
     );
