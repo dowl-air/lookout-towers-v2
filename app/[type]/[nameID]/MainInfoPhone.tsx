@@ -25,7 +25,7 @@ function MainInfoPhone({ tower, images }: Props) {
             <div className="flex flex-wrap items-center justify-center gap-3 mt-3">
                 <RatingTop />
                 <div className="flex flex-wrap justify-center gap-2 mx-3">
-                    <Buttons />
+                    <Buttons towerID={tower.id} />
                 </div>
             </div>
         </div>

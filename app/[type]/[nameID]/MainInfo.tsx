@@ -14,7 +14,7 @@ function MainInfo({ tower }: { tower: Tower }) {
 
             <RatingTop />
             <div className="flex flex-col justify-center gap-2">
-                <Buttons />
+                <Buttons towerID={tower.id} />
             </div>
         </div>
     );

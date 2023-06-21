@@ -28,7 +28,7 @@ function OneReview({}: Props) {
                         initialValue={4}
                         emptyClassName="flex"
                         SVGclassName="inline-block"
-                        fillColor={colors.primary}
+                        fillColor={colors?.primary}
                         emptyColor={colors["base-content"]}
                         size={25}
                     />
