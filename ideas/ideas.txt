@@ -6,7 +6,7 @@ OpeningHours Input - Stepper 3 steps
 
 Vstupné
  - 1. zpoplatnene / volny Vstupné
- - 2. postupne pridavat tarify (dospely, student, dite, senior...)
+ - 2. postupne pridavat tarify (dospely, student, dite, senior...) + rodina !
  - 3. moznost platit kartou
 
 Stav rozhledny - v provozu / v rekonstrukci / zaniklá / dočasně uzavřeno
