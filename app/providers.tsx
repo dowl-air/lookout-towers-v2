@@ -11,5 +11,5 @@ export const NextAuthProvider = ({ children }: Props) => {
 };
 
 export const NextThemeProvider = ({ children }: Props) => {
-    return <ThemeProvider defaultTheme="garden">{children}</ThemeProvider>;
+    return <ThemeProvider defaultTheme="light">{children}</ThemeProvider>;
 };
