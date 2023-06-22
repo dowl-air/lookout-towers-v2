@@ -11,5 +11,9 @@ export const NextAuthProvider = ({ children }: Props) => {
 };
 
 export const NextThemeProvider = ({ children }: Props) => {
-    return <ThemeProvider defaultTheme="light">{children}</ThemeProvider>;
+    return (
+        <ThemeProvider defaultTheme="light" enableColorScheme={false}>
+            {children}
+        </ThemeProvider>
+    );
 };

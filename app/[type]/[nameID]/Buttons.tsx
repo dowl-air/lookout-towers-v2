@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
 const Buttons = ({ towerID }: { towerID: string }) => {
@@ -7,6 +7,7 @@ const Buttons = ({ towerID }: { towerID: string }) => {
     const [isFavourite, setIsFavourite] = useState(false);
 
     const addToFavourites = async () => {
+        if (status === "unauthenticated") return signIn();
         if (isFavourite) return;
         const result = await fetch(
             "/api/favourites/create?" +

@@ -14,8 +14,7 @@ import OpeningHours from "./OpeningHours";
 import Admission from "./Admission";
 import Navbar from "@/app/Navbar";
 import MainInfoPhone from "./MainInfoPhone";
-import RatingStats from "./RatingStats";
-import OneReview from "./OneReview";
+import RatingBox from "./RatingBox";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
@@ -59,7 +58,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 </div>
                 <MainInfoPhone tower={tower} images={towerImages} />
             </div>
-            <div id={"bottom"} className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-3 flex-1 max-w-screen-xl"}>
+            <div id={"bottom"} className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-1 sm:mx-3 flex-1 max-w-screen-xl"}>
                 <div className={"flex flex-wrap gap-3 w-full items-center justify-center"}>
                     <OpeningHours />
                     <Admission />
@@ -67,21 +66,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 </div>
                 {tower.history && <HistoryText text={tower.history || ""} />}
 
-                <div id="rating_box" className="card flex flex-col justify-center gap-6 w-full p-5 sm:p-8 shadow-xl border border-secondary-focus">
-                    <div id="rating_box_top" className="flex justify-between items-center w-full">
-                        <h2 className="card-title text-base sm:text-xl">Recenze [3]</h2>
-                        <button className="btn btn-primary btn-sm sm:btn-md">Přidat recenzi</button>
-                    </div>
-                    <div id="rating_box_bottom" className="flex flex-wrap">
-                        <div className="h-72 flex-col gap-6 overflow-auto min-w-[320px] flex-1">
-                            <OneReview />
-                            <OneReview />
-                            <OneReview />
-                        </div>
-                        <div className="divider w-full md:w-4 md:divider-horizontal"></div>
-                        <RatingStats />
-                    </div>
-                </div>
+                <RatingBox tower={tower} />
 
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>

@@ -1,14 +1,11 @@
 "use client";
 import React from "react";
 import { Rating } from "react-simple-star-rating";
-const daisyColors = require("daisyui/src/colors/themes");
-import { useTheme } from "next-themes";
 
 type Props = {};
 
 function OneReview({}: Props) {
-    const theme = useTheme();
-    const colors = daisyColors[`[data-theme=${theme.theme}]`];
+    //const colors = useThemeColors();
     return (
         <div className="flex flex-col gap-2 mb-5">
             <div className="flex gap-3">
@@ -28,8 +25,8 @@ function OneReview({}: Props) {
                         initialValue={4}
                         emptyClassName="flex"
                         SVGclassName="inline-block"
-                        fillColor={colors?.primary}
-                        emptyColor={colors["base-content"]}
+                        //fillColor={colors.primary}
+                        //emptyColor={colors["base-content"]}
                         size={25}
                     />
                 </div>

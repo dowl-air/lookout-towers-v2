@@ -22,7 +22,7 @@ function Carousel({ images, phone }: PageProps) {
     };
 
     return (
-        <div className="max-w-screen-sm flex flex-col mb-7">
+        <div className="lg:w-[640px] flex flex-col mb-7">
             <figure className="hidden lg:block h-96 mt-10">
                 <div className="flex h-96 justify-center items-center">
                     <label className="cursor-pointer relative w-full h-full" htmlFor={phone ? "phone-modal" : "my-modal-4"}>

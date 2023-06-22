@@ -3,8 +3,8 @@ import { closeDrawer } from "@/utils/closeDrawer";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-const LIGHT_MODE = "garden";
-const DARK_MODE = "forest";
+const LIGHT_MODE = "light";
+const DARK_MODE = "night";
 
 function ThemeChangerPhone() {
     const { theme, setTheme } = useTheme();
