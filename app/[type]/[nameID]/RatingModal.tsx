@@ -15,7 +15,7 @@ const RatingModal = ({ tower }: { tower: Tower }) => {
     const updateReview = async () => {
         const result = await fetch("/api/reviews/create", {
             method: "POST",
-            // @ts-expect-error
+            // @ts-ignore
             body: JSON.stringify({ towerID: tower.id, userID: session?.user.id, text: text, rating: rating }),
         }).then((res) => res.json());
         console.log(result);
