@@ -23,7 +23,7 @@ function MainInfoPhone({ tower, images }: Props) {
                 <Carousel images={images} phone />
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 mt-3">
-                <RatingTop />
+                <RatingTop towerID={tower.id} />
                 <div className="flex flex-wrap justify-center gap-2 mx-3">
                     <Buttons towerID={tower.id} />
                 </div>

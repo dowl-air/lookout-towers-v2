@@ -1,10 +1,12 @@
 "use client";
+import { getThemeColors } from "@/utils/getThemeColors";
+import { useTheme } from "next-themes";
 import React from "react";
 import { Rating } from "react-simple-star-rating";
 
 const RatingStats = (props: {}) => {
-    //const colors = useThemeColors();
-
+    const { theme } = useTheme();
+    const colors = getThemeColors(theme);
     return (
         <div className="flex flex-col justify-start items-center flex-1 md:flex-none gap-6 h-60 w-72">
             <div className="flex items-center gap-2">
@@ -15,8 +17,8 @@ const RatingStats = (props: {}) => {
                     initialValue={4.2}
                     emptyClassName="flex"
                     SVGclassName="inline-block"
-                    //fillColor={colors.primary}
-                    //emptyColor={colors["base-content"]}
+                    fillColor={colors ? colors.primary : ""}
+                    emptyColor={colors ? colors["base-content"] : ""}
                     size={30}
                 />
             </div>
@@ -27,8 +29,8 @@ const RatingStats = (props: {}) => {
                         <Rating
                             readonly
                             initialValue={1}
-                            //fillColor={colors.primary}
-                            //emptyColor={colors["base-content"]}
+                            fillColor={colors ? colors.primary : ""}
+                            emptyColor={colors ? colors["base-content"] : ""}
                             iconsCount={1}
                             size={22}
                             className="mt-1"

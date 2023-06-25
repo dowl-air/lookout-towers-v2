@@ -13,7 +13,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <body className="overflow-x-hidden">
                 <NextAuthProvider>
                     <NextThemeProvider>
-                        <div className="drawer w-[calc(100vw-1px)]">
+                        <div className="drawer">
                             <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
                             <div className="drawer-content">{children}</div>
                             <div className="drawer-side z-10">

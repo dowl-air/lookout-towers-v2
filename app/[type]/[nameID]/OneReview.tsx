@@ -1,11 +1,14 @@
 "use client";
+import { getThemeColors } from "@/utils/getThemeColors";
+import { useTheme } from "next-themes";
 import React from "react";
 import { Rating } from "react-simple-star-rating";
 
 type Props = {};
 
 function OneReview({}: Props) {
-    //const colors = useThemeColors();
+    const { theme } = useTheme();
+    const colors = getThemeColors(theme);
     return (
         <div className="flex flex-col gap-2 mb-5">
             <div className="flex gap-3">
@@ -25,8 +28,8 @@ function OneReview({}: Props) {
                         initialValue={4}
                         emptyClassName="flex"
                         SVGclassName="inline-block"
-                        //fillColor={colors.primary}
-                        //emptyColor={colors["base-content"]}
+                        fillColor={colors ? colors.primary : ""}
+                        emptyColor={colors ? colors["base-content"] : ""}
                         size={25}
                     />
                 </div>

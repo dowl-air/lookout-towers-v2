@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import OneReview from "./OneReview";
 import RatingStats from "./RatingStats";
 import { Tower } from "@/typings";
@@ -8,6 +8,8 @@ import { signIn, useSession } from "next-auth/react";
 
 function RatingBox({ tower }: { tower: Tower }) {
     const { status } = useSession();
+    const [ratingAverage, setRatingAverage] = useState(0);
+
     return (
         <>
             <div

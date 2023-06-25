@@ -12,7 +12,7 @@ function MainInfo({ tower }: { tower: Tower }) {
             <h1>{tower.name}</h1>
             <Legend tower={tower} />
 
-            <RatingTop />
+            <RatingTop towerID={tower.id} />
             <div className="flex flex-col justify-center gap-2">
                 <Buttons towerID={tower.id} />
             </div>
