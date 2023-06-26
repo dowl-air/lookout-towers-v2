@@ -52,7 +52,11 @@ const Buttons = ({ towerID }: { towerID: string }) => {
             ).then((res) => res.json());
             if (result.status == 200) setIsFavourite(true);
         };
-        if (status == "authenticated") checkFavourite().then(() => setFavLoading(false));
+        if (status == "authenticated") {
+            checkFavourite().then(() => setFavLoading(false));
+        } else {
+            setFavLoading(false);
+        }
         // @ts-ignore
     }, [status, session?.user?.id, towerID]);
 
