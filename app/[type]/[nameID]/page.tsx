@@ -76,7 +76,10 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 </div>
                 <MainInfoPhone tower={tower} images={towerImages} average={average} count={count} />
             </div>
-            <div id={"bottom"} className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-1 sm:mx-3 flex-1 max-w-screen-xl"}>
+            <div
+                id={"bottom"}
+                className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full"}
+            >
                 <div className={"flex flex-wrap gap-3 w-full items-center justify-center"}>
                     <OpeningHours />
                     <Admission />
