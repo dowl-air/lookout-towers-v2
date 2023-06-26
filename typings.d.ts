@@ -91,5 +91,8 @@ export type Tower = {
 export type Rating = {
     tower_id: string;
     user_id: string;
-    value: number;
+    rating: number;
+    created: Date;
+    text: string;
+    id: string;
 }

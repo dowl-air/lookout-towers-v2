@@ -8,15 +8,15 @@ export const revalidate = 3600;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="cs" className="font-sans" data-theme="garden">
+        <html lang="cs" className="font-sans" data-theme="light">
             <head />
-            <body>
+            <body className="overflow-x-hidden">
                 <NextAuthProvider>
                     <NextThemeProvider>
                         <div className="drawer">
                             <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
                             <div className="drawer-content">{children}</div>
-                            <div className="drawer-side">
+                            <div className="drawer-side z-10">
                                 <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
                                 <ul tabIndex={0} className="menu p-4 w-80 h-full bg-base-200">
                                     <li>

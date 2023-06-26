@@ -1,5 +1,5 @@
 import { db, storage } from "@/app/firebase";
-import { Tower, TowerFirebase } from "@/typings";
+import { Rating, Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { listAll, ref } from "firebase/storage";
@@ -14,8 +14,7 @@ import OpeningHours from "./OpeningHours";
 import Admission from "./Admission";
 import Navbar from "@/app/Navbar";
 import MainInfoPhone from "./MainInfoPhone";
-import RatingStats from "./RatingStats";
-import OneReview from "./OneReview";
+import RatingBox from "./RatingBox";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
@@ -45,21 +44,39 @@ const getUrlsOfGalleryImages = async (id: string): Promise<string[]> => {
     return list.items.map((item) => `${URL}${BUCKET}${PATH}%2F${id}%2F${item.name}?alt=media`);
 };
 
+const getTowerRating = async (id: string): Promise<{ ratings: Rating[]; count: number; average: number }> => {
+    const q = query(collection(db, "ratings"), where("tower_id", "==", id));
+    const querySnapshot = await getDocs(q);
+    const ratings: Rating[] = [];
+    querySnapshot.forEach((doc) => {
+        const obj: any = doc.data();
+        obj.created = obj.created.toDate();
+        obj.id = doc.id;
+        ratings.push(obj as Rating);
+    });
+    const numbers = ratings.map((r) => r.rating);
+    return {
+        count: ratings.length,
+        average: ratings.length ? numbers.reduce((a, b) => a + b) / ratings.length : 0,
+        ratings: ratings,
+    };
+};
+
 async function TowerPage({ params: { type, nameID } }: PageProps) {
     const tower = await getTowerObjectByNameID(nameID);
-    const towerImages = await getUrlsOfGalleryImages(tower.id);
-
+    const [towerImages, towerRating] = await Promise.all([getUrlsOfGalleryImages(tower.id), getTowerRating(tower.id)]);
+    const { count, ratings, average } = towerRating;
     return (
         <div className="flex flex-col">
             <Navbar />
             <div id={"top"} className={"flex mb-8 flex-1"}>
                 <div id={"top-content"} className={"max-w-screen-xl hidden lg:flex flex-col lg:justify-between lg:flex-row mx-auto"}>
-                    <MainInfo tower={tower} />
+                    <MainInfo tower={tower} average={average} count={count} />
                     <Carousel images={towerImages} />
                 </div>
-                <MainInfoPhone tower={tower} images={towerImages} />
+                <MainInfoPhone tower={tower} images={towerImages} average={average} count={count} />
             </div>
-            <div id={"bottom"} className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-3 flex-1 max-w-screen-xl"}>
+            <div id={"bottom"} className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-1 sm:mx-3 flex-1 max-w-screen-xl"}>
                 <div className={"flex flex-wrap gap-3 w-full items-center justify-center"}>
                     <OpeningHours />
                     <Admission />
@@ -67,21 +84,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 </div>
                 {tower.history && <HistoryText text={tower.history || ""} />}
 
-                <div id="rating_box" className="card flex flex-col justify-center gap-6 w-full p-5 sm:p-8 shadow-xl border border-secondary-focus">
-                    <div id="rating_box_top" className="flex justify-between items-center w-full">
-                        <h2 className="card-title text-base sm:text-xl">Recenze [3]</h2>
-                        <button className="btn btn-primary btn-sm sm:btn-md">Přidat recenzi</button>
-                    </div>
-                    <div id="rating_box_bottom" className="flex flex-wrap">
-                        <div className="h-72 flex-col gap-6 overflow-auto min-w-[320px] flex-1">
-                            <OneReview />
-                            <OneReview />
-                            <OneReview />
-                        </div>
-                        <div className="divider w-full md:w-4 md:divider-horizontal"></div>
-                        <RatingStats />
-                    </div>
-                </div>
+                <RatingBox tower={tower} count={count} average={average} reviews={ratings} />
 
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>

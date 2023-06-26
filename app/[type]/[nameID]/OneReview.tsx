@@ -1,14 +1,14 @@
 "use client";
-import React from "react";
-import { Rating } from "react-simple-star-rating";
-const daisyColors = require("daisyui/src/colors/themes");
+import { Rating } from "@/typings";
+import { getThemeColors } from "@/utils/getThemeColors";
+import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import React from "react";
+import { Rating as RatingSimple } from "react-simple-star-rating";
 
-type Props = {};
-
-function OneReview({}: Props) {
-    const theme = useTheme();
-    const colors = daisyColors[`[data-theme=${theme.theme}]`];
+function OneReview({ review }: { review: Rating }) {
+    const { theme } = useTheme();
+    const colors = getThemeColors(theme);
     return (
         <div className="flex flex-col gap-2 mb-5">
             <div className="flex gap-3">
@@ -23,13 +23,13 @@ function OneReview({}: Props) {
                         <p className="font-bold opacity-50">·</p>
                         <p className="opacity-50">15. května 2023</p>
                     </div>
-                    <Rating
+                    <RatingSimple
                         readonly
                         initialValue={4}
                         emptyClassName="flex"
                         SVGclassName="inline-block"
-                        fillColor={colors?.primary}
-                        emptyColor={colors["base-content"]}
+                        fillColor={colors ? colors.primary : ""}
+                        emptyColor={colors ? colors["base-content"] : ""}
                         size={25}
                     />
                 </div>

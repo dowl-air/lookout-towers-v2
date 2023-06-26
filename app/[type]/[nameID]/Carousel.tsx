@@ -22,7 +22,7 @@ function Carousel({ images, phone }: PageProps) {
     };
 
     return (
-        <div className="max-w-screen-sm flex flex-col mb-7">
+        <div className="lg:w-[640px] flex flex-col mb-7">
             <figure className="hidden lg:block h-96 mt-10">
                 <div className="flex h-96 justify-center items-center">
                     <label className="cursor-pointer relative w-full h-full" htmlFor={phone ? "phone-modal" : "my-modal-4"}>
@@ -36,7 +36,10 @@ function Carousel({ images, phone }: PageProps) {
                         />
                     </label>
                 </div>
-                <div className={`btn btn-outline relative bottom-[13rem] left-[3rem] ${index === 0 && "btn-disabled"}`} onClick={moveBackwards}>
+                <div
+                    className={`btn btn-warning btn-outline relative bottom-[13rem] left-[3rem] ${index === 0 && "btn-disabled"}`}
+                    onClick={moveBackwards}
+                >
                     <svg fill="currentColor" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <g>
                             <g>
@@ -46,7 +49,7 @@ function Carousel({ images, phone }: PageProps) {
                     </svg>
                 </div>
                 <div
-                    className={`btn btn-outline relative bottom-[13rem] right-[-30rem] ${index === images.length - 1 && "btn-disabled"}`}
+                    className={`btn btn-warning btn-outline relative bottom-[13rem] right-[-30rem] ${index === images.length - 1 && "btn-disabled"}`}
                     onClick={moveForvard}
                 >
                     <svg fill="currentColor" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -115,7 +118,7 @@ function Carousel({ images, phone }: PageProps) {
             <input type="checkbox" id={phone ? "phone-modal" : "my-modal-4"} className="modal-toggle" />
             <label htmlFor={phone ? "phone-modal" : "my-modal-4"} className="modal cursor-pointer w-full h-full">
                 <div className="relative w-full h-full max-w-[70vw] max-h-[80vh]">
-                    <Image fill alt={"tower_todo"} src={images[index]} className="block object-contain" />
+                    <Image fill alt={"tower_todo"} src={images[index]} className="block object-contain" sizes="(max-width: 800px) 80vw, 70vw" />
                 </div>
             </label>
         </div>

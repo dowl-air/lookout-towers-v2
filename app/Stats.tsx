@@ -131,7 +131,7 @@ async function Stats() {
                 </div>
             </div>
 
-            <div className="stats bg-primary text-primary-content stats-vertical w-[calc(100%-25px)] mt-10 inline-grid min-[400px]:hidden">
+            <div className="stats bg-primary text-primary-content stats-vertical w-[calc(100vw-50px)] mt-10 inline-grid min-[400px]:hidden">
                 <div className="stat">
                     <div className="stat-title text-primary-content">Rozhleden v databázi</div>
                     <div className="stat-value">{towersNumber}</div>

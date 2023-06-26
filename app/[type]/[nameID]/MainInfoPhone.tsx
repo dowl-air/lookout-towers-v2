@@ -9,9 +9,11 @@ import Buttons from "./Buttons";
 type Props = {
     tower: Tower;
     images: string[];
+    count: number;
+    average: number;
 };
 
-function MainInfoPhone({ tower, images }: Props) {
+function MainInfoPhone({ tower, images, count, average }: Props) {
     return (
         <div className="flex flex-col flex-1 lg:hidden">
             <LocationBreadcrumbs tower={tower} />
@@ -23,7 +25,7 @@ function MainInfoPhone({ tower, images }: Props) {
                 <Carousel images={images} phone />
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 mt-3">
-                <RatingTop />
+                <RatingTop count={count} average={average} />
                 <div className="flex flex-wrap justify-center gap-2 mx-3">
                     <Buttons towerID={tower.id} />
                 </div>

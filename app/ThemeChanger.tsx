@@ -1,8 +1,8 @@
 "use client";
 import { useTheme } from "next-themes";
 
-const LIGHT_MODE = "garden";
-const DARK_MODE = "forest";
+const LIGHT_MODE = "light";
+const DARK_MODE = "night";
 
 function ThemeChanger() {
     const { theme, setTheme } = useTheme();
