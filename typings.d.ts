@@ -17,6 +17,13 @@ export type User = {
     id?: string | undefined | null;
 } | undefined;
 
+export type UserFromDB = {
+    email: string;
+    name: string;
+    emailVerified: boolean | null;
+    image: string;
+}
+
 export type Filter = {
     searchTerm: string;
     province: string;

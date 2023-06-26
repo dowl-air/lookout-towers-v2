@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="cs" className="font-sans" data-theme="light">
+        <html lang="cs" className="font-sans" suppressHydrationWarning>
             <head />
             <body className="overflow-x-hidden">
                 <NextAuthProvider>

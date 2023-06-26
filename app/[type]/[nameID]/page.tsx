@@ -87,7 +87,7 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 </div>
                 {tower.history && <HistoryText text={tower.history || ""} />}
 
-                <RatingBox tower={tower} count={count} average={average} reviews={ratings} />
+                <RatingBox tower={tower} count={count} average={average} reviews={ratings} data-superjson />
 
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>

@@ -61,7 +61,7 @@ function Results({ filter }: ComponentProps) {
                 empty ? setTowers(new_towers) : setTowers((prevItems) => [...prevItems, ...new_towers]);
                 setStart(new_towers[new_towers.length - 1].id);
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 setError(error);
             } finally {
                 setIsLoading(false);

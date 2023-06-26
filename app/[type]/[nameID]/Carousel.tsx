@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type PageProps = {
     images: string[];
@@ -9,6 +9,18 @@ type PageProps = {
 
 function Carousel({ images, phone }: PageProps) {
     const [index, setIndex] = useState(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const timer = useRef<ReturnType<typeof setTimeout>>();
+
+    useEffect(() => {
+        // useRef value stored in .current property
+        timer.current = setInterval(() => setLoading(true), 200);
+
+        // clear on component unmount
+        return () => {
+            clearInterval(timer.current);
+        };
+    }, [index]);
 
     const moveForvard = () => {
         const idx = index !== images.length - 1 ? index + 1 : index;
@@ -33,7 +45,24 @@ function Carousel({ images, phone }: PageProps) {
                             src={images[index]}
                             sizes="(max-width: 1000px) 50vw, (max-width: 1300px) 40vw, 30vw"
                             className="block object-contain w-auto h-auto rounded-lg"
+                            onLoadingComplete={(e) => {
+                                if (timer.current) {
+                                    clearInterval(timer.current);
+                                }
+                                setLoading(false);
+                            }}
+                            style={{
+                                display: loading ? "none" : "block",
+                            }}
                         />
+                        <figure
+                            className="object-contain w-auto h-full flex justify-center items-center"
+                            style={{
+                                display: loading ? "flex" : "none",
+                            }}
+                        >
+                            <span className="loading loading-dots loading-lg text-primary"></span>
+                        </figure>
                     </label>
                 </div>
                 <div

@@ -1,44 +1,36 @@
 "use client";
-import { Rating } from "@/typings";
-import { getThemeColors } from "@/utils/getThemeColors";
-import { useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
-import React from "react";
-import { Rating as RatingSimple } from "react-simple-star-rating";
+import { Rating, UserFromDB } from "@/typings";
+import React, { useEffect, useState } from "react";
+import ThemedRating from "./ThemedRating";
+import UserProfileAvatar from "@/components/UserProfileAvatar";
 
 function OneReview({ review }: { review: Rating }) {
-    const { theme } = useTheme();
-    const colors = getThemeColors(theme);
+    const [user, setUser] = useState<UserFromDB | null>(null);
+
+    useEffect(() => {
+        const s = async () => {
+            const res = await fetch(`/api/user?user_id=${review.user_id}`).then((r) => r.json());
+            if (res.status === 200) setUser(res.message as UserFromDB);
+        };
+        if (review.user_id) s();
+    }, [review.user_id]);
+
+    if (!user) return null;
+
     return (
         <div className="flex flex-col gap-2 mb-5">
             <div className="flex gap-3">
-                <div className="avatar mask mask-squircle placeholder">
-                    <div className="bg-neutral-focus text-neutral-content rounded-full w-12">
-                        <span>DP</span>
-                    </div>
-                </div>
+                <UserProfileAvatar image={user.image} name={user.name} />
                 <div className="flex flex-col">
                     <div className="flex gap-1">
-                        <p>Daniel Pátek</p>
+                        <p>{user.name}</p>
                         <p className="font-bold opacity-50">·</p>
-                        <p className="opacity-50">15. května 2023</p>
+                        <p className="opacity-50">{new Date(review.created.toString()).toLocaleDateString()}</p>
                     </div>
-                    <RatingSimple
-                        readonly
-                        initialValue={4}
-                        emptyClassName="flex"
-                        SVGclassName="inline-block"
-                        fillColor={colors ? colors.primary : ""}
-                        emptyColor={colors ? colors["base-content"] : ""}
-                        size={25}
-                    />
+                    <ThemedRating value={review.rating} size={25} />
                 </div>
             </div>
-            <div className="flex mr-3">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris tincidunt sem sed arcu. Nulla turpis magna, cursus sit amet, suscipit
-                a, interdum id, felis. Donec vitae arcu. Fusce aliquam vestibulum ipsum. Proin pede metus, vulputate nec, fermentum fringilla,
-                vehicula vitae, justo. Integer lacinia.
-            </div>
+            <div className="flex mr-3">{review.text}</div>
         </div>
     );
 }

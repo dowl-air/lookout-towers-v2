@@ -12,7 +12,7 @@ export const NextAuthProvider = ({ children }: Props) => {
 
 export const NextThemeProvider = ({ children }: Props) => {
     return (
-        <ThemeProvider defaultTheme="light" enableColorScheme={false}>
+        <ThemeProvider enableSystem={false} defaultTheme="light">
             {children}
         </ThemeProvider>
     );
