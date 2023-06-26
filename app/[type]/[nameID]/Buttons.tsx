@@ -61,7 +61,9 @@ const Buttons = ({ towerID }: { towerID: string }) => {
             {isFavourite ? (
                 <>
                     <div
-                        className="btn btn-success max-w-xs text-xs hidden lg:inline-flex min-[710px]:text-base [&>span]:hover:hidden hover:before:content-['Odebrat_z_oblíbených'] hover:btn-warning"
+                        className={`btn btn-success max-w-xs text-xs hidden lg:inline-flex min-[710px]:text-base ${
+                            !favLoading ? "[&>span]:hover:hidden hover:before:content-['Odebrat_z_oblíbených'] hover:btn-warning" : ""
+                        }`}
                         onClick={() => removeFromFavourites()}
                     >
                         {favLoading ? <span className="loading loading-dots loading-lg"></span> : <span>{"V oblíbených"}</span>}

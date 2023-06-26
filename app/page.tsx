@@ -52,7 +52,6 @@ async function HomePage() {
         <div className="flex flex-col justify-center">
             <Navbar />
             <ImageSlider towers={towers} data-superjson />
-            {/* @ts-expect-error Server Component */}
             <Stats />
             <AboutMe />
         </div>

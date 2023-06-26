@@ -9,7 +9,11 @@ export async function GET(request: Request) {
 
     if (userID && towerID) {
         const snap = await getDoc(doc(db, "ratings", `${userID}_${towerID}`));
-        return snap.exists() ? NextResponse.json({status: 200, message: snap.data()}) : NextResponse.json({status: 404});
+        if (!snap.exists()) return NextResponse.json({status: 404});
+        const obj: any = snap.data();
+        obj.created = obj.created.toDate();
+        obj.id = snap.id;
+        return NextResponse.json({status: 200, message: obj});
     }
 
     if (towerID) {

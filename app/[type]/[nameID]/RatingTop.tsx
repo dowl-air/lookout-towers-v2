@@ -1,28 +1,12 @@
 "use client";
-import getAndCountTowerRating from "@/utils/getAndCountTowerRating";
 import { getThemeColors } from "@/utils/getThemeColors";
 import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Rating } from "react-simple-star-rating";
 
-const RatingTop = ({ towerID }: { towerID: string }) => {
+const RatingTop = ({ count, average }: { count: number; average: number }) => {
     const { theme } = useTheme();
     const colors = getThemeColors(theme);
-    /*  const themeColors = getThemeColors(localStorage);
-    console.log(themeColors); */
-    /* const theme = useTheme(); */
-    /*const colors = getThemeColors(theme || "light"); */
-    const [ratingCount, setRatingCount] = useState(0);
-    const [ratingAverage, setRatingAverage] = useState(0);
-    /*     useEffect(() => {
-        const d = async () => {
-            const { count, average } = await getAndCountTowerRating(towerID);
-            setRatingAverage(average);
-            setRatingCount(count);
-        };
-        d();
-        console.log("hello");
-    }, [towerID]); */
 
     const scroll_ = () => document?.querySelector("#rating_box")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -32,7 +16,7 @@ const RatingTop = ({ towerID }: { towerID: string }) => {
                 <Rating
                     readonly
                     allowFraction
-                    initialValue={ratingAverage}
+                    initialValue={average}
                     emptyClassName="flex"
                     SVGclassName="inline-block"
                     fillColor={colors ? colors.primary : ""}
@@ -42,7 +26,7 @@ const RatingTop = ({ towerID }: { towerID: string }) => {
                 />
             </div>
             <p className="text-sm mt-0 pl-1 cursor-pointer" onClick={() => scroll()}>
-                {ratingCount ? `Hodnoceno ${ratingCount}x` : "Zatím nikdo nehodnotil."}
+                {count ? `Hodnoceno ${count}x` : "Zatím nikdo nehodnotil."}
             </p>
         </div>
     );

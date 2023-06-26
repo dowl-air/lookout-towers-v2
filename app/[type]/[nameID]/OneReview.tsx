@@ -1,12 +1,12 @@
 "use client";
+import { Rating } from "@/typings";
 import { getThemeColors } from "@/utils/getThemeColors";
+import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import React from "react";
-import { Rating } from "react-simple-star-rating";
+import { Rating as RatingSimple } from "react-simple-star-rating";
 
-type Props = {};
-
-function OneReview({}: Props) {
+function OneReview({ review }: { review: Rating }) {
     const { theme } = useTheme();
     const colors = getThemeColors(theme);
     return (
@@ -23,7 +23,7 @@ function OneReview({}: Props) {
                         <p className="font-bold opacity-50">·</p>
                         <p className="opacity-50">15. května 2023</p>
                     </div>
-                    <Rating
+                    <RatingSimple
                         readonly
                         initialValue={4}
                         emptyClassName="flex"

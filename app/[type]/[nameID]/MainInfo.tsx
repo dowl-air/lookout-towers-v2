@@ -5,14 +5,14 @@ import Legend from "./Legend";
 import { Tower } from "@/typings";
 import LocationBreadcrumbs from "./LocationBreadcrumbs";
 
-function MainInfo({ tower }: { tower: Tower }) {
+function MainInfo({ tower, count, average }: { tower: Tower; count: number; average: number }) {
     return (
         <div className="prose prose-xl max-w-screen-sm flex flex-col flex-1 pl-4">
             <LocationBreadcrumbs tower={tower} />
             <h1>{tower.name}</h1>
             <Legend tower={tower} />
 
-            <RatingTop towerID={tower.id} />
+            <RatingTop count={count} average={average} />
             <div className="flex flex-col justify-center gap-2">
                 <Buttons towerID={tower.id} />
             </div>
