@@ -12,8 +12,9 @@ const getChangesNumber = async (): Promise<number> => {
 };
 
 const getRatingsNumber = async (): Promise<number> => {
-    const docSnap = await getDoc(doc(db, "ratings", "meta"));
-    return docSnap.exists() ? docSnap.data().count : 0;
+    const ratingsCol = collection(db, "ratings");
+    const snapshot = await getCountFromServer(ratingsCol);
+    return snapshot.data().count;
 };
 
 const getUsersNumber = async (): Promise<number> => {
