@@ -1,12 +1,14 @@
 OpeningHours Input - Stepper 3 steps
  - 1. cely rok/ nektere mesice /volne pristupna/ ocassionally
  - 2. kazdy den / nektere dny v tydnu
- - 3. časy + pauza na oběd
- - 4. repeat if nektere mesice
+!!! - 3. časy + pauza na oběd
+ - 4. repeat if nektere mesice // nah man
 
 Stav rozhledny - v provozu / v rekonstrukci / zaniklá / dočasně uzavřeno
  + nejaky info k tomu (webovy odkaz a popis asi)
  
+
+
 Vstupné
  - 1. zpoplatnene / volny Vstupné
  - 2. postupne pridavat tarify (dospely, student, dite, senior...) + rodina !
