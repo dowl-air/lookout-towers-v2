@@ -103,3 +103,23 @@ export type Rating = {
     text: string;
     id: string;
 }
+
+export type OpeningHours = {
+    unknown?: boolean;
+    free: boolean;
+    months_all: boolean;
+    months_range: number[];
+    occasionally: boolean;
+    occasionally_text: string;
+    forbidden_reconstruction: boolean;
+    forbidden_temporary: boolean;
+    forbidden_gone: boolean;
+    week_all: boolean;
+    week_some: number[];
+    time_start: number;
+    time_end: number;
+    lunch_break: boolean;
+    lunch_start: number;
+    lunch_end: number;
+    note?: string;
+}

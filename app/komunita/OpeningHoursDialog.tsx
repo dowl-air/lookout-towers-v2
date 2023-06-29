@@ -19,6 +19,14 @@ function OpeningHoursDialog() {
     const [weekType, setWeekType] = useState<string>("");
     const [daysSelected, setDaysSelected] = useState<string[]>([]);
 
+    const [dayOd, setDayOd] = useState<number | "">("");
+    const [dayDo, setDayDo] = useState<number | "">("");
+
+    const [lunchBreak, setLunchBreak] = useState<boolean>(false);
+
+    const [dayOdLunch, setDayOdLunch] = useState<number | "">("");
+    const [dayDoLunch, setDayDoLunch] = useState<number | "">("");
+
     const [errorText, setErrorText] = useState("");
 
     const manageStepper = () => {
@@ -48,6 +56,20 @@ function OpeningHoursDialog() {
                 break;
             default:
                 if (type === "forbidden" && goneType === "") return setErrorText("Nebyla zvolena žádná možnost.");
+                if (type === "some_months" || type === "every_month") {
+                    if (dayOd === "") return setErrorText("Nebyl vybrán začátek otevírací doby.");
+                    if (dayDo === "") return setErrorText("Nebyl vybrán konec otevírací doby.");
+                    if (dayDo <= dayOd) return setErrorText("Otevírací doba musí začínat dříve, než končit.");
+                    if (lunchBreak) {
+                        if (dayOdLunch === "") return setErrorText("Nebyl vybrán začátek přestávky.");
+                        if (dayDoLunch === "") return setErrorText("Nebyl vybrán konec přestávky.");
+                        if (dayOdLunch <= dayOd) return setErrorText("Přestávka začíná dříve než otevírací doba.");
+                        if (dayOdLunch >= dayDo) return setErrorText("Přestávka začíná později než otevírací doba.");
+                        if (dayDoLunch >= dayDo) return setErrorText("Přestávka končí později, než končí otevírací doba.");
+                        if (dayDoLunch <= dayOd) return setErrorText("Přestávka končí dříve, než začne otevírací doba.");
+                        if (dayDoLunch <= dayOdLunch) return setErrorText("Přestávka musí začínat dříve, než končit.");
+                    }
+                }
                 setStep(4);
                 break;
         }
@@ -64,6 +86,11 @@ function OpeningHoursDialog() {
         setErrorText("");
         setWeekType("");
         setDaysSelected([]);
+        setDayDo("");
+        setDayOd("");
+        setLunchBreak(false);
+        setDayOdLunch("");
+        setDayDoLunch("");
     };
 
     // months checker
@@ -82,10 +109,21 @@ function OpeningHoursDialog() {
         }
     }, [step, type, goneType]);
 
+    // days selection checker
     useEffect(() => {
         if (daysSelected.length) setErrorText("");
         if (weekType === "every_day") setErrorText("");
     }, [daysSelected, weekType]);
+
+    // time picker checker
+    useEffect(() => {
+        if (step === 3 && (type === "some_months" || type === "every_month") && (dayOd !== "" || dayDo !== "")) {
+            setErrorText("");
+        }
+        if (step === 3 && (type === "some_months" || type === "every_month") && lunchBreak && (dayOdLunch !== "" || dayDoLunch !== "")) {
+            setErrorText("");
+        }
+    }, [step, type, dayDo, dayOd, lunchBreak, dayDoLunch, dayOdLunch]);
 
     const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -153,6 +191,7 @@ function OpeningHoursDialog() {
                             <select
                                 className={`select ${type === "some_months" ? "select-primary" : "select-disabled"} select-primary text-base-content`}
                                 value={od_}
+                                disabled={type !== "some_months"}
                                 onChange={(e) => setOd((e.target as HTMLSelectElement).value)}
                             >
                                 <option disabled value={""}>
@@ -168,6 +207,7 @@ function OpeningHoursDialog() {
                             <select
                                 className={`select ${type === "some_months" ? "select-primary" : "select-disabled"} select-primary text-base-content`}
                                 value={do_}
+                                disabled={type !== "some_months"}
                                 onChange={(e) => setDo((e.target as HTMLSelectElement).value)}
                             >
                                 <option disabled value={""}>
@@ -251,8 +291,81 @@ function OpeningHoursDialog() {
                         </div>
                     </div>
 
-                    <div className={`${step === 3 && (type === "every_month" || type === "some_months") ? "flex" : "hidden"} flex-col`}>
-                        step three - times
+                    <div className={`${step === 3 && (type === "every_month" || type === "some_months") ? "flex" : "hidden"} gap-3 ml-8 flex-col`}>
+                        <p className="text-base-content">Otevírací doba (např. 9 - 18)</p>
+                        <div className="flex gap-2">
+                            <select
+                                className={`select select-primary text-base-content w-32`}
+                                value={dayOd}
+                                onChange={(e) => setDayOd(parseInt((e.target as HTMLSelectElement).value))}
+                            >
+                                <option disabled value={""}>
+                                    Od
+                                </option>
+                                {Array.from(Array(24).keys()).map((m) => (
+                                    <option key={m} value={m}>
+                                        {m}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="divider w-6"></div>
+                            <select
+                                className={`select select-primary text-base-content w-32`}
+                                value={dayDo}
+                                onChange={(e) => setDayDo(parseInt((e.target as HTMLSelectElement).value))}
+                            >
+                                <option disabled value={""}>
+                                    Do
+                                </option>
+                                {Array.from(Array(24).keys()).map((m) => (
+                                    <option key={m} value={m}>
+                                        {m}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <label className="label cursor-pointer justify-start gap-3">
+                            <input
+                                type="checkbox"
+                                checked={lunchBreak}
+                                onChange={(e) => setLunchBreak(e.target.checked)}
+                                className="checkbox checkbox-primary"
+                            />
+                            <span className="label-text">Pauza na oběd</span>
+                        </label>
+                        <div className="flex gap-2">
+                            <select
+                                className={`select ${lunchBreak ? "select-primary" : "select-disabled"} text-base-content w-32`}
+                                value={dayOdLunch}
+                                disabled={!lunchBreak}
+                                onChange={(e) => setDayOdLunch(parseInt((e.target as HTMLSelectElement).value))}
+                            >
+                                <option disabled value={""}>
+                                    Od
+                                </option>
+                                {Array.from(Array(24).keys()).map((m) => (
+                                    <option key={m} value={m}>
+                                        {m}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="divider w-6"></div>
+                            <select
+                                className={`select ${lunchBreak ? "select-primary" : "select-disabled"} text-base-content w-32`}
+                                value={dayDoLunch}
+                                disabled={!lunchBreak}
+                                onChange={(e) => setDayDoLunch(parseInt((e.target as HTMLSelectElement).value))}
+                            >
+                                <option disabled value={""}>
+                                    Do
+                                </option>
+                                {Array.from(Array(24).keys()).map((m) => (
+                                    <option key={m} value={m}>
+                                        {m}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <div className={`${step === 3 && type === "forbidden" ? "flex" : "hidden"} flex-col`}>
@@ -289,7 +402,7 @@ function OpeningHoursDialog() {
                             />
                             <span className="label-text text-base">Zaniklý objekt</span>
                         </label>
-                        <label htmlFor="popis_gone_" className="label">
+                        <label htmlFor="popis_gone_" className="label text-base-content">
                             Uveďte prosím odkaz nebo podrobný popis okolností uzavření.
                         </label>
                         <textarea
@@ -305,7 +418,7 @@ function OpeningHoursDialog() {
                     </div>
 
                     <div className={`${step === 3 && type === "occasionally" ? "flex" : "hidden"} flex-col`}>
-                        <label htmlFor="popis_occ_" className="label">
+                        <label htmlFor="popis_occ_" className="label text-base-content">
                             Uveďte prosím odkaz nebo podrobný popis, při jakých příležitostech je otevřeno.
                         </label>
                         <textarea
@@ -320,7 +433,7 @@ function OpeningHoursDialog() {
                         ></textarea>
                     </div>
 
-                    <div className={`${step === 4 ? "flex" : "hidden"} flex-col`}>FINAL SCREEN</div>
+                    <div className={`${step === 4 ? "flex" : "hidden"} flex-col text-base-content`}>FINAL SCREEN</div>
 
                     {errorText && <p className="text-error self-end">{errorText}</p>}
 
