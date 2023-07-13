@@ -304,3 +304,17 @@ export const DAYS_CZECH = [
     "Sobota",
     "Neděle"
 ]
+
+export enum OpeningHoursType {
+    Unknown,
+    NonStop,
+    Occasionally,
+    Hours,
+    Forbidden
+}
+
+export enum OpeningHoursForbiddenType {
+    Reconstruction,
+    Temporary,
+    Gone
+}

@@ -1,54 +1,63 @@
-import { OpeningHours } from "@/typings";
-import { MONTHS_CZECH } from "@/utils/constants";
-import React from "react";
-
-const test: OpeningHours = {
-    free: true,
-    forbidden_gone: false,
-    forbidden_reconstruction: false,
-    forbidden_temporary: false,
-    lunch_break: false,
-    lunch_end: 0,
-    lunch_start: 0,
-    months_all: false,
-    months_range: [4, 9],
-    occasionally: false,
-    occasionally_text: "",
-    time_end: 20,
-    time_start: 8,
-    week_all: false,
-    week_some: [],
-    unknown: false,
-};
+import OpeningHoursDialog from "@/app/komunita/OpeningHoursDialog";
+import { OpeningHours, Tower } from "@/typings";
+import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
+import React, { ReactNode } from "react";
 
 function capitalizeFirstLetter(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const generateHeading = (openingHours: OpeningHours, type: string): string => {
-    if (openingHours.unknown) return "Neznámá otevírací doba.";
-    const typeCap = capitalizeFirstLetter(type);
-    if (openingHours.free) return `${typeCap} je volně přístupná.`;
-    if (openingHours.forbidden_gone) return `${typeCap} je označena jako zaniklá.`;
-    if (openingHours.forbidden_reconstruction) return `${typeCap} je právě v rekonstrukci.`;
-    if (openingHours.forbidden_temporary) return `${typeCap} je dočasně uzavřena.`;
-    if (openingHours.occasionally) return `${typeCap} je příležitostně přístupná.`;
-
-    return `${
-        openingHours.months_all ? "Celoročně" : MONTHS_CZECH.at(openingHours.months_range[0]) + " - " + MONTHS_CZECH.at(openingHours.months_range[1])
-    } | ${openingHours.week_all ? "Každý den" : "Po·Út·St·Čt·Pá"} | ${openingHours.time_start} - ${openingHours.time_end} h`;
+const getDaysString = (days?: number[]): string => {
+    if (!days) return "Každý den";
+    if (days.length == 7) return "Každý den";
+    return days.map((e) => DAYS_CZECH.at(e)?.slice(0, 2)).join("·");
 };
 
-function OpeningHours() {
+const getLunchString = (openingHours: OpeningHours): string => {
+    if (!openingHours.lunch_break) return "";
+    return `\n Přestávka ${openingHours.lunch_start} - ${openingHours.lunch_end} h`;
+};
+
+const isErrorColor = (openingHours: OpeningHours): boolean => {
+    if (openingHours.type === OpeningHoursType.Forbidden) return true;
+    if (openingHours.type === OpeningHoursType.Occasionally) return true;
+    if (openingHours.type === OpeningHoursType.Unknown) return true;
+    return false;
+};
+
+const generateHeading = (openingHours: OpeningHours, type: string): string => {
+    if (openingHours.type === OpeningHoursType.Unknown) return "Neznámá otevírací doba.";
+    const typeCap = capitalizeFirstLetter(type);
+    if (openingHours.type === OpeningHoursType.NonStop) return `${typeCap} je volně přístupná.`;
+    if (openingHours.type === OpeningHoursType.Forbidden) {
+        if (openingHours.forbidden_type === OpeningHoursForbiddenType.Reconstruction) return `${typeCap} je právě v rekonstrukci.`;
+        if (openingHours.forbidden_type === OpeningHoursForbiddenType.Temporary) return `${typeCap} je dočasně uzavřena.`;
+        return `${typeCap} je označena jako zaniklá.`;
+    }
+    if (openingHours.type === OpeningHoursType.Occasionally) return `${typeCap} je přístupná pouze příležitostně.`;
+
+    return `${
+        openingHours.months?.length === 0
+            ? "Celoročně"
+            : MONTHS_CZECH.at(openingHours.months ? openingHours.months[0] : 0) +
+              " - " +
+              MONTHS_CZECH.at(openingHours.months ? openingHours.months[1] : 0)
+    } | ${getDaysString(openingHours.days)} | ${openingHours.time_start} - ${openingHours.time_end} h`;
+};
+
+function OpeningHours({ tower, openingHours, children }: { tower?: Tower; openingHours?: OpeningHours; children?: ReactNode }) {
+    const OH: OpeningHours = tower ? tower.openingHours : openingHours || { type: 0 };
     return (
         <div
             className={`card card-compact sm:card-normal min-w-[300px] max-w-[420px] sm:h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]`}
         >
             <div className="card-body">
-                <h2 className="card-title text-xl">Otevírací doba</h2>
-                <p className={`text-lg ${test.unknown && "text-error"}`}>{generateHeading(test, "rozhledna")}</p>
+                <h2 className={`card-title text-xl ${isErrorColor(OH) && "text-error"}`}>Otevírací doba</h2>
+                <p className={`text-lg ${isErrorColor(OH) && "text-error"}`}>{generateHeading(OH, tower?.type || "rozhledna")}</p>
+                {OH.lunch_break && <p className={`text-lg ${isErrorColor(OH) && "text-error"}`}>{getLunchString(OH)}</p>}
+                {OH.note && <p>{OH.note}</p>}
             </div>
-            <div className="btn btn-warning btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex">Navrhnout úpravu</div>
+            {children}
         </div>
     );
 }

@@ -15,6 +15,7 @@ import Admission from "./Admission";
 import Navbar from "@/app/Navbar";
 import MainInfoPhone from "./MainInfoPhone";
 import RatingBox from "./RatingBox";
+import OpeningHoursDialog from "@/app/komunita/OpeningHoursDialog";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
@@ -81,7 +82,9 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
                 className={"flex flex-col gap-12 items-center justify-center self-center mb-6 mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full"}
             >
                 <div className={"flex flex-wrap gap-3 w-full items-center justify-center"}>
-                    <OpeningHours />
+                    <OpeningHours tower={tower}>
+                        <OpeningHoursDialog tower={tower} />
+                    </OpeningHours>
                     <Admission />
                     <Parameters {...tower} />
                 </div>

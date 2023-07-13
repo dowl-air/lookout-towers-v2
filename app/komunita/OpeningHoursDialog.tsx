@@ -1,11 +1,11 @@
 "use client";
-import { DAYS_CZECH, MONTHS_CZECH } from "@/utils/constants";
+import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
 import React, { useEffect, useRef, useState } from "react";
+import OpeningHours from "../[type]/[nameID]/OpeningHours";
+import { Tower } from "@/typings";
 
-function OpeningHoursDialog() {
+function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);
-    const [stepperData, setStepperData] = useState<any>(null);
-
     const [type, setType] = useState<string>("");
 
     const [occasionallyText, setOccasionallyText] = useState<string>("");
@@ -49,6 +49,9 @@ function OpeningHoursDialog() {
                 }
                 break;
             case 2:
+                if ((type === "some_months" || type === "every_month") && weekType === "") {
+                    return setErrorText("Nebyla zvolena žádná možnost.");
+                }
                 if ((type === "some_months" || type === "every_month") && weekType === "some_days" && daysSelected.length === 0) {
                     return setErrorText("Není vybrán žádný den.");
                 }
@@ -93,6 +96,49 @@ function OpeningHoursDialog() {
         setDayDoLunch("");
     };
 
+    const mapTypeEnum = (type: string): number => {
+        switch (type) {
+            case "freely_accessible":
+                return OpeningHoursType.NonStop;
+            case "some_months":
+            case "every_month":
+                return OpeningHoursType.Hours;
+            case "forbidden":
+                return OpeningHoursType.Forbidden;
+            case "occasionally":
+                return OpeningHoursType.Occasionally;
+            default:
+                return OpeningHoursType.Unknown;
+        }
+    };
+
+    const generateFinalOpeningHours = (): OpeningHours => {
+        let obj: OpeningHours = {
+            type: mapTypeEnum(type),
+        };
+        if (type === "forbidden") {
+            if (goneType === "reconstruction") obj.forbidden_type = OpeningHoursForbiddenType.Reconstruction;
+            if (goneType === "gone") obj.forbidden_type = OpeningHoursForbiddenType.Gone;
+            if (goneType === "temporary") obj.forbidden_type = OpeningHoursForbiddenType.Temporary;
+        }
+        if (type === "forbidden" && goneText) obj.note = goneText;
+        if (type === "occasionally" && occasionallyText) obj.note = occasionallyText;
+        if (type === "every_month") obj.months = [];
+        if (type === "some_months") obj.months = [MONTHS_CZECH.indexOf(od_), MONTHS_CZECH.indexOf(do_)];
+        if (type === "some_months" || type === "every_month") {
+            if (weekType === "every_day") obj.days = [0, 1, 2, 3, 4, 5, 6];
+            if (weekType === "some_days") obj.days = daysSelected.map((e) => DAYS_CZECH.indexOf(e)).sort((a, b) => a - b);
+            obj.time_start = parseInt(dayOd.toString());
+            obj.time_end = parseInt(dayDo.toString());
+            if (lunchBreak) {
+                obj.lunch_break = true;
+                obj.lunch_start = parseInt(dayOdLunch.toString());
+                obj.lunch_end = parseInt(dayDoLunch.toString());
+            }
+        }
+        return obj;
+    };
+
     // months checker
     useEffect(() => {
         if (step === 1 && type === "some_months" && od_ && do_) {
@@ -129,12 +175,15 @@ function OpeningHoursDialog() {
 
     return (
         <>
-            <button className="btn" onClick={() => dialogRef?.current?.showModal()}>
-                open modal
-            </button>
+            <div
+                className="btn btn-warning btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
+                onClick={() => dialogRef?.current?.showModal()}
+            >
+                Navrhnout úpravu
+            </div>
             <dialog ref={dialogRef} id="modal_opening_hours" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box flex flex-col gap-3">
-                    <h3 className="font-bold text-lg self-center text-base-content">Úprava otevírací doby [věže X]</h3>
+                    <h3 className="font-bold text-lg self-center text-base-content">Úprava otevírací doby {tower.name}</h3>
 
                     <ul className="steps mb-2 text-base-content">
                         <li className="step step-primary">Stav</li>
@@ -407,7 +456,7 @@ function OpeningHoursDialog() {
                         </label>
                         <textarea
                             id="popis_gone_"
-                            className="textarea textarea-primary"
+                            className="textarea textarea-primary text-base-content"
                             placeholder="Odkaz nebo popis..."
                             maxLength={300}
                             value={goneText}
@@ -423,7 +472,7 @@ function OpeningHoursDialog() {
                         </label>
                         <textarea
                             id="popis_occ_"
-                            className="textarea textarea-primary"
+                            className="textarea textarea-primary text-base-content"
                             placeholder="Odkaz nebo popis..."
                             maxLength={300}
                             value={occasionallyText}
@@ -433,7 +482,10 @@ function OpeningHoursDialog() {
                         ></textarea>
                     </div>
 
-                    <div className={`${step === 4 ? "flex" : "hidden"} flex-col text-base-content`}>FINAL SCREEN</div>
+                    <div className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
+                        <h3>Takto bude vypadat nová dlaždice s otevírací dobou: </h3>
+                        <OpeningHours openingHours={generateFinalOpeningHours()} />
+                    </div>
 
                     {errorText && <p className="text-error self-end">{errorText}</p>}
 
@@ -452,6 +504,9 @@ function OpeningHoursDialog() {
                             onClick={() => manageStepper()}
                         >
                             {type === "freely_accessible" || step === 3 ? "Dokončit" : "Pokračovat"}
+                        </button>
+                        <button className={`btn btn-primary ${step === 4 ? "inline-flex" : "hidden"}`} onClick={() => {}}>
+                            Odeslat
                         </button>
                     </div>
                 </div>

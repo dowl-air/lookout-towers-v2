@@ -21,3 +21,15 @@
         }
     ]
 }
+
+{
+    "type": 2,
+    "months": [1,2,3,4,5,6],
+    "days": [1,2,3,4,5,6],
+    "time_start": 8,
+    "time_end": 16,
+    "lunch_break": true,
+    "lunch_start": 12,
+    "lunch_end": 13,
+    "note": "ahoj, sth"
+}
