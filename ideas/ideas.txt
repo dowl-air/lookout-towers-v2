@@ -1,3 +1,7 @@
+------------------------------------------------------------------------------
+--------------------------- HOTOVKA SODOVKA ----------------------------------
+------------------------------------------------------------------------------
+
 OpeningHours Input - Stepper 3 steps
  - 1. cely rok/ nektere mesice /volne pristupna/ ocassionally
  - 2. kazdy den / nektere dny v tydnu
@@ -6,7 +10,11 @@ OpeningHours Input - Stepper 3 steps
 
 Stav rozhledny - v provozu / v rekonstrukci / zaniklá / dočasně uzavřeno
  + nejaky info k tomu (webovy odkaz a popis asi)
- 
+
+
+-------------------------------------------------------------------------------
+----------------------------  TODO  -------------------------------------------
+-------------------------------------------------------------------------------
 
 
 Vstupné
