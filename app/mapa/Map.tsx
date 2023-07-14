@@ -31,7 +31,7 @@ function Map({ lat, long, name, towers }: MapProps) {
         const initMap = async () => {
             const { load, MapyCz } = await import("wpify-mapy-cz");
             // @ts-ignore
-            const favourites = await getFavourites(session?.user.id);
+            const favourites = session?.user.id ? await getFavourites(session?.user.id) : [];
             const config = {
                 element: mapElementRef.current,
                 center: { latitude: lat, longitude: long },
