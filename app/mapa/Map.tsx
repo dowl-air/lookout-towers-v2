@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Tower } from "@/typings";
 import ReactDOMServer from "react-dom/server";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 type MapProps = {
     lat: number;
@@ -13,9 +14,24 @@ type MapProps = {
 
 function Map({ lat, long, name, towers }: MapProps) {
     const mapElementRef = useRef(null);
+    const { data: session, status } = useSession();
+
     useEffect(() => {
+        const getFavourites = async (user_id: string): Promise<string[]> => {
+            const result = await fetch(
+                "/api/favourites/user?" +
+                    new URLSearchParams({
+                        // @ts-ignore
+                        user_id: user_id,
+                    }).toString()
+            ).then((res) => res.json());
+            if (result.status == 200) return result.message as string[];
+            return [];
+        };
         const initMap = async () => {
             const { load, MapyCz } = await import("wpify-mapy-cz");
+            // @ts-ignore
+            const favourites = await getFavourites(session?.user.id);
             const config = {
                 element: mapElementRef.current,
                 center: { latitude: lat, longitude: long },
@@ -30,7 +46,7 @@ function Map({ lat, long, name, towers }: MapProps) {
                         id: tower.nameID,
                         layer: "towers",
                         title: tower.name,
-                        pin: "/img/marker.png",
+                        pin: favourites.includes(tower.id) ? "/img/marker_yellow.png" : "/img/marker_red.png",
                         pointer: false,
                         card: {
                             /* header: `<a href="/${tower.type}/${tower.nameID}" target="_blank" class="link">${tower.name}</a>`, */
@@ -61,8 +77,8 @@ function Map({ lat, long, name, towers }: MapProps) {
                 mapycz.addMarkers(markers);
             });
         };
-        initMap();
-    }, [lat, long, name, towers]);
+        if (status !== "loading") initMap();
+    }, [lat, long, name, towers, status]);
 
     return (
         <div
