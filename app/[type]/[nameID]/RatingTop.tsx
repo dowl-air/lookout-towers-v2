@@ -3,7 +3,7 @@ import React from "react";
 import ThemedRating from "./ThemedRating";
 
 const RatingTop = ({ count, average }: { count: number; average: number }) => {
-    const scroll_ = () => document?.querySelector("#rating_box")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const scroll_ = () => document?.querySelector("#rating_box")?.scrollIntoView({ behavior: "smooth", block: "center" });
 
     return (
         <div>

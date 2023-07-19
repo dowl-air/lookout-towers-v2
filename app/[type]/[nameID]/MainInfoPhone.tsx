@@ -27,7 +27,7 @@ function MainInfoPhone({ tower, images, count, average }: Props) {
             <div className="flex flex-wrap items-center justify-center gap-3 mt-3">
                 <RatingTop count={count} average={average} />
                 <div className="flex flex-wrap justify-center gap-2 mx-3">
-                    <Buttons towerID={tower.id} />
+                    <Buttons tower={tower} />
                 </div>
             </div>
         </div>

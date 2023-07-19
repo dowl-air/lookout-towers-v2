@@ -14,7 +14,7 @@ function MainInfo({ tower, count, average }: { tower: Tower; count: number; aver
 
             <RatingTop count={count} average={average} />
             <div className="flex flex-col justify-center gap-2">
-                <Buttons towerID={tower.id} />
+                <Buttons tower={tower} />
             </div>
         </div>
     );

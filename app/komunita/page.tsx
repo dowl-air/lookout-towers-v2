@@ -1,7 +1,12 @@
+"use client";
 import React from "react";
 import Navbar from "../Navbar";
+import HR from "./hranicni_vrch.svg";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 function ComunityPage() {
+    const { theme } = useTheme();
     return (
         <div>
             <Navbar />
@@ -34,6 +39,24 @@ function ComunityPage() {
                     />
                 </svg>
                 <span>Rozhledna je označena za zaniklou.</span>
+            </div>
+            <div className="relative w-[290px] h-[215px] ml-10">
+                <Image alt="dd" src={HR} width={290} height={215} />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-green-500">HELLO</div>
+            </div>
+
+            <div className="card w-72 bg-base-100 shadow-xl">
+                <figure className="relative">
+                    <Image alt="dd" src={HR} width={270} height={200} className={`${theme !== "light" && "invert"}`} />
+                    <p className="absolute text-6xl text-yellow-500 font-bold -rotate-[25deg]">Splněno</p>
+                </figure>
+                <div className="card-body p-6">
+                    <h2 className="card-title">Dvojitá rozhledna!</h2>
+                    <p>Rozhledna Hraniční vrch se pyšní svým unikátním designem!</p>
+                    <div className="card-actions justify-end mt-2">
+                        <button className="btn btn-primary">Zaznamenat návštěvu</button>
+                    </div>
+                </div>
             </div>
         </div>
     );

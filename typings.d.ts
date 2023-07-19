@@ -105,6 +105,15 @@ export type Rating = {
     id: string;
 }
 
+export type Visit = {
+    tower_id: string;
+    user_id: string;
+    date: Date;
+    text: string;
+    created: Date;
+    id: string;
+}
+
 export type OpeningHours = {
     type: OpeningHoursType;
     months?: number[];
