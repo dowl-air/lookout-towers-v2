@@ -102,7 +102,7 @@ function Carousel({ images, phone }: PageProps) {
                     </svg>
                 </div>
                 <label className="cursor-pointer" htmlFor={phone ? "phone-modal" : "my-modal-4"}>
-                    <div className="flex max-[380px]:w-44 max-[400px]:w-56 max-[500px]:w-64 max-[500px]:h-64 max-[580px]:w-80 max-[660px]:w-[26rem] max-[750px]:h-80 max-[750px]:w-[32rem] w-56 h-56 min-[930px]:w-80 min-[930px]:h-72 relative">
+                    <div className="flex max-[380px]:w-44 max-[400px]:w-56 max-[500px]:w-64 max-[500px]:h-64 max-[580px]:w-80 max-[660px]:w-[26rem] max-[750px]:h-80 max-[750px]:w-[32rem] w-56 h-56 min-[930px]:w-80 min-[930px]:h-72 justify-center relative">
                         <Image
                             alt={"tower_todo"}
                             src={images[index]}
@@ -110,7 +110,24 @@ function Carousel({ images, phone }: PageProps) {
                             priority
                             className="block object-cover"
                             sizes="(max-width: 450px) 100vw, (max-width: 800px) 33vw, 25vw"
+                            onLoadingComplete={(e) => {
+                                if (timer.current) {
+                                    clearInterval(timer.current);
+                                }
+                                setLoading(false);
+                            }}
+                            style={{
+                                display: loading ? "none" : "block",
+                            }}
                         />
+                        <figure
+                            className="object-contain w-auto h-full flex justify-center items-center"
+                            style={{
+                                display: loading ? "flex" : "none",
+                            }}
+                        >
+                            <span className="loading loading-dots loading-lg text-primary"></span>
+                        </figure>
                     </div>
                 </label>
                 <div className={`btn btn-outline ${index === images.length - 1 && "btn-disabled"}`} onClick={moveForvard}>
