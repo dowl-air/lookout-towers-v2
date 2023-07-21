@@ -3,6 +3,7 @@ import { User } from "@/typings";
 import React from "react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 
 type ComponentProps = {
     user: User;
@@ -31,6 +32,9 @@ function ProfileIconButton({ user }: ComponentProps) {
                 )}
 
                 <ul tabIndex={0} className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                    <li>
+                        <Link href={"/profil"}>Můj profil</Link>
+                    </li>
                     <li onClick={() => signOut()}>
                         <a>Odhlásit se</a>
                     </li>
