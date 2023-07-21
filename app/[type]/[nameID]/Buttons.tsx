@@ -168,19 +168,19 @@ const Buttons = ({ tower }: { tower: Tower }) => {
             {isFavourite ? (
                 <>
                     <div
-                        className={`btn btn-success max-w-xs text-xs hidden lg:inline-flex min-[710px]:text-base ${
+                        className={`btn btn-success max-w-xs text-sm hidden lg:inline-flex min-[710px]:text-base w-full ${
                             !favLoading ? "[&>span]:hover:hidden hover:before:content-['Odebrat_z_oblíbených'] hover:btn-warning" : ""
                         }`}
                         onClick={() => removeFromFavourites()}
                     >
                         {favLoading ? <span className="loading loading-dots loading-lg"></span> : <span>{"V oblíbených"}</span>}
                     </div>
-                    <div className="btn max-w-xs text-xs min-[710px]:text-base btn-warning lg:hidden" onClick={() => removeFromFavourites()}>
+                    <div className="btn max-w-xs text-sm min-[710px]:text-base btn-warning lg:hidden w-full" onClick={() => removeFromFavourites()}>
                         {favLoading ? <span className="loading loading-dots loading-lg"></span> : "Odebrat z oblíbených"}
                     </div>
                 </>
             ) : (
-                <div className="btn btn-primary max-w-xs text-xs min-[710px]:text-base" onClick={() => addToFavourites()}>
+                <div className="btn btn-primary max-w-xs text-sm min-[710px]:text-base w-full" onClick={() => addToFavourites()}>
                     {favLoading ? <span className="loading loading-dots loading-lg"></span> : "Přidat do oblíbených"}
                 </div>
             )}
@@ -188,7 +188,7 @@ const Buttons = ({ tower }: { tower: Tower }) => {
             {isVisited ? (
                 <>
                     <div
-                        className={`btn btn-success max-w-xs text-xs hidden lg:inline-flex min-[710px]:text-base ${
+                        className={`btn btn-success max-w-xs text-sm hidden lg:inline-flex min-[710px]:text-base w-full ${
                             !visitedLoading ? "[&>span]:hover:hidden hover:before:content-['Upravit_návštěvu'] hover:btn-warning" : ""
                         }`}
                         onClick={() => dialogRef?.current?.showModal()}
@@ -199,13 +199,16 @@ const Buttons = ({ tower }: { tower: Tower }) => {
                             <span>{"Navštíveno " + existingVisit?.date.toLocaleDateString()}</span>
                         )}
                     </div>
-                    <div className="btn max-w-xs text-xs min-[710px]:text-base btn-warning lg:hidden" onClick={() => dialogRef?.current?.showModal()}>
+                    <div
+                        className="btn max-w-xs text-sm min-[710px]:text-base btn-warning lg:hidden w-full"
+                        onClick={() => dialogRef?.current?.showModal()}
+                    >
                         {visitedLoading ? <span className="loading loading-dots loading-lg"></span> : "Upravit návštěvu"}
                     </div>
                 </>
             ) : (
                 <div
-                    className="btn btn-primary max-w-xs text-xs min-[710px]:text-base"
+                    className="btn btn-primary max-w-xs text-sm w-full min-[710px]:text-base"
                     onClick={() => {
                         status !== "authenticated" ? signIn() : dialogRef?.current?.showModal();
                     }}
@@ -217,7 +220,7 @@ const Buttons = ({ tower }: { tower: Tower }) => {
             <dialog ref={dialogRef} id="visit_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box p-10">
                     <div className="flex flex-col justify-center gap-3">
-                        <h3 className="font-bold text-2xl self-center">Zaznamenat návštěvu rozhledny X</h3>
+                        <h3 className="font-bold text-2xl self-center">Zaznamenat návštěvu rozhledny {tower.name}</h3>
 
                         <textarea
                             className="textarea textarea-primary text-lg h-36 text-base-content"
@@ -236,17 +239,21 @@ const Buttons = ({ tower }: { tower: Tower }) => {
                         />
                     </div>
                     <div className="modal-action justify-between">
-                        <button
-                            className="btn btn-error"
-                            onClick={() => {
-                                removeVisit();
-                                dialogRef?.current?.close();
-                            }}
-                        >
-                            Odstranit návštěvu
-                        </button>
+                        {existingVisit ? (
+                            <button
+                                className="btn btn-error"
+                                onClick={() => {
+                                    removeVisit();
+                                    dialogRef?.current?.close();
+                                }}
+                            >
+                                Odstranit návštěvu
+                            </button>
+                        ) : (
+                            <div></div>
+                        )}
                         <div className="flex gap-2">
-                            <button className="btn btn-error" onClick={() => dialogRef?.current?.close()}>
+                            <button className="btn btn-error hidden md:inline-flex" onClick={() => dialogRef?.current?.close()}>
                                 Zavřít
                             </button>
                             <button
