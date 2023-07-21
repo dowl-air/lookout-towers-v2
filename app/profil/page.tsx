@@ -3,11 +3,75 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
+import DynamicMap from "./DynamicMap";
+import ProfileBox from "./ProfileBox";
+import { Rating, Tower, User, Visit } from "@/typings";
+import TabsAndContent from "./TabsAndContent";
 
 function Page() {
     const { data: session, status } = useSession();
-    const [page, setPage] = useState<string>("visited");
+
+    const [visits, setVisits] = useState<Visit[]>([]);
+    const [favsIDs, setFavsIDs] = useState<string[]>([]);
+    const [reviews, setReviews] = useState<Rating[]>([]);
+
+    const [towers, setTowers] = useState<Tower[]>([]);
+
+    const [loadCounter, setLoadCounter] = useState<number>(3);
+
+    useEffect(() => {
+        const getVisits = async (user: User): Promise<Visit[]> => {
+            const result = await fetch(`/api/visits/get?user_id=${user?.id}`).then((res) => res.json());
+            if (result.status == 200) return result.message as Visit[];
+            return [];
+        };
+        const getFavs = async (user: User): Promise<string[]> => {
+            const result = await fetch(`/api/favourites/user?user_id=${user?.id}`).then((res) => res.json());
+            if (result.status == 200) return result.message as string[];
+            return [];
+        };
+        const getRatings = async (user: User): Promise<Rating[]> => {
+            const result = await fetch(`/api/reviews/get?user_id=${user?.id}`).then((res) => res.json());
+            if (result.status == 200) return result.message as Rating[];
+            return [];
+        };
+        if (status === "authenticated")
+            getVisits(session?.user).then((res) => {
+                setVisits(res);
+                setLoadCounter((prev) => prev - 1);
+            });
+        if (status === "authenticated")
+            getFavs(session?.user).then((res) => {
+                setFavsIDs(res);
+                setLoadCounter((prev) => prev - 1);
+            });
+        if (status === "authenticated")
+            getRatings(session?.user).then((res) => {
+                setReviews(res);
+                setLoadCounter((prev) => prev - 1);
+            });
+    }, [status, session?.user]);
+
+    useEffect(() => {
+        function merge(array1: string[], array2: string[]): string[] {
+            let arrayMerge = array1.concat(array2);
+            return arrayMerge.filter((item, index) => arrayMerge.indexOf(item) == index);
+        }
+
+        const getTowers = async (): Promise<Tower[]> => {
+            const visit_ids: string[] = merge(
+                visits.map((e) => e.tower_id),
+                favsIDs
+            );
+            const all_ids: string[] = merge(
+                reviews.map((e) => e.tower_id),
+                visit_ids
+            );
+            const result = await fetch(`/api/rozhledny/ids`, { method: "POST", body: JSON.stringify({ ids: all_ids }) }).then((res) => res.json());
+            return result as Tower[];
+        };
+        if (loadCounter <= 0) getTowers().then((res) => setTowers(res));
+    }, [loadCounter, favsIDs, visits, reviews]);
 
     useEffect(() => {
         if (status === "unauthenticated") signIn();
@@ -25,149 +89,30 @@ function Page() {
 
     return (
         <>
-            <div className="flex flex-col items-center ">
+            <div className="flex flex-col items-center gap-3">
                 <Navbar />
-                <div className="flex max-w-7xl w-full items-start">
-                    <div className="card bg-base-100 shadow-xl flex-col p-3 flex-grow-0">
-                        <div className="flex flex-col gap-2 items-center p-3">
-                            <>
-                                {session?.user?.image ? (
-                                    <div className="avatar">
-                                        <div className="w-28 rounded-full">
-                                            <Image
-                                                src={session?.user?.image}
-                                                width={112}
-                                                height={112}
-                                                alt={"profile picture"}
-                                                referrerPolicy="no-referrer"
-                                            />
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="avatar placeholder">
-                                        <div className="bg-neutral-focus text-neutral-content rounded-full w-28">
-                                            <span>{session?.user && session.user.name ? session.user.name.substring(0, 2) : "TY"}</span>
-                                        </div>
-                                    </div>
-                                )}
-                            </>
-                            <h2 className="prose prose-2xl mb-2 font-semibold">{session?.user && session.user.name ? session.user.name : "TY"}</h2>
-                            <div className="flex justify-between bg-secondary text-secondary-content rounded-box p-3 w-56 text-lg font-bold">
-                                <p>Komunitní skóre</p>
-                                <p>255</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-col justify-around text-primary font-bold p-3">
-                            <div className="stats stats-vertical shadow">
-                                <div className="stat w-60">
-                                    <div className="stat-figure text-primary">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="inline-block w-8 h-8 stroke-current"
-                                        >
-                                            <circle cx="12" cy="10" r="3" />
-                                            <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Návštěvy</div>
-                                    <div className="stat-value text-primary">25</div>
-                                </div>
-
-                                <div className="stat w-60">
-                                    <div className="stat-figure text-primary">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            className="inline-block w-8 h-8 stroke-current"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                            ></path>
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Oblíbené</div>
-                                    <div className="stat-value text-primary">33</div>
-                                </div>
-
-                                <div className="stat w-60">
-                                    <div className="stat-figure text-primary">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="inline-block w-8 h-8 stroke-current"
-                                        >
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="M16.2 7.8l-2 6.3-6.4 2.1 2-6.3z" />
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Úpravy</div>
-                                    <div className="stat-value text-primary">252</div>
-                                </div>
-                                <div className="stat w-60">
-                                    <div className="stat-figure text-primary">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="inline-block w-8 h-8 stroke-current"
-                                        >
-                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Hodnocení</div>
-                                    <div className="stat-value text-primary">12</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col flex-1">
-                        <div className="join mt-4 self-center">
-                            <input
-                                className={`join-item btn ${page === "visited" && "btn-primary"}`}
-                                type="radio"
-                                name="options"
-                                aria-label="Navštívené"
-                                onClick={() => setPage("visited")}
-                            />
-                            <input
-                                className={`join-item btn ${page === "favourites" && "btn-primary"}`}
-                                type="radio"
-                                name="options"
-                                aria-label="Oblíbené"
-                                onClick={() => setPage("favourites")}
-                            />
-                            <input
-                                className={`join-item btn ${page === "achievements" && "btn-primary"}`}
-                                type="radio"
-                                name="options"
-                                aria-label="Úspěchy"
-                                onClick={() => setPage("achievements")}
-                            />
-                        </div>
+                <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-start h-[687px] gap-3">
+                    <ProfileBox
+                        score={0}
+                        changes={0}
+                        favs={favsIDs.length}
+                        ratings={reviews.length}
+                        visits={visits.length}
+                        loading={loadCounter > 0}
+                    />
+                    <div className="flex flex-grow h-full">
+                        {loadCounter > 0 && <span className="loading loading-dots loading-lg absolute z-10 text-primary"></span>}
+                        <DynamicMap
+                            lat={49.8237572}
+                            long={15.6086383}
+                            towers={towers}
+                            visits={visits.map((v) => v.tower_id)}
+                            favs={favsIDs}
+                            type={"neco"}
+                        />
                     </div>
                 </div>
+                <TabsAndContent visits={visits} favs={favsIDs} towers={towers} />
             </div>
         </>
     );

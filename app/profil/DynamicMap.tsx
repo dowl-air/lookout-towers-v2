@@ -4,7 +4,21 @@ import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 
-function DynamicMap({ lat, long, towers, type }: { lat: number; long: number; towers: Tower[]; type: string }) {
+function DynamicMap({
+    lat,
+    long,
+    towers,
+    type,
+    visits,
+    favs,
+}: {
+    lat: number;
+    long: number;
+    towers: Tower[];
+    type: string;
+    visits: string[];
+    favs: string[];
+}) {
     const mapElementRef = useRef(null);
 
     useEffect(() => {
@@ -25,7 +39,11 @@ function DynamicMap({ lat, long, towers, type }: { lat: number; long: number; to
                         id: tower.nameID,
                         layer: "towers",
                         title: tower.name,
-                        pin: "/img/marker_red.png",
+                        pin: visits.includes(tower.id)
+                            ? "/img/marker_green.png"
+                            : favs.includes(tower.id)
+                            ? "/img/marker_yellow.png"
+                            : "/img/marker_red.png",
                         pointer: false,
                         card: {
                             header: ReactDOMServer.renderToString(
@@ -56,7 +74,7 @@ function DynamicMap({ lat, long, towers, type }: { lat: number; long: number; to
             });
         };
         initMap();
-    }, [lat, long, towers]);
+    }, [lat, long, towers, favs, visits]);
 
     return (
         <div
