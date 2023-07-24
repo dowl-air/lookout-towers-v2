@@ -91,7 +91,7 @@ function Page() {
         <>
             <div className="flex flex-col items-center gap-3">
                 <Navbar />
-                <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-start h-[687px] gap-3">
+                <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
                     <ProfileBox
                         score={0}
                         changes={0}
@@ -100,7 +100,7 @@ function Page() {
                         visits={visits.length}
                         loading={loadCounter > 0}
                     />
-                    <div className="flex flex-grow h-full">
+                    <div className="flex h-[170px] w-[97vw] flex-grow sm:h-full">
                         {loadCounter > 0 && <span className="loading loading-dots loading-lg absolute z-10 text-primary"></span>}
                         <DynamicMap
                             lat={49.8237572}
