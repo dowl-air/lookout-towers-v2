@@ -1,7 +1,7 @@
 import "./globals.css";
 import { NextAuthProvider, NextThemeProvider } from "./providers";
 import ClientLinkDrawerClose from "./ClientLinkDrawerClose";
-import { Unsign } from "./personalisedLinks";
+import { ProfileClientButtonDrawer, Unsign } from "./personalisedLinks";
 import ThemeChangerPhone from "./ThemeChangerPhone";
 
 export const revalidate = 3600;
@@ -28,6 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                     <li>
                                         <ClientLinkDrawerClose text="Komunita" href="/komunita" />
                                     </li>
+                                    <ProfileClientButtonDrawer />
                                     <li>
                                         <Unsign />
                                     </li>
