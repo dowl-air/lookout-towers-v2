@@ -22,7 +22,11 @@ function Page() {
     useEffect(() => {
         const getVisits = async (user: User): Promise<Visit[]> => {
             const result = await fetch(`/api/visits/get?user_id=${user?.id}`).then((res) => res.json());
-            if (result.status == 200) return result.message as Visit[];
+            let visits: Visit[] = result.message as Visit[];
+            visits.forEach((visit) => {
+                visit.date = new Date(Date.parse(visit.date.toString()));
+            });
+            if (result.status == 200) return visits as Visit[];
             return [];
         };
         const getFavs = async (user: User): Promise<string[]> => {
@@ -112,7 +116,7 @@ function Page() {
                         />
                     </div>
                 </div>
-                <TabsAndContent visits={visits} favs={favsIDs} towers={towers} />
+                <TabsAndContent visits={visits} favs={favsIDs} towers={towers} loading={loadCounter > 0} />
             </div>
         </>
     );
