@@ -1,5 +1,6 @@
+"use client";
 import { GPS } from "@/typings";
-import React from "react";
+import React, { useRef } from "react";
 
 type ComponentParams = {
     elevation: number;
@@ -22,48 +23,46 @@ const generateHeightText = (height: number): string => {
 };
 
 function Parameters(params: ComponentParams) {
+    const dialogRef = useRef<HTMLDialogElement | null>(null);
     return (
         <>
             <div
-                className="card card-compact sm:card-normal prose min-w-[300px] max-w-[420px] h-[225px] flex-1 overflow-hidden shadow-xl border border-secondary-focus transition-transform duration-200 cursor-pointer hover:scale-105"
+                className={`card card-compact sm:card-normal prose min-w-[300px] max-w-[calc(min(94vw,420px))] sm:h-[225px] flex-1 overflow-hidden shadow-xl bg-[rgba(255,255,255,0.05)] transition-transform duration-200 cursor-pointer hover:scale-105`}
                 title="Zobrazit všechny parametry"
+                onClick={() => dialogRef.current?.showModal()}
             >
-                <label htmlFor="params-modal" className="cursor-pointer">
-                    <div className="card-body items-center ">
-                        <table className="table-compact w-full my-2">
-                            <tbody>
-                                <tr>
-                                    <th>Materiál</th>
-                                    <td>
-                                        {params.material.map((item, idx) => (
-                                            <div className="badge badge-outline" key={idx}>
-                                                {item}
-                                            </div>
-                                        ))}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Počet schodů</th>
-                                    <td>{params.stairs.toString()}</td>
-                                </tr>
-                                <tr>
-                                    <th>Výška</th>
-                                    <td>{generateHeightText(params.height)}</td>
-                                </tr>
-                                <tr>
-                                    <th>Zpřístupnění</th>
-                                    <td>{params.opened.toLocaleDateString()}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </label>
+                <div className="card-body items-center">
+                    <table className="table-compact my-2">
+                        <tbody>
+                            <tr>
+                                <th className="text-base-content">Materiál</th>
+                                <td>
+                                    {params.material.map((item, idx) => (
+                                        <div className="badge badge-outline text-xs" key={idx}>
+                                            {item}
+                                        </div>
+                                    ))}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th className="text-base-content">Počet schodů</th>
+                                <td>{params.stairs.toString()}</td>
+                            </tr>
+                            <tr>
+                                <th className="text-base-content">Výška</th>
+                                <td>{generateHeightText(params.height)}</td>
+                            </tr>
+                            <tr>
+                                <th className="text-base-content">Zpřístupnění</th>
+                                <td>{params.opened.toLocaleDateString()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            {/* Put this part before </body> tag */}
-            <input type="checkbox" id="params-modal" className="modal-toggle" />
-            <label htmlFor="params-modal" className="modal cursor-pointer sm:modal-middle">
-                <label className="modal-box relative" htmlFor="">
+            <dialog ref={dialogRef} className="modal modal-bottom sm:modal-middle">
+                <div className="modal-box">
                     <h3 className="text-lg font-bold">Parametry</h3>
                     <div className="prose items-center ">
                         <table className="table-compact w-full my-4">
@@ -110,12 +109,18 @@ function Parameters(params: ComponentParams) {
                         </table>
                     </div>
                     <div className="modal-action">
-                        <label htmlFor="params-modal" className="btn btn-warning btn-sm">
-                            Navrhnout úpravu
-                        </label>
+                        <button className="btn btn-warning btn-sm">Navrhnout úpravu</button>
+                        <button className="btn btn-error btn-sm" onClick={() => dialogRef.current?.close()}>
+                            Zavřít
+                        </button>
                     </div>
-                </label>
-            </label>
+                </div>
+
+                {/** to make the modal close on click elsewhere */}
+                <form method="dialog" className="modal-backdrop">
+                    <button>zavřít</button>
+                </form>
+            </dialog>
         </>
     );
 }
