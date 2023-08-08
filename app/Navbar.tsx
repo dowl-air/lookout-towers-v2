@@ -6,7 +6,7 @@ import NavbarUser from "./NavbarUser";
 
 function Navbar() {
     return (
-        <div className="navbar border-b border-base-300 md:py-2 md:px-9 sticky top-0 z-10 backdrop-blur-sm bg-base-100 bg-opacity-90">
+        <div className="navbar border-b border-base-300 md:py-2 md:px-9 sticky top-0 z-10 backdrop-blur-md bg-base-100 bg-opacity-60 border-opacity-60">
             <div className="navbar-start max-[350px]:w-auto">
                 <div className="dropdown">
                     <label tabIndex={0} htmlFor="my-drawer-3" className="btn btn-ghost md:hidden flex flex-nowrap gap-1 p-0 min-[320px]:px-3">

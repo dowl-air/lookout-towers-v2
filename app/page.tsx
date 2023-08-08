@@ -8,6 +8,7 @@ import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import Stats from "./Stats";
 import AboutMe from "./AboutMe";
 import Navbar from "./Navbar";
+import Hero from "./Hero";
 
 // every 1 hour new towers
 export const revalidate = 3600;
@@ -51,6 +52,7 @@ async function HomePage() {
     return (
         <div className="flex flex-col justify-center">
             <Navbar />
+            <Hero />
             <ImageSlider towers={towers} data-superjson />
             <Stats />
             <AboutMe />
