@@ -47,10 +47,10 @@ function RatingBox({ tower, count, average, reviews }: { tower: Tower; count: nu
         <>
             <div
                 id="rating_box"
-                className="card flex flex-col justify-center gap-8 w-full max-w-[94vw] sm:max-w-[100vw] p-4 sm:p-8 shadow-xl bg-[rgba(255,255,255,0.05)]"
+                className="card flex flex-col justify-center gap-8 w-full max-w-[94vw] sm:max-w-[100vw] p-4 sm:px-6 sm:py-8 shadow-xl bg-[rgba(255,255,255,0.05)]"
             >
                 <div id="rating_box_top" className="flex justify-between items-center sm:items-start w-full">
-                    <h2 className="card-title text-base sm:text-xl">{`Recenze [${count}]`}</h2>
+                    <h2 className="card-title text-base sm:text-lg md:text-xl">{`Recenze [${count}]`}</h2>
                     <div className="flex flex-wrap gap-3 flex-col sm:flex-row">
                         <button
                             className={`btn ${myReview ? "btn-primary" : "btn-primary"} btn-sm sm:btn-md`}
