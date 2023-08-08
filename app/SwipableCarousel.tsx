@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper";
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
 
 import { Tower } from "@/typings";
 import TowerCard from "./TowerCard";
@@ -19,11 +18,12 @@ export default function ImageSlider({ towers }: PageProps) {
             grabCursor
             loop
             spaceBetween={10}
+            modules={[Autoplay]}
             autoplay={{
                 delay: 2500,
                 disableOnInteraction: true,
             }}
-            modules={[Autoplay]}
+            //modules={[Autoplay]}
             breakpoints={{
                 0: {
                     slidesPerView: 1,
