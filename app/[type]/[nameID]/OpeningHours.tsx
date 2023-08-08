@@ -51,10 +51,10 @@ function OpeningHours({ tower, openingHours, children }: { tower?: Tower; openin
             className={`card card-compact sm:card-normal min-w-[300px] max-w-[calc(min(94vw,420px))] sm:h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]`}
         >
             <div className="card-body">
-                <h2 className={`card-title text-xl ${isErrorColor(OH) && "text-error"}`}>Otevírací doba</h2>
-                <p className={`text-lg ${isErrorColor(OH) && "text-error"}`}>{generateHeading(OH, tower?.type || "rozhledna")}</p>
-                {OH.lunch_break && <p className={`text-lg ${isErrorColor(OH) && "text-error"}`}>{getLunchString(OH)}</p>}
-                {OH.note && <p>{OH.note}</p>}
+                <h2 className={`card-title text-base sm:text-lg md:text-xl ${isErrorColor(OH) && "text-error"}`}>Otevírací doba</h2>
+                <p className={`text-base md:text-lg ${isErrorColor(OH) && "text-error"}`}>{generateHeading(OH, tower?.type || "rozhledna")}</p>
+                {OH.lunch_break && <p className={`text-base md:text-lg ${isErrorColor(OH) && "text-error"}`}>{getLunchString(OH)}</p>}
+                {OH.note && <p className="text-sm md:text-base">{OH.note}</p>}
             </div>
             {children}
         </div>
