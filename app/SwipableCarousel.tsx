@@ -41,10 +41,10 @@ export default function ImageSlider({ towers }: PageProps) {
                     slidesPerView: 5,
                 },
             }}
-            className="max-w-[min(1280px,99vw)] mt-10"
+            className="max-w-[min(1280px,99vw)] mt-3"
         >
             {towers.map((item, index) => (
-                <SwiperSlide key={index} className="mt-3">
+                <SwiperSlide key={index} className="mt-5">
                     <TowerCard tower={item} priority={index < 5} />
                 </SwiperSlide>
             ))}

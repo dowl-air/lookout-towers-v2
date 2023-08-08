@@ -57,7 +57,7 @@ async function Stats() {
 
     return (
         <div className="max-w-screen-xl self-center flex flex-col">
-            <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden lg:inline-grid">
+            <div className="stats bg-primary text-primary-content stats-horizontal mt-5 hidden lg:inline-grid">
                 <div className="stat">
                     <div className="stat-title text-primary-content">Rozhleden v databázi</div>
                     <div className="stat-value">{towersNumber}</div>
