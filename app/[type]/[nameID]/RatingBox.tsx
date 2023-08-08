@@ -9,7 +9,6 @@ import { User } from "next-auth";
 
 function RatingBox({ tower, count, average, reviews }: { tower: Tower; count: number; average: number; reviews: Rating[] }) {
     const { status, data: session } = useSession();
-    const [reviewsActual, setReviewsActual] = useState<Rating[]>(reviews);
     const [myReview, setMyReview] = useState<Rating | null>(null);
     const [myReviewLoading, setMyReviewLoading] = useState<boolean>(true);
 
@@ -48,11 +47,11 @@ function RatingBox({ tower, count, average, reviews }: { tower: Tower; count: nu
         <>
             <div
                 id="rating_box"
-                className="card flex flex-col justify-center gap-6 w-full py-5 px-3 sm:px-5 sm:p-8 shadow-xl border border-secondary-focus"
+                className="card flex flex-col justify-center gap-8 w-full max-w-[94vw] sm:max-w-[100vw] p-4 sm:p-8 shadow-xl bg-[rgba(255,255,255,0.05)]"
             >
-                <div id="rating_box_top" className="flex justify-between items-center w-full">
+                <div id="rating_box_top" className="flex justify-between items-center sm:items-start w-full">
                     <h2 className="card-title text-base sm:text-xl">{`Recenze [${count}]`}</h2>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-3 flex-col sm:flex-row">
                         <button
                             className={`btn ${myReview ? "btn-primary" : "btn-primary"} btn-sm sm:btn-md`}
                             onClick={() => {
@@ -70,14 +69,14 @@ function RatingBox({ tower, count, average, reviews }: { tower: Tower; count: nu
                             )}
                         </button>
                         {myReview && !myReviewLoading && (
-                            <button className="btn btn-error" onClick={() => removeMyReview().then(() => setMyReviewLoading(false))}>
+                            <button className="btn btn-error btn-sm sm:btn-md" onClick={() => removeMyReview().then(() => setMyReviewLoading(false))}>
                                 Vymazat recenzi
                             </button>
                         )}
                     </div>
                 </div>
-                <div id="rating_box_bottom" className="flex flex-wrap">
-                    <div className="h-72 flex-col gap-6 overflow-auto min-w-[300px] flex-1">
+                <div id="rating_box_bottom" className="flex flex-col md:flex-row w-full md:gap-8">
+                    <div className={`flex max-h-72 w-full flex-col gap-6 overflow-auto ${reviews.length === 0 && !myReview && "hidden md:flex"}`}>
                         {myReview && <OneReview key="mine" review={myReview} data-superjson />}
                         {reviews
                             // @ts-ignore
@@ -86,7 +85,7 @@ function RatingBox({ tower, count, average, reviews }: { tower: Tower; count: nu
                                 <OneReview review={r} key={idx} />
                             ))}
                     </div>
-                    <div className="divider w-full md:w-4 md:divider-horizontal"></div>
+                    <div className={`divider w-full md:w-4 md:divider-horizontal ${reviews.length === 0 && !myReview && "hidden md:flex"}`}></div>
                     <RatingStats
                         reviews={[
                             ...reviews

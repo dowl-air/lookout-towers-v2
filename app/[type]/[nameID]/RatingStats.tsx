@@ -14,9 +14,8 @@ const getRange = (reviews: Rating[], range: number): number => {
 };
 
 const RatingStats = ({ reviews }: { reviews: Rating[] }) => {
-    getRange(reviews, 5);
     return (
-        <div className="flex flex-col justify-start items-center flex-1 md:flex-none gap-6 h-60 w-80">
+        <div className="flex flex-col justify-center items-center md:flex-none gap-6 md:mr-8">
             <div className="flex items-center gap-2">
                 <h1 className="prose text-4xl text-primary">{getAverage(reviews).toPrecision(2)}</h1>
                 <ThemedRating value={getAverage(reviews)} size={30} iconsCount={5} />
