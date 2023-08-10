@@ -23,7 +23,7 @@ async function MapPage() {
     return (
         <>
             <Navbar />
-            <div className="flex justify-center items-stretch flex-grow h-[80vh] m-6">
+            <div className="flex justify-center items-stretch flex-grow h-[calc(100vh-70px-50px)] m-6">
                 <Map lat={49.8237572} long={15.6086383} name="Rozhlednový svět" towers={towers} />
             </div>
         </>

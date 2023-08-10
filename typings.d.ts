@@ -126,3 +126,14 @@ export type OpeningHours = {
     lunch_end?: number;
     note?: string;
 }
+
+type SearchResult = {
+    name: string;
+    name_nospaces: string;
+    type: string;
+    opened: Date;
+    country: string;
+    county: string;
+    province: string;
+    id: string;
+}

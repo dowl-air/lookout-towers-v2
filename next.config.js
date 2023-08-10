@@ -21,6 +21,9 @@ const nextConfig = {
         ],
         minimumCacheTTL: 2592000, // one month TTL for images
     },
+    env: {
+        MEILI_KEY: process.env.MEILI_KEY,
+    },
 };
 
 module.exports = nextConfig;

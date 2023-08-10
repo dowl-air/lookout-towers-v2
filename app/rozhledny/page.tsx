@@ -3,14 +3,18 @@ import React, { useState } from "react";
 import Filter from "./Filter";
 import Results from "./Results";
 import Navbar from "../Navbar";
-
-const initFilter: Filter = {
-    searchTerm: "",
-    province: "",
-    county: "",
-};
+import { useSearchParams } from "next/navigation";
 
 function TowersPage() {
+    const searchParams = useSearchParams();
+    const initialQuery = searchParams.get("q");
+
+    const initFilter: Filter = {
+        searchTerm: initialQuery || "",
+        province: "",
+        county: "",
+    };
+
     const [filter, setFilter] = useState<Filter>(initFilter);
     return (
         <>

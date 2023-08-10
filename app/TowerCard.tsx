@@ -1,5 +1,5 @@
 import React from "react";
-import { Tower } from "@/typings";
+import { SearchResult, Tower } from "@/typings";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -7,61 +7,66 @@ type PageProps = {
     tower: Tower;
 };
 
-function TowerCard({ tower, priority = false }: { tower: Tower; priority: boolean }) {
+function TowerCard({ tower, tower_search, priority = false }: { tower?: Tower; tower_search?: SearchResult; priority?: boolean }) {
+    const name = tower?.name || tower_search?.name || "";
+    const name_id = tower?.nameID || tower_search?.name_nospaces;
+    const type = tower?.type || tower_search?.type;
+    const id = tower?.id || tower_search?.id;
+    const opened = tower?.opened || tower_search?.opened;
+    const county = tower?.county || tower_search?.county;
+
     return (
-        <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
+        <Link href={`/${type || "rozhledna"}/${name_id}`} scroll>
             <div className="card card-compact w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-72">
                     <Image
-                        src={tower.mainPhotoUrl}
-                        alt={tower.name}
+                        src={tower?.mainPhotoUrl || `/img/towers/${id}/${id}_0.jpg`}
+                        alt={name}
                         fill
                         priority={priority}
                         className="object-cover block"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
-                    <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">{tower.height} m</div>
+                    <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">
+                        {opened ? opened.getFullYear() : "nez"}
+                    </div>
                 </figure>
-                {"getFullYear" in tower.opened &&
-                    tower.opened.getFullYear() in [new Date().getFullYear(), new Date().getFullYear() - 1, new Date().getFullYear() - 2] && (
-                        <div className="badge badge-accent absolute top-2 left-2 font-bold">NOVÁ</div>
-                    )}
                 <div className="card-body gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block">{tower.name}</h2>
+                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block">{name}</h2>
                     <div className="flex-row flex items-center">
                         <div className="rating rating-sm">
                             <input
                                 type="radio"
                                 name="rating-4"
-                                className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 0 && "bg-secondary"}`}
+                                className={`mask mask-star-2 ${(tower?.rating?.avg || 0) > 0 && "bg-secondary"}`}
                                 readOnly
                             />
                             <input
                                 type="radio"
                                 name="rating-4"
-                                className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 1 && "bg-secondary"}`}
+                                className={`mask mask-star-2 ${(tower?.rating?.avg || 0) > 1 && "bg-secondary"}`}
                                 readOnly
                             />
                             <input
                                 type="radio"
                                 name="rating-4"
-                                className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 2 && "bg-secondary"}`}
+                                className={`mask mask-star-2 ${(tower?.rating?.avg || 0) > 2 && "bg-secondary"}`}
                                 readOnly
                             />
                             <input
                                 type="radio"
                                 name="rating-4"
-                                className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 3 && "bg-secondary"}`}
+                                className={`mask mask-star-2 ${(tower?.rating?.avg || 0) > 3 && "bg-secondary"}`}
                                 readOnly
                             />
                             <input
                                 type="radio"
                                 name="rating-4"
-                                className={`mask mask-star-2 ${(tower.rating?.avg || 0) > 4 && "bg-secondary"}`}
+                                className={`mask mask-star-2 ${(tower?.rating?.avg || 0) > 4 && "bg-secondary"}`}
                                 readOnly
                             />
                         </div>
-                        <div className="text-md text-gray-400 ml-2">{`${tower.rating?.count || 0} hodnocení`}</div>
+                        <div className="text-md text-gray-400 ml-2">{`${tower?.rating?.count || 0} hodnocení`}</div>
                     </div>
 
                     <div className="mt-2 flex-row flex items-center">
@@ -75,7 +80,7 @@ function TowerCard({ tower, priority = false }: { tower: Tower; priority: boolea
                                 </g>
                             </g>
                         </svg>
-                        <div className="ml-2">{tower.county}</div>
+                        <div className="ml-2">{county}</div>
                     </div>
                 </div>
             </div>

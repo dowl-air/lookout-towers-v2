@@ -1,73 +1,43 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { Filter, Tower } from "@/typings";
+import { Filter, SearchResult, Tower } from "@/typings";
 import TowerCard from "../TowerCard";
+import { searchTowers } from "@/lib/search";
 
-const API_URL = "/api/rozhledny?";
-
-const jsonDateRegexp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/;
-
-function jsonRetriever(key: string, value: any) {
-    // let's try to detect input we dont have to parse early, so this function is as fast as possible
-    if (typeof value !== "string") {
-        return value;
-    }
-
-    const dateMatch = jsonDateRegexp.exec(value);
-
-    if (!dateMatch) {
-        return value;
-    }
-
-    return new Date(Date.UTC(+dateMatch[1], +dateMatch[2] - 1, +dateMatch[3], +dateMatch[4], +dateMatch[5], +dateMatch[6], +dateMatch[7]));
-}
+const LIMIT = 20;
 
 type ComponentProps = {
     filter: Filter;
 };
 
-const createParams = (filter: Filter, startItemId: string): string => {
-    type obj = {
-        startItemId?: string;
-        searchTerm?: string;
-        province?: string;
-        county?: string;
-    };
-    const data: obj = { ...filter, startItemId: startItemId };
-
-    if (!data.searchTerm) delete data.searchTerm;
-    if (!data.province) delete data.province;
-    if (!data.county) delete data.county;
-
-    return new URLSearchParams(data).toString();
+const createFilterString = (filter: Filter): string => {
+    let finalString = "";
+    if (filter.province) finalString += `province = "${filter.province}"`;
+    if (filter.county) finalString += `${finalString ? " AND " : ""}county = "${filter.county}"`;
+    return finalString;
 };
 
 function Results({ filter }: ComponentProps) {
-    const [towers, setTowers] = useState<Tower[]>([]);
+    const [towers, setTowers] = useState<SearchResult[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<any>(null);
-    const [start, setStart] = useState<string>("");
+    const [offset, setOffset] = useState<number>(0);
 
     const fetchData = useCallback(
-        async (empty?: boolean) => {
+        async (new_filter: boolean = false) => {
             setIsLoading(true);
-            setError(null);
             try {
-                const new_towers: Tower[] = JSON.parse(
-                    await fetch(API_URL + createParams(filter, empty ? "" : start), { next: { revalidate: 3600 } }).then((res) => res.text()),
-                    jsonRetriever
-                ) as Tower[];
+                const new_towers = await searchTowers(filter.searchTerm, LIMIT, new_filter ? 0 : offset, createFilterString(filter));
                 if (new_towers.length == 0) return;
-                empty ? setTowers(new_towers) : setTowers((prevItems) => [...prevItems, ...new_towers]);
-                setStart(new_towers[new_towers.length - 1].id);
+
+                new_filter ? setTowers(new_towers) : setTowers((prevItems) => [...prevItems, ...new_towers]);
+                new_filter ? setOffset(new_towers.length) : setOffset(offset + new_towers.length);
             } catch (error) {
                 console.error(error);
-                setError(error);
             } finally {
                 setIsLoading(false);
             }
         },
-        [filter, start]
+        [filter, offset]
     );
 
     useEffect(() => {
@@ -88,7 +58,7 @@ function Results({ filter }: ComponentProps) {
 
     return (
         <div className="flex flex-wrap gap-3 flex-1 justify-center max-w-[1200px]">
-            {towers && towers.map((item, idx) => <TowerCard key={idx} tower={item} priority={false} />)}
+            {towers && towers.map((item, idx) => <TowerCard key={idx} tower_search={item} />)}
         </div>
     );
 }
