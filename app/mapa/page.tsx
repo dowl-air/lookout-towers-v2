@@ -5,6 +5,11 @@ import { db } from "../firebase";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import Navbar from "../Navbar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Mapa",
+};
 
 // every 1 hour new towers
 export const revalidate = 3600;

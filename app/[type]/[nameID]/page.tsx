@@ -16,12 +16,39 @@ import Navbar from "@/app/Navbar";
 import MainInfoPhone from "./MainInfoPhone";
 import RatingBox from "./RatingBox";
 import OpeningHoursDialog from "@/app/komunita/OpeningHoursDialog";
+import { Metadata, ResolvingMetadata } from "next";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
 const BUCKET = "lookout-towers.appspot.com/";
 const PATH = "o/towers";
 
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: { nameID: string } }): Promise<Metadata> {
+    const nameID = params.nameID;
+    // fetch data
+    const tower: Tower = await getTowerObjectByNameID(nameID);
+
+    return {
+        title: tower.name,
+        description: tower.history,
+        keywords: ["rozhledna", "pozorovatelna", "věž", tower.type, tower.name, tower.province || "", tower.county || ""],
+        openGraph: {
+            title: `${tower.name} - Rozhlednový svět`,
+            images: [`/img/towers/${tower.id}/${tower.id}_0.jpg`],
+            description: tower.history,
+            url: `https://rozhlednovysvet.cz/${tower.type}/${tower.nameID}`,
+            siteName: "Rozhlednový svět",
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${tower.name} - Rozhlednový svět`,
+            description: tower.history,
+            images: [`/img/towers/${tower.id}/${tower.id}_0.jpg`],
+        },
+    };
+}
 
 type PageProps = {
     params: {

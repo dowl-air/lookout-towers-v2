@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /profil/
+
+Sitemap: https://rozhlednovysvet.cz/sitemap.xml
