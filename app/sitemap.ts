@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: new Date(),
         },
         {
-            url: 'https://acme.com/mapa',
+            url: 'https://rozhlednovysvet.cz/mapa',
             lastModified: new Date(),
         },
         ...towers.map(t => {
