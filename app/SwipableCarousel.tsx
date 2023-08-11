@@ -26,15 +26,18 @@ export default function ImageSlider({ towers }: PageProps) {
             //modules={[Autoplay]}
             breakpoints={{
                 0: {
-                    slidesPerView: 1,
-                },
-                460: {
                     slidesPerView: 2,
                 },
-                700: {
+                437: {
                     slidesPerView: 3,
                 },
-                1000: {
+                585: {
+                    slidesPerView: 4,
+                },
+                925: {
+                    slidesPerView: 5,
+                },
+                1024: {
                     slidesPerView: 4,
                 },
                 1150: {

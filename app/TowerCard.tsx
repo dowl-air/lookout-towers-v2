@@ -17,8 +17,8 @@ function TowerCard({ tower, tower_search, priority = false }: { tower?: Tower; t
 
     return (
         <Link href={`/${type || "rozhledna"}/${name_id}`} scroll>
-            <div className="card card-compact w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
-                <figure className="object-cover inline-block relative h-72">
+            <div className="card card-compact w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
+                <figure className="object-cover inline-block relative h-52 sm:h-60 md:h-72">
                     <Image
                         src={tower?.mainPhotoUrl || `/img/towers/${id}/${id}_0.jpg`}
                         alt={name}
@@ -31,9 +31,9 @@ function TowerCard({ tower, tower_search, priority = false }: { tower?: Tower; t
                         {opened ? opened.getFullYear() : "nez"}
                     </div>
                 </figure>
-                <div className="card-body gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block">{name}</h2>
-                    <div className="flex-row flex items-center">
+                <div className="card-body !py-2 md:!py-3 gap-0">
+                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block text-base sm:text-lg md:text-xl">{name}</h2>
+                    <div className="flex flex-row items-center">
                         <div className="rating rating-sm">
                             <input
                                 type="radio"
@@ -66,7 +66,11 @@ function TowerCard({ tower, tower_search, priority = false }: { tower?: Tower; t
                                 readOnly
                             />
                         </div>
-                        <div className="text-md text-gray-400 ml-2">{`${tower?.rating?.count || 0} hodnocení`}</div>
+                        <div className="flex lg:gap-1 text-md text-gray-400 ml-2">
+                            {`${tower?.rating?.count || 0} `}
+                            <p className="hidden lg:flex">hodnocení</p>
+                            <p className="flex lg:hidden">x</p>
+                        </div>
                     </div>
 
                     <div className="mt-2 flex-row flex items-center">
