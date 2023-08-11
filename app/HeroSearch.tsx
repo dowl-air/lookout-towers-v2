@@ -19,7 +19,7 @@ function HeroSearch() {
     }, [query]);
 
     return (
-        <div className="dropdown mt-5 max-w-[94vw]">
+        <div className="dropdown md:mt-5 max-w-[94vw]">
             <label tabIndex={0} className="shadow-lg">
                 <div className="join">
                     <input
