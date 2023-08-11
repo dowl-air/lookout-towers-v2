@@ -31,8 +31,8 @@ function Filter({ applyFilter, initFilter }: ComponentProps) {
     };
 
     const [searchTerm, setSearchTerm] = useState<string>(initFilter.searchTerm);
-    const [provinceSelected, setProvinceSelected] = useState<string>("Všechny kraje");
-    const [countySelected, setCountySelected] = useState<string>("Všechny okresy");
+    const [provinceSelected, setProvinceSelected] = useState<string>(initFilter.province);
+    const [countySelected, setCountySelected] = useState<string>(initFilter.county);
     const [countySelectable, setCountySelectable] = useState<string[]>(countyShortList);
 
     // province and county management

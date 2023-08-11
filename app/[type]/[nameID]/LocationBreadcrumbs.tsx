@@ -1,4 +1,5 @@
 import { Tower } from "@/typings";
+import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -10,19 +11,13 @@ function LocationBreadcrumbs({ tower }: Props) {
         <div className="flex max-w-[94vw] justify-center lg:justify-start prose prose-sm lg:prose-xl text-md lg:text-sm breadcrumbs">
             <ul className="flex !pl-0 overflow-x-auto">
                 <li>
-                    <a className="link" href="/rozhledny">
-                        {tower.country}
-                    </a>
+                    <Link href={{ pathname: "/rozhledny" }}>{tower.country}</Link>
                 </li>
                 <li>
-                    <a className="link" href="/rozhledny">
-                        {tower.province}
-                    </a>
+                    <Link href={{ pathname: "/rozhledny", query: { province: tower.province } }}>{tower.province}</Link>
                 </li>
                 <li>
-                    <a className="link" href="/rozhledny">
-                        {tower.county}
-                    </a>
+                    <Link href={{ pathname: "/rozhledny", query: { county: tower.county } }}>{tower.county}</Link>
                 </li>
             </ul>
         </div>

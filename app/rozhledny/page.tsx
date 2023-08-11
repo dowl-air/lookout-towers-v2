@@ -8,11 +8,13 @@ import { useSearchParams } from "next/navigation";
 function TowersPage() {
     const searchParams = useSearchParams();
     const initialQuery = searchParams.get("q");
+    const initialProvince = searchParams.get("province");
+    const initialCounty = searchParams.get("county");
 
     const initFilter: Filter = {
         searchTerm: initialQuery || "",
-        province: "",
-        county: "",
+        province: initialProvince || "Všechny kraje",
+        county: initialCounty || "Všechny okresy",
     };
 
     const [filter, setFilter] = useState<Filter>(initFilter);
