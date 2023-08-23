@@ -19,20 +19,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [
         {
-            url: 'https://rozhlednovysvet.cz',
+            url: 'https://www.rozhlednovysvet.cz',
             lastModified: new Date(),
         },
         {
-            url: 'https://rozhlednovysvet.cz/rozhledny',
+            url: 'https://www.rozhlednovysvet.cz/rozhledny',
             lastModified: new Date(),
         },
         {
-            url: 'https://rozhlednovysvet.cz/mapa',
+            url: 'https://www.rozhlednovysvet.cz/mapa',
             lastModified: new Date(),
         },
         ...towers.map(t => {
             return {
-                url: `https://rozhlednovysvet.cz/${t.type}/${t.nameID}`,
+                url: `https://www.rozhlednovysvet.cz/${t.type}/${t.nameID}`,
                 lastModified: t.modified
             }
         })
