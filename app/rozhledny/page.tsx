@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Filter from "./Filter";
 import Results from "./Results";
 import Navbar from "../Navbar";
@@ -29,4 +29,12 @@ function TowersPage() {
     );
 }
 
-export default TowersPage;
+const TowersPageWrapper = () => {
+    return (
+        <Suspense>
+            <TowersPage />
+        </Suspense>
+    );
+};
+
+export default TowersPageWrapper;
