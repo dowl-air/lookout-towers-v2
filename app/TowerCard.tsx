@@ -25,7 +25,7 @@ function TowerCard({ tower, tower_search, priority = false }: { tower?: Tower; t
                         fill
                         priority={priority}
                         className="object-cover block"
-                        sizes="224px"
+                        sizes="250px"
                     />
                     <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">
                         {opened ? opened.getFullYear() : "nez"}
