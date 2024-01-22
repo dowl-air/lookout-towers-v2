@@ -8,6 +8,7 @@ import { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://rozhlednovysvet.cz/"),
     title: {
         template: "%s | Rozhlednový svět",
         default: "Rozhlednový svět",
