@@ -4,6 +4,7 @@ import ClientLinkDrawerClose from "./ClientLinkDrawerClose";
 import { ProfileClientButtonDrawer, Unsign } from "./personalisedLinks";
 import ThemeChangerPhone from "./ThemeChangerPhone";
 import { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const revalidate = 3600;
 
@@ -74,6 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         </div>
                     </NextThemeProvider>
                 </NextAuthProvider>
+                <SpeedInsights />
             </body>
         </html>
     );
