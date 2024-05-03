@@ -60,9 +60,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                     <li>
                                         <ClientLinkDrawerClose text="Mapa" href="/mapa" />
                                     </li>
-                                    <li>
+                                    {/* <li>
                                         <ClientLinkDrawerClose text="Komunita" href="/komunita" />
-                                    </li>
+                                    </li> */}
                                     <ProfileClientButtonDrawer />
                                     <li>
                                         <Unsign />

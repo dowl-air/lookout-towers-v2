@@ -32,11 +32,11 @@ function Navbar() {
                             Mapa
                         </Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link className="active:bg-secondary" href="/komunita">
                             Komunita
                         </Link>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
             <div className="navbar-end gap-3 hidden md:flex">
