@@ -10,6 +10,7 @@ import AboutMe from "./AboutMe";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 import Footer from "./Footer";
+import NotFinishedWeb from "@/components/warnings/NotFinishedWeb";
 
 // every 1 hour new towers
 export const revalidate = 3600;
@@ -54,6 +55,7 @@ async function HomePage() {
         <div className="flex flex-col justify-center">
             <Navbar />
             <Hero />
+            <NotFinishedWeb />
             <ImageSlider towers={towers} data-superjson />
             <Stats />
             <AboutMe />
