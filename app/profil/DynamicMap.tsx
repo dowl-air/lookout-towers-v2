@@ -62,6 +62,7 @@ function DynamicMap({
                                             height={208}
                                             width={208}
                                             className="block object-cover !w-full !h-full rounded-md"
+                                            unoptimized
                                         />
                                     </div>
                                 </a>

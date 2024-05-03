@@ -50,6 +50,7 @@ function HeroSearch() {
                                         fill
                                         className="object-cover"
                                         sizes="(max-width: 768px) 20vw, 10vw"
+                                        unoptimized
                                     />
                                 </div>
                                 <div className="flex flex-col">

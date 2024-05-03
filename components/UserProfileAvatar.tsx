@@ -8,7 +8,14 @@ function UserProfileAvatar({ name, image, size = 48 }: { name: string; image?: s
                 <label tabIndex={0}>
                     <div className="avatar cursor-pointer">
                         <div className="rounded-full" style={{ width: `${size}px` }}>
-                            <Image src={image} width={size} height={size} alt={`profile picture of ${name}`} referrerPolicy="no-referrer" />
+                            <Image
+                                src={image}
+                                width={size}
+                                height={size}
+                                alt={`profile picture of ${name}`}
+                                referrerPolicy="no-referrer"
+                                unoptimized
+                            />
                         </div>
                     </div>
                 </label>

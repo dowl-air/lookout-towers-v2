@@ -9,6 +9,7 @@ import Stats from "./Stats";
 import AboutMe from "./AboutMe";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
+import Footer from "./Footer";
 
 // every 1 hour new towers
 export const revalidate = 3600;
@@ -56,6 +57,7 @@ async function HomePage() {
             <ImageSlider towers={towers} data-superjson />
             <Stats />
             <AboutMe />
+            <Footer />
         </div>
     );
 }

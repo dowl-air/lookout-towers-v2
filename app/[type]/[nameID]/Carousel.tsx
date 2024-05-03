@@ -54,6 +54,7 @@ function Carousel({ images, phone }: PageProps) {
                             style={{
                                 display: loading ? "none" : "block",
                             }}
+                            unoptimized
                         />
                         <figure
                             className="object-contain w-auto h-full flex justify-center items-center"
@@ -119,6 +120,7 @@ function Carousel({ images, phone }: PageProps) {
                             style={{
                                 display: loading ? "none" : "block",
                             }}
+                            unoptimized
                         />
                         <figure
                             className="object-contain w-auto h-full flex justify-center items-center"
@@ -157,6 +159,7 @@ function Carousel({ images, phone }: PageProps) {
                             setIndex(idx);
                             document?.getElementById(`image_${idx}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
                         }}
+                        unoptimized
                     />
                 ))}
             </div>
@@ -164,7 +167,14 @@ function Carousel({ images, phone }: PageProps) {
             <input type="checkbox" id={phone ? "phone-modal" : "my-modal-4"} className="modal-toggle" />
             <label htmlFor={phone ? "phone-modal" : "my-modal-4"} className="modal cursor-pointer w-full h-full">
                 <div className="relative w-full h-full max-w-[70vw] max-h-[80vh]">
-                    <Image fill alt={"tower_todo"} src={images[index]} className="block object-contain" sizes="(max-width: 800px) 80vw, 70vw" />
+                    <Image
+                        fill
+                        alt={"tower_todo"}
+                        src={images[index]}
+                        className="block object-contain"
+                        sizes="(max-width: 800px) 80vw, 70vw"
+                        unoptimized
+                    />
                 </div>
             </label>
         </div>
