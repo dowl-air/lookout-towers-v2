@@ -1,24 +1,15 @@
 "use client";
 import Link, { LinkProps } from "next/link";
 
+import { closeDrawer } from "@/utils/closeDrawer";
+
 interface NavbarSideLinkProps extends LinkProps {
     children: React.ReactNode;
-    unsign?: boolean;
 }
 
-const NavbarSideLink = ({ href, children, unsign }: NavbarSideLinkProps) => {
-    const closeDrawer = () => {
-        const elm = document.querySelector("#side-drawer") as HTMLInputElement;
-        if (elm !== undefined) elm.checked = false;
-    };
-
+const NavbarSideLink = ({ href, children }: NavbarSideLinkProps) => {
     return (
-        <Link
-            onClick={() => {
-                unsign ? null : closeDrawer();
-            }}
-            href={href}
-        >
+        <Link onClick={closeDrawer} href={href}>
             {children}
         </Link>
     );

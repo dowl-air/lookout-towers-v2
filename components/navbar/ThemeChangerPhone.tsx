@@ -1,7 +1,8 @@
 "use client";
-import { closeDrawer } from "@/utils/closeDrawer";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+
+import { closeDrawer } from "@/utils/closeDrawer";
 
 const LIGHT_MODE = "light";
 const DARK_MODE = "night";
