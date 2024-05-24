@@ -1,5 +1,5 @@
 "use client";
-import { searchTowers } from "@/lib/search";
+import { searchTowers } from "@/utils/search";
 import { SearchResult } from "@/typings";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";

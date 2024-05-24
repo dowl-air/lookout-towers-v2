@@ -7,9 +7,7 @@ import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import Stats from "../Stats";
 import AboutMe from "../AboutMe";
-import Navbar from "../../components/navbar/Navbar";
 import Hero from "../Hero";
-import Footer from "../Footer";
 import NotFinishedWeb from "@/components/warnings/NotFinishedWeb";
 
 // every 1 hour new towers
@@ -58,7 +56,6 @@ async function HomePage() {
             <ImageSlider towers={towers} data-superjson />
             <Stats />
             <AboutMe />
-            <Footer />
         </div>
     );
 }

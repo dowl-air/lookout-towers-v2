@@ -2,7 +2,7 @@ import { FirestoreAdapter } from "@auth/firebase-adapter";
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 
-import { authFirestore } from "./lib/authFirestore";
+import { authFirestore } from "@/utils/authFirestore";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     trustHost: true,

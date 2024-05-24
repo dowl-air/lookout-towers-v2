@@ -1,14 +1,17 @@
-"use client";
-import React from "react";
-import HR from "./hranicni_vrch.svg";
 import Image from "next/image";
-import { useTheme } from "next-themes";
+import Link from "next/link";
 
-function ComunityPage() {
-    const { theme } = useTheme();
+import { getAllMembers } from "@/actions/members/members.action";
+import { formatDate } from "@/utils/date";
+import { getUserLevel } from "@/utils/userLevels";
+
+//todo create compoennts for badges and alerts
+
+const ComunityPage = async () => {
+    const members = await getAllMembers();
     return (
-        <div>
-            <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+        <div className="content">
+            {/* <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                 <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
                 Otevřeno, zavírá 20:00
             </span>
@@ -37,27 +40,84 @@ function ComunityPage() {
                     />
                 </svg>
                 <span>Rozhledna je označena za zaniklou.</span>
-            </div>
-            <div className="relative w-[290px] h-[215px] ml-10">
-                <Image alt="dd" src={HR} width={290} height={215} />
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-green-500">HELLO</div>
-            </div>
+            </div> */}
 
-            <div className="card w-72 bg-base-100 shadow-xl">
-                <figure className="relative">
-                    <Image alt="dd" src={HR} width={270} height={200} className={`${theme !== "light" && "invert"}`} />
-                    <p className="absolute text-6xl text-yellow-500 font-bold -rotate-[25deg]">Splněno</p>
-                </figure>
-                <div className="card-body p-6">
-                    <h2 className="card-title">Dvojitá rozhledna!</h2>
-                    <p>Rozhledna Hraniční vrch se pyšní svým unikátním designem!</p>
-                    <div className="card-actions justify-end mt-2">
-                        <button className="btn btn-primary">Zaznamenat návštěvu</button>
-                    </div>
-                </div>
+            <article className="prose mt-20">
+                <h2 className="my-3 pl-2">Statistiky uživatelů</h2>
+            </article>
+
+            <div className="overflow-x-auto mb-20">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Uživatel</th>
+                            <th></th>
+                            <th>Navštívené rozhledny</th>
+                            <th>Poslední návštěva</th>
+                            <th>Provedené úpravy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {members.map((member) => {
+                            const { name, color, level } = getUserLevel(member.visits);
+                            return (
+                                <tr key={member.id}>
+                                    <td>
+                                        <div className="flex items-center gap-3">
+                                            <div className="avatar">
+                                                <div className="mask mask-squircle w-12 h-12">
+                                                    <Image src={member.image} alt={member.name} width={48} height={48} />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-bold">{member.name}</div>
+                                                <div className="text-sm opacity-50">Česko</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div className="flex flex-wrap gap-1">
+                                            {member.id === "iMKZNJV5PE4XQjnKmZut" && <div className="badge bg-red-600 text-white">Autor</div>}
+                                            <div className={`badge`} style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
+                                                {name}
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>{member.visits}</td>
+
+                                    <td>
+                                        {member.lastVisited && (
+                                            <Link
+                                                href={`/${member.lastVisited.tower.type}/${member.lastVisited.tower.nameID}`}
+                                                className="flex gap-3"
+                                            >
+                                                <div className="mask mask-squircle w-12 h-12">
+                                                    <Image
+                                                        src={member.lastVisited.tower.mainPhotoUrl}
+                                                        alt={member.lastVisited.tower.name}
+                                                        width={48}
+                                                        height={48}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold">{member.lastVisited.tower.name}</div>
+                                                    <div className="text-sm opacity-50">{formatDate(member.lastVisited.date)}</div>
+                                                </div>
+                                            </Link>
+                                        )}
+                                    </td>
+
+                                    <td>{member.changes}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
-}
+};
 
 export default ComunityPage;
