@@ -1,5 +1,3 @@
-import React from "react";
-import logo from "./icon.png";
 import Image from "next/image";
 
 function Footer() {
@@ -8,7 +6,7 @@ function Footer() {
             <div className="flex justify-between flex-col md:flex-row gap-3 max-w-7xl w-full">
                 <div className="flex flex-col gap-3">
                     <div className="flex gap-2">
-                        <Image src={logo} alt="logo" className="w-[30px]" />
+                        <Image src={"/img/logo.png"} alt="logo" className="w-[30px] h-[30px]" width={494} height={505} />
                         <h3 className="text-lg font-bold">Rozhlednový svět</h3>
                     </div>
                     <p>Portál zajišťující přistup k databázi rozhleden a vyhlídkových věží.</p>

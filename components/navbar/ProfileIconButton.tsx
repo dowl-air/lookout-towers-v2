@@ -10,19 +10,19 @@ const ProfileIconButton = async () => {
 
     return (
         <>
-            <div className="dropdown dropdown-end">
+            <div className="dropdown dropdown-end w-10 h-10">
                 {session.user.image ? (
                     <label tabIndex={0}>
                         <div className="avatar cursor-pointer">
-                            <div className="w-12 rounded-full">
-                                <Image src={session.user.image} width={48} height={48} alt={"profile picture"} referrerPolicy="no-referrer" />
+                            <div className="w-10 rounded-full">
+                                <Image src={session.user.image} width={40} height={40} alt={"profile picture"} referrerPolicy="no-referrer" />
                             </div>
                         </div>
                     </label>
                 ) : (
                     <label tabIndex={0}>
                         <div className="avatar placeholder cursor-pointer">
-                            <div className="bg-neutral-focus text-neutral-content rounded-full w-12">
+                            <div className="bg-neutral-focus text-neutral-content rounded-full w-10">
                                 <span>{session.user.name ? session.user.name.substring(0, 2) : "TY"}</span>
                             </div>
                         </div>
