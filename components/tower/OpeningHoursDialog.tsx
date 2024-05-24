@@ -1,7 +1,6 @@
 "use client";
 import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
 import React, { useEffect, useRef, useState } from "react";
-import OpeningHours from "../[type]/[nameID]/OpeningHours";
 import { Tower } from "@/typings";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
@@ -484,7 +483,7 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
 
                     <div className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
                         <h3>Takto bude vypadat nová dlaždice s otevírací dobou: </h3>
-                        <OpeningHours openingHours={generateFinalOpeningHours()} />
+                        {/* <OpeningHours openingHours={generateFinalOpeningHours()} /> */}
                     </div>
 
                     {errorText && <p className="text-error self-end">{errorText}</p>}

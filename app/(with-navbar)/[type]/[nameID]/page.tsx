@@ -12,10 +12,9 @@ import Map from "./Map";
 import Parameters from "./Parameters";
 import OpeningHours from "./OpeningHours";
 import Admission from "./Admission";
-import Navbar from "@/app/Navbar";
 import MainInfoPhone from "./MainInfoPhone";
 import RatingBox from "./RatingBox";
-import OpeningHoursDialog from "@/app/komunita/OpeningHoursDialog";
+import OpeningHoursDialog from "@/components/tower/OpeningHoursDialog";
 import { Metadata, ResolvingMetadata } from "next";
 
 const URL = "https://firebasestorage.googleapis.com/v0/b/";
@@ -96,7 +95,6 @@ async function TowerPage({ params: { type, nameID } }: PageProps) {
     const { count, ratings, average } = towerRating;
     return (
         <div className="flex flex-col">
-            <Navbar />
             <div id={"top"} className={"flex mb-8 flex-1"}>
                 <div id={"top-content"} className={"max-w-screen-xl hidden lg:flex flex-col lg:justify-between lg:flex-row mx-auto"}>
                     <MainInfo tower={tower} average={average} count={count} />

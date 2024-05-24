@@ -1,9 +1,9 @@
 "use client";
 import React, { Suspense, useState } from "react";
-import Filter from "./Filter";
+import { Filter } from "@/typings";
 import Results from "./Results";
-import Navbar from "../../components/navbar/Navbar";
 import { useSearchParams } from "next/navigation";
+import Filter_ from "./Filter";
 
 function TowersPage() {
     const searchParams = useSearchParams();
@@ -19,13 +19,10 @@ function TowersPage() {
 
     const [filter, setFilter] = useState<Filter>(initFilter);
     return (
-        <>
-            <Navbar />
-            <div className="flex flex-col xl:flex-row-reverse gap-4 justify-center items-center xl:items-start mt-4">
-                <Filter applyFilter={setFilter} initFilter={initFilter} />
-                <Results filter={filter} />
-            </div>
-        </>
+        <div className="flex flex-col xl:flex-row-reverse gap-4 justify-center items-center xl:items-start mt-4">
+            <Filter_ applyFilter={setFilter} initFilter={initFilter} />
+            <Results filter={filter} />
+        </div>
     );
 }
 

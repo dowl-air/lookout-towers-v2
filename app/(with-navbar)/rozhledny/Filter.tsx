@@ -14,7 +14,7 @@ const emptyFilter: Filter = {
     county: "",
 };
 
-function Filter({ applyFilter, initFilter }: ComponentProps) {
+function Filter_({ applyFilter, initFilter }: ComponentProps) {
     const createFilterObject = (): Filter => {
         return {
             searchTerm: searchTerm,
@@ -110,4 +110,4 @@ function Filter({ applyFilter, initFilter }: ComponentProps) {
     );
 }
 
-export default Filter;
+export default Filter_;

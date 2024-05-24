@@ -1,7 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/navbar/Navbar";
 import { signIn } from "next-auth/react";
 import DynamicMap from "./DynamicMap";
 import ProfileBox from "./ProfileBox";
@@ -83,42 +82,29 @@ function Page() {
 
     if (status === "loading")
         return (
-            <>
-                <div className="flex flex-col items-center ">
-                    <Navbar />
-                    <span className="loading loading-dots loading-lg mt-10 text-primary"></span>
-                </div>
-            </>
+            <div className="flex flex-col items-center ">
+                <span className="loading loading-dots loading-lg mt-10 text-primary"></span>
+            </div>
         );
 
     return (
-        <>
-            <div className="flex flex-col items-center gap-3">
-                <Navbar />
-                <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
-                    <ProfileBox
-                        score={0}
-                        changes={0}
-                        favs={favsIDs.length}
-                        ratings={reviews.length}
-                        visits={visits.length}
-                        loading={loadCounter > 0}
+        <div className="flex flex-col items-center gap-3">
+            <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
+                <ProfileBox score={0} changes={0} favs={favsIDs.length} ratings={reviews.length} visits={visits.length} loading={loadCounter > 0} />
+                <div className="flex h-[170px] w-[97vw] flex-grow sm:h-full">
+                    {loadCounter > 0 && <span className="loading loading-dots loading-lg absolute z-10 text-primary"></span>}
+                    <DynamicMap
+                        lat={49.8237572}
+                        long={15.6086383}
+                        towers={towers}
+                        visits={visits.map((v) => v.tower_id)}
+                        favs={favsIDs}
+                        type={"neco"}
                     />
-                    <div className="flex h-[170px] w-[97vw] flex-grow sm:h-full">
-                        {loadCounter > 0 && <span className="loading loading-dots loading-lg absolute z-10 text-primary"></span>}
-                        <DynamicMap
-                            lat={49.8237572}
-                            long={15.6086383}
-                            towers={towers}
-                            visits={visits.map((v) => v.tower_id)}
-                            favs={favsIDs}
-                            type={"neco"}
-                        />
-                    </div>
                 </div>
-                <TabsAndContent visits={visits} favs={favsIDs} towers={towers} loading={loadCounter > 0} />
             </div>
-        </>
+            <TabsAndContent visits={visits} favs={favsIDs} towers={towers} loading={loadCounter > 0} />
+        </div>
     );
 }
 

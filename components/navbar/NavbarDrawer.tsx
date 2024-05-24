@@ -1,5 +1,8 @@
+import { redirect } from "next/navigation";
+
 import ThemeChangerPhone from "@/components/navbar/ThemeChangerPhone";
 import NavbarSideLink from "@/components/navbar/NavbarSideLink";
+import NavbarSideButton from "@/components/navbar/NavbarSideButton";
 import { auth, signIn, signOut } from "@/auth";
 
 const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
@@ -28,9 +31,13 @@ const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
                                 action={async () => {
                                     "use server";
                                     await signOut();
+                                    redirect("/");
                                 }}
+                                className="block"
                             >
-                                <button type="submit">Odhlásit se</button>
+                                <NavbarSideButton type="submit" className="w-full text-left">
+                                    Odhlásit se
+                                </NavbarSideButton>
                             </form>
                         </li>
                     ) : (
@@ -40,8 +47,11 @@ const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
                                     "use server";
                                     await signIn();
                                 }}
+                                className="block"
                             >
-                                <button type="submit">Přihlásit se</button>
+                                <NavbarSideButton type="submit" className="w-full text-left">
+                                    Přihlásit se
+                                </NavbarSideButton>
                             </form>
                         </li>
                     )}

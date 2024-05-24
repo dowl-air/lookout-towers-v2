@@ -1,10 +1,9 @@
 import React from "react";
 import Map from "./Map";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
-import Navbar from "../../components/navbar/Navbar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,12 +25,9 @@ const getAllTowers = async (): Promise<Tower[]> => {
 async function MapPage() {
     const towers: Tower[] = await getAllTowers();
     return (
-        <>
-            <Navbar />
-            <div className="flex justify-center items-stretch flex-grow h-[calc(100vh-70px-50px)] m-6">
-                <Map lat={49.8237572} long={15.6086383} name="Rozhlednový svět" towers={towers} />
-            </div>
-        </>
+        <div className="flex justify-center items-stretch flex-grow h-[calc(100vh-70px-50px)] m-6">
+            <Map lat={49.8237572} long={15.6086383} name="Rozhlednový svět" towers={towers} />
+        </div>
     );
 }
 

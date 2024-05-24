@@ -44,7 +44,7 @@ const generateHeading = (openingHours: OpeningHours, type: string): string => {
     } | ${getDaysString(openingHours.days)} | ${openingHours.time_start} - ${openingHours.time_end} h`;
 };
 
-function OpeningHours({ tower, openingHours, children }: { tower?: Tower; openingHours?: OpeningHours; children?: ReactNode }) {
+function OpeningHours_({ tower, openingHours, children }: { tower?: Tower; openingHours?: OpeningHours; children?: ReactNode }) {
     const OH: OpeningHours = tower ? tower.openingHours : openingHours || { type: 0 };
     return (
         <div
@@ -61,4 +61,4 @@ function OpeningHours({ tower, openingHours, children }: { tower?: Tower; openin
     );
 }
 
-export default OpeningHours;
+export default OpeningHours_;

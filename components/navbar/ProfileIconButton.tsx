@@ -1,6 +1,8 @@
-import { auth, signOut } from "@/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { auth, signOut } from "@/auth";
 
 const ProfileIconButton = async () => {
     const session = await auth();
@@ -36,9 +38,13 @@ const ProfileIconButton = async () => {
                             action={async () => {
                                 "use server";
                                 await signOut();
+                                redirect("/");
                             }}
+                            className="block"
                         >
-                            <button type="submit">Odhlásit se</button>
+                            <button type="submit" className="w-full text-left">
+                                Odhlásit se
+                            </button>
                         </form>
                     </li>
                 </ul>
