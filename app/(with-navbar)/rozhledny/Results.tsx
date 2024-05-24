@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Filter, SearchResult, Tower } from "@/typings";
 import TowerCard from "../../TowerCard";
-import { searchTowers } from "@/lib/search";
+import { searchTowers } from "@/utils/search";
 
 const LIMIT = 20;
 
