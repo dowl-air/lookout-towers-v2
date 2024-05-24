@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import Navbar from "../Navbar";
+import Navbar from "../../components/navbar/Navbar";
 import { signIn } from "next-auth/react";
 import DynamicMap from "./DynamicMap";
 import ProfileBox from "./ProfileBox";

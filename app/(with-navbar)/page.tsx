@@ -1,15 +1,15 @@
 import React from "react";
 import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 
-import { db } from "./firebase";
-import ImageSlider from "./SwipableCarousel";
+import { db } from "../firebase";
+import ImageSlider from "../SwipableCarousel";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
-import Stats from "./Stats";
-import AboutMe from "./AboutMe";
-import Navbar from "./Navbar";
-import Hero from "./Hero";
-import Footer from "./Footer";
+import Stats from "../Stats";
+import AboutMe from "../AboutMe";
+import Navbar from "../../components/navbar/Navbar";
+import Hero from "../Hero";
+import Footer from "../Footer";
 import NotFinishedWeb from "@/components/warnings/NotFinishedWeb";
 
 // every 1 hour new towers
@@ -53,7 +53,6 @@ async function HomePage() {
     const towers: Tower[] = await getEightRandomTowers();
     return (
         <div className="flex flex-col justify-center">
-            <Navbar />
             <Hero />
             <NotFinishedWeb />
             <ImageSlider towers={towers} data-superjson />

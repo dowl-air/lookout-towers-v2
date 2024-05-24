@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Navbar from "../Navbar";
+import Navbar from "../../components/navbar/Navbar";
 import HR from "./hranicni_vrch.svg";
 import Image from "next/image";
 import { useTheme } from "next-themes";

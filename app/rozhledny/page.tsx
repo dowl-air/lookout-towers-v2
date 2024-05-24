@@ -2,7 +2,7 @@
 import React, { Suspense, useState } from "react";
 import Filter from "./Filter";
 import Results from "./Results";
-import Navbar from "../Navbar";
+import Navbar from "../../components/navbar/Navbar";
 import { useSearchParams } from "next/navigation";
 
 function TowersPage() {

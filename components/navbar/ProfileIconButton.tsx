@@ -1,23 +1,19 @@
-"use client";
-import { User } from "@/typings";
-import React from "react";
-import { signOut } from "next-auth/react";
+import { auth, signOut } from "@/auth";
 import Image from "next/image";
 import Link from "next/link";
 
-type ComponentProps = {
-    user: User;
-};
+const ProfileIconButton = async () => {
+    const session = await auth();
+    if (!session?.user) return null;
 
-function ProfileIconButton({ user }: ComponentProps) {
     return (
         <>
             <div className="dropdown dropdown-end">
-                {user?.image ? (
+                {session.user.image ? (
                     <label tabIndex={0}>
                         <div className="avatar cursor-pointer">
                             <div className="w-12 rounded-full">
-                                <Image src={user?.image} width={48} height={48} alt={"profile picture"} referrerPolicy="no-referrer" />
+                                <Image src={session.user.image} width={48} height={48} alt={"profile picture"} referrerPolicy="no-referrer" />
                             </div>
                         </div>
                     </label>
@@ -25,7 +21,7 @@ function ProfileIconButton({ user }: ComponentProps) {
                     <label tabIndex={0}>
                         <div className="avatar placeholder cursor-pointer">
                             <div className="bg-neutral-focus text-neutral-content rounded-full w-12">
-                                <span>{user && user.name ? user.name.substring(0, 2) : "TY"}</span>
+                                <span>{session.user.name ? session.user.name.substring(0, 2) : "TY"}</span>
                             </div>
                         </div>
                     </label>
@@ -35,13 +31,20 @@ function ProfileIconButton({ user }: ComponentProps) {
                     <li>
                         <Link href={"/profil"}>Můj profil</Link>
                     </li>
-                    <li onClick={() => signOut()}>
-                        <a>Odhlásit se</a>
+                    <li>
+                        <form
+                            action={async () => {
+                                "use server";
+                                await signOut();
+                            }}
+                        >
+                            <button type="submit">Odhlásit se</button>
+                        </form>
                     </li>
                 </ul>
             </div>
         </>
     );
-}
+};
 
 export default ProfileIconButton;

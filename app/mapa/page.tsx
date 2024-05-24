@@ -4,7 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
-import Navbar from "../Navbar";
+import Navbar from "../../components/navbar/Navbar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
