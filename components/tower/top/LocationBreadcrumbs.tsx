@@ -1,14 +1,10 @@
-import { Tower } from "@/typings";
 import Link from "next/link";
-import React from "react";
 
-type Props = {
-    tower: Tower;
-};
+import { Tower } from "@/typings";
 
-function LocationBreadcrumbs({ tower }: Props) {
+function LocationBreadcrumbs({ tower }: { tower: Tower }) {
     return (
-        <div className="flex max-w-[94vw] justify-center lg:justify-start prose prose-sm lg:prose-xl text-md lg:text-sm breadcrumbs">
+        <div className="flex max-w-[94vw] justify-center lg:justify-start prose prose-sm lg:prose-xl text-md lg:text-sm breadcrumbs self-start">
             <ul className="flex !pl-0 overflow-x-auto">
                 <li>
                     <Link href={{ pathname: "/rozhledny" }}>{tower.country}</Link>

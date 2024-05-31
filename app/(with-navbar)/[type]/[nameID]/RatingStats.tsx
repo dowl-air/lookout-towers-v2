@@ -1,5 +1,5 @@
 import React from "react";
-import ThemedRating from "./ThemedRating";
+import ThemedRating from "../../../../components/shared/ThemedRating";
 import { Rating } from "@/typings";
 
 const getAverage = (reviews: Rating[]): number => {

@@ -1,6 +1,5 @@
 import { Tower } from "@/typings";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
-import React from "react";
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

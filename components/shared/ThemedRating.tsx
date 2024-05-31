@@ -1,7 +1,3 @@
-"use client";
-import { getThemeColors } from "@/utils/getThemeColors";
-import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
 import { Rating } from "react-simple-star-rating";
 
 function ThemedRating({
@@ -19,25 +15,6 @@ function ThemedRating({
     setValue?: Function;
     readonly?: boolean;
 }) {
-    const [colors, setColors] = useState(undefined);
-    const { theme } = useTheme();
-
-    useEffect(() => {
-        if (theme) setColors(getThemeColors(theme));
-    }, [theme]);
-
-    if (!colors)
-        return (
-            <span
-                style={{
-                    width: `${size * iconsCount}px`,
-                    height: `${size}px`,
-                    display: "block",
-                }}
-                className={className}
-            ></span>
-        );
-
     return (
         <Rating
             readonly={readonly}
@@ -45,8 +22,8 @@ function ThemedRating({
             initialValue={value}
             emptyClassName="flex"
             SVGclassName="inline-block"
-            fillColor={colors["primary"]}
-            emptyColor={colors["primary-content"]}
+            fillColor={"#01CB5F"}
+            emptyColor={"#D4D6D9"}
             size={size}
             className={className}
             iconsCount={iconsCount}

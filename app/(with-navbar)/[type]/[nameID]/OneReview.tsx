@@ -1,7 +1,7 @@
 "use client";
 import { Rating, UserFromDB } from "@/typings";
 import React, { useEffect, useState } from "react";
-import ThemedRating from "./ThemedRating";
+import ThemedRating from "../../../../components/shared/ThemedRating";
 import UserProfileAvatar from "@/components/UserProfileAvatar";
 
 function OneReview({ review }: { review: Rating }) {

@@ -2,7 +2,7 @@
 import { Rating, Tower } from "@/typings";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import ThemedRating from "./ThemedRating";
+import ThemedRating from "../../../../components/shared/ThemedRating";
 
 const RatingModal = ({
     tower,

@@ -114,7 +114,6 @@ export type Visit = {
     date: Date;
     text: string;
     created: Date;
-    id: string;
 }
 
 export type OpeningHours = {

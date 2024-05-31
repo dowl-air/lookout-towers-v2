@@ -56,4 +56,9 @@ export const getAllTowers = async (): Promise<Tower[]> => {
     return towers;
 };
 
-
+export const getTowerObjectByNameID = async (name_id: string): Promise<Tower> => {
+    const q = query(collection(db, "towers"), where("nameID", "==", name_id));
+    const snap = await getDocs(q);
+    const doc = snap.docs[0];
+    return normalizeTowerObject(doc.data() as TowerFirebase);
+};

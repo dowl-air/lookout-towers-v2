@@ -109,7 +109,7 @@ function Carousel({ images, phone }: PageProps) {
                             src={images[index]}
                             fill
                             priority
-                            className="block object-cover"
+                            className="block object-cover !my-0"
                             sizes="(max-width: 450px) 100vw, (max-width: 800px) 33vw, 25vw"
                             onLoadingComplete={(e) => {
                                 if (timer.current) {
