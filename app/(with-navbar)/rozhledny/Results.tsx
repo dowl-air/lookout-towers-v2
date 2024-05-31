@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { Filter, SearchResult, Tower } from "@/typings";
-import TowerCard from "../../TowerCard";
+import TowerCard from "../../../components/homepage/TowerCard";
 import { searchTowers } from "@/utils/search";
 
 const LIMIT = 20;

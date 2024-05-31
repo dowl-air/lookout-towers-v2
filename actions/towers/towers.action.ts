@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/app/firebase";
+import { db } from "@/utils/firebase";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { collection, getAggregateFromServer, getDocs, limit, orderBy, query, where, count, average } from "firebase/firestore";
@@ -44,6 +44,15 @@ export const getRandomTowers = async (count: number): Promise<Tower[]> => {
         towers[idx].rating = rating;
     });
 
+    return towers;
+};
+
+export const getAllTowers = async (): Promise<Tower[]> => {
+    const towers: Tower[] = [];
+    const querySnapshot = await getDocs(collection(db, "towers"));
+    querySnapshot.forEach((doc) => {
+        towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
+    });
     return towers;
 };
 

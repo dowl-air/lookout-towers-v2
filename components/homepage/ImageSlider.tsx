@@ -4,7 +4,7 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 import { Tower } from "@/typings";
-import TowerCard from "../../app/TowerCard";
+import TowerCard from "./TowerCard";
 
 export default function ImageSlider({ towers }: { towers: Tower[] }) {
     return (

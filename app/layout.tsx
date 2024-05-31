@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "next-themes";
 
 import "./globals.css";
-import { NextAuthProvider, NextThemeProvider } from "./providers";
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://rozhlednovysvet.cz/"),
@@ -38,6 +39,8 @@ export const metadata: Metadata = {
     },
 };
 
+//todo remove session provider when rewrite session to ssr
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="cs" className="font-sans" suppressHydrationWarning>
@@ -51,9 +54,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <meta name="theme-color" content="#ffffff" />
             </head>
             <body className="overflow-x-hidden">
-                <NextAuthProvider>
-                    <NextThemeProvider>{children}</NextThemeProvider>
-                </NextAuthProvider>
+                <SessionProvider>
+                    <ThemeProvider enableSystem={false} defaultTheme="light">
+                        {children}
+                    </ThemeProvider>
+                </SessionProvider>
                 <SpeedInsights />
             </body>
         </html>

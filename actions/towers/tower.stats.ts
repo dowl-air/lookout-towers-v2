@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/app/firebase";
+import { db } from "@/utils/firebase";
 import { Timestamp, collection, getCountFromServer, getDocs, limit, orderBy, query } from "firebase/firestore";
 
 export const getChangesCount = async (): Promise<number> => {

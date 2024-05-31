@@ -1,21 +1,9 @@
 import { MetadataRoute } from 'next'
-import { db } from './firebase'
-import { Tower, TowerFirebase } from '@/typings'
-import { getDocs, collection } from 'firebase/firestore';
-import { normalizeTowerObject } from '@/utils/normalizeTowerObject';
+
+import { getAllTowers } from '@/actions/towers/towers.action';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-
-    const getAllTowers = async (): Promise<Tower[]> => {
-        const towers: Tower[] = [];
-        const querySnapshot = await getDocs(collection(db, "towers"));
-        querySnapshot.forEach((doc) => {
-            towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
-        });
-        return towers;
-    };
-
-    const towers: Tower[] = await getAllTowers();
+    const towers = await getAllTowers();
 
     return [
         {

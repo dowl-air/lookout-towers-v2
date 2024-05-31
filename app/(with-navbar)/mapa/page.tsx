@@ -1,7 +1,7 @@
 import React from "react";
 import Map from "./Map";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../../utils/firebase";
 import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { Metadata } from "next";

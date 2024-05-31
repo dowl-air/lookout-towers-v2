@@ -1,11 +1,10 @@
-import React from "react";
-import { SearchResult, Tower } from "@/typings";
 import Link from "next/link";
 import Image from "next/image";
 
-type PageProps = {
-    tower: Tower;
-};
+import { SearchResult, Tower } from "@/typings";
+
+//todo: somehow get rid of the tower and tower_search props and use only one
+//todo? also i guest meili serach results should have ratings
 
 function TowerCard({ tower, tower_search, priority = false }: { tower?: Tower; tower_search?: SearchResult; priority?: boolean }) {
     const name = tower?.name || tower_search?.name || "";

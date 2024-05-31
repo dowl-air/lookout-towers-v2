@@ -1,7 +1,7 @@
 "use server";
 import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 
-import { db } from "@/app/firebase";
+import { db } from "@/utils/firebase";
 import { Tower, User } from "@/typings";
 
 export const getAllMembers = async () => {
