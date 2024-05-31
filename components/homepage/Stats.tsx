@@ -1,51 +1,13 @@
-import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query } from "firebase/firestore";
-import React from "react";
-import { db } from "./firebase";
-import { Tower, TowerFirebase } from "@/typings";
-import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
+import { getChangesCount, getLastModifiedTowerDate, getRatingsCount, getTowersCount, getUsersCount } from "@/actions/towers/tower.stats";
 
 export const revalidate = 3600;
 
-const getChangesNumber = async (): Promise<number> => {
-    const docSnap = await getDoc(doc(db, "changes", "meta"));
-    return docSnap.exists() ? docSnap.data().count : 0;
-};
-
-const getRatingsNumber = async (): Promise<number> => {
-    const ratingsCol = collection(db, "ratings");
-    const snapshot = await getCountFromServer(ratingsCol);
-    return snapshot.data().count;
-};
-
-const getUsersNumber = async (): Promise<number> => {
-    const usersCol = collection(db, "users");
-    const snapshot = await getCountFromServer(usersCol);
-    return snapshot.data().count;
-};
-
-const getTowersNumber = async (): Promise<number> => {
-    const towersCol = collection(db, "towers");
-    const snapshot = await getCountFromServer(towersCol);
-    return snapshot.data().count;
-};
-
-const getTowersDate = async (): Promise<Date> => {
-    const q = query(collection(db, "towers"), orderBy("modified"), limit(1));
-    const querySnapshot = await getDocs(q);
-    let myDate = new Date();
-    querySnapshot.forEach((doc) => {
-        const tower: Tower = normalizeTowerObject(doc.data() as TowerFirebase);
-        myDate = tower.modified;
-    });
-    return myDate;
-};
-
 async function Stats() {
-    const changesNumberPromise: Promise<number> = getChangesNumber();
-    const ratingsNumberPromise: Promise<number> = getRatingsNumber();
-    const usersNumberPromise: Promise<number> = getUsersNumber();
-    const towersNumberPromise: Promise<number> = getTowersNumber();
-    const towersDatePromise: Promise<Date> = getTowersDate();
+    const changesNumberPromise: Promise<number> = getChangesCount();
+    const ratingsNumberPromise: Promise<number> = getRatingsCount();
+    const usersNumberPromise: Promise<number> = getUsersCount();
+    const towersNumberPromise: Promise<number> = getTowersCount();
+    const towersDatePromise: Promise<Date> = getLastModifiedTowerDate();
 
     const [changesNumber, ratingsNumber, usersNumber, towersNumber, towersDate] = await Promise.all([
         changesNumberPromise,

@@ -1,17 +1,12 @@
 "use client";
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 import { Tower } from "@/typings";
-import TowerCard from "./TowerCard";
+import TowerCard from "../../app/TowerCard";
 
-type PageProps = {
-    towers: Tower[];
-};
-
-export default function ImageSlider({ towers }: PageProps) {
+export default function ImageSlider({ towers }: { towers: Tower[] }) {
     return (
         <Swiper
             centeredSlides
@@ -23,7 +18,6 @@ export default function ImageSlider({ towers }: PageProps) {
                 delay: 2500,
                 disableOnInteraction: true,
             }}
-            //modules={[Autoplay]}
             breakpoints={{
                 0: {
                     slidesPerView: 2,

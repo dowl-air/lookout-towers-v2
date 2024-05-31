@@ -1,5 +1,4 @@
-import React from "react";
-import HeroSearch from "./HeroSearch";
+import HeroSearch from "@/components/homepage/HeroSearch";
 
 function Hero() {
     return (

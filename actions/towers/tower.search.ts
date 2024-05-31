@@ -1,5 +1,7 @@
-import { SearchResult } from '@/typings';
-import { MeiliSearch } from 'meilisearch';
+"use server";
+import MeiliSearch from "meilisearch";
+
+import { SearchResult } from "@/typings";
 
 const client = new MeiliSearch({
     host: 'https://search.rozhlednovysvet.cz',

@@ -1,9 +1,10 @@
 "use client";
-import { searchTowers } from "@/utils/search";
-import { SearchResult } from "@/typings";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+
+import { SearchResult } from "@/typings";
+import { searchTowers } from "@/actions/towers/tower.search";
 
 function HeroSearch() {
     const [query, setQuery] = useState<string>("");

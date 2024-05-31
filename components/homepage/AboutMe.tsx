@@ -1,13 +1,18 @@
 import Image from "next/image";
-import React from "react";
-import selfie from "public/img/me.jpg";
 
 function AboutMe() {
     return (
         <div className="md:w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-32 md:mt-36 flex-wrap md:flex-nowrap mb-10">
             <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
                 <div className="w-[180px] h-[180px] overflow-hidden rounded-full mt-[-90px] ">
-                    <Image alt={"Selfie of web author."} className="w-[180px] h-[180px]" src={selfie} placeholder="blur" />
+                    <Image
+                        alt={"Selfie of web author."}
+                        className="w-[180px] h-[180px]"
+                        src={"/img/me.jpg"}
+                        width={2248}
+                        height={2249}
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+                    />
                 </div>
                 <h2 className="font-bold text-2xl mt-8 text-primary-content">Ahoj, já jsem Daniel</h2>
                 <p className="mt-8 px-4 text-center text-primary-content">
