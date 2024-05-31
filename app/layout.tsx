@@ -4,8 +4,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { NextAuthProvider, NextThemeProvider } from "./providers";
 
-export const revalidate = 3600;
-
 export const metadata: Metadata = {
     metadataBase: new URL("https://rozhlednovysvet.cz/"),
     title: {
