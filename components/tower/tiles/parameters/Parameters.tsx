@@ -54,7 +54,7 @@ function Parameters(params: ComponentParams) {
                             </tr>
                             <tr>
                                 <th className="text-base-content">Zpřístupnění</th>
-                                <td>{params.opened.toLocaleDateString()}</td>
+                                <td>{params.opened.toLocaleDateString("cs")}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -91,7 +91,7 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                                 <tr>
                                     <th>Zpřístupnění</th>
-                                    <td>{params.opened.toLocaleDateString()}</td>
+                                    <td>{params.opened.toLocaleDateString("cs")}</td>
                                 </tr>
                                 <tr>
                                     <th>Nadmořská výška</th>
@@ -103,7 +103,7 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                                 <tr>
                                     <th>Naposledy upraveno</th>
-                                    <td>{params.modified.toLocaleDateString()}</td>
+                                    <td>{params.modified.toLocaleDateString("cs")}</td>
                                 </tr>
                             </tbody>
                         </table>

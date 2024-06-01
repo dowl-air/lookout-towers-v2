@@ -1,13 +1,8 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type PageProps = {
-    images: string[];
-    phone?: boolean;
-};
-
-function Carousel({ images, phone }: PageProps) {
+function Carousel({ images, phone }: { images: string[]; phone?: boolean }) {
     const [index, setIndex] = useState(0);
     const [loading, setLoading] = useState<boolean>(true);
     const timer = useRef<ReturnType<typeof setTimeout>>();
@@ -27,6 +22,7 @@ function Carousel({ images, phone }: PageProps) {
         setIndex(idx);
         document?.getElementById(`image_${idx}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     };
+
     const moveBackwards = () => {
         const idx = index !== 0 ? index - 1 : 0;
         setIndex(idx);
@@ -66,6 +62,7 @@ function Carousel({ images, phone }: PageProps) {
                         </figure>
                     </label>
                 </div>
+
                 <div
                     className={`btn btn-warning btn-outline relative bottom-[13rem] left-[3rem] ${index === 0 && "btn-disabled"}`}
                     onClick={moveBackwards}
@@ -78,6 +75,7 @@ function Carousel({ images, phone }: PageProps) {
                         </g>
                     </svg>
                 </div>
+
                 <div
                     className={`btn btn-warning btn-outline relative bottom-[13rem] right-[-30rem] ${index === images.length - 1 && "btn-disabled"}`}
                     onClick={moveForvard}
@@ -109,7 +107,7 @@ function Carousel({ images, phone }: PageProps) {
                             src={images[index]}
                             fill
                             priority
-                            className="block object-cover !my-0"
+                            className="block object-cover"
                             sizes="(max-width: 450px) 100vw, (max-width: 800px) 33vw, 25vw"
                             onLoadingComplete={(e) => {
                                 if (timer.current) {
@@ -143,7 +141,7 @@ function Carousel({ images, phone }: PageProps) {
                 </div>
             </div>
 
-            <div className="h-28 hidden lg:flex overflow-x-hidden max-w-screen-sm gap-2 scroll-smooth snap-center scroll-p-[280px] my-3">
+            <div className="h-28 hidden lg:flex overflow-x-scroll max-w-screen-sm gap-2 scroll-smooth snap-center scroll-p-[280px] my-3">
                 {images.map((image, idx) => (
                     <Image
                         key={idx}
