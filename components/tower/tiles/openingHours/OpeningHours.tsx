@@ -1,6 +1,6 @@
 import { OpeningHours, Tower } from "@/typings";
 import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 function capitalizeFirstLetter(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1);

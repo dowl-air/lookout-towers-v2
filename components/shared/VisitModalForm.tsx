@@ -4,6 +4,8 @@ import { Tower, Visit } from "@/typings";
 import { useRef, useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
 
+//! there should be form with id="form-visit-button" in the parent component (like in VisitButton.tsx)
+
 export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; tower: Tower }) => {
     const [visitedText, setVisitedText] = useState(initVisit?.text || "");
     const [visitedDate, setVisitedDate] = useState(initVisit?.date || new Date());

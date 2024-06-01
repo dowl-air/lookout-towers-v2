@@ -1,14 +1,14 @@
 import { Metadata } from "next";
 
-import Carousel from "./Carousel";
-import HistoryText from "./HistoryText";
-import Map from "./Map";
-import Parameters from "./Parameters";
-import OpeningHours from "./OpeningHours";
-import Admission from "./Admission";
 import RatingBox from "./RatingBox";
+import Carousel from "./Carousel";
 
-import OpeningHoursDialog from "@/components/tower/OpeningHoursDialog";
+import HistoryText from "@/components/tower/tiles/HistoryText";
+import Map from "@/components/tower/tiles/Map";
+import Parameters from "@/components/tower/tiles/parameters/Parameters";
+import OpeningHours from "@/components/tower/tiles/openingHours/OpeningHours";
+import Admission from "@/components/tower/tiles/Admission";
+import OpeningHoursDialog from "@/components/tower/tiles/openingHours/OpeningHoursDialog";
 import { getTowerObjectByNameID, getTowerRatingAndCount } from "@/actions/towers/towers.action";
 import { getUrlsTowerGallery } from "@/actions/towers/tower.photo";
 import { Tower } from "@/typings";
@@ -52,11 +52,8 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
                     <Admission />
                     <Parameters {...tower} />
                 </div>
-
-                {tower.history && <HistoryText text={tower.history || ""} />}
-
-                <RatingBox tower={tower} count={count} average={avg} reviews={[]} data-superjson />
-
+                {tower.history && <HistoryText text={tower.history} />}
+                <RatingBox tower={tower} count={count} average={avg} reviews={[]} />
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>
         </div>

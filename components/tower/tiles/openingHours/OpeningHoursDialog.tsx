@@ -1,6 +1,6 @@
 "use client";
 import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Tower } from "@/typings";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {

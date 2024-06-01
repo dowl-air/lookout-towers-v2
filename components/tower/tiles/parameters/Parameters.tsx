@@ -1,6 +1,6 @@
 "use client";
 import { GPS } from "@/typings";
-import React, { useRef } from "react";
+import { useRef } from "react";
 
 type ComponentParams = {
     elevation: number;
