@@ -16,6 +16,9 @@ export type User = {
     email?: string | undefined | null;
     image?: string | undefined | null;
     id?: string | undefined | null;
+    visits?: number | undefined | null;
+    changes?: number | undefined | null;
+    lastVisited?: {tower: Tower, date: string} | undefined | null;
 } | undefined;
 
 export type UserFromDB = {
@@ -111,7 +114,6 @@ export type Visit = {
     date: Date;
     text: string;
     created: Date;
-    id: string;
 }
 
 export type OpeningHours = {

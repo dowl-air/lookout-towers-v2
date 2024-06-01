@@ -1,12 +1,9 @@
-import "./globals.css";
-import { NextAuthProvider, NextThemeProvider } from "./providers";
-import ClientLinkDrawerClose from "./ClientLinkDrawerClose";
-import { ProfileClientButtonDrawer, Unsign } from "./personalisedLinks";
-import ThemeChangerPhone from "./ThemeChangerPhone";
 import { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "next-themes";
 
-export const revalidate = 3600;
+import "./globals.css";
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://rozhlednovysvet.cz/"),
@@ -42,39 +39,26 @@ export const metadata: Metadata = {
     },
 };
 
+//todo remove session provider when rewrite session to ssr
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="cs" className="font-sans" suppressHydrationWarning>
-            <head />
+            <head>
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+                <link rel="manifest" href="/site.webmanifest" />
+                <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+                <meta name="msapplication-TileColor" content="#da532c" />
+                <meta name="theme-color" content="#ffffff" />
+            </head>
             <body className="overflow-x-hidden">
-                <NextAuthProvider>
-                    <NextThemeProvider>
-                        <div className="drawer">
-                            <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-                            <div className="drawer-content">{children}</div>
-                            <div className="drawer-side z-10">
-                                <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-                                <ul tabIndex={0} className="menu p-4 w-80 h-full bg-base-200">
-                                    <li>
-                                        <ClientLinkDrawerClose text="Rozhledny" href="/rozhledny" />
-                                    </li>
-                                    <li>
-                                        <ClientLinkDrawerClose text="Mapa" href="/mapa" />
-                                    </li>
-                                    {/* <li>
-                                        <ClientLinkDrawerClose text="Komunita" href="/komunita" />
-                                    </li> */}
-                                    <ProfileClientButtonDrawer />
-                                    <li>
-                                        <Unsign />
-                                    </li>
-
-                                    <ThemeChangerPhone />
-                                </ul>
-                            </div>
-                        </div>
-                    </NextThemeProvider>
-                </NextAuthProvider>
+                <SessionProvider>
+                    <ThemeProvider enableSystem={false} defaultTheme="light">
+                        {children}
+                    </ThemeProvider>
+                </SessionProvider>
                 <SpeedInsights />
             </body>
         </html>

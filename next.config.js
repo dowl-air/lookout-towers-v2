@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-        swcPlugins: [["next-superjson-plugin", {}]],
-    },
     images: {
         remotePatterns: [
             {
@@ -18,7 +15,7 @@ const nextConfig = {
                 hostname: "firebasestorage.googleapis.com",
             },
         ],
-        minimumCacheTTL: 2592000, // one month TTL for images
+        minimumCacheTTL: 2592000,
     },
     env: {
         MEILI_KEY: process.env.MEILI_KEY,
