@@ -45,8 +45,8 @@ function VisitsTimeline({ visits, loading, loadingTowers, towers }: { visits: Vi
                 .sort((a, b) => {
                     return b.date.getTime() - a.date.getTime();
                 })
-                .map((visit) => (
-                    <li className="mb-10 ml-6 max-w-[calc(90vw-1.5rem)]" key={visit.id}>
+                .map((visit, idx) => (
+                    <li className="mb-10 ml-6 max-w-[calc(90vw-1.5rem)]" key={idx}>
                         <span className="absolute flex items-center justify-center w-6 h-6 bg-base-200 rounded-full -left-3 ring-8 ring-base-100">
                             <svg
                                 className="w-2.5 h-2.5 text-secondary"
