@@ -2,10 +2,8 @@
 import { auth } from "@/auth";
 import { User } from "next-auth";
 
-export const checkAuth = async (): Promise<User> => {
+export const checkAuth = async (): Promise<User | null> => {
     const session = await auth();
-    if (!session) {
-        throw new Error("Unauthorized");
-    }
-    return session.user;
+    if (session?.user) return session.user;
+    return null;
 };

@@ -105,7 +105,7 @@ export type Rating = {
     rating: number;
     created: Date;
     text: string;
-    id: string;
+    user?: User;
 }
 
 export type Visit = {

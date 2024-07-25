@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 
-import RatingBox from "./RatingBox";
 import Carousel from "./Carousel";
 
 import HistoryText from "@/components/tower/tiles/HistoryText";
@@ -16,6 +15,7 @@ import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
 import Legend from "@/components/tower/top/Legend";
 import RatingTop from "@/components/tower/top/RatingTop";
 import Buttons from "@/components/tower/top/Buttons";
+import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 
 export const revalidate = 3600;
 
@@ -53,7 +53,7 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
                     <Parameters {...tower} />
                 </div>
                 {tower.history && <HistoryText text={tower.history} />}
-                <RatingBox tower={tower} count={count} average={avg} reviews={[]} />
+                <RatingFormProvider tower={tower} />
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
             </div>
         </div>

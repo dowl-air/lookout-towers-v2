@@ -1,13 +1,12 @@
-import React from "react";
-import ThemedRating from "../../../../components/shared/ThemedRating";
+import ThemedRating from "@/components/shared/ThemedRating";
 import { Rating } from "@/typings";
 
-const getAverage = (reviews: Rating[]): number => {
+const getAverage = (reviews: Rating[]) => {
     const numbers = reviews.map((r) => r.rating);
     return reviews.length ? numbers.reduce((a, b) => a + b) / reviews.length : 0;
 };
 
-const getRange = (reviews: Rating[], range: number): number => {
+const getRange = (reviews: Rating[], range: number) => {
     if (reviews.length == 0) return 0;
     const filtered = reviews.filter((r) => r.rating >= range - 0.5 && r.rating <= range);
     return (filtered.length / reviews.length) * 100;
