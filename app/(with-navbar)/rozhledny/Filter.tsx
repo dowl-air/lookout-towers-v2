@@ -65,18 +65,18 @@ function Filter_({ applyFilter, initFilter }: ComponentProps) {
     }, [searchTerm, provinceSelected, countySelected, applyFilter]);
 
     return (
-        <div className="card card-compact sm:card-normal sm:w-96 bg-base-100 shadow-xl">
+        <div className="card card-compact sm:card-normal sm:w-80 bg-base-100 shadow-xl">
             <div className="card-body">
-                <div className="flex flex-row-reverse gap-2 justify-between items-center">
-                    <input
-                        placeholder="Biskupská kupa..."
-                        value={searchTerm}
-                        className="input max-w-[calc(88vw-25px)] input-ghost input-bordered text-primary focus:text-primary focus:bg-transparent flex-grow"
-                        onChange={(t) => setSearchTerm(t.target.value)}
-                    ></input>
+                <div className="flex gap-2 justify-between items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block h-6 w-6 stroke-current">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
+                    <input
+                        placeholder="Biskupská kupa..."
+                        value={searchTerm}
+                        className="input max-w-[220px] input-ghost input-bordered text-primary focus:text-primary focus:bg-transparent flex-grow"
+                        onChange={(t) => setSearchTerm(t.target.value)}
+                    ></input>
                 </div>
                 <select
                     className={`select select-bordered w-full max-w-[94vw] ${provinceSelected !== "Všechny kraje" && "text-primary"}`}

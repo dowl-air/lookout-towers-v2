@@ -32,7 +32,7 @@ const RatingForm = ({
                         <h2 className="card-title text-base sm:text-lg md:text-xl">{`Recenze [${ratings.length + (currentRating ? 1 : 0)}]`}</h2>
                         <div className="flex flex-wrap gap-3 flex-col sm:flex-row">
                             <button
-                                className="btn btn-sm sm:btn-md"
+                                className="btn btn-sm btn-primary sm:btn-md"
                                 onClick={async (e) => {
                                     e.preventDefault();
                                     if (session.status !== "authenticated") await loginRedirect();

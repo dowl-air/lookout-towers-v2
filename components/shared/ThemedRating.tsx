@@ -21,8 +21,9 @@ function ThemedRating({
             allowFraction
             initialValue={value}
             emptyClassName="flex"
+            fillClassName="hidden"
             SVGclassName="inline-block"
-            fillColor={"#01CB5F"}
+            fillColor={"#FEBC0B"}
             emptyColor={"#D4D6D9"}
             size={size}
             className={className}
