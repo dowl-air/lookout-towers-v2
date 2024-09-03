@@ -2,38 +2,39 @@ import { GeoPoint, Timestamp } from "firebase/firestore";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "./utils/constants";
 
 export type GPS = {
-    latitude: number,
-    longitude: number
-}
+    latitude: number;
+    longitude: number;
+};
 
 export type Session = {
     authenticated?: Boolean;
     user?: User;
-}
+};
 
-export type User = {
-    name?: string | undefined | null;
-    email?: string | undefined | null;
-    image?: string | undefined | null;
-    id?: string | undefined | null;
-    visits?: number | undefined | null;
-    changes?: number | undefined | null;
-    lastVisited?: {tower: Tower, date: string} | undefined | null;
-} | undefined;
+export type User =
+    | {
+          name?: string | undefined | null;
+          email?: string | undefined | null;
+          image?: string | undefined | null;
+          id?: string | undefined | null;
+          visits?: number | undefined | null;
+          changes?: number | undefined | null;
+          lastVisited?: { tower: Tower; date: string } | undefined | null;
+      }
+    | undefined;
 
 export type UserFromDB = {
     email: string;
     name: string;
     emailVerified: boolean | null;
     image: string;
-}
+};
 
 export type Filter = {
     searchTerm: string;
     province: string;
     county: string;
 };
-
 
 export type TowerFirebase = {
     access?: string;
@@ -64,10 +65,11 @@ export type TowerFirebase = {
     rating?: {
         avg: number;
         count: number;
-    }
-}
+    };
+};
 
 export type Tower = {
+    isFavourite?: boolean;
     access?: string;
     country: string;
     county?: string;
@@ -96,8 +98,8 @@ export type Tower = {
     rating?: {
         avg: number;
         count: number;
-    }
-}
+    };
+};
 
 export type Rating = {
     tower_id: string;
@@ -106,7 +108,7 @@ export type Rating = {
     created: Date;
     text: string;
     user?: User;
-}
+};
 
 export type Visit = {
     tower_id: string;
@@ -114,7 +116,7 @@ export type Visit = {
     date: Date;
     text: string;
     created: Date;
-}
+};
 
 export type OpeningHours = {
     type: OpeningHoursType;
@@ -127,7 +129,7 @@ export type OpeningHours = {
     lunch_start?: number;
     lunch_end?: number;
     note?: string;
-}
+};
 
 type SearchResult = {
     name: string;
@@ -138,4 +140,4 @@ type SearchResult = {
     county: string;
     province: string;
     id: string;
-}
+};
