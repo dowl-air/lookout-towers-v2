@@ -71,3 +71,9 @@ export const filterTowers = async (searchTerm: string, province: string, county:
     });
     return towers;
 };
+
+export const getTowersByIDs = async (ids: string[]): Promise<Tower[]> => {
+    const promises = ids.map((id) => getDoc(doc(db, "towers", id)));
+    const docs = await Promise.all(promises);
+    return docs.map((doc) => normalizeTowerObject(doc.data() as TowerFirebase));
+};

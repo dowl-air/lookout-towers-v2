@@ -44,3 +44,16 @@ export const removeRating = async (towerID: string) => {
     const user = await checkAuth();
     await deleteDoc(doc(db, "ratings", `${user.id}_${towerID}`));
 };
+
+export const getAllUserRatings = async () => {
+    const user = await checkAuth();
+    if (!user) return [];
+    const q = query(collection(db, "ratings"), where("user_id", "==", user.id));
+    const querySnapshot = await getDocs(q);
+    const ratings: Rating[] = [];
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        ratings.push({ ...data, created: (data.created as Timestamp).toDate() } as Rating);
+    });
+    return ratings;
+};

@@ -37,7 +37,7 @@ export const getAllUserVisits = async (): Promise<Visit[]> => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        visits.push({ ...data, date: new Date(data.date) } as Visit);
+        visits.push({ ...data, date: new Date(data.date), created: (data.created as Timestamp).toDate() } as Visit);
     });
     return visits;
 };

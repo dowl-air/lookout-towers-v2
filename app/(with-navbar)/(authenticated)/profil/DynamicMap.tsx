@@ -1,24 +1,10 @@
 "use client";
 import { Tower } from "@/typings";
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 
-function DynamicMap({
-    lat,
-    long,
-    towers,
-    type,
-    visits,
-    favs,
-}: {
-    lat: number;
-    long: number;
-    towers: Tower[];
-    type: string;
-    visits: string[];
-    favs: string[];
-}) {
+function DynamicMap({ lat, long, towers, visits, favs }: { lat: number; long: number; towers: Tower[]; visits: string[]; favs: string[] }) {
     const mapElementRef = useRef(null);
 
     useEffect(() => {

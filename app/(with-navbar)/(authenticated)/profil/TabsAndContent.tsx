@@ -3,7 +3,7 @@ import { Tower, Visit } from "@/typings";
 import React, { useState } from "react";
 import VisitsTimeline from "./VisitsTimeline";
 
-function TabsAndContent({ visits, favs, towers, loading }: { visits: Visit[]; favs: string[]; towers: Tower[]; loading: boolean }) {
+function TabsAndContent({ visits, favs, towers }: { visits: Visit[]; favs: string[]; towers: Tower[] }) {
     const [page, setPage] = useState<string>("visited");
 
     return (
@@ -31,7 +31,7 @@ function TabsAndContent({ visits, favs, towers, loading }: { visits: Visit[]; fa
                     onClick={() => setPage("achievements")}
                 />
             </div>
-            {page === "visited" && <VisitsTimeline visits={visits} loading={loading} loadingTowers={true} towers={towers} />}
+            {page === "visited" && <VisitsTimeline visits={visits} towers={towers} />}
             {page === "favourites" && <h2 className="prose prose-xl text-primary mt-5 mb-80">Tato sekce bude brzy dostupná. Probíhá vývoj.</h2>}
             {page === "achievements" && <h2 className="prose prose-xl text-primary mt-5 mb-80">Tato sekce bude brzy dostupná. Probíhá vývoj.</h2>}
         </div>

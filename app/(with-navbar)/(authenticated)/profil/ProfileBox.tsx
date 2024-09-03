@@ -1,44 +1,41 @@
-"use client";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
 
-function ProfileBox({
+import { checkAuth } from "@/actions/checkAuth";
+
+async function ProfileBox({
     score,
     visits,
     favs,
     changes,
     ratings,
-    loading,
 }: {
     score: number;
     visits: number;
     favs: number;
     changes: number;
     ratings: number;
-    loading: boolean;
 }) {
-    const { data: session, status } = useSession();
+    const user = await checkAuth();
 
     return (
         <div className="card bg-base-100 shadow-xl flex-col p-3" id="profile_box">
             <div className="flex flex-col gap-2 items-center p-3">
                 <>
-                    {session?.user?.image ? (
+                    {user.image ? (
                         <div className="avatar">
                             <div className="w-28 rounded-full">
-                                <Image src={session?.user?.image} width={112} height={112} alt={"profile picture"} referrerPolicy="no-referrer" />
+                                <Image src={user.image} width={112} height={112} alt={"profile picture"} referrerPolicy="no-referrer" />
                             </div>
                         </div>
                     ) : (
                         <div className="avatar placeholder">
                             <div className="bg-neutral-focus text-neutral-content rounded-full w-28">
-                                <span>{session?.user && session.user.name ? session.user.name.substring(0, 2) : "TY"}</span>
+                                <span>{user.name ? user.name.substring(0, 2) : "TY"}</span>
                             </div>
                         </div>
                     )}
                 </>
-                <h2 className="prose prose-2xl mb-2 font-semibold">{session?.user && session.user.name ? session.user.name : "TY"}</h2>
+                <h2 className="prose prose-2xl mb-2 font-semibold">{user.name ? user.name : "TY"}</h2>
                 <div className="flex justify-between bg-secondary text-secondary-content rounded-box p-3 w-56 text-lg font-bold">
                     <p>Komunitní skóre</p>
                     <p>{score}</p>
@@ -65,9 +62,7 @@ function ProfileBox({
                         </div>
                         <div className="stat-title">Návštěvy</div>
 
-                        <div className="stat-value text-primary max-h-10">
-                            {loading ? <div className="loading loading-dots loading-lg text-primary"></div> : visits}
-                        </div>
+                        <div className="stat-value text-primary max-h-10">{visits}</div>
                     </div>
 
                     <div className="stat w-60">
@@ -82,9 +77,7 @@ function ProfileBox({
                             </svg>
                         </div>
                         <div className="stat-title">Oblíbené</div>
-                        <div className="stat-value text-primary max-h-10">
-                            {loading ? <div className="loading loading-dots loading-lg text-primary"></div> : favs}
-                        </div>
+                        <div className="stat-value text-primary max-h-10">{favs}</div>
                     </div>
 
                     <div className="stat w-60">
@@ -105,9 +98,7 @@ function ProfileBox({
                             </svg>
                         </div>
                         <div className="stat-title">Úpravy</div>
-                        <div className="stat-value text-primary max-h-10">
-                            {loading ? <div className="loading loading-dots loading-lg text-primary"></div> : changes}
-                        </div>
+                        <div className="stat-value text-primary max-h-10">{changes}</div>
                     </div>
                     <div className="stat w-60">
                         <div className="stat-figure text-primary">
@@ -126,9 +117,7 @@ function ProfileBox({
                             </svg>
                         </div>
                         <div className="stat-title">Hodnocení</div>
-                        <div className="stat-value text-primary max-h-10">
-                            {loading ? <div className="loading loading-dots loading-lg text-primary"></div> : ratings}
-                        </div>
+                        <div className="stat-value text-primary max-h-10">{ratings}</div>
                     </div>
                 </div>
             </div>
