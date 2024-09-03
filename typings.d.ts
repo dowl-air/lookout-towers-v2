@@ -69,6 +69,7 @@ export type TowerFirebase = {
 };
 
 export type Tower = {
+    isVisited?: boolean;
     isFavourite?: boolean;
     access?: string;
     country: string;

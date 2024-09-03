@@ -33,7 +33,7 @@ function Map({ lat, long, name, towers }: MapProps) {
                         id: tower.nameID,
                         layer: "towers",
                         title: tower.name,
-                        pin: tower.isFavourite ? "/img/marker_yellow.png" : "/img/marker_red.png",
+                        pin: tower.isVisited ? "/img/marker_green.png" : tower.isFavourite ? "/img/marker_yellow.png" : "/img/marker_red.png",
                         pointer: false,
                         card: {
                             /* header: `<a href="/${tower.type}/${tower.nameID}" target="_blank" class="link">${tower.name}</a>`, */

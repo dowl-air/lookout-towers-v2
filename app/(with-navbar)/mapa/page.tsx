@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { getAllUserFavouritesIds } from "@/actions/favourites/favourites.action";
 import { getAllTowers } from "@/actions/towers/towers.action";
 import Map from "./Map";
+import { getAllUserVisits } from "@/actions/visits/visits.action";
 
 export const metadata: Metadata = {
     title: "Mapa",
@@ -14,8 +15,10 @@ export const revalidate = 3600;
 async function MapPage() {
     const towers = await getAllTowers();
     const favouriteTowersIds = await getAllUserFavouritesIds();
+    const visits = await getAllUserVisits();
     towers.forEach((tower) => {
         tower.isFavourite = favouriteTowersIds.includes(tower.id);
+        tower.isVisited = visits.some((visit) => visit.tower_id === tower.id);
     });
     return (
         <div className="flex justify-center items-stretch flex-grow h-[calc(100vh-70px-50px)] m-6">
