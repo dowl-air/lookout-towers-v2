@@ -1,4 +1,5 @@
 import Image from "next/image";
+import UserVisitLevels from "../shared/UserVisitLevels";
 
 function Footer() {
     return (
@@ -33,6 +34,7 @@ function Footer() {
                     </div>
                 </div>
             </div>
+            <UserVisitLevels />
         </footer>
     );
 }

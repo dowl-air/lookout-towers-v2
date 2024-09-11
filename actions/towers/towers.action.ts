@@ -10,7 +10,7 @@ export const getTowerRatingAndCount = async (towerID: string) => {
     const q = query(collection(db, "ratings"), where("tower_id", "==", towerID));
     const agg = await getAggregateFromServer(q, {
         reviewsCount: count(),
-        reviewsAverage: average("value"),
+        reviewsAverage: average("rating"),
     });
     const data = agg.data();
     return {

@@ -79,7 +79,7 @@ const ComunityPage = async () => {
                                     <td>
                                         <div className="flex flex-wrap gap-1">
                                             {member.id === "iMKZNJV5PE4XQjnKmZut" && <div className="badge bg-red-600 text-white">Autor</div>}
-                                            <div className={`badge`} style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
+                                            <div className="badge" style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
                                                 {name}
                                             </div>
                                         </div>

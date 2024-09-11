@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { checkAuth } from "@/actions/checkAuth";
+import ProfileBoxLevel from "./ProfileBoxLevel";
 
 async function ProfileBox({
     score,
@@ -16,9 +17,8 @@ async function ProfileBox({
     ratings: number;
 }) {
     const user = await checkAuth();
-
     return (
-        <div className="card bg-base-100 shadow-xl flex-col p-3" id="profile_box">
+        <div className="card bg-base-100 shadow-xl flex-col justify-between p-3 h-full">
             <div className="flex flex-col gap-2 items-center p-3">
                 <>
                     {user.image ? (
@@ -36,10 +36,7 @@ async function ProfileBox({
                     )}
                 </>
                 <h2 className="prose prose-2xl mb-2 font-semibold">{user.name ? user.name : "TY"}</h2>
-                <div className="flex justify-between bg-secondary text-secondary-content rounded-box p-3 w-56 text-lg font-bold">
-                    <p>Komunitní skóre</p>
-                    <p>{score}</p>
-                </div>
+                <ProfileBoxLevel score={score} />
             </div>
             <div className="flex flex-col justify-around text-primary font-bold p-3">
                 <div className="stats stats-vertical shadow">

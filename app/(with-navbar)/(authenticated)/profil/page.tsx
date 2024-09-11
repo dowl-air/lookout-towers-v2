@@ -15,7 +15,7 @@ async function ProfilePage() {
     return (
         <div className="flex flex-col items-center gap-3">
             <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
-                <ProfileBox score={0} changes={0} favs={favouritesIds.length} ratings={ratings.length} visits={visits.length} />
+                <ProfileBox score={visits.length} changes={0} favs={favouritesIds.length} ratings={ratings.length} visits={visits.length} />
                 <div className="flex h-[170px] w-[97vw] flex-grow sm:h-full">
                     <DynamicMap lat={49.8237572} long={15.6086383} towers={towers} visits={visits.map((v) => v.tower_id)} favs={favouritesIds} />
                 </div>
