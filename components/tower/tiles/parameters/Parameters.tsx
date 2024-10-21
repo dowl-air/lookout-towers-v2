@@ -37,11 +37,13 @@ function Parameters(params: ComponentParams) {
                             <tr>
                                 <th className="text-base-content">Materiál</th>
                                 <td>
-                                    {params.material.map((item, idx) => (
-                                        <div className="badge badge-outline text-xs" key={idx}>
-                                            {item}
-                                        </div>
-                                    ))}
+                                    <div className="flex flex-wrap gap-1">
+                                        {params.material.map((item, idx) => (
+                                            <div className="badge badge-outline text-xs" key={idx}>
+                                                {item}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -74,11 +76,13 @@ function Parameters(params: ComponentParams) {
                                 <tr>
                                     <th>Materiál</th>
                                     <td>
-                                        {params.material.map((item, idx) => (
-                                            <div className="badge badge-outline" key={idx}>
-                                                {item}
-                                            </div>
-                                        ))}
+                                        <div className="flex flex-wrap gap-1">
+                                            {params.material.map((item, idx) => (
+                                                <div className="badge badge-outline" key={idx}>
+                                                    {item}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
