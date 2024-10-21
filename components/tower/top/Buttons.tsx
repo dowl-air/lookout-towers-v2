@@ -12,11 +12,11 @@ async function Buttons({ tower }: { tower: Tower }) {
     if (!session?.user) {
         return (
             <div className="flex flex-col gap-2">
-                <form action={loginRedirect} className="flex flex-col justify-center gap-2">
-                    <button type="submit" className="btn btn-primary max-w-xs min-w-64 text-sm w-full min-[710px]:text-base">
+                <form action={loginRedirect} className="flex flex-row lg:flex-col justify-center gap-2">
+                    <button type="submit" className="btn btn-primary max-w-xs lg:min-w-64 text-sm min-[710px]:text-base">
                         Přidat do oblíbených
                     </button>
-                    <button type="submit" className="btn btn-primary max-w-xs min-w-64 text-sm w-full min-[710px]:text-base">
+                    <button type="submit" className="btn btn-primary max-w-xs lg:min-w-64 text-sm min-[710px]:text-base">
                         Zaznamenat návštěvu
                     </button>
                 </form>
