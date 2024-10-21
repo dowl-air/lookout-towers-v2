@@ -17,8 +17,8 @@ export default function SignInPage({ searchParams }: { searchParams: URLSearchPa
     }, []);
 
     return (
-        <main className="flex flex-col items-center justify-center h-screen">
-            <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+        <main className="flex flex-col items-center md:justify-center h-screen">
+            <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100 mt-12 md:mt-0">
                 <div className="card-body">
                     <div className="flex w-full justify-center mb-5 mt-5">
                         <Image src="/img/logo.png" alt="Logo" width={100} height={100} />

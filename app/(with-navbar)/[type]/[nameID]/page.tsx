@@ -44,8 +44,8 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
                 </div>
             </div>
 
-            <div className={"flex flex-col gap-6 items-center justify-center self-center mb-6 mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full"}>
-                <div className={"flex flex-wrap gap-3 w-full items-center justify-center"}>
+            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full">
+                <div className="flex flex-wrap gap-3 w-full items-center justify-center">
                     <OpeningHours tower={tower}>
                         <OpeningHoursDialog tower={tower} />
                     </OpeningHours>
