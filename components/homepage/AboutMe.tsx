@@ -1,6 +1,10 @@
 import Image from "next/image";
+import ContactButton from "@/components/homepage/ContactButton";
+import ContactDialog from "@/components/homepage/ContactDialog";
+import { checkAuth } from "@/actions/checkAuth";
 
-function AboutMe() {
+async function AboutMe() {
+    const user = await checkAuth();
     return (
         <div className="md:w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-32 md:mt-36 flex-wrap md:flex-nowrap mb-10">
             <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
@@ -114,9 +118,8 @@ function AboutMe() {
                     řadě umožnit uživatelům uchovat své návštěvy a vzpomínky.
                 </article>
                 <div className="flex justify-start mt-4 md:mt-10">
-                    <a href={"https://www.facebook.com/dp9898"} target="_blank" rel="noreferrer">
-                        <button className="btn btn-primary">Napište mi</button>
-                    </a>
+                    <ContactButton user={user} />
+                    <ContactDialog user={user} />
                 </div>
             </div>
         </div>
