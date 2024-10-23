@@ -1,3 +1,4 @@
+"use client";
 import { Rating } from "react-simple-star-rating";
 
 function ThemedRating({
