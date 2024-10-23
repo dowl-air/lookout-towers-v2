@@ -12,7 +12,7 @@ async function Buttons({ tower }: { tower: Tower }) {
     if (!session?.user) {
         return (
             <div className="flex flex-col gap-2">
-                <form action={loginRedirect} className="flex flex-row lg:flex-col justify-center gap-2">
+                <form action={loginRedirect} className="flex flex-row lg:flex-col justify-center gap-2 flex-wrap">
                     <button type="submit" className="btn btn-primary max-w-xs lg:min-w-64 text-sm min-[710px]:text-base">
                         Přidat do oblíbených
                     </button>
@@ -28,7 +28,7 @@ async function Buttons({ tower }: { tower: Tower }) {
     const visit = await getVisit(tower.id);
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 flex-wrap">
             <FavouriteButton isFavouriteInit={isFavourite} towerID={tower.id} />
             <VisitButton visitInit={visit} tower={tower} />
         </div>

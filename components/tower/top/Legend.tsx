@@ -20,9 +20,11 @@ const generateHeading = (openingHours: OpeningHours): string => {
 
 function Legend({ tower }: { tower: Tower }) {
     return (
-        <legend>{`${capitalizeFirstLetter(tower.type)} je vysoká ${tower.height === -1 ? "neznámo" : tower.height} metrů a vede na ni ${
-            tower.stairs === -1 ? "neznámo" : "přesně " + tower.stairs
-        } schodů. Nachází se v nadmořské výšce ${tower.elevation} metrů a ${generateHeading(tower.openingHours)}`}</legend>
+        <legend className="text-center lg:text-left">{`${capitalizeFirstLetter(tower.type)} je vysoká ${
+            tower.height === -1 ? "neznámo" : tower.height
+        } metrů a vede na ni ${tower.stairs === -1 ? "neznámo" : "přesně " + tower.stairs} schodů. Nachází se v nadmořské výšce ${
+            tower.elevation
+        } metrů a ${generateHeading(tower.openingHours)}`}</legend>
     );
 }
 

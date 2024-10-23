@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 
-import Carousel from "./Carousel";
-
 import HistoryText from "@/components/tower/tiles/HistoryText";
 import Map from "@/components/tower/tiles/Map";
 import Parameters from "@/components/tower/tiles/parameters/Parameters";
@@ -16,6 +14,7 @@ import Legend from "@/components/tower/top/Legend";
 import RatingTop from "@/components/tower/top/RatingTop";
 import Buttons from "@/components/tower/top/Buttons";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
+import Carousel from "@/components/tower/top/Carousel";
 
 export const revalidate = 3600;
 
@@ -25,23 +24,16 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
     const { count, avg } = towerRating;
 
     return (
-        <div className="flex flex-col">
-            <div className="flex mb-8 flex-1">
-                <div className="max-w-screen-xl flex flex-col lg:justify-between lg:flex-row mx-auto">
-                    <div className="prose sm:prose-xl max-w-screen-sm flex flex-col items-center lg:items-start flex-1 pl-4 mt-7">
-                        <LocationBreadcrumbs tower={tower} />
-                        <h1>{tower.name}</h1>
-                        <Legend tower={tower} />
-                        <div className="lg:hidden flex">
-                            <Carousel images={towerImages} phone />
-                        </div>
-                        <RatingTop count={count} average={avg} />
-                        <Buttons tower={tower} />
-                    </div>
-                    <div className="hidden lg:flex">
-                        <Carousel images={towerImages} />
-                    </div>
+        <div className="flex flex-col px-4 w-full">
+            <div className="max-w-screen-xl w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
+                <div className="w-full prose sm:prose-xl max-w-screen-sm flex flex-col items-center lg:items-start flex-1 mt-7 lg:pl-2">
+                    <LocationBreadcrumbs tower={tower} />
+                    <h1 className="mt-5 lg:mt-6 lg:mb-8 lg:ml-1">{tower.name}</h1>
+                    <Legend tower={tower} />
+                    <RatingTop count={count} average={avg} />
+                    <Buttons tower={tower} />
                 </div>
+                <Carousel images={towerImages} />
             </div>
 
             <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full">

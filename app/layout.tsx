@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 
@@ -59,7 +58,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         {children}
                     </ThemeProvider>
                 </SessionProvider>
-                <SpeedInsights />
             </body>
         </html>
     );
