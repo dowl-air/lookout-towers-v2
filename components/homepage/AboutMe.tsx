@@ -6,13 +6,13 @@ import { checkAuth } from "@/actions/checkAuth";
 async function AboutMe() {
     const user = await checkAuth();
     return (
-        <div className="md:w-[840px] flex justify-center md:justify-start gap-5 md:gap-10 mx-auto mt-32 md:mt-36 flex-wrap md:flex-nowrap mb-10">
-            <div id="about_me_left_side" className="w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
+        <div className="flex justify-center sm:justify-start px-4 max-w-7xl gap-5 md:gap-10 mx-auto mt-32 md:mt-36 flex-wrap sm:flex-nowrap mb-10">
+            <div className="w-full mx-auto sm:w-72 md:w-80 h-[400px] bg-primary flex items-center rounded-lg flex-col">
                 <div className="w-[180px] h-[180px] overflow-hidden rounded-full mt-[-90px] ">
                     <Image
-                        alt={"Selfie of web author."}
+                        alt="Selfie of web author."
                         className="w-[180px] h-[180px]"
-                        src={"/img/me.jpg"}
+                        src="/img/me.jpg"
                         width={2248}
                         height={2249}
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
@@ -23,7 +23,7 @@ async function AboutMe() {
                     Miluju jízdu na kole, rozhledny a sovy. V současnosti studuji Informační technologie na vysoké škole a jsem autor tohoto webu.
                 </p>
                 <div className="flex mt-10 flex-row gap-3">
-                    <a href={"https://www.facebook.com/dp9898"} target="_blank" rel="noreferrer" aria-label="Facebook">
+                    <a href="https://www.facebook.com/dp9898" target="_blank" rel="noreferrer" aria-label="Facebook">
                         <svg
                             height="800px"
                             width="800px"
@@ -49,7 +49,7 @@ async function AboutMe() {
                             </g>
                         </svg>
                     </a>
-                    <a href={"https://www.instagram.com/dowl.air/"} target="_blank" rel="noreferrer" aria-label="Instagram">
+                    <a href="https://www.instagram.com/dowl.air/" target="_blank" rel="noreferrer" aria-label="Instagram">
                         <svg
                             height="800px"
                             width="800px"
@@ -78,7 +78,7 @@ async function AboutMe() {
                             </g>
                         </svg>
                     </a>
-                    <a href={"https://www.linkedin.com/in/dowl/"} target="_blank" rel="noreferrer" aria-label="Linkedin">
+                    <a href="https://www.linkedin.com/in/dowl/" target="_blank" rel="noreferrer" aria-label="Linkedin">
                         <svg
                             version="1.1"
                             id="Layer_1"
@@ -109,15 +109,15 @@ async function AboutMe() {
                     </a>
                 </div>
             </div>
-            <div id={"about_me_right_side"} className="w-[90vw] md:w-[500px] h-full flex flex-col items-center md:items-start mb-10">
-                <h2 className="text-4xl mt-0 md:mt-5">O tomto webu</h2>
-                <article className="mt-3 md:mt-5 text-justify md:text-left">
+            <div className="flex-1 max-w-[500px] h-full flex flex-col items-center sm:items-start mb-10">
+                <h2 className="text-3xl md:text-4xl mt-5">O tomto webu</h2>
+                <article className="mt-4 md:mt-5 text-center sm:text-left">
                     Rozhlednový svět je komunitní databáze vyhlídkových věží, pozorovatelen a dalších objektů určených k objevování krásných výhledů.
                     Tento web jsem vytvořil z důvodu bližšího propojení milovníků rozhleden, ke kterým samozřejmě patřím i já. Cílem tohoto webu je
                     zmapovat všechny rozhledny v Česku (zatím), ukládat o nich aktuální informace, které budou všem volně dostupné, a v neposlední
                     řadě umožnit uživatelům uchovat své návštěvy a vzpomínky.
                 </article>
-                <div className="flex justify-start mt-4 md:mt-10">
+                <div className="flex justify-start mt-6 md:mt-10">
                     <ContactButton user={user} />
                     <ContactDialog user={user} />
                 </div>
