@@ -119,7 +119,7 @@ async function AboutMe() {
                 </article>
                 <div className="flex justify-start mt-6 md:mt-10">
                     <ContactButton user={user} />
-                    <ContactDialog user={user} />
+                    {user ? <ContactDialog user={user} /> : null}
                 </div>
             </div>
         </div>
