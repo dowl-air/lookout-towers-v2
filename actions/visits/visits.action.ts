@@ -3,6 +3,8 @@ import { Visit } from "@/typings";
 import { checkAuth } from "../checkAuth";
 import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { db } from "@/utils/firebase";
+import { revalidateTag } from "next/cache";
+import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 
 export const getVisit = async (towerID: string): Promise<Visit | null> => {
     const user = await checkAuth();
@@ -21,12 +23,16 @@ export const setVisit = async (towerID: string, visit: Omit<Visit, "created" | "
         user_id: user.id,
         tower_id: towerID,
     });
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerVisitsCount, towerID));
+    revalidateTag(CacheTag.VisitsCount);
     return true;
 };
 
 export const removeVisit = async (towerID: string) => {
     const user = await checkAuth();
     await deleteDoc(doc(db, "visits", `${user.id}_${towerID}`));
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerVisitsCount, towerID));
+    revalidateTag(CacheTag.VisitsCount);
     return false;
 };
 

@@ -131,12 +131,21 @@ export const getTowerOfTheDay = cache(
 );
 
 export const getTowerVisitsCount = async (towerID: string) => {
-    const q = query(collection(db, "visits"), where("tower_id", "==", towerID));
-    const agg = await getAggregateFromServer(q, {
-        reviewsCount: count(),
-    });
-    const data = agg.data();
-    return {
-        count: data.reviewsCount || 0,
-    };
+    const cachedFn = cache(
+        async (towerID: string) => {
+            const q = query(collection(db, "visits"), where("tower_id", "==", towerID));
+            const agg = await getAggregateFromServer(q, {
+                reviewsCount: count(),
+            });
+            const data = agg.data();
+            return {
+                count: data.reviewsCount || 0,
+            };
+        },
+        [CacheTag.TowerVisitsCount],
+        {
+            tags: [CacheTag.TowerVisitsCount, getCacheTagSpecific(CacheTag.TowerVisitsCount, towerID)],
+        }
+    );
+    return cachedFn(towerID);
 };

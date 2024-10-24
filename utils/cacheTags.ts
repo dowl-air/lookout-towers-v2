@@ -11,6 +11,9 @@ export const enum CacheTag {
     // tower rating - revalidate with specific tower ID when added, edited or removed
     TowerRatingAndCount = "TowerRatingAndCount",
 
+    // revalidate with specific tower ID when added or removed
+    TowerVisitsCount = "TowerVisitsCount",
+
     // revalidates automatically every hour
     TowerOfTheDay = "TowerOfTheDay",
 
@@ -23,10 +26,10 @@ export const enum CacheTag {
     // todo revalidate when new change is published
     ChangesCount = "ChangesCount",
 
-    // todo revalidate when rating is added or removed
+    // revalidate when rating is added or removed
     RatingsCount = "RatingsCount",
 
-    // todo revalidate when new visit is added
+    // revalidate when new visit is added or removed
     VisitsCount = "VisitsCount",
 
     // todo revalidate when change is published
