@@ -18,8 +18,7 @@ import Carousel from "@/components/tower/top/Carousel";
 
 async function TowerPage({ params: { nameID } }: { params: { nameID: string } }) {
     const tower = await getTowerObjectByNameID(nameID);
-    const [towerImages, towerRating] = await Promise.all([getUrlsTowerGallery(tower.id), getTowerRatingAndCount(tower.id)]);
-    const { count, avg } = towerRating;
+    const [towerImages, { count, avg }] = await Promise.all([getUrlsTowerGallery(tower.id), getTowerRatingAndCount(tower.id)]);
 
     return (
         <div className="flex flex-col px-4 w-full">

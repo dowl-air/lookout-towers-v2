@@ -5,7 +5,6 @@ import { unstable_cache as cache } from "next/cache";
 import { Tower, TowerFirebase } from "@/typings";
 import { db } from "@/utils/firebase";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
-import { towersQuery } from "@/utils/towersQuery";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 
 export const getTowerRatingAndCount = async (towerID: string): Promise<{ avg: number; count: number }> => {

@@ -12,7 +12,7 @@ const UserRating = ({ rating }: { rating: Rating }) => {
                     <div className="flex gap-1">
                         <p>{rating.user.name}</p>
                         <p className="font-bold opacity-50">·</p>
-                        <p className="opacity-50">{rating.created.toLocaleDateString()}</p>
+                        <p className="opacity-50">{new Date(rating.created).toLocaleDateString()}</p>
                     </div>
                     <ThemedRating value={rating.rating} size={25} />
                 </div>

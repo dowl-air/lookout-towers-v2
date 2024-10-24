@@ -3,8 +3,11 @@ import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, q
 
 import { db } from "@/utils/firebase";
 import { Tower, User } from "@/typings";
+import { unstable_cache as cache } from "next/cache";
+import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 
 export const getAllMembers = async () => {
+    //todo add caching
     const snap = await getDocs(collection(db, "users"));
     const users: User[] = snap.docs.map((doc) => {
         return { ...doc.data(), id: doc.id } as User;
@@ -44,6 +47,15 @@ export const getAllMembers = async () => {
 };
 
 export const getUser = async (id: string) => {
-    const snap = await getDoc(doc(db, "users", id));
-    return snap.data() as User;
+    const cachedFn = cache(
+        async (id: string) => {
+            const snap = await getDoc(doc(db, "users", id));
+            return snap.data() as User;
+        },
+        [CacheTag.User],
+        {
+            tags: [CacheTag.User, getCacheTagSpecific(CacheTag.User, id)],
+        }
+    );
+    return cachedFn(id);
 };
