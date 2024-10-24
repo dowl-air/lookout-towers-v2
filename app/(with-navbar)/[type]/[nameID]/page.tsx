@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 import HistoryText from "@/components/tower/tiles/HistoryText";
 import Map from "@/components/tower/tiles/Map";
-import Parameters from "@/components/tower/tiles/parameters/Parameters";
+//import Parameters from "@/components/tower/tiles/parameters/Parameters";
 import OpeningHours from "@/components/tower/tiles/openingHours/OpeningHours";
 import Admission from "@/components/tower/tiles/Admission";
 import OpeningHoursDialog from "@/components/tower/tiles/openingHours/OpeningHoursDialog";
@@ -39,7 +39,7 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
                         <OpeningHoursDialog tower={tower} />
                     </OpeningHours>
                     <Admission />
-                    <Parameters {...tower} />
+                    {/* <Parameters {...tower} /> */}
                 </div>
                 {tower.history && <HistoryText text={tower.history} />}
                 <RatingFormProvider tower={tower} />
