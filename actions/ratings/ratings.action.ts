@@ -5,6 +5,8 @@ import { checkAuth } from "../checkAuth";
 import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { getUser } from "../members/members.action";
+import { revalidateTag } from "next/cache";
+import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 
 export const getUserRating = async (towerID: string): Promise<Rating | null> => {
     const user = await checkAuth();
@@ -38,11 +40,13 @@ export const editRating = async (towerID: string, rating: number, text: string) 
         ...ratingObj,
         created: serverTimestamp(),
     });
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
 };
 
 export const removeRating = async (towerID: string) => {
     const user = await checkAuth();
     await deleteDoc(doc(db, "ratings", `${user.id}_${towerID}`));
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
 };
 
 export const getAllUserRatings = async () => {
