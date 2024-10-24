@@ -9,13 +9,15 @@ async function Stats() {
     const towersNumberPromise: Promise<number> = getTowersCount();
     const towersDatePromise: Promise<Date> = getLastModifiedTowerDate();
 
-    const [changesNumber, ratingsNumber, usersNumber, towersNumber, towersDate] = await Promise.all([
+    const [changesNumber, ratingsNumber, usersNumber, towersNumber, towersDateRaw] = await Promise.all([
         changesNumberPromise,
         ratingsNumberPromise,
         usersNumberPromise,
         towersNumberPromise,
         towersDatePromise,
     ]);
+
+    const towersDate = new Date(towersDateRaw);
 
     return (
         <div className="max-w-[1070px] self-center flex flex-col w-full px-4 my-4">
