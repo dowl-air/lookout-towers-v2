@@ -2,6 +2,7 @@
 import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
 import { useEffect, useRef, useState } from "react";
 import { Tower } from "@/typings";
+import OpeningHours_ from "./OpeningHours";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);
@@ -483,7 +484,7 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
 
                     <div className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
                         <h3>Takto bude vypadat nová dlaždice s otevírací dobou: </h3>
-                        {/* <OpeningHours openingHours={generateFinalOpeningHours()} /> */}
+                        <OpeningHours_ openingHours={generateFinalOpeningHours()} />
                     </div>
 
                     {errorText && <p className="text-error self-end">{errorText}</p>}
@@ -504,7 +505,12 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                         >
                             {type === "freely_accessible" || step === 3 ? "Dokončit" : "Pokračovat"}
                         </button>
-                        <button className={`btn btn-primary ${step === 4 ? "inline-flex" : "hidden"}`} onClick={() => {}}>
+                        <button
+                            className={`btn btn-primary ${step === 4 ? "inline-flex" : "hidden"}`}
+                            onClick={() => {
+                                console.log(generateFinalOpeningHours());
+                            }}
+                        >
                             Odeslat
                         </button>
                     </div>
