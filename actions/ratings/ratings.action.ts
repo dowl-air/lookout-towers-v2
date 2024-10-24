@@ -41,12 +41,14 @@ export const editRating = async (towerID: string, rating: number, text: string) 
         created: serverTimestamp(),
     });
     revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
+    revalidateTag(CacheTag.RatingsCount);
 };
 
 export const removeRating = async (towerID: string) => {
     const user = await checkAuth();
     await deleteDoc(doc(db, "ratings", `${user.id}_${towerID}`));
     revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
+    revalidateTag(CacheTag.RatingsCount);
 };
 
 export const getAllUserRatings = async () => {

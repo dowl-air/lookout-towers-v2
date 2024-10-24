@@ -7,7 +7,7 @@ type ComponentParams = {
     gps: GPS;
     height: number;
     material: string[];
-    modified: Date;
+    modified: Date | string;
     opened: Date | string;
     type: string;
     stairs: number;
