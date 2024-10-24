@@ -1,6 +1,5 @@
 "use client";
 import { GPS } from "@/typings";
-//import { useRef } from "react";
 
 type ComponentParams = {
     elevation: number;
@@ -23,13 +22,12 @@ const generateHeightText = (height: number): string => {
 };
 
 function Parameters(params: ComponentParams) {
-    //const dialogRef = useRef<HTMLDialogElement | null>(null);
     return (
         <>
             <div
                 className={`card card-compact sm:card-normal prose min-w-[300px] max-w-[calc(min(94vw,420px))] sm:h-[225px] flex-1 overflow-hidden shadow-xl bg-[rgba(255,255,255,0.05)] transition-transform duration-200 cursor-pointer hover:scale-105`}
                 title="Zobrazit všechny parametry"
-                //onClick={() => dialogRef.current?.showModal()}
+                onClick={() => (document.getElementById("parameters-modal") as HTMLDialogElement).showModal()}
             >
                 <div className="card-body items-center">
                     <table className="table-compact my-2">
@@ -63,7 +61,7 @@ function Parameters(params: ComponentParams) {
                 </div>
             </div>
 
-            {/* <dialog ref={dialogRef} className="modal modal-bottom sm:modal-middle">
+            <dialog className="modal modal-bottom sm:modal-middle" id="parameters-modal">
                 <div className="modal-box">
                     <h3 className="text-lg font-bold">Parametry</h3>
                     <div className="prose items-center ">
@@ -113,8 +111,11 @@ function Parameters(params: ComponentParams) {
                         </table>
                     </div>
                     <div className="modal-action">
-                        <button className="btn btn-warning btn-sm">Navrhnout úpravu</button>
-                        <button className="btn btn-error btn-sm" onClick={() => dialogRef.current?.close()}>
+                        <button className="btn btn-warning btn-sm mr-auto">Navrhnout úpravu</button>
+                        <button
+                            className="btn btn-error btn-sm"
+                            onClick={() => (document.getElementById("parameters-modal") as HTMLDialogElement).close()}
+                        >
                             Zavřít
                         </button>
                     </div>
@@ -123,7 +124,7 @@ function Parameters(params: ComponentParams) {
                 <form method="dialog" className="modal-backdrop">
                     <button>zavřít</button>
                 </form>
-            </dialog> */}
+            </dialog>
         </>
     );
 }
