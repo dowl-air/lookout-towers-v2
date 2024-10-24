@@ -58,7 +58,10 @@ function Results({ filter }: ComponentProps) {
 
     return (
         <div className="flex flex-wrap gap-3 flex-1 justify-center max-w-[1200px] mt-3 xl:mt-8 mb-12 min-h-[70vh]">
-            {towers && towers.map((item, idx) => <TowerCard key={idx} tower_search={item} />)}
+            {towers &&
+                towers.map((item, idx) => (
+                    <TowerCard key={idx} tower={item} avg={0} count={0} photoUrl={`/img/towers/${item.id}/${item.id}_0.jpg`} /> //todo rework
+                ))}
         </div>
     );
 }

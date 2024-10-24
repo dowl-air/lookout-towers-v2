@@ -16,8 +16,6 @@ import Buttons from "@/components/tower/top/Buttons";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Carousel from "@/components/tower/top/Carousel";
 
-export const revalidate = 3600;
-
 async function TowerPage({ params: { nameID } }: { params: { nameID: string } }) {
     const tower = await getTowerObjectByNameID(nameID);
     const [towerImages, towerRating] = await Promise.all([getUrlsTowerGallery(tower.id), getTowerRatingAndCount(tower.id)]);

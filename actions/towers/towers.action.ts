@@ -30,63 +30,81 @@ export const getTowerRatingAndCount = async (towerID: string): Promise<{ avg: nu
     return cachedFn(towerID);
 };
 
-export const getRandomTowers = async (count: number): Promise<Tower[]> => {
-    const ids: Set<string> = new Set();
-    const towers: Tower[] = [];
-    while (towers.length < count) {
-        const rnd = Math.random();
-        const q = query(collection(db, "towers"), where("random", ">", rnd), orderBy("random"), limit(count - towers.length));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            if (!ids.has(doc.id)) {
-                ids.add(doc.id);
-                towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
-            }
-        });
+export const getRandomTowers = cache(
+    async (count: number): Promise<Tower[]> => {
+        const ids: Set<string> = new Set();
+        const towers: Tower[] = [];
+        while (towers.length < count) {
+            const rnd = Math.random();
+            const q = query(collection(db, "towers"), where("random", ">", rnd), orderBy("random"), limit(count - towers.length));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                if (!ids.has(doc.id)) {
+                    ids.add(doc.id);
+                    towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
+                }
+            });
+        }
+        return towers;
+    },
+    [CacheTag.RandomTowers],
+    {
+        revalidate: 60 * 60 * 2,
+        tags: [CacheTag.RandomTowers],
     }
+);
 
-    const promises: Promise<{ avg: number; count: number }>[] = towers.map((tower) => getTowerRatingAndCount(tower.id));
-    const ratings = await Promise.all(promises);
-    ratings.forEach((rating, idx) => {
-        towers[idx].rating = rating;
-    });
+export const getAllTowers = cache(
+    async (): Promise<Tower[]> => {
+        const towers: Tower[] = [];
+        const querySnapshot = await getDocs(collection(db, "towers"));
+        querySnapshot.forEach((doc) => {
+            towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
+        });
+        return towers;
+    },
+    [CacheTag.Towers],
+    {
+        tags: [CacheTag.Towers],
+        revalidate: 60 * 60 * 24 * 7, // revalidate once a week (backup in case of a bug in the cache tag mechanism)
+    }
+);
 
-    return towers;
-};
-
-export const getAllTowers = async (): Promise<Tower[]> => {
-    const towers: Tower[] = [];
-    const querySnapshot = await getDocs(collection(db, "towers"));
-    querySnapshot.forEach((doc) => {
-        towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
-    });
-    return towers;
+export const getTowerByID = async (id: string): Promise<Tower> => {
+    const cachedFn = cache(
+        async (id: string) => {
+            const docSnap = await getDoc(doc(db, "towers", id));
+            return normalizeTowerObject(docSnap.data() as TowerFirebase);
+        },
+        [CacheTag.Tower],
+        {
+            tags: [CacheTag.Tower, getCacheTagSpecific(CacheTag.Tower, id)],
+        }
+    );
+    return cachedFn(id);
 };
 
 export const getTowerObjectByNameID = async (name_id: string): Promise<Tower> => {
-    const q = query(collection(db, "towers"), where("nameID", "==", name_id));
-    const snap = await getDocs(q);
-    const doc = snap.docs[0];
-    return normalizeTowerObject(doc.data() as TowerFirebase);
-};
-
-export const filterTowers = async (searchTerm: string, province: string, county: string, startTowerID?: string): Promise<Tower[]> => {
-    let previousElm;
-    if (startTowerID) previousElm = await getDoc(doc(db, "towers", startTowerID));
-
-    const query = towersQuery({ searchTerm, province, county }, previousElm);
-    const snap = await getDocs(query);
-    const towers: Tower[] = [];
-    snap.forEach((doc) => {
-        towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
-    });
-    return towers;
+    const cachedFn = cache(
+        async (name_id: string) => {
+            const q = query(collection(db, "towers"), where("nameID", "==", name_id));
+            const snap = await getDocs(q);
+            const doc = snap.docs[0];
+            return normalizeTowerObject(doc.data() as TowerFirebase);
+        },
+        [CacheTag.Tower],
+        {
+            tags: [CacheTag.Tower, getCacheTagSpecific(CacheTag.Tower, name_id)],
+        }
+    );
+    return cachedFn(name_id);
 };
 
 export const getTowersByIDs = async (ids: string[]): Promise<Tower[]> => {
-    const promises = ids.map((id) => getDoc(doc(db, "towers", id)));
-    const docs = await Promise.all(promises);
-    return docs.map((doc) => normalizeTowerObject(doc.data() as TowerFirebase));
+    // caching is not necessary here, because the cache is already used in the getTowerByID function
+    const promises = ids.map((id) => getTowerByID(id));
+    const towers = await Promise.all(promises);
+    return towers;
 };
 
 export const getTowerOfTheDay = cache(

@@ -1,5 +1,6 @@
 export const enum CacheTag {
     Towers = "Towers",
+    RandomTowers = "RandomTowers",
     Tower = "Tower",
     TowerRatingAndCount = "TowerRatingAndCount",
     TowerOfTheDay = "TowerOfTheDay",

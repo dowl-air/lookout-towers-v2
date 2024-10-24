@@ -1,22 +1,11 @@
-import Link from "next/link";
-import Image from "next/image";
-
+import { getTowerRatingAndCount } from "@/actions/towers/towers.action";
 import { SearchResult, Tower } from "@/typings";
-import ThemedRating from "@/components/shared/ThemedRating";
+import Image from "next/image";
+import Link from "next/link";
+import ThemedRating from "./ThemedRating";
 
-function TowerCardClient({
-    tower,
-    priority = false,
-    avg,
-    count,
-    photoUrl,
-}: {
-    tower: Tower | SearchResult;
-    priority?: boolean;
-    avg: number;
-    count: number;
-    photoUrl: string;
-}) {
+const TowerCard = async ({ tower, priority = false }: { tower: Tower | SearchResult; priority: boolean }) => {
+    const { avg, count } = await getTowerRatingAndCount(tower.id);
     const isFullTowerFn = (tower: Tower | SearchResult): tower is Tower => (tower as Tower).nameID !== undefined;
     const isFullTower = isFullTowerFn(tower);
 
@@ -24,15 +13,15 @@ function TowerCardClient({
         <Link href={`/${tower.type || "rozhledna"}/${isFullTower ? tower.nameID : tower.name_nospaces}`} scroll>
             <div className="card card-compact w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-52 sm:h-60 md:h-72">
-                    <Image
-                        src={photoUrl}
+                    {/* <Image
+                        src={tower?.mainPhotoUrl || `/img/towers/${id}/${id}_0.jpg`} //todo i wont use this
                         alt={tower.name}
                         fill
                         priority={priority}
                         className="object-cover block"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                         unoptimized
-                    />
+                    /> */}
                     {tower.opened ? (
                         <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">
                             {new Date(tower.opened).getFullYear()}
@@ -43,9 +32,9 @@ function TowerCardClient({
                     <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block text-base sm:text-lg md:text-xl">
                         {tower.name}
                     </h2>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-row items-center">
                         <ThemedRating size={20} value={avg} />
-                        <div className="text-base text-gray-400 mt-0.5">{count}x</div>
+                        <div className="flex lg:gap-1 text-md text-gray-400 ml-2">{count}x</div>
                     </div>
 
                     <div className="mt-2 flex-row flex items-center">
@@ -65,6 +54,6 @@ function TowerCardClient({
             </div>
         </Link>
     );
-}
+};
 
-export default TowerCardClient;
+export default TowerCard;
