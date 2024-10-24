@@ -91,10 +91,10 @@ function Parameters(params: ComponentParams) {
                                     <th>Výška</th>
                                     <td>{generateHeightText(params.height)}</td>
                                 </tr>
-                                <tr>
+                                {/*  <tr>
                                     <th>Zpřístupnění</th>
                                     <td>{params.opened ? new Date(params.opened).toLocaleDateString("cs") : "neznámé"}</td>
-                                </tr>
+                                </tr> */}
                                 <tr>
                                     <th>Nadmořská výška</th>
                                     <td>{params.elevation.toString() + " m. n. m."}</td>
@@ -103,10 +103,10 @@ function Parameters(params: ComponentParams) {
                                     <th>Souřadnice</th>
                                     <td>{`${params.gps.longitude.toFixed(6)}E ${params.gps.latitude.toFixed(6)}N`}</td>
                                 </tr>
-                                <tr>
+                                {/* <tr>
                                     <th>Naposledy upraveno</th>
                                     <td>{params.modified ? new Date(params.modified).toLocaleDateString("cs") : "nebylo"}</td>
-                                </tr>
+                                </tr> */}
                             </tbody>
                         </table>
                     </div>
