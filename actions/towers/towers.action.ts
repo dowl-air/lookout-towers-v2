@@ -5,6 +5,7 @@ import { Tower, TowerFirebase } from "@/typings";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { collection, getAggregateFromServer, getDocs, limit, orderBy, query, where, count, average, getDoc, doc } from "firebase/firestore";
 import { towersQuery } from "@/utils/towersQuery";
+import { unstable_cache as cache } from "next/cache";
 
 export const getTowerRatingAndCount = async (towerID: string) => {
     const q = query(collection(db, "ratings"), where("tower_id", "==", towerID));
@@ -78,21 +79,28 @@ export const getTowersByIDs = async (ids: string[]): Promise<Tower[]> => {
     return docs.map((doc) => normalizeTowerObject(doc.data() as TowerFirebase));
 };
 
-export const getTowerOfTheDay = async (): Promise<Tower> => {
-    const today = new Date();
-    const seedValue = parseInt(
-        `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, "0")}${today.getDate().toString().padStart(2, "0")}`
-    );
-    const seededRandom = (seed: number) => {
-        const x = Math.sin(seed) * 10000;
-        return x - Math.floor(x);
-    };
-    const generatedRandom = seededRandom(seedValue);
-    const q = query(collection(db, "towers"), orderBy("random"), where("random", ">=", generatedRandom), limit(1));
-    const snap = await getDocs(q);
-    const doc = snap.docs[0];
-    return normalizeTowerObject(doc.data() as TowerFirebase);
-};
+export const getTowerOfTheDay = cache(
+    async (): Promise<Tower> => {
+        const today = new Date();
+        const seedValue = parseInt(
+            `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, "0")}${today.getDate().toString().padStart(2, "0")}`
+        );
+        const seededRandom = (seed: number) => {
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        };
+        const generatedRandom = seededRandom(seedValue);
+        const q = query(collection(db, "towers"), orderBy("random"), where("random", ">=", generatedRandom), limit(1));
+        const snap = await getDocs(q);
+        const doc = snap.docs[0];
+        return normalizeTowerObject(doc.data() as TowerFirebase);
+    },
+    ["towerOfTheDay"],
+    {
+        revalidate: 60 * 60,
+        tags: ["towerOfTheDay"],
+    }
+);
 
 export const getTowerVisitsCount = async (towerID: string) => {
     const q = query(collection(db, "visits"), where("tower_id", "==", towerID));
