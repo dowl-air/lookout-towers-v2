@@ -98,10 +98,10 @@ function Filter_({ applyFilter, initFilter }: ComponentProps) {
                         <option key={idx}>{item}</option>
                     ))}
                 </select>
-                <div className="card-actions justify-end">
+                <div className="card-actions justify-start mt-2">
                     {JSON.stringify(emptyFilter) !== JSON.stringify(createFilterObject()) && (
                         <button className="btn btn-error" onClick={() => removeFilter()}>
-                            Vymazat
+                            Vymazat filtry
                         </button>
                     )}
                 </div>
