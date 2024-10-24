@@ -36,7 +36,7 @@ const TowerOfTheDay = async () => {
                         <p className="mb-2 hidden md:block mt-5">Lokalita: {tower.county}</p>
                         <p className="mb-2 hidden md:block">Výška: {tower.height} m</p>
                         <p className="mb-2 hidden md:block">Počet schodů: {tower.stairs}</p>
-                        <p className="mb-2 hidden md:block">Rok otevření: {tower.opened.getFullYear()}</p>
+                        <p className="mb-2 hidden md:block">Rok otevření: {new Date(tower.opened).getFullYear()}</p>
                     </div>
                 </div>
                 <div className="flex-1 max-h-80 h-80">
