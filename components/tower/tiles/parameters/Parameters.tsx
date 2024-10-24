@@ -22,6 +22,7 @@ const generateHeightText = (height: number): string => {
 };
 
 function Parameters(params: ComponentParams) {
+    console.log(params);
     return (
         <>
             <div
@@ -91,10 +92,10 @@ function Parameters(params: ComponentParams) {
                                     <th>Výška</th>
                                     <td>{generateHeightText(params.height)}</td>
                                 </tr>
-                                {/*  <tr>
+                                <tr>
                                     <th>Zpřístupnění</th>
                                     <td>{params.opened ? new Date(params.opened).toLocaleDateString("cs") : "neznámé"}</td>
-                                </tr> */}
+                                </tr>
                                 <tr>
                                     <th>Nadmořská výška</th>
                                     <td>{params.elevation.toString() + " m. n. m."}</td>
