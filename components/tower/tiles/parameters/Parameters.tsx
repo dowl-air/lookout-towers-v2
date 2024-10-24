@@ -101,7 +101,7 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                                 <tr>
                                     <th>Souřadnice</th>
-                                    <td>{params.gps.longitude.toString() + "E " + params.gps.latitude.toString() + "N"}</td>
+                                    <td>{`${params.gps.longitude.toFixed(6)}E ${params.gps.latitude.toFixed(6)}N`}</td>
                                 </tr>
                                 <tr>
                                     <th>Naposledy upraveno</th>
