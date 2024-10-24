@@ -8,7 +8,7 @@ type ComponentParams = {
     height: number;
     material: string[];
     modified: Date;
-    opened: Date;
+    opened: Date | string;
     type: string;
     stairs: number;
 };
@@ -56,7 +56,7 @@ function Parameters(params: ComponentParams) {
                             </tr>
                             <tr>
                                 <th className="text-base-content">Zpřístupnění</th>
-                                <td>{params.opened.toLocaleDateString("cs")}</td>
+                                <td>{params.opened ? new Date(params.opened).toLocaleDateString("cs") : "neznámé"}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -95,7 +95,7 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                                 <tr>
                                     <th>Zpřístupnění</th>
-                                    <td>{params.opened.toLocaleDateString("cs")}</td>
+                                    <td>{params.opened ? new Date(params.opened).toLocaleDateString("cs") : "neznámé"}</td>
                                 </tr>
                                 <tr>
                                     <th>Nadmořská výška</th>
@@ -107,7 +107,7 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                                 <tr>
                                     <th>Naposledy upraveno</th>
-                                    <td>{params.modified.toLocaleDateString("cs")}</td>
+                                    <td>{params.modified ? new Date(params.modified).toLocaleDateString("cs") : "nebylo"}</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...towers.map(t => {
             return {
                 url: `https://www.rozhlednovysvet.cz/${t.type}/${t.nameID}`,
-                lastModified: t.modified
+                lastModified: new Date(t.modified)
             }
         })
     ]

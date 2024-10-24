@@ -84,10 +84,10 @@ export type Tower = {
     locationText?: string;
     mainPhotoUrl: string;
     material: [string];
-    modified: Date;
+    modified: Date | string;
     name: string;
     nameID: string;
-    opened: Date;
+    opened: Date | string;
     openingHours: OpeningHours;
     price?: number; //todo
     province?: string;
