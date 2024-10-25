@@ -1,7 +1,7 @@
 "use server";
 import { Visit } from "@/typings";
 import { checkAuth } from "../checkAuth";
-import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
@@ -65,4 +65,46 @@ export const getAllUserVisits = async (): Promise<Visit[]> => {
         visits.push({ ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit);
     });
     return visits;
+};
+
+export const getTowerVisits = async (towerID: string): Promise<Visit[]> => {
+    const cacheFn = cache(
+        async (towerID: string) => {
+            const q = query(collection(db, "visits"), where("tower_id", "==", towerID));
+            const querySnapshot = await getDocs(q);
+            const visits: Visit[] = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                visits.push({
+                    ...data,
+                    date: new Date(data.date).toISOString(),
+                    created: (data.created as Timestamp).toDate().toISOString(),
+                } as Visit);
+            });
+            return visits;
+        },
+        [CacheTag.TowerVisits],
+        {
+            tags: [CacheTag.TowerVisits, getCacheTagSpecific(CacheTag.TowerVisits, towerID)],
+        }
+    );
+    return cacheFn(towerID);
+};
+
+export const getMostRecentTowerVisit = async (towerID: string): Promise<Visit | null> => {
+    const cacheFn = cache(
+        async (towerID: string) => {
+            const q = query(collection(db, "visits"), where("tower_id", "==", towerID), orderBy("date", "desc"), limit(1));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) return null;
+            const doc = querySnapshot.docs[0];
+            const data = doc.data();
+            return { ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit;
+        },
+        [CacheTag.TowerVisits, "mostRecentVisit"],
+        {
+            tags: [CacheTag.TowerVisits, getCacheTagSpecific(CacheTag.TowerVisits, towerID)],
+        }
+    );
+    return cacheFn(towerID);
 };

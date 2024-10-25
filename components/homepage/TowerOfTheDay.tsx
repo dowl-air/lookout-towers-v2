@@ -3,18 +3,27 @@ import { towerTypeMappedUrl } from "@/utils/constants";
 import Link from "next/link";
 import ThemedRating from "../shared/ThemedRating";
 import { formatDate } from "@/utils/date";
+import { getMostRecentTowerVisit } from "@/actions/visits/visits.action";
+import { User } from "next-auth";
+import { getUser } from "@/actions/members/members.action";
 
 export const revalidate = 3600;
 
 const TowerOfTheDay = async () => {
     const tower = await getTowerOfTheDay();
-    const [{ avg, count }, { count: visitsCount }] = await Promise.all([getTowerRatingAndCount(tower.id), getTowerVisitsCount(tower.id)]);
+    let user: User = {};
+    const [{ avg, count }, { count: visitsCount }, towerRecentVisit] = await Promise.all([
+        getTowerRatingAndCount(tower.id),
+        getTowerVisitsCount(tower.id),
+        getMostRecentTowerVisit(tower.id),
+    ]);
+    if (towerRecentVisit) user = await getUser(towerRecentVisit.user_id);
 
     return (
         <div className="max-w-[1070px] w-full mx-auto px-4 mt-10 mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">Rozhledna dne </h2>
             <p className="text-center text-lg md:text-xl mb-6">Dnes je {formatDate({ date: new Date(), long: true })}.</p>
-            <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start gap-4">
+            <div className="flex flex-col-reverse md:flex-row justify-center items-center gap-4">
                 <div className="flex-1">
                     <div className="flex flex-col bg-base-100 rounded-xl p-6 items-center md:items-end">
                         <h2 className="text-2xl mb-3 text-center md:text-right">
@@ -31,7 +40,11 @@ const TowerOfTheDay = async () => {
                         <p className="mb-1 mt-3 text-lg text-center md:text-right">
                             {visitsCount ? `${visitsCount} uživatelů navštívilo.` : `Žádné zaznamenané návštěvy.`}
                         </p>
-                        {visitsCount > 0 ? <p className="text-lg text-center md:text-right">Naposledy navštíveno 28.2.2024 uživatelem Dowl</p> : null}
+                        {towerRecentVisit ? (
+                            <p className="text-lg text-center md:text-right">
+                                Naposledy navštíveno {formatDate({ date: towerRecentVisit.date, long: true })} uživatelem {user.name}.
+                            </p>
+                        ) : null}
                         <p className="mb-2 hidden md:block mt-5">Lokalita: {tower.county}</p>
                         <p className="mb-2 hidden md:block">Výška: {tower.height} m</p>
                         <p className="mb-2 hidden md:block">Počet schodů: {tower.stairs}</p>
