@@ -28,7 +28,7 @@ const TowerOfTheDay = async () => {
                     <div className="flex flex-col bg-base-100 rounded-xl p-6 items-center md:items-end">
                         <h2 className="text-2xl mb-3 text-center md:text-right">
                             Byla vybrána {towerTypeMappedUrl[tower.type] ?? tower.type}{" "}
-                            <Link className="font-bold" href={`${tower.type}/${tower.nameID}`}>
+                            <Link className="font-bold underline underline-offset-2" href={`${tower.type}/${tower.nameID}`}>
                                 {tower.name}
                             </Link>
                             .
@@ -38,11 +38,15 @@ const TowerOfTheDay = async () => {
                             <div>{count ? `${count}x` : ""}</div>
                         </div>
                         <p className="mb-1 mt-3 text-lg text-center md:text-right">
-                            {visitsCount ? `${visitsCount} uživatelů navštívilo.` : `Žádné zaznamenané návštěvy.`}
+                            {visitsCount
+                                ? `Celkem navštíveno ${visitsCount} ${visitsCount > 1 ? "uživateli" : "uživatelem"}.`
+                                : `Žádné zaznamenané návštěvy.`}
                         </p>
                         {towerRecentVisit ? (
                             <p className="text-lg text-center md:text-right">
-                                Naposledy navštíveno {formatDate({ date: towerRecentVisit.date, long: true })} uživatelem {user.name}.
+                                Naposledy navštíveno{" "}
+                                <span className="font-semibold text-nowrap">{formatDate({ date: towerRecentVisit.date, long: true })}</span>{" "}
+                                uživatelem <span className="font-semibold">{user.name}</span>.
                             </p>
                         ) : null}
                         <p className="mb-2 hidden md:block mt-5">Lokalita: {tower.county}</p>
