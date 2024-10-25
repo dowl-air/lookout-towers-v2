@@ -1,6 +1,7 @@
 import UserProfileAvatar from "@/components/UserProfileAvatar";
 import ThemedRating from "@/components/shared/ThemedRating";
 import { Rating } from "@/typings";
+import { formatDate } from "@/utils/date";
 
 const UserRating = ({ rating }: { rating: Rating }) => {
     if (rating.user === undefined) return null;
@@ -12,7 +13,7 @@ const UserRating = ({ rating }: { rating: Rating }) => {
                     <div className="flex gap-1">
                         <p>{rating.user.name}</p>
                         <p className="font-bold opacity-50">·</p>
-                        <p className="opacity-50">{new Date(rating.created).toLocaleDateString()}</p>
+                        <p className="opacity-50">{formatDate({ date: rating.created, long: true })}</p>
                     </div>
                     <ThemedRating value={rating.rating} size={25} />
                 </div>

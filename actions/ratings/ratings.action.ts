@@ -17,7 +17,7 @@ export const getUserRating = async (towerID: string): Promise<Rating | null> => 
             const [snap, member] = await Promise.all([await getDoc(doc(db, "ratings", `${userID}_${towerID}`)), getUser(userID)]);
             if (!snap.exists()) return null;
             const data = snap.data();
-            return { ...data, created: (data.created as Timestamp).toDate(), user: member } as Rating;
+            return { ...data, created: (data.created as Timestamp).toDate().toISOString(), user: member } as Rating;
         },
         [CacheTag.UserTowerRating],
         {
@@ -35,7 +35,7 @@ export const getTowerRatings = async (towerID: string): Promise<Rating[]> => {
             const ratings: Rating[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                ratings.push({ ...data, created: (data.created as Timestamp).toDate() } as Rating);
+                ratings.push({ ...data, created: (data.created as Timestamp).toDate().toISOString() } as Rating);
             });
             return ratings;
         },
@@ -87,7 +87,7 @@ export const getAllUserRatings = async () => {
     const ratings: Rating[] = [];
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        ratings.push({ ...data, created: (data.created as Timestamp).toDate() } as Rating);
+        ratings.push({ ...data, created: (data.created as Timestamp).toDate().toISOString() } as Rating);
     });
     return ratings;
 };

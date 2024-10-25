@@ -51,9 +51,10 @@ function ProfileVisitCard({ visit, tower }: { visit: Visit; tower: Tower | undef
                         </h2>
                     </Link>
                     <time className="text-sm text-gray-400">
-                        {visit.date.toLocaleTimeString([], {
+                        {new Date(visit.date).toLocaleTimeString("cs", {
                             hour: "2-digit",
                             minute: "2-digit",
+                            timeZone: "Europe/Prague",
                         })}
                     </time>
                     <p className="text-base text-gray-500">{visit.text}</p>

@@ -15,7 +15,7 @@ export const getVisit = async (towerID: string): Promise<Visit | null> => {
             const snap = await getDoc(doc(db, "visits", `${userID}_${towerID}`));
             if (!snap.exists()) return null;
             const data = snap.data();
-            return { ...data, date: new Date(data.date), created: (data.created as Timestamp).toDate() } as Visit;
+            return { ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit;
         },
         [CacheTag.UserTowerVisit],
         {
@@ -29,7 +29,7 @@ export const setVisit = async (towerID: string, visit: Omit<Visit, "created" | "
     const user = await checkAuth();
     await setDoc(doc(db, "visits", `${user.id}_${towerID}`), {
         ...visit,
-        date: visit.date.toISOString(),
+        date: visit.date,
         created: serverTimestamp(),
         user_id: user.id,
         tower_id: towerID,
@@ -62,7 +62,7 @@ export const getAllUserVisits = async (): Promise<Visit[]> => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        visits.push({ ...data, date: new Date(data.date), created: (data.created as Timestamp).toDate() } as Visit);
+        visits.push({ ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit);
     });
     return visits;
 };

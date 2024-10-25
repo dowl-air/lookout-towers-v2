@@ -74,7 +74,7 @@ export type Tower = {
     access?: string;
     country: string;
     county?: string;
-    created: Timestamp | Date;
+    created: string;
     elevation: number;
     gps: GeoPoint | GPS;
     gpshash?: string;
@@ -84,10 +84,10 @@ export type Tower = {
     locationText?: string;
     mainPhotoUrl: string;
     material: [string];
-    modified: Date | string;
+    modified: string;
     name: string;
     nameID: string;
-    opened: Date | string;
+    opened: string;
     openingHours: OpeningHours;
     price?: number; //todo
     province?: string;
@@ -106,7 +106,7 @@ export type Rating = {
     tower_id: string;
     user_id: string;
     rating: number;
-    created: Date;
+    created: string;
     text: string;
     user?: User;
 };
@@ -114,9 +114,9 @@ export type Rating = {
 export type Visit = {
     tower_id: string;
     user_id: string;
-    date: Date;
+    date: string;
     text: string;
-    created: Date;
+    created: string;
 };
 
 export type OpeningHours = {

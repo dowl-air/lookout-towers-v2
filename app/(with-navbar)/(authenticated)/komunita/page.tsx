@@ -103,7 +103,7 @@ const ComunityPage = async () => {
                                                 </div>
                                                 <div>
                                                     <div className="font-bold">{member.lastVisited.tower.name}</div>
-                                                    <div className="text-sm opacity-50">{formatDate(member.lastVisited.date)}</div>
+                                                    <div className="text-sm opacity-50">{formatDate({ date: member.lastVisited.date })}</div>
                                                 </div>
                                             </Link>
                                         )}

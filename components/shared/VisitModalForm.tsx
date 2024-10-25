@@ -8,14 +8,14 @@ import DatePicker from "tailwind-datepicker-react";
 
 export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; tower: Tower }) => {
     const [visitedText, setVisitedText] = useState(initVisit?.text || "");
-    const [visitedDate, setVisitedDate] = useState(initVisit?.date || new Date());
+    const [visitedDate, setVisitedDate] = useState(initVisit?.date ? new Date(initVisit.date) : new Date());
     const [datePickShown, setDatePickShown] = useState<boolean>(false);
     const ref = useRef<HTMLDialogElement>(null);
 
     const getVisit = () => {
         return {
             text: visitedText,
-            date: visitedDate,
+            date: visitedDate.toISOString(),
         };
     };
 

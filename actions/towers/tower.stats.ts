@@ -54,15 +54,15 @@ export const getTowersCount = cache(
 );
 
 export const getLastModifiedTowerDate = cache(
-    async (): Promise<Date> => {
+    async (): Promise<string> => {
         const q = query(collection(db, "towers"), orderBy("modified"), limit(1));
         const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) return new Date();
+        if (querySnapshot.empty) return new Date().toISOString();
 
         const doc = querySnapshot.docs[0];
         const data = doc.data();
-        return (data.modified as Timestamp).toDate();
+        return (data.modified as Timestamp).toDate().toISOString();
     },
     [CacheTag.LastChangeDate],
     {

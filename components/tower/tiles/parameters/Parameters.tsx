@@ -1,5 +1,6 @@
 "use client";
 import { GPS } from "@/typings";
+import { formatDate } from "@/utils/date";
 
 type ComponentParams = {
     elevation: number;
@@ -22,7 +23,6 @@ const generateHeightText = (height: number): string => {
 };
 
 function Parameters(params: ComponentParams) {
-    console.log(params);
     return (
         <>
             <div
@@ -55,7 +55,7 @@ function Parameters(params: ComponentParams) {
                             </tr>
                             <tr>
                                 <th className="text-base-content">Zpřístupnění</th>
-                                <td>{params.opened ? new Date(params.opened).toLocaleDateString("cs") : "neznámé"}</td>
+                                <td>{params.opened ? formatDate({ date: params.opened, long: true }) : "neznámé"}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -94,7 +94,7 @@ function Parameters(params: ComponentParams) {
                                 </tr>
                                 <tr>
                                     <th>Zpřístupnění</th>
-                                    <td>{params.opened ? new Date(params.opened).toLocaleDateString("cs") : "neznámé"}</td>
+                                    <td>{params.opened ? formatDate({ date: params.opened, long: true }) : "neznámé"}</td>
                                 </tr>
                                 <tr>
                                     <th>Nadmořská výška</th>
@@ -104,10 +104,10 @@ function Parameters(params: ComponentParams) {
                                     <th>Souřadnice</th>
                                     <td>{`${params.gps.longitude.toFixed(6)}E ${params.gps.latitude.toFixed(6)}N`}</td>
                                 </tr>
-                                {/* <tr>
+                                <tr>
                                     <th>Naposledy upraveno</th>
-                                    <td>{params.modified ? new Date(params.modified).toLocaleDateString("cs") : "nebylo"}</td>
-                                </tr> */}
+                                    <td>{params.modified ? formatDate({ date: params.modified, long: true }) : "nebylo"}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

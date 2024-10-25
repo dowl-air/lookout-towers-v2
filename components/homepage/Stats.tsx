@@ -1,4 +1,5 @@
 import { getChangesCount, getLastModifiedTowerDate, getRatingsCount, getTowersCount, getUsersCount } from "@/actions/towers/tower.stats";
+import { formatDate } from "@/utils/date";
 
 export const revalidate = 3600;
 
@@ -7,7 +8,7 @@ async function Stats() {
     const ratingsNumberPromise: Promise<number> = getRatingsCount();
     const usersNumberPromise: Promise<number> = getUsersCount();
     const towersNumberPromise: Promise<number> = getTowersCount();
-    const towersDatePromise: Promise<Date> = getLastModifiedTowerDate();
+    const towersDatePromise: Promise<string> = getLastModifiedTowerDate();
 
     const [changesNumber, ratingsNumber, usersNumber, towersNumber, towersDateRaw] = await Promise.all([
         changesNumberPromise,
@@ -40,7 +41,7 @@ async function Stats() {
                 </div>
                 <div className="stat">
                     <div className="stat-title text-primary-content">Poslední změna</div>
-                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                    <div className="stat-value">{formatDate({ date: towersDate })}</div>
                 </div>
             </div>
 
@@ -65,7 +66,7 @@ async function Stats() {
                 </div>
                 <div className="stat">
                     <div className="stat-title text-primary-content">Poslední změna</div>
-                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                    <div className="stat-value">{formatDate({ date: towersDate })}</div>
                 </div>
             </div>
 
@@ -92,7 +93,7 @@ async function Stats() {
             <div className="stats bg-primary text-primary-content stats-vertical hidden mt-3 min-[430px]:inline-grid sm:hidden">
                 <div className="stat">
                     <div className="stat-title text-primary-content">Poslední změna</div>
-                    <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                    <div className="stat-value">{formatDate({ date: towersDate })}</div>
                 </div>
             </div>
 
@@ -120,7 +121,7 @@ async function Stats() {
                 <div className="flex">
                     <div className="stat">
                         <div className="stat-title text-primary-content">Poslední změna</div>
-                        <div className="stat-value">{`${towersDate.getDate()}. ${towersDate.getMonth() + 1}. ${towersDate.getFullYear()}`}</div>
+                        <div className="stat-value">{formatDate({ date: towersDate })}</div>
                     </div>
                 </div>
             </div>

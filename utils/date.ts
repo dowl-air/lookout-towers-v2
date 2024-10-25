@@ -1,5 +1,9 @@
-export const formatDate = (date: Date | String) => {
-    if (typeof date === "string") date = new Date(date);
-    const d = date as Date;
-    return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()}`;
-}
+export const formatDate = ({ date, long = false }: { date: Date | string; long?: boolean }) => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString("cs", {
+        timeZone: "Europe/Prague",
+        day: "numeric",
+        month: long ? "long" : "numeric",
+        year: "numeric",
+    });
+};

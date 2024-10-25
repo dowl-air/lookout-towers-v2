@@ -2,6 +2,7 @@ import { getTowerOfTheDay, getTowerRatingAndCount, getTowerVisitsCount } from "@
 import { towerTypeMappedUrl } from "@/utils/constants";
 import Link from "next/link";
 import ThemedRating from "../shared/ThemedRating";
+import { formatDate } from "@/utils/date";
 
 export const revalidate = 3600;
 
@@ -12,9 +13,7 @@ const TowerOfTheDay = async () => {
     return (
         <div className="max-w-[1070px] w-full mx-auto px-4 mt-10 mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">Rozhledna dne </h2>
-            <p className="text-center text-lg md:text-xl mb-6">
-                Dnes je {new Date().toLocaleDateString("cs", { month: "long", day: "numeric", year: "numeric" })}.
-            </p>
+            <p className="text-center text-lg md:text-xl mb-6">Dnes je {formatDate({ date: new Date(), long: true })}.</p>
             <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start gap-4">
                 <div className="flex-1">
                     <div className="flex flex-col bg-base-100 rounded-xl p-6 items-center md:items-end">
