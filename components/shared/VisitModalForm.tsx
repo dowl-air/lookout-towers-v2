@@ -161,7 +161,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                         </div>
                         {urls.length < 3 && (
                             <button
-                                className="btn btn-outline btn-primary btn-sm"
+                                className="btn btn-outline btn-primary btn-sm self-start mt-2"
                                 onClick={() => {
                                     setUrls([...urls, ""]);
                                 }}
