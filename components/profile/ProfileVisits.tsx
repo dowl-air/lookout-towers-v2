@@ -1,7 +1,7 @@
-import { Tower, Visit } from "@/typings";
+import { Rating, Tower, Visit } from "@/typings";
 import ProfileVisitCard from "./ProfileVisitCard";
 
-function ProfileVisits({ visits, towers }: { visits: Visit[]; towers: Tower[] }) {
+function ProfileVisits({ visits, towers, ratings }: { visits: Visit[]; towers: Tower[]; ratings: Rating[] }) {
     const groupedVisits = visits.reduce((acc: Record<string, Visit[]>, visit) => {
         const dateKey = new Date(visit.date).toLocaleDateString("en");
         if (!acc[dateKey]) {
@@ -25,9 +25,10 @@ function ProfileVisits({ visits, towers }: { visits: Visit[]; towers: Tower[] })
                             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                             .map((visit, idx) => {
                                 const tower = towers.find((t) => t.id === visit.tower_id);
+                                const rating = ratings.find((r) => r.tower_id === visit.tower_id);
                                 return (
                                     <li key={idx} className="mb-6">
-                                        <ProfileVisitCard visit={visit} tower={tower} />
+                                        <ProfileVisitCard visit={visit} tower={tower} rating={rating} />
                                     </li>
                                 );
                             })}

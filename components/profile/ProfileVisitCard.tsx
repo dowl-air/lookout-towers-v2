@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Visit, Tower } from "@/typings";
+import { Visit, Tower, Rating } from "@/typings";
+import { extractDomain } from "@/utils/extractDomain";
+import ThemedRating from "../shared/ThemedRating";
 
-function ProfileVisitCard({ visit, tower }: { visit: Visit; tower: Tower | undefined }) {
+function ProfileVisitCard({ visit, tower, rating }: { visit: Visit; tower: Tower | undefined; rating: Rating | undefined }) {
     return (
         <>
             <div className="card w-[300px] bg-base-100 shadow-xl h-full">
@@ -50,14 +52,46 @@ function ProfileVisitCard({ visit, tower }: { visit: Visit; tower: Tower | undef
                             </button>
                         </h2>
                     </Link>
-                    <time className="text-sm text-gray-400">
+                    <time className="text-sm opacity-50">
                         {new Date(visit.date).toLocaleTimeString("cs", {
                             hour: "2-digit",
                             minute: "2-digit",
                             timeZone: "Europe/Prague",
                         })}
                     </time>
-                    <p className="text-base text-gray-500">{visit.text}</p>
+                    <p className="text-sm">{visit.text}</p>
+                    <div className="flex flex-col gap-2 mt-2">
+                        {visit.urls &&
+                            visit.urls.map((url, index) => (
+                                <div key={index} className="flex items-center gap-1.5">
+                                    <svg
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-primary"
+                                    >
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                    </svg>
+                                    <a key={index} href={url} target="_blank" className="text-base text-primary underline">
+                                        {extractDomain(url)}
+                                    </a>
+                                </div>
+                            ))}
+                    </div>
+                    {rating && (
+                        <>
+                            <hr className="my-2" />
+                            <p className="opacity-50">Moje hodnocení</p>
+                            <ThemedRating size={25} value={rating.rating} />
+                            <p className="text-sm">{rating.text}</p>
+                        </>
+                    )}
                 </div>
             </div>
         </>

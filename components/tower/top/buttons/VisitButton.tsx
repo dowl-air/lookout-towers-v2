@@ -2,6 +2,8 @@
 import { getVisit } from "@/actions/visits/visits.action";
 import { VisitModal } from "@/components/shared/VisitModalForm";
 import { Tower, Visit } from "@/typings";
+import { formatDate } from "@/utils/date";
+import { showModalWithoutFocus } from "@/utils/showModal";
 import { useFormState } from "react-dom";
 
 export const VisitButton = ({ visitInit, tower }: { visitInit: Visit | null; tower: Tower }) => {
@@ -14,9 +16,9 @@ export const VisitButton = ({ visitInit, tower }: { visitInit: Visit | null; tow
                 className={`btn min-w-64 ${
                     isVisited ? "btn-success [&>span]:hover:hidden hover:btn-warning hover:before:content-['Upravit_návštěvu']" : "btn-primary"
                 } max-w-xs text-sm w-full min-[710px]:text-base"`}
-                onClick={() => (document.getElementById("visit_modal") as HTMLDialogElement)?.showModal()}
+                onClick={() => showModalWithoutFocus("visit_modal")}
             >
-                <span>{isVisited ? "V navštívených" : "Přidat do navštívených"}</span>
+                <span>{isVisited ? `Navštíveno ${formatDate({ date: isVisited.date, long: false })}` : "Přidat do navštívených"}</span>
             </button>
             <VisitModal initVisit={isVisited} tower={tower} />
         </form>

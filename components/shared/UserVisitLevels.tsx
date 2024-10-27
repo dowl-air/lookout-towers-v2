@@ -9,7 +9,7 @@ const UserVisitLevels = () => {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th className="text-base-content">Navštívených rozhleden</th>
+                            <th className="text-base-content text-wrap text-right pl-0">Navštívených rozhleden</th>
                             <th className="text-base-content">Odznak</th>
                         </tr>
                     </thead>
@@ -18,9 +18,9 @@ const UserVisitLevels = () => {
                             const { name, color, level } = getUserLevel(points);
                             return (
                                 <tr key={idx}>
-                                    <td className="text-base-content">{points}</td>
+                                    <td className="text-base-content text-right">{points}</td>
                                     <td>
-                                        <div className="badge" style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
+                                        <div className="badge text-nowrap" style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
                                             {name}
                                         </div>
                                     </td>

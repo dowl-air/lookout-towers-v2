@@ -20,7 +20,7 @@ async function ProfilePage() {
                     <DynamicMap lat={49.8237572} long={15.6086383} towers={towers} visits={visits.map((v) => v.tower_id)} favs={favouritesIds} />
                 </div>
             </div>
-            <TabsAndContent visits={visits} favs={favouritesIds} towers={towers} />
+            <TabsAndContent visits={visits} favs={favouritesIds} towers={towers} ratings={ratings} />
         </div>
     );
 }

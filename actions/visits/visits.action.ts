@@ -29,7 +29,6 @@ export const setVisit = async (towerID: string, visit: Omit<Visit, "created" | "
     const user = await checkAuth();
     await setDoc(doc(db, "visits", `${user.id}_${towerID}`), {
         ...visit,
-        date: visit.date,
         created: serverTimestamp(),
         user_id: user.id,
         tower_id: towerID,

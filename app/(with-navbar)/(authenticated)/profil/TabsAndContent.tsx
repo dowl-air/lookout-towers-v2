@@ -1,9 +1,9 @@
 "use client";
-import { Tower, Visit } from "@/typings";
+import { Rating, Tower, Visit } from "@/typings";
 import React, { useState } from "react";
 import ProfileVisits from "@/components/profile/ProfileVisits";
 
-function TabsAndContent({ visits, favs, towers }: { visits: Visit[]; favs: string[]; towers: Tower[] }) {
+function TabsAndContent({ visits, favs, towers, ratings }: { visits: Visit[]; favs: string[]; towers: Tower[]; ratings: Rating[] }) {
     const [page, setPage] = useState<string>("visited");
 
     return (
@@ -31,7 +31,7 @@ function TabsAndContent({ visits, favs, towers }: { visits: Visit[]; favs: strin
                     onClick={() => setPage("achievements")}
                 /> */}
             </div>
-            {page === "visited" && <ProfileVisits visits={visits} towers={towers} />}
+            {page === "visited" && <ProfileVisits visits={visits} towers={towers} ratings={ratings} />}
             {page === "favourites" && <h2 className="prose prose-xl text-primary mt-5 mb-80">Tato sekce bude brzy dostupná. Probíhá vývoj.</h2>}
             {page === "achievements" && <h2 className="prose prose-xl text-primary mt-5 mb-80">Tato sekce bude brzy dostupná. Probíhá vývoj.</h2>}
         </div>

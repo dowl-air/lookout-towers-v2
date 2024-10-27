@@ -8,6 +8,7 @@ import { cn } from "@/utils/cn";
 import RatingModal from "@/components/tower/rating/RatingModal";
 import UserRating from "@/components/tower/rating/UserRating";
 import RatingStats from "@/components/tower/rating/RatingStats";
+import { showModalWithoutFocus } from "@/utils/showModal";
 
 const RatingForm = ({
     tower,
@@ -28,18 +29,20 @@ const RatingForm = ({
         <>
             <form action={action} id="tower-rating-form" className="w-full max-w-[94vw] sm:max-w-[100vw]">
                 <div className="card flex flex-col justify-center gap-8 w-full px-6 py-8 shadow-xl bg-[rgba(255,255,255,0.05)]">
-                    <div className="flex justify-between items-center sm:items-start w-full">
-                        <h2 className="card-title text-base sm:text-lg md:text-xl">{`Recenze [${ratings.length + (currentRating ? 1 : 0)}]`}</h2>
+                    <div className="flex gap-2 justify-between items-center sm:items-start w-full">
+                        <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">{`Hodnocení [${
+                            ratings.length + (currentRating ? 1 : 0)
+                        }]`}</h2>
                         <div className="flex flex-wrap gap-3 flex-col sm:flex-row">
                             <button
                                 className="btn btn-sm btn-primary sm:btn-md"
                                 onClick={async (e) => {
                                     e.preventDefault();
                                     if (session.status !== "authenticated") await loginRedirect();
-                                    else (document.querySelector("#tower-rating-modal") as HTMLDialogElement).showModal();
+                                    else showModalWithoutFocus("tower-rating-modal");
                                 }}
                             >
-                                {currentRating ? "Upravit moji recenzi" : "Přidat recenzi"}
+                                {currentRating ? "Upravit moje hodnocení" : "Přidat hodnocení"}
                             </button>
                         </div>
                     </div>

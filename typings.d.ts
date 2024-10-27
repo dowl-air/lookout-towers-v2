@@ -117,6 +117,7 @@ export type Visit = {
     date: string;
     text: string;
     created: string;
+    urls?: string[];
 };
 
 export type OpeningHours = {
