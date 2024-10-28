@@ -16,7 +16,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
             : "12:00"
     );
     const [datePickShown, setDatePickShown] = useState<boolean>(false);
-    const [urls, setUrls] = useState<string[]>(initVisit?.urls.length ? initVisit.urls : [""]);
+    const [urls, setUrls] = useState<string[]>(initVisit?.urls?.length ? initVisit.urls : [""]);
     const ref = useRef<HTMLDialogElement>(null);
 
     const getVisit = () => {
@@ -100,11 +100,11 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col flex-1">
+                        <div className="flex flex-col flex-1 min-w-28">
                             <label htmlFor="time" className="label">
-                                <span className="label-text">Čas návštěvy</span>
+                                <span className="label-text text-nowrap">Čas návštěvy</span>
                             </label>
-                            <div className="p-1 px-2 rounded-lg border border-primary ring-offset-2 focus-within:ring-2 focus-within:ring-primary">
+                            <div className="p-2 sm:p-1 px-2 sm:px-3 rounded-lg border border-primary ring-offset-2 focus-within:ring-2 focus-within:ring-primary">
                                 <input
                                     value={visitedTime}
                                     type="time"
@@ -178,7 +178,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                 Odstranit návštěvu
                             </button>
                         )}
-                        <button className="btn btn-error hidden md:inline-flex" onClick={close}>
+                        <button className="btn btn-error" onClick={close}>
                             Zavřít
                         </button>
                         <button className="btn btn-primary ml-auto" onClick={update}>
