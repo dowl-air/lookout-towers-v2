@@ -100,7 +100,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col flex-1 min-w-[7.25rem]">
+                        <div className="flex flex-col flex-1 min-w-28">
                             <label htmlFor="time" className="label">
                                 <span className="label-text text-nowrap">Čas návštěvy</span>
                             </label>
@@ -109,7 +109,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                     value={visitedTime}
                                     type="time"
                                     name="time"
-                                    className="bg-base-100 outline-none text-base-content text-base"
+                                    className="bg-base-100 outline-none text-base-content text-base max-w-24 sm:max-w-32"
                                     onChange={(v) => {
                                         setVisitedTime(v.target.value);
                                     }}
