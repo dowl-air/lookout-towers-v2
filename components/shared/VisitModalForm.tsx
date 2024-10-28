@@ -127,7 +127,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                             </span>
                         </label>
                         <textarea
-                            className="textarea textarea-primary h-36 text-sm text-base-content"
+                            className="textarea textarea-primary h-36 text-sm text-base-content resize-none md:resize-y"
                             value={visitedText}
                             maxLength={800}
                             placeholder="Co se Vám líbilo? Jak jste se dostali na rozhlednu? S kým jste byli? Jaké bylo počasí?"
