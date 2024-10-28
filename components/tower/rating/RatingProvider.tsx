@@ -4,8 +4,8 @@ import RatingForm from "@/components/tower/rating/RatingForm";
 import { getUser } from "@/actions/members/members.action";
 
 const RatingFormProvider = async ({ tower }: { tower: Tower }) => {
-    const userRating = await getUserRating(tower.id);
-    let towerRatings = await getTowerRatings(tower.id);
+    let [userRating, towerRatings] = await Promise.all([getUserRating(tower.id), getTowerRatings(tower.id)]);
+    const users = await Promise.all(towerRatings.map((rating) => getUser(rating.user_id)));
 
     const updateTowerRating = async () => {
         "use server";
@@ -20,7 +20,7 @@ const RatingFormProvider = async ({ tower }: { tower: Tower }) => {
         towerRatings = towerRatings.map((rating, idx) => ({ ...rating, user: users[idx] }));
     }
 
-    return <RatingForm tower={tower} initRating={userRating} ratings={towerRatings} updateTowerRating={updateTowerRating} />;
+    return <RatingForm tower={tower} initRating={userRating} ratings={towerRatings} users={users} updateTowerRating={updateTowerRating} />;
 };
 
 export default RatingFormProvider;

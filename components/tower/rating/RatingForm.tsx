@@ -2,7 +2,7 @@
 import { useFormState } from "react-dom";
 import { useSession } from "next-auth/react";
 
-import { Rating, Tower } from "@/typings";
+import { Rating, Tower, User } from "@/typings";
 import { loginRedirect } from "@/actions/login.redirect";
 import { cn } from "@/utils/cn";
 import RatingModal from "@/components/tower/rating/RatingModal";
@@ -15,11 +15,13 @@ const RatingForm = ({
     initRating,
     ratings,
     updateTowerRating,
+    users,
 }: {
     tower: Tower;
     initRating: Rating | null;
     ratings: Rating[];
     updateTowerRating: () => Promise<Rating | null>;
+    users: User[];
 }) => {
     const [currentRating, action] = useFormState(updateTowerRating, initRating);
 
@@ -52,9 +54,9 @@ const RatingForm = ({
                                 "hidden md:flex": ratings.length === 0 && !currentRating,
                             })}
                         >
-                            {currentRating && <UserRating key="mine" rating={currentRating} />}
+                            {currentRating && <UserRating key="mine" rating={currentRating} user={session.data.user} />}
                             {ratings.map((rating, idx) => (
-                                <UserRating rating={rating} key={idx} />
+                                <UserRating rating={rating} key={idx} user={users.find((el) => el.id === rating.user_id)} />
                             ))}
                         </div>
                         <div

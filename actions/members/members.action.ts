@@ -50,7 +50,9 @@ export const getUser = async (id: string) => {
     const cachedFn = cache(
         async (id: string) => {
             const snap = await getDoc(doc(db, "users", id));
-            return snap.data() as User;
+            const user = snap.data() as User;
+            user.id = snap.id;
+            return user;
         },
         [CacheTag.User],
         {

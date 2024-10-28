@@ -1,17 +1,17 @@
 import UserProfileAvatar from "@/components/UserProfileAvatar";
 import ThemedRating from "@/components/shared/ThemedRating";
-import { Rating } from "@/typings";
+import { Rating, User } from "@/typings";
 import { formatDate } from "@/utils/date";
 
-const UserRating = ({ rating }: { rating: Rating }) => {
-    if (rating.user === undefined) return null;
+const UserRating = ({ rating, user }: { rating: Rating; user: User }) => {
+    if (user === undefined) return null;
     return (
         <div className="flex flex-col gap-2 mb-5">
             <div className="flex gap-3">
-                <UserProfileAvatar image={rating.user.image} name={rating.user.name} />
+                <UserProfileAvatar image={user.image} name={user.name} />
                 <div className="flex flex-col">
                     <div className="flex gap-1">
-                        <p>{rating.user.name}</p>
+                        <p>{user.name}</p>
                         <p className="font-bold opacity-50">·</p>
                         <p className="opacity-50">{formatDate({ date: rating.created, long: true })}</p>
                     </div>
