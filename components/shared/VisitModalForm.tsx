@@ -129,8 +129,8 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                         <textarea
                             className="textarea textarea-primary h-36 text-sm text-base-content resize-none md:resize-y"
                             value={visitedText}
-                            maxLength={800}
-                            placeholder="Co se Vám líbilo? Jak jste se dostali na rozhlednu? S kým jste byli? Jaké bylo počasí?"
+                            maxLength={1000}
+                            placeholder="Co se Vám líbilo? Jak jste se dostali na rozhlednu? Co Vás překvapilo? Jaké bylo počasí?"
                             onChange={(e) => setVisitedText(e.target.value)}
                         ></textarea>
                     </div>
