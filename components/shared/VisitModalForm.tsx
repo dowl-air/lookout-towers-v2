@@ -67,7 +67,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                     <div className="flex gap-2 justify-between">
                         <div className="flex flex-col">
                             <label className="label">
-                                <span className="label-text">Datum návštěvy</span>
+                                <span className="label-text text-nowrap">Datum návštěvy</span>
                             </label>
                             <div className="flex gap-2">
                                 <DatePicker
@@ -100,7 +100,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col flex-1 min-w-28">
+                        <div className="flex flex-col flex-1 min-w-[7.25rem]">
                             <label htmlFor="time" className="label">
                                 <span className="label-text text-nowrap">Čas návštěvy</span>
                             </label>
@@ -172,7 +172,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                     </div>
                 </div>
                 <div className="modal-action justify-between">
-                    <div className="flex gap-2 w-full">
+                    <div className="flex gap-2 w-full flex-wrap">
                         {initVisit && (
                             <button className="btn btn-error" onClick={remove}>
                                 Odstranit návštěvu
