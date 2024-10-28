@@ -1,7 +1,7 @@
 const NotFinishedWeb = () => {
     return (
-        <div className="mt-6 mb-3 max-w-7xl mx-auto w-full">
-            <div className="alert alert-warning max-w-[98%] mx-auto ">
+        <div className="mt-6 mb-3 max-w-7xl mx-auto w-full px-3">
+            <div className="alert alert-warning mx-auto ">
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
                     <path
                         strokeLinecap="round"

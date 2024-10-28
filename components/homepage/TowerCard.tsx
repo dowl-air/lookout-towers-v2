@@ -22,8 +22,8 @@ function TowerCardClient({
 
     return (
         <Link href={`/${tower.type || "rozhledna"}/${isFullTower ? tower.nameID : tower.name_nospaces}`} scroll>
-            <div className="card card-compact w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
-                <figure className="object-cover inline-block relative h-52 sm:h-60 md:h-72">
+            <div className="card card-compact min-[437px]:w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
+                <figure className="object-cover inline-block relative h-60 min-[437px]:h-52 sm:h-60 md:h-72">
                     <Image
                         src={photoUrl}
                         alt={tower.name}

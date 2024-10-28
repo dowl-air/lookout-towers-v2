@@ -55,9 +55,13 @@ const TowerOfTheDay = async () => {
                         <p className="mb-2 hidden md:block">Rok otevření: {new Date(tower.opened).getFullYear()}</p>
                     </div>
                 </div>
-                <div className="flex-1 max-h-80 h-80">
+                <div className="flex-1 max-h-[22rem] h-[22rem] w-full min-[450px]:w-auto min-[450px]:h-80 min-[450px]:max-h-80">
                     <Link href={`${tower.type}/${tower.nameID}`}>
-                        <img src={tower.mainPhotoUrl} alt={tower.name} className="rounded-xl object-contain max-h-80" />
+                        <img
+                            src={tower.mainPhotoUrl}
+                            alt={tower.name}
+                            className="rounded-xl object-cover object-top w-full min-[450px]:object-contain min-[450px]:w-auto max-h-[22rem] min-[450px]:max-h-80"
+                        />
                     </Link>
                 </div>
             </div>
