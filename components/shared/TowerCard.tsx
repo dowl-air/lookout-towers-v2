@@ -1,16 +1,13 @@
 import { getTowerRatingAndCount } from "@/actions/towers/towers.action";
-import { SearchResult, Tower } from "@/typings";
+import { Tower } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
 import ThemedRating from "./ThemedRating";
 
-const TowerCard = async ({ tower, priority = false }: { tower: Tower | SearchResult; priority: boolean }) => {
+const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority: boolean }) => {
     const { avg, count } = await getTowerRatingAndCount(tower.id);
-    const isFullTowerFn = (tower: Tower | SearchResult): tower is Tower => (tower as Tower).nameID !== undefined;
-    const isFullTower = isFullTowerFn(tower);
-
     return (
-        <Link href={`/${tower.type || "rozhledna"}/${isFullTower ? tower.nameID : tower.name_nospaces}`} scroll>
+        <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
             <div className="card card-compact w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-52 sm:h-60 md:h-72">
                     {/* <Image

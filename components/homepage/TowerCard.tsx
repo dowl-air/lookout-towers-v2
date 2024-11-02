@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { SearchResult, Tower } from "@/typings";
+import { Tower } from "@/typings";
 import ThemedRating from "@/components/shared/ThemedRating";
 
 function TowerCardClient({
@@ -11,17 +11,14 @@ function TowerCardClient({
     count,
     photoUrl,
 }: {
-    tower: Tower | SearchResult;
+    tower: Tower;
     priority?: boolean;
     avg: number;
     count: number;
     photoUrl: string;
 }) {
-    const isFullTowerFn = (tower: Tower | SearchResult): tower is Tower => (tower as Tower).nameID !== undefined;
-    const isFullTower = isFullTowerFn(tower);
-
     return (
-        <Link href={`/${tower.type || "rozhledna"}/${isFullTower ? tower.nameID : tower.name_nospaces}`} scroll>
+        <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
             <div className="card card-compact min-[437px]:w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
                 <figure className="object-cover inline-block relative h-60 min-[437px]:h-52 sm:h-60 md:h-72">
                     <Image
