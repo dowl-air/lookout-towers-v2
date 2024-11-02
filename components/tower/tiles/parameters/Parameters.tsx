@@ -1,6 +1,7 @@
-import { Tower } from "@/typings";
-import CloseButton from "@/components/tower/tiles/parameters/dialog/CloseButton";
+import EditButton from "@/components/tower/tiles/parameters/dialog/EditButton";
+import ParametersEditDialog from "@/components/tower/tiles/parameters/ParametersEditDialog";
 import ParameterTile from "@/components/tower/tiles/parameters/ParameterTile";
+import { Tower } from "@/typings";
 import { formatDate } from "@/utils/date";
 import { generateHeightText } from "@/utils/texts";
 
@@ -9,10 +10,10 @@ function Parameters({ tower }: { tower: Tower }) {
         <>
             <ParameterTile>
                 <div className="card-body items-center">
-                    <table className="table-compact my-2">
+                    <table className="table-compact my-2 table-fixed">
                         <tbody>
                             <tr>
-                                <th className="text-base-content">Materiál</th>
+                                <td className="font-bold text-right">Materiál</td>
                                 <td>
                                     <div className="flex flex-wrap gap-1">
                                         {tower.material?.map((item, idx) => (
@@ -24,15 +25,15 @@ function Parameters({ tower }: { tower: Tower }) {
                                 </td>
                             </tr>
                             <tr>
-                                <th className="text-base-content">Počet schodů</th>
+                                <td className="font-bold text-right">Počet schodů</td>
                                 <td>{tower.stairs}</td>
                             </tr>
                             <tr>
-                                <th className="text-base-content">Výška</th>
+                                <td className="font-bold text-right">Výška</td>
                                 <td>{generateHeightText(tower.height)}</td>
                             </tr>
                             <tr>
-                                <th className="text-base-content">Zpřístupnění</th>
+                                <td className="font-bold text-right">Zpřístupnění</td>
                                 <td>{tower.opened ? formatDate({ date: tower.opened, long: true }) : "neznámé"}</td>
                             </tr>
                         </tbody>
@@ -42,16 +43,16 @@ function Parameters({ tower }: { tower: Tower }) {
 
             <dialog className="modal modal-bottom sm:modal-middle" id="parameters-modal">
                 <div className="modal-box">
-                    <h3 className="text-lg font-bold">Parametry</h3>
-                    <div className="prose items-center ">
-                        <table className="table-compact w-full my-4">
+                    <h3 className="text-lg font-bold text-center">Parametry</h3>
+                    <div className="prose items-center">
+                        <table className="table-compact w-full my-4 table-fixed">
                             <tbody>
                                 <tr>
-                                    <th>Typ</th>
+                                    <td className="text-right font-bold">Typ</td>
                                     <td>{tower.type}</td>
                                 </tr>
                                 <tr>
-                                    <th>Materiál</th>
+                                    <td className="text-right font-bold">Materiál</td>
                                     <td>
                                         <div className="flex flex-wrap gap-1">
                                             {tower.material?.map((item, idx) => (
@@ -63,35 +64,43 @@ function Parameters({ tower }: { tower: Tower }) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Počet schodů</th>
+                                    <td className="text-right font-bold">Počet schodů</td>
                                     <td>{tower.stairs}</td>
                                 </tr>
                                 <tr>
-                                    <th>Výška</th>
+                                    <td className="text-right font-bold">Výška rozhledny</td>
                                     <td>{generateHeightText(tower.height)}</td>
                                 </tr>
+                                {/* 
                                 <tr>
-                                    <th>Zpřístupnění</th>
+                                    <td className="text-right font-bold">Výška plošiny</td>
+                                    <td>{generateHeightText(tower.viewHeight)}</td>
+                                </tr>
+                                */}
+                                <tr>
+                                    <td className="text-right font-bold">Zpřístupnění</td>
                                     <td>{tower.opened ? formatDate({ date: tower.opened, long: true }) : "neznámé"}</td>
                                 </tr>
                                 <tr>
-                                    <th>Nadmořská výška</th>
+                                    <td className="text-right font-bold">Nadmořská výška</td>
                                     <td>{`${tower.elevation} m. n. m.`}</td>
                                 </tr>
                                 <tr>
-                                    <th>Souřadnice</th>
+                                    <td className="text-right font-bold">Souřadnice</td>
                                     <td>{`${tower.gps.longitude.toFixed(6)}E ${tower.gps.latitude.toFixed(6)}N`}</td>
                                 </tr>
                                 <tr>
-                                    <th>Naposledy upraveno</th>
+                                    <td className="text-right font-bold">Naposledy upraveno</td>
                                     <td>{tower.modified ? formatDate({ date: tower.modified, long: true }) : "nebylo"}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div className="modal-action">
-                        <button className="btn btn-warning btn-sm mr-auto">Navrhnout úpravu</button>
-                        <CloseButton />
+                        <form method="dialog" className="mr-auto">
+                            <button className="btn btn-error">Zavřít</button>
+                        </form>
+                        <EditButton />
                     </div>
                 </div>
 
@@ -99,6 +108,8 @@ function Parameters({ tower }: { tower: Tower }) {
                     <button>zavřít</button>
                 </form>
             </dialog>
+
+            <ParametersEditDialog tower={tower} />
         </>
     );
 }
