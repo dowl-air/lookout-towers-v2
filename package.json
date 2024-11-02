@@ -14,7 +14,6 @@
         "clsx": "^2.1.1",
         "firebase": "^10.14.1",
         "firebase-admin": "^12.6.0",
-        "meilisearch": "^0.44.1",
         "next": "^14.2.15",
         "next-auth": "^5.0.0-beta.22",
         "next-themes": "^0.3.0",
@@ -27,6 +26,7 @@
         "tailwind-datepicker-react": "^1.4.3",
         "tailwind-merge": "^2.5.4",
         "typescript": "^5.6.3",
+        "typesense": "^1.8.2",
         "wpify-mapy-cz": "^1.1.4",
         "yet-another-react-lightbox": "^3.21.6"
     },

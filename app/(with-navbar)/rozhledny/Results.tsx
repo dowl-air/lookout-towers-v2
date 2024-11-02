@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { Filter, SearchResult } from "@/typings";
+import { Filter, Tower } from "@/typings";
 import TowerCard from "../../../components/homepage/TowerCard";
 import { searchTowers } from "@/actions/towers/tower.search";
 
@@ -18,7 +18,8 @@ const createFilterString = (filter: Filter): string => {
 };
 
 function Results({ filter }: ComponentProps) {
-    const [towers, setTowers] = useState<SearchResult[]>([]);
+    const [towers, setTowers] = useState<Tower[]>([]);
+    const [ratings, setRatings] = useState<{ avg: number; count: number; id: string }[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
 
@@ -26,11 +27,19 @@ function Results({ filter }: ComponentProps) {
         async (new_filter: boolean = false) => {
             setIsLoading(true);
             try {
-                const new_towers = await searchTowers(filter.searchTerm, LIMIT, new_filter ? 0 : offset, createFilterString(filter));
+                const { towers: new_towers, ratings } = await searchTowers({
+                    q: filter.searchTerm,
+                    limit: LIMIT,
+                    offset: new_filter ? 0 : offset,
+                    sort_by: "name:asc",
+                    include_ratings: true,
+                });
                 if (new_towers.length == 0) return;
 
                 new_filter ? setTowers(new_towers) : setTowers((prevItems) => [...prevItems, ...new_towers]);
                 new_filter ? setOffset(new_towers.length) : setOffset(offset + new_towers.length);
+
+                setRatings((prevItems) => [...prevItems, ...ratings]);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -59,9 +68,12 @@ function Results({ filter }: ComponentProps) {
     return (
         <div className="flex flex-wrap gap-3 flex-1 justify-center max-w-[1200px] mt-3 xl:mt-8 mb-12 min-h-[70vh]">
             {towers &&
-                towers.map((item, idx) => (
-                    <TowerCard key={idx} tower={item} avg={0} count={0} photoUrl={`/img/towers/${item.id}/${item.id}_0.jpg`} /> //todo rework
-                ))}
+                towers.map((item, idx) => {
+                    const rating = ratings.find((elm) => elm.id === item.id);
+                    return (
+                        <TowerCard key={idx} tower={item} avg={rating.avg} count={rating.count} photoUrl={item.mainPhotoUrl} /> //todo rework
+                    );
+                })}
         </div>
     );
 }

@@ -3,17 +3,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { SearchResult } from "@/typings";
+import { Tower } from "@/typings";
 import { searchTowers } from "@/actions/towers/tower.search";
 
 function HeroSearch() {
     const [query, setQuery] = useState<string>("");
-    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [searchResults, setSearchResults] = useState<Tower[]>([]);
 
     useEffect(() => {
         const search = async (query: string) => {
-            const results = await searchTowers(query);
-            setSearchResults(results);
+            const { towers } = await searchTowers({ q: query });
+            setSearchResults(towers);
         };
         if (query) search(query);
         if (query === "") setSearchResults([]);
@@ -25,7 +25,7 @@ function HeroSearch() {
                 <div className="join">
                     <input
                         className="input input-bordered join-item text-base-content max-w-[calc(94vw-100px)]"
-                        placeholder="Petřínská věž..."
+                        placeholder="Najít rozhlednu..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -41,13 +41,13 @@ function HeroSearch() {
                 }`}
             >
                 <div className="!px-0 !py-2 !gap-0 card-body">
-                    {searchResults.map((elm: SearchResult) => (
-                        <Link key={elm.id} href={`/${elm.type}/${elm.name_nospaces}`} className="rounded-md px-4 py-2 hover:bg-base-200">
+                    {searchResults.map((elm) => (
+                        <Link key={elm.id} href={`/${elm.type}/${elm.nameID}`} className="rounded-md px-4 py-2 hover:bg-base-200">
                             <div className="flex gap-3">
                                 <div className="relative w-16 h-24 min-w-[80px] rounded-md overflow-hidden">
                                     <Image
                                         alt={elm.name}
-                                        src={`/img/towers/${elm.id}/${elm.id}_0.jpg`}
+                                        src={elm.mainPhotoUrl}
                                         fill
                                         className="object-cover"
                                         sizes="(max-width: 768px) 20vw, 10vw"

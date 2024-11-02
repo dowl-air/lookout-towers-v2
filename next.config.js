@@ -17,9 +17,6 @@ const nextConfig = {
         ],
         minimumCacheTTL: 2592000,
     },
-    env: {
-        MEILI_KEY: process.env.MEILI_KEY,
-    },
 };
 
 module.exports = nextConfig;
