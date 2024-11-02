@@ -6,8 +6,25 @@ import Image from "next/image";
 import { Tower } from "@/typings";
 import { searchTowers } from "@/actions/towers/tower.search";
 
+const useDebouncedValue = (inputValue, delay) => {
+    const [debouncedValue, setDebouncedValue] = useState(inputValue);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(inputValue);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [inputValue, delay]);
+
+    return debouncedValue;
+};
+
 function HeroSearch() {
     const [query, setQuery] = useState<string>("");
+    const debouncedQuery = useDebouncedValue(query, 500);
     const [searchResults, setSearchResults] = useState<Tower[]>([]);
 
     useEffect(() => {
@@ -15,9 +32,12 @@ function HeroSearch() {
             const { towers } = await searchTowers({ q: query });
             setSearchResults(towers);
         };
-        if (query) search(query);
-        if (query === "") setSearchResults([]);
-    }, [query]);
+        if (debouncedQuery === "") {
+            setSearchResults([]);
+        } else {
+            search(debouncedQuery);
+        }
+    }, [debouncedQuery]);
 
     return (
         <div className="dropdown md:mt-5 max-w-[94vw]">
