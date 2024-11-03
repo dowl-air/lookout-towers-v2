@@ -15,6 +15,9 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
 
     useEffect(() => {
         setNewValue(tower[parameter as keyof Tower]);
+        if (step === 0 && parameter !== "default") {
+            setStep(1);
+        }
     }, [parameter]);
 
     const resetValues = () => {
@@ -75,17 +78,18 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                             onClick={() => {
                                 setError(null);
                                 setStep(step - 1);
+                                if (step === 1) {
+                                    setParameter("default");
+                                }
                             }}
                         >
                             Zpět
                         </button>
                         <button
-                            className="btn btn-primary"
-                            disabled={step === 0 && parameter === "default"}
+                            className={cn("btn btn-primary", {
+                                hidden: step === 0,
+                            })}
                             onClick={() => {
-                                if (step === 0 && parameter !== "default") {
-                                    setStep(1);
-                                }
                                 if (step === 1) {
                                     const check = checkNewValue(newValue);
                                     if (check !== true) {
@@ -111,6 +115,9 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                     </div>
                 </div>
             </div>
+            <form method="dialog" className="modal-backdrop" onSubmit={resetValues}>
+                <button>zavřít</button>
+            </form>
         </dialog>
     );
 };
