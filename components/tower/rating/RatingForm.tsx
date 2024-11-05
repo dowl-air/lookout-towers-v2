@@ -54,7 +54,7 @@ const RatingForm = ({
                                 "hidden md:flex": ratings.length === 0 && !currentRating,
                             })}
                         >
-                            {currentRating && <UserRating key="mine" rating={currentRating} user={session.data.user} />}
+                            {currentRating && <UserRating key="mine" rating={currentRating} user={session.data?.user} />}
                             {ratings.map((rating, idx) => (
                                 <UserRating rating={rating} key={idx} user={users.find((el) => el.id === rating.user_id)} />
                             ))}
