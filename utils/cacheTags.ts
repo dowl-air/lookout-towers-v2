@@ -8,7 +8,7 @@ export const enum CacheTag {
     // todo? [SPECIFIC towerID] revalidate when tower photo is added, edited or removed
     TowerGallery = "TowerGallery",
 
-    // todo? tower object - revalidate only with specific id when edited, or removed
+    // tower object - revalidate only with specific id when edited, or removed
     Tower = "Tower",
 
     // [SPECIFIC towerID userID] revalidate when user favourites or unfavourites tower
@@ -40,7 +40,7 @@ export const enum CacheTag {
     // revalidate when new visit is added or removed
     VisitsCount = "VisitsCount",
 
-    // todo? revalidate when change is published
+    // revalidate when change is published
     LastChangeDate = "LastChangeDate",
 
     // todo update specific user when user is edited
@@ -57,6 +57,18 @@ export const enum CacheTag {
 
     // [SPECIFIC towerID userID] revalidate when user visit is added or edited
     UserTowerVisit = "UserTowerVisit",
+
+    // [SPECIFIC ID] revalidate when change is published or edited
+    Change = "Change",
+
+    // all changes create or update
+    UnresolvedChanges = "UnresolvedChanges",
+
+    // [SPECIFIC towerID] revalidate when change is published or edited
+    ChangesTower = "ChangesTower",
+
+    // [SPECIFIC userID] revalidate when change is published or edited
+    ChangesUser = "ChangesUser",
 }
 
 export const getCacheTagSpecific = (tag: CacheTag, id: string | number): string => `${tag}-${id}`;

@@ -1,10 +1,12 @@
 "use client";
 
+import { createChange } from "@/actions/changes/change.create";
 import Step1 from "@/components/tower/tiles/parameters/edit/Step1";
 import Step2 from "@/components/tower/tiles/parameters/edit/Step2";
 import Step3 from "@/components/tower/tiles/parameters/edit/Step3";
 import { Tower } from "@/typings";
 import { cn } from "@/utils/cn";
+import { editableParameters } from "@/utils/editableParameters";
 import { useEffect, useState } from "react";
 
 const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
@@ -12,6 +14,7 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
     const [parameter, setParameter] = useState<keyof Tower | "default">("default");
     const [newValue, setNewValue] = useState<any>("");
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setNewValue(tower[parameter as keyof Tower]);
@@ -86,7 +89,7 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                             Zpět
                         </button>
                         <button
-                            className={cn("btn btn-primary", {
+                            className={cn("btn btn-primary min-w-24", {
                                 hidden: step === 0,
                             })}
                             onClick={() => {
@@ -100,17 +103,44 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                                     setStep(2);
                                 }
                                 if (step === 2) {
-                                    //todo send data
-                                    resetValues();
-                                    setStep(3);
+                                    setError(null);
+                                    setLoading(true);
+                                    createChange({
+                                        tower_id: tower.id,
+                                        field: parameter as keyof Tower,
+                                        type: editableParameters.find((p) => p.name === parameter)?.type || "string",
+                                        new_value: newValue,
+                                        old_value: tower[parameter as keyof Tower],
+                                    })
+                                        .then(() => {
+                                            resetValues();
+                                            setStep(3);
+                                        })
+                                        .catch((e) => {
+                                            setError(e.message);
+                                        })
+                                        .finally(() => {
+                                            setLoading(false);
+                                        });
                                 }
                                 if (step === 3) {
+                                    setError(null);
                                     resetValues();
                                     (document.getElementById("edit_parameters") as HTMLDialogElement).close();
                                 }
                             }}
                         >
-                            {step === 2 ? "Odeslat" : step === 3 ? "Dokončit" : "Další krok"}
+                            {step === 2 ? (
+                                loading ? (
+                                    <span className="loading loading-spinner loading-sm"></span>
+                                ) : (
+                                    "Odeslat"
+                                )
+                            ) : step === 3 ? (
+                                "Dokončit"
+                            ) : (
+                                "Další krok"
+                            )}
                         </button>
                     </div>
                 </div>
