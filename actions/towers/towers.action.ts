@@ -86,8 +86,11 @@ export const getTowerByID = async (id: string): Promise<Tower> => {
 export const getTowerObjectByNameID = async (name_id: string): Promise<Tower> => {
     const cachedFn = cache(
         async (name_id: string) => {
-            const q = query(collection(db, "towers"), where("nameID", "==", name_id));
+            const q = query(collection(db, "towers"), where("nameID", "==", name_id), limit(1));
             const snap = await getDocs(q);
+            if (snap.empty) {
+                return null;
+            }
             const doc = snap.docs[0];
             return normalizeTowerObject(doc.data() as TowerFirebase);
         },

@@ -8,16 +8,17 @@ import Admission from "@/components/tower/tiles/Admission";
 import OpeningHoursDialog from "@/components/tower/tiles/openingHours/OpeningHoursDialog";
 import { getTowerObjectByNameID, getTowerRatingAndCount } from "@/actions/towers/towers.action";
 import { getUrlsTowerGallery } from "@/actions/towers/tower.photo";
-import { Tower } from "@/typings";
 import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
 import Legend from "@/components/tower/top/Legend";
 import RatingTop from "@/components/tower/top/RatingTop";
 import Buttons from "@/components/tower/top/Buttons";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Carousel from "@/components/tower/top/Carousel";
+import { notFound } from "next/navigation";
 
 async function TowerPage({ params: { nameID } }: { params: { nameID: string } }) {
     const tower = await getTowerObjectByNameID(nameID);
+    if (!tower) notFound();
     const [towerImages, { count, avg }] = await Promise.all([getUrlsTowerGallery(tower.id), getTowerRatingAndCount(tower.id)]);
 
     return (
@@ -52,7 +53,27 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
 export default TowerPage;
 
 export async function generateMetadata({ params }: { params: { nameID: string } }): Promise<Metadata> {
-    const tower: Tower = await getTowerObjectByNameID(params.nameID);
+    const tower = await getTowerObjectByNameID(params.nameID);
+    if (!tower) {
+        return {
+            title: "Rozhledna nebyla nalezena",
+            description: "Rozhledna nebyla nalezena",
+            keywords: ["rozhledna", "pozorovatelna", "věž"],
+            openGraph: {
+                title: "Rozhledna nebyla nalezena",
+                description: "Rozhledna nebyla nalezena",
+                url: `https://rozhlednovysvet.cz/rozhledny`,
+                siteName: "Rozhlednový svět",
+                type: "website",
+            },
+            twitter: {
+                card: "summary_large_image",
+                title: "Rozhledna nebyla nalezena",
+                description: "Rozhledna nebyla nalezena",
+            },
+        };
+    }
+
     return {
         title: tower.name,
         description: tower.history,
