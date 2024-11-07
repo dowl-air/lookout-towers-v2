@@ -39,14 +39,11 @@ export const getUnresolvedChanges = async () => {
 export const getChangesByTower = async (towerID: string, startAfter: string, limit: number) => {
     const cachedFn = cache(
         async (towerID: string, startAfter: string, limit: number) => {
-            const docSnap = await getDoc(doc(db, "changes", startAfter));
-            const q = query(
-                collection(db, "changes"),
-                where("tower_id", "==", towerID),
-                orderBy("created", "desc"),
-                fStartAfter(docSnap),
-                fLimit(limit)
-            );
+            let q = query(collection(db, "changes"), where("tower_id", "==", towerID), orderBy("created", "desc"), fLimit(limit));
+            if (startAfter) {
+                const docSnap = await getDoc(doc(db, "changes", startAfter));
+                q = query(q, fStartAfter(docSnap));
+            }
             const querySnapshot = await getDocs(q);
             const changes: Change[] = [];
             querySnapshot.forEach((doc) => {
