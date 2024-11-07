@@ -1,4 +1,4 @@
-export const formatDate = ({ date, long = false }: { date: Date | string; long?: boolean }) => {
+export const formatDate = ({ date, long = false }: { date: Date | string | number; long?: boolean }) => {
     const dateObj = new Date(date);
     return dateObj.toLocaleDateString("cs", {
         timeZone: "Europe/Prague",
