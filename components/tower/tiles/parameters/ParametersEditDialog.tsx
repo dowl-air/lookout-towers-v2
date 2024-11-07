@@ -105,11 +105,12 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                                 if (step === 2) {
                                     setError(null);
                                     setLoading(true);
+                                    const type = editableParameters.find((p) => p.name === parameter)?.type || "string";
                                     createChange({
                                         tower_id: tower.id,
                                         field: parameter as keyof Tower,
-                                        type: editableParameters.find((p) => p.name === parameter)?.type || "string",
-                                        new_value: newValue,
+                                        type,
+                                        new_value: type === "date" ? new Date(newValue).toISOString() : newValue,
                                         old_value: tower[parameter as keyof Tower],
                                     })
                                         .then(() => {
