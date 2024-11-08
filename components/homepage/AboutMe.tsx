@@ -112,7 +112,7 @@ async function AboutMe() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Github"
-                        className="rounded-full border-2 w-8 h-8 flex justify-center items-center"
+                        className="rounded-full border-primary-content border-2 w-8 h-8 flex justify-center items-center"
                     >
                         <svg
                             width="20"
