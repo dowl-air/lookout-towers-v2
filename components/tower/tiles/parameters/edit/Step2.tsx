@@ -1,6 +1,6 @@
 import { Tower } from "@/typings";
 import { editableParameters } from "@/utils/editableParameters";
-import { formatValue } from "./Step1";
+import { formatParameterValue } from "@/utils/formatValue";
 
 const Step2 = ({
     newValue,
@@ -20,7 +20,7 @@ const Step2 = ({
             <h3 className="flex w-full justify-center text-lg font-bold">{label}</h3>
             <div className="flex w-full justify-center gap-1 flex-wrap">
                 <p>Aktuální hodnota: </p>
-                <div className="font-bold">{formatValue(tower[parameter as keyof Tower], type)}</div>
+                <div className="font-bold">{formatParameterValue(tower[parameter as keyof Tower], type)}</div>
             </div>
             <div className="flex justify-center w-full">
                 <label className="form-control w-full max-w-xs">

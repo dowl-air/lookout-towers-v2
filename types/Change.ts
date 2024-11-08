@@ -1,3 +1,4 @@
+import { EditableParameterType } from "@/types/EditableParameter";
 import { Tower } from "@/typings";
 
 export enum ChangeState {
@@ -13,8 +14,8 @@ export type Change = {
     state: ChangeState;
     note?: string;
     field: keyof Tower;
-    type: string;
+    type: EditableParameterType;
     old_value: any;
     new_value: any;
-    created: number;
+    created: number | Date;
 };

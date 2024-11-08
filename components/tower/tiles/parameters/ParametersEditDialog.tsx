@@ -1,12 +1,15 @@
 "use client";
 
 import { createChange } from "@/actions/changes/change.create";
+import { sendMail } from "@/actions/mail";
 import Step1 from "@/components/tower/tiles/parameters/edit/Step1";
 import Step2 from "@/components/tower/tiles/parameters/edit/Step2";
 import Step3 from "@/components/tower/tiles/parameters/edit/Step3";
+import { MailSubject } from "@/types/MailSubject";
 import { Tower } from "@/typings";
 import { cn } from "@/utils/cn";
 import { editableParameters } from "@/utils/editableParameters";
+import { createSubject } from "@/utils/mail";
 import { useEffect, useState } from "react";
 
 const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
@@ -50,7 +53,7 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                 </ul>
 
                 <div className="h-60 flex flex-col items-center justify-center gap-5">
-                    {step === 0 && <Step1 parameter={parameter} setParameter={setParameter} tower={tower} />}
+                    {step === 0 && <Step1 setParameter={setParameter} />}
                     {step === 1 && <Step2 newValue={newValue} setNewValue={setNewValue} parameter={parameter} tower={tower} />}
                     {step === 2 && <Step3 tower={tower} parameter={parameter} newValue={newValue} />}
                     {step === 3 && (
@@ -92,7 +95,7 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                             className={cn("btn btn-primary min-w-24", {
                                 hidden: step === 0,
                             })}
-                            onClick={() => {
+                            onClick={async () => {
                                 if (step === 1) {
                                     const check = checkNewValue(newValue);
                                     if (check !== true) {
@@ -105,24 +108,26 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                                 if (step === 2) {
                                     setError(null);
                                     setLoading(true);
-                                    const type = editableParameters.find((p) => p.name === parameter)?.type || "string";
-                                    createChange({
-                                        tower_id: tower.id,
-                                        field: parameter as keyof Tower,
-                                        type,
-                                        new_value: type === "date" ? new Date(newValue).toISOString() : newValue,
-                                        old_value: tower[parameter as keyof Tower],
-                                    })
-                                        .then(() => {
-                                            resetValues();
-                                            setStep(3);
-                                        })
-                                        .catch((e) => {
-                                            setError(e.message);
-                                        })
-                                        .finally(() => {
-                                            setLoading(false);
+                                    try {
+                                        await createChange({
+                                            tower_id: tower.id,
+                                            field: parameter as keyof Tower,
+                                            type: editableParameters.find((p) => p.name === parameter)?.type || "text",
+                                            new_value: newValue,
+                                            old_value: tower[parameter as keyof Tower],
                                         });
+                                        await sendMail({
+                                            subject: createSubject(MailSubject.Info, "Návrh změny parametru"),
+                                            text: `Byl vytvořen návrh změny parametru ${parameter} rozhledny ${tower.name} na hodnotu ${newValue}.`,
+                                        });
+                                    } catch (e) {
+                                        setError(e.message);
+                                        setLoading(false);
+                                        return;
+                                    }
+                                    resetValues();
+                                    setStep(3);
+                                    setLoading(false);
                                 }
                                 if (step === 3) {
                                     setError(null);

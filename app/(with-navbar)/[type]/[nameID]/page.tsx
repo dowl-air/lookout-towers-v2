@@ -15,6 +15,7 @@ import Buttons from "@/components/tower/top/Buttons";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Carousel from "@/components/tower/top/Carousel";
 import { notFound } from "next/navigation";
+import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
 
 async function TowerPage({ params: { nameID } }: { params: { nameID: string } }) {
     const tower = await getTowerObjectByNameID(nameID);
@@ -45,6 +46,7 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
                 {tower.history && <HistoryText text={tower.history} />}
                 <RatingFormProvider tower={tower} />
                 <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
+                <ChangesHistory tower={tower} />
             </div>
         </div>
     );
