@@ -36,9 +36,22 @@ export const metadata: Metadata = {
         address: false,
         telephone: false,
     },
+    robots: "index, follow",
+    openGraph: {
+        type: "website",
+        images: [
+            {
+                url: "https://rozhlednovysvet.cz/img/logo.png",
+                width: 518,
+                height: 517,
+                alt: "Rozhlednový svět - logo",
+            },
+        ],
+        locale: "cs_CZ",
+        siteName: "Rozhlednový svět",
+        url: "https://rozhlednovysvet.cz/",
+    },
 };
-
-//todo remove session provider when rewrite session to ssr
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
