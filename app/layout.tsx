@@ -64,6 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
                 <meta name="msapplication-TileColor" content="#da532c" />
                 <meta name="theme-color" content="#ffffff" />
+                <meta name="seznam-wmt" content="CKyPJUbUK3WkiuaBcKGOztaUfvLm9uGX" />
             </head>
             <body className="overflow-x-hidden">
                 <SessionProvider>
