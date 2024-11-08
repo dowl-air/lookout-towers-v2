@@ -56,6 +56,7 @@ export default TowerPage;
 
 export async function generateMetadata({ params }: { params: { nameID: string } }): Promise<Metadata> {
     const tower = await getTowerObjectByNameID(params.nameID);
+
     if (!tower) {
         return {
             title: "Rozhledna nebyla nalezena",
@@ -79,10 +80,15 @@ export async function generateMetadata({ params }: { params: { nameID: string } 
     return {
         title: tower.name,
         description: tower.history,
-        keywords: ["rozhledna", "pozorovatelna", "věž", tower.type, tower.name, tower.province || "", tower.county || ""],
+        keywords: ["rozhledna", "pozorovatelna", "věž", tower.type, tower.name, tower.province, tower.county],
         openGraph: {
             title: `${tower.name} | Rozhlednový svět`,
-            images: [`/img/towers/${tower.id}/${tower.id}_0.jpg`],
+            images: [
+                {
+                    url: tower.mainPhotoUrl,
+                    alt: tower.name,
+                },
+            ],
             description: tower.history,
             url: `https://rozhlednovysvet.cz/${tower.type}/${tower.nameID}`,
             siteName: "Rozhlednový svět",
@@ -90,9 +96,14 @@ export async function generateMetadata({ params }: { params: { nameID: string } 
         },
         twitter: {
             card: "summary_large_image",
-            title: `${tower.name} - Rozhlednový svět`,
+            title: `${tower.name} | Rozhlednový svět`,
             description: tower.history,
-            images: [`/img/towers/${tower.id}/${tower.id}_0.jpg`],
+            images: [
+                {
+                    url: tower.mainPhotoUrl,
+                    alt: tower.name,
+                },
+            ],
         },
     };
 }
