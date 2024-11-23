@@ -2,9 +2,10 @@
 
 import { updateChange } from "@/actions/changes/change.update";
 import { Change, ChangeState } from "@/types/Change";
+import { Tower } from "@/typings";
 import { useState } from "react";
 
-const ChangeButtons = ({ change }: { change: Change }) => {
+const ChangeButtons = ({ change, tower }: { change: Change; tower: Tower }) => {
     const [loading, setLoading] = useState(false);
     const [resolved, setResolved] = useState(false);
 
@@ -18,7 +19,7 @@ const ChangeButtons = ({ change }: { change: Change }) => {
                 className="btn btn-primary"
                 onClick={async () => {
                     setLoading(true);
-                    await updateChange(change.id, ChangeState.Approved, change.tower_id);
+                    await updateChange(change.id, ChangeState.Approved, tower);
                     setLoading(false);
                     setResolved(true);
                 }}
@@ -29,7 +30,7 @@ const ChangeButtons = ({ change }: { change: Change }) => {
                 className="btn btn-error"
                 onClick={async () => {
                     setLoading(true);
-                    await updateChange(change.id, ChangeState.Rejected, change.tower_id);
+                    await updateChange(change.id, ChangeState.Rejected, tower);
                     setLoading(false);
                     setResolved(true);
                 }}

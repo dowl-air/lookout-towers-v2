@@ -2,6 +2,7 @@ import { getUnresolvedChanges } from "@/actions/changes/change.get";
 import { getTowersByIDs } from "@/actions/towers/towers.action";
 import ChangeButtons from "@/components/admin/ChangeButtons";
 import { editableParameters } from "@/utils/editableParameters";
+import Link from "next/link";
 
 const ChangesAdmin = async () => {
     const changes = await getUnresolvedChanges();
@@ -18,9 +19,11 @@ const ChangesAdmin = async () => {
                             <div className="card-body">
                                 <h2 className="card-title">{tower.name}</h2>
                                 <div className="flex gap-6 items-center justify-between">
-                                    <div className="w-40 h-40 ">
-                                        <img src={tower.mainPhotoUrl} alt={tower.name} className="w-full h-40 object-cover rounded-xl" />
-                                    </div>
+                                    <Link href={`/${tower.type}/${tower.nameID}`}>
+                                        <div className="w-40 h-40">
+                                            <img src={tower.mainPhotoUrl} alt={tower.name} className="w-full h-40 object-cover rounded-xl" />
+                                        </div>
+                                    </Link>
                                     <div className="font-bold text-lg">{parameter.label}</div>
                                     <div className="flex flex-col">
                                         <div className="text-error">{change.old_value}</div>
@@ -28,7 +31,7 @@ const ChangesAdmin = async () => {
                                         <div className="text-success">{change.new_value}</div>
                                     </div>
                                     <div className="flex flex-col gap-3">
-                                        <ChangeButtons change={change} />
+                                        <ChangeButtons change={change} tower={tower} />
                                     </div>
                                 </div>
                             </div>
