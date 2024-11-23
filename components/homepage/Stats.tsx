@@ -1,24 +1,14 @@
 import { getChangesCount, getLastModifiedTowerDate, getRatingsCount, getTowersCount, getUsersCount } from "@/actions/towers/tower.stats";
 import { formatDate } from "@/utils/date";
 
-export const revalidate = 3600;
-
 async function Stats() {
-    const changesNumberPromise: Promise<number> = getChangesCount();
-    const ratingsNumberPromise: Promise<number> = getRatingsCount();
-    const usersNumberPromise: Promise<number> = getUsersCount();
-    const towersNumberPromise: Promise<number> = getTowersCount();
-    const towersDatePromise: Promise<string> = getLastModifiedTowerDate();
-
-    const [changesNumber, ratingsNumber, usersNumber, towersNumber, towersDateRaw] = await Promise.all([
-        changesNumberPromise,
-        ratingsNumberPromise,
-        usersNumberPromise,
-        towersNumberPromise,
-        towersDatePromise,
+    const [changesNumber, ratingsNumber, usersNumber, towersNumber, towersDate] = await Promise.all([
+        getChangesCount(),
+        getRatingsCount(),
+        getUsersCount(),
+        getTowersCount(),
+        getLastModifiedTowerDate(),
     ]);
-
-    const towersDate = new Date(towersDateRaw);
 
     return (
         <div className="max-w-[1070px] self-center flex flex-col w-full px-4 my-4">
