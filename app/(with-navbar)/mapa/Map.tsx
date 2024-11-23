@@ -68,13 +68,7 @@ function Map({ lat, long, name, towers }: MapProps) {
         initMap();
     }, [lat, long, name, towers]);
 
-    return (
-        <div
-            id="big_map"
-            className="flex flex-grow mx-auto bg-secondary rounded-xl overflow-hidden [&.card-body]:hidden touch-none"
-            ref={mapElementRef}
-        ></div>
-    );
+    return <div id="big_map" className="flex flex-grow mx-auto overflow-hidden [&.card-body]:hidden touch-none" ref={mapElementRef}></div>;
 }
 
 export default Map;

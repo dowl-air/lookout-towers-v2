@@ -21,7 +21,7 @@ async function MapPage() {
         tower.isVisited = visits.some((visit) => visit.tower_id === tower.id);
     });
     return (
-        <div className="flex justify-center items-stretch flex-grow h-[calc(100vh-70px-50px)] m-6">
+        <div className="flex justify-center items-stretch flex-grow h-[calc(100vh-66px)] md:h-[calc(100vh-70px)]">
             <Map lat={49.8237572} long={15.6086383} name="Rozhlednový svět" towers={towers} />
         </div>
     );
