@@ -11,13 +11,15 @@ import "yet-another-react-lightbox/plugins/counter.css";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Tower } from "@/typings";
 
-const Carousel = ({ images }: { images: string[] }) => {
+const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
     const imagesToShow = images.slice(0, 6);
 
     const [loadingMain, setLoadingMain] = useState<boolean>(true);
     const imgRef = useRef<HTMLImageElement>(null);
     const [open, setOpen] = useState(false);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
         // Check if the main image has already loaded
@@ -26,6 +28,13 @@ const Carousel = ({ images }: { images: string[] }) => {
         }
     }, []);
 
+    const handleLightboxOpen = (index: number) => {
+        requestAnimationFrame(() => {
+            setCurrentSlide(index);
+        });
+        setOpen(true);
+    };
+
     return (
         <>
             <div className="flex flex-col mb-7 w-full md:w-[560px] xl:w-[600px]">
@@ -33,7 +42,7 @@ const Carousel = ({ images }: { images: string[] }) => {
                     <div className="flex h-72 sm:h-80 md:h-96 w-full justify-center items-center">
                         <Image
                             priority
-                            alt="rozhledna" //todo name
+                            alt={tower.name}
                             src={images[0]}
                             className={cn(
                                 "object-contain rounded-xl h-72 sm:h-80 md:h-96 w-auto cursor-pointer hover:scale-[1.015] transform transition-transform",
@@ -45,7 +54,7 @@ const Carousel = ({ images }: { images: string[] }) => {
                             ref={imgRef}
                             height={600}
                             width={600}
-                            onClick={() => setOpen(true)}
+                            onClick={() => handleLightboxOpen(0)}
                             unoptimized
                         />
                         <span
@@ -67,12 +76,12 @@ const Carousel = ({ images }: { images: string[] }) => {
                             <Image
                                 key={idx}
                                 src={image}
-                                alt="rozhledna" // todo name
+                                alt={tower.name}
                                 height={112}
                                 width={112}
                                 className="object-cover rounded-lg cursor-pointer hover:scale-[1.03] transform transition-transform w-auto h-auto"
                                 unoptimized
-                                onClick={() => setOpen(true)}
+                                onClick={() => handleLightboxOpen(idx)}
                             />
                         );
                     })}
@@ -84,9 +93,10 @@ const Carousel = ({ images }: { images: string[] }) => {
                 slides={images.map((image) => {
                     return {
                         src: image,
-                        caption: "rozhledna", // todo name
+                        caption: tower.name,
                     };
                 })}
+                index={currentSlide}
                 plugins={[Counter, Slideshow, Fullscreen, Thumbnails]}
                 counter={{ container: { style: { top: 0, bottom: "unset" } } }}
                 thumbnails={{

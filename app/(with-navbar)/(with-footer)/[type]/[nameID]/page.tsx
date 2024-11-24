@@ -32,7 +32,7 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
                     <RatingTop count={count} average={avg} />
                     <Buttons tower={tower} />
                 </div>
-                <Carousel images={towerImages} />
+                <Carousel images={towerImages} tower={tower} />
             </div>
 
             <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full">
