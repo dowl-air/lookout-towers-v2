@@ -46,7 +46,7 @@ const TowerOfTheDay = async () => {
                             <p className="text-lg text-center md:text-right">
                                 Naposledy navštíveno{" "}
                                 <span className="font-semibold text-nowrap">{formatDate({ date: towerRecentVisit.date, long: true })}</span>{" "}
-                                uživatelem <span className="font-semibold">{user.name}</span>.
+                                uživatelem <span className="font-semibold whitespace-nowrap">{user.name}</span>.
                             </p>
                         ) : null}
                         <p className="mb-2 hidden md:block mt-5">Lokalita: {tower.county}</p>
