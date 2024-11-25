@@ -14,6 +14,10 @@ const nextConfig = {
             {
                 hostname: "firebasestorage.googleapis.com",
             },
+            {
+                hostname: "i.im.cz",
+                protocol: "https",
+            },
         ],
         minimumCacheTTL: 2592000,
     },

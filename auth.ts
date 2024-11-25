@@ -6,11 +6,16 @@ import { revalidateTag } from "next/cache";
 
 import { authFirestore } from "@/utils/authFirestore";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
+import Seznam from "@/utils/seznam.provider";
 
 const providers: Provider[] = [
     Google({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    Seznam({
+        clientId: process.env.SEZNAM_CLIENT_ID,
+        clientSecret: process.env.SEZNAM_CLIENT_SECRET,
     }),
 ];
 
