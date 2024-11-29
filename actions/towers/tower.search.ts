@@ -22,28 +22,35 @@ export const searchTowers = async ({
     query_by = "name",
     limit = 5,
     offset = 0,
-    sort_by = "",
+    sort_by = "name:asc",
     include_ratings = false,
+    filter_by = "",
 }: {
     q: string;
     query_by?: string;
     limit?: number;
     offset?: number;
     sort_by?: string;
+    filter_by?: string;
     include_ratings?: boolean;
-}): Promise<{ towers: Tower[]; ratings: { avg: number; count: number; id: string }[] }> => {
+}): Promise<{ towers: Tower[]; found: number; ratings: { avg: number; count: number; id: string }[] }> => {
     const res = await client.collections("towers").documents().search({
         q,
         query_by,
         limit,
         offset,
         sort_by,
+        filter_by,
     });
 
-    if (res.found === 0) return { towers: [], ratings: [] };
-    if (!include_ratings) return { towers: res.hits.map((elm) => elm.document), ratings: [] };
+    if (res.found === 0) return { found: res.found, towers: [], ratings: [] };
+    if (!include_ratings) return { found: res.found, towers: res.hits.map((elm) => elm.document), ratings: [] };
 
     const ratings = await Promise.all(res.hits.map((elm) => getTowerRatingAndCount(elm.document.id)));
 
-    return { towers: res.hits.map((elm) => elm.document), ratings: ratings.map((elm, index) => ({ ...elm, id: res.hits[index].document.id })) };
+    return {
+        found: res.found,
+        towers: res.hits.map((elm) => elm.document),
+        ratings: ratings.map((elm, index) => ({ ...elm, id: res.hits[index].document.id })),
+    };
 };

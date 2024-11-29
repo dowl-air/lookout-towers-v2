@@ -13,7 +13,7 @@ function LocationBreadcrumbs({ tower }: { tower: Tower }) {
                     <Link href={{ pathname: "/rozhledny", query: { province: tower.province } }}>{tower.province}</Link>
                 </li>
                 <li>
-                    <Link href={{ pathname: "/rozhledny", query: { county: tower.county } }}>{tower.county}</Link>
+                    <Link href={{ pathname: "/rozhledny", query: { county: tower.county, province: tower.province } }}>{tower.county}</Link>
                 </li>
             </ul>
         </div>
