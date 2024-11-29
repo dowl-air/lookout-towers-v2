@@ -34,7 +34,7 @@ async function TowersPage(props: { searchParams?: Promise<{ query?: string; page
                 <Filter />
             </article>
             <Pagination totalPages={totalPages} />
-            <Suspense key={query} fallback={<ResultsSkeleton />}>
+            <Suspense key={query + province + county} fallback={<ResultsSkeleton />}>
                 <Results towers={towers} />
             </Suspense>
             {totalPages > 1 ? <Pagination totalPages={totalPages} /> : null}

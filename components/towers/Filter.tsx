@@ -42,6 +42,7 @@ const Filter = () => {
             params.delete("county");
         } else {
             params.delete("province");
+            params.delete("county");
         }
         replace(`${pathname}?${params.toString()}`);
     };
