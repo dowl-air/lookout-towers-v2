@@ -32,11 +32,10 @@ export const provincesShortList = [
     "Ústecký",
 ];
 
-
-export const provincesMappedCounty : { [char: string]: string } = {
-    "Benešov": "Středočeský kraj",
-    "Beroun": "Středočeský kraj",
-    "Blansko": "Jihomoravský kraj",
+export const provincesMappedCounty: { [char: string]: string } = {
+    Benešov: "Středočeský kraj",
+    Beroun: "Středočeský kraj",
+    Blansko: "Jihomoravský kraj",
     "Brno-město": "Jihomoravský kraj",
     "Brno-venkov": "Jihomoravský kraj",
     Bruntál: "Moravskoslezský kraj",
@@ -280,41 +279,6 @@ export const towerTypeMappedUrl = {
     "kostelní věž": "kostelni_vez",
 };
 
-export const MONTHS_CZECH = [
-    "Leden",
-    "Únor",
-    "Březen",
-    "Duben",
-    "Květen",
-    "Červen",
-    "Červenec",
-    "Srpen",
-    "Září",
-    "Říjen",
-    "Listopad",
-    "Prosinec"
-]
+export const MONTHS_CZECH = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"];
 
-export const DAYS_CZECH = [
-    "Pondělí",
-    "Úterý",
-    "Středa",
-    "Čtvrtek",
-    "Pátek",
-    "Sobota",
-    "Neděle"
-]
-
-export enum OpeningHoursType {
-    Unknown,
-    NonStop,
-    Occasionally,
-    Hours,
-    Forbidden
-}
-
-export enum OpeningHoursForbiddenType {
-    Reconstruction,
-    Temporary,
-    Gone
-}
+export const DAYS_CZECH = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];

@@ -1,5 +1,7 @@
-import { OpeningHours, Tower } from "@/typings";
-import { DAYS_CZECH, MONTHS_CZECH, OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
+import { OpeningHours, OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
+import { Tower } from "@/typings";
+import { cn } from "@/utils/cn";
+import { DAYS_CZECH, MONTHS_CZECH } from "@/utils/constants";
 import { ReactNode } from "react";
 
 function capitalizeFirstLetter(string: string): string {
@@ -44,21 +46,31 @@ const generateHeading = (openingHours: OpeningHours, type: string): string => {
     } | ${getDaysString(openingHours.days)} | ${openingHours.time_start} - ${openingHours.time_end} h`;
 };
 
-function OpeningHours_({ tower, openingHours, children }: { tower?: Tower; openingHours?: OpeningHours; children?: ReactNode }) {
+function OpeningHoursTile({ tower, openingHours, children }: { tower?: Tower; openingHours?: OpeningHours; children?: ReactNode }) {
     const OH: OpeningHours = tower ? tower.openingHours : openingHours || { type: 0 };
     return (
-        <div
-            className={`card card-compact sm:card-normal min-w-[300px] max-w-[calc(min(94vw,420px))] sm:h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]`}
-        >
+        <div className="card card-compact sm:card-normal min-w-[300px] max-w-[calc(min(94vw,420px))] sm:h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]">
             <div className="card-body">
-                <h2 className={`card-title text-base sm:text-lg md:text-xl ${isErrorColor(OH) && "text-error"}`}>Otevírací doba</h2>
-                <p className={`text-base md:text-lg ${isErrorColor(OH) && "text-error"}`}>{generateHeading(OH, tower?.type || "rozhledna")}</p>
-                {OH.lunch_break && <p className={`text-base md:text-lg ${isErrorColor(OH) && "text-error"}`}>{getLunchString(OH)}</p>}
-                {OH.note && <p className="text-sm md:text-base">{OH.note}</p>}
+                <h2
+                    className={cn("card-title text-base sm:text-lg md:text-xl", {
+                        "text-error": isErrorColor(OH),
+                    })}
+                >
+                    Otevírací doba
+                </h2>
+                <p
+                    className={cn("text-base md:text-lg", {
+                        "text-error": isErrorColor(OH),
+                    })}
+                >
+                    {generateHeading(OH, tower?.type ?? "rozhledna")}
+                </p>
+                <p className="text-base md:text-lg">{getLunchString(OH)}</p>
+                <p className="text-sm md:text-base">{OH.note}</p>
             </div>
             {children}
         </div>
     );
 }
 
-export default OpeningHours_;
+export default OpeningHoursTile;

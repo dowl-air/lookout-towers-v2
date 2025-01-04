@@ -1,7 +1,7 @@
 import { loginRedirect } from "@/actions/login.redirect";
 import Admission from "@/components/tower/tiles/Admission";
 import HistoryText from "@/components/tower/tiles/HistoryText";
-import OpeningHours_ from "@/components/tower/tiles/openingHours/OpeningHours";
+import OpeningHoursTile from "@/components/tower/tiles/openingHours/OpeningHoursTile";
 import ParameterTile from "@/components/tower/tiles/parameters/ParameterTile";
 
 const Loading = () => {
@@ -47,7 +47,7 @@ const Loading = () => {
 
             <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full mb-20">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-center">
-                    <OpeningHours_ tower={null} />
+                    <OpeningHoursTile tower={null} />
                     <Admission />
                     <ParameterTile>
                         <div className="card-body items-center">

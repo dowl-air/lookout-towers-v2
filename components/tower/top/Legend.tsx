@@ -1,5 +1,5 @@
 import { Tower } from "@/typings";
-import { OpeningHoursForbiddenType, OpeningHoursType } from "@/utils/constants";
+import { OpeningHoursForbiddenType, OpeningHoursType, OpeningHours } from "@/types/OpeningHours";
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

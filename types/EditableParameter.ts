@@ -1,6 +1,6 @@
 import { Tower } from "@/typings";
 
-export type EditableParameterType = "text" | "select" | "number" | "array" | "date";
+export type EditableParameterType = "text" | "select" | "number" | "array" | "date" | "object";
 
 export type EditableParameter = {
     name: keyof Tower;

@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import HistoryText from "@/components/tower/tiles/HistoryText";
 import Map from "@/components/tower/tiles/Map";
 import Parameters from "@/components/tower/tiles/parameters/Parameters";
-import OpeningHours from "@/components/tower/tiles/openingHours/OpeningHours";
+import OpeningHours from "@/components/tower/tiles/openingHours/OpeningHoursTile";
 import Admission from "@/components/tower/tiles/Admission";
 import OpeningHoursDialog from "@/components/tower/tiles/openingHours/OpeningHoursDialog";
 import { getTowerObjectByNameID, getTowerRatingAndCount } from "@/actions/towers/towers.action";
