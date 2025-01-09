@@ -9,12 +9,12 @@ const generateHeading = (openingHours: OpeningHours): string => {
     if (openingHours.type === OpeningHoursType.Unknown) return " má neznámou otevírací dobu.";
     if (openingHours.type === OpeningHoursType.NonStop) return ` je volně přístupná.`;
     if (openingHours.type === OpeningHoursType.Forbidden) {
-        if (openingHours.forbidden_type === OpeningHoursForbiddenType.Reconstruction) return ` je právě v rekonstrukci.`;
-        if (openingHours.forbidden_type === OpeningHoursForbiddenType.Temporary) return ` je dočasně uzavřena.`;
+        if (openingHours.forbiddenType === OpeningHoursForbiddenType.Reconstruction) return ` je právě v rekonstrukci.`;
+        if (openingHours.forbiddenType === OpeningHoursForbiddenType.Temporary) return ` je dočasně uzavřena.`;
         return ` je označena jako zaniklá.`;
     }
     if (openingHours.type === OpeningHoursType.Occasionally) return ` je přístupná pouze příležitostně.`;
-    if (openingHours.months?.length === 0) return ` je otevřena celoročně (viz níže).`;
+    if (openingHours.type === OpeningHoursType.EveryMonth) return ` je otevřena celoročně (viz níže).`;
     return " otevírací doba je uvedena níže.";
 };
 

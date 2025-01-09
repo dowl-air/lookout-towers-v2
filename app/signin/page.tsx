@@ -1,12 +1,14 @@
 "use client";
 
-import { getProviders, signIn, getCsrfToken } from "next-auth/react";
+import { getProviders, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
-export default function SignInPage({ searchParams }: { searchParams: URLSearchParams }) {
+export default function SignInPage() {
     const [providers, setProviders] = useState<unknown>({});
-    const callbackUrl = "callbackUrl" in searchParams ? (searchParams.callbackUrl as string) : "/profil";
+    const [callbackUrl, setCallbackUrl] = useState<string>("/profil");
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         async function loadProviders() {
@@ -15,6 +17,13 @@ export default function SignInPage({ searchParams }: { searchParams: URLSearchPa
         }
         loadProviders();
     }, []);
+
+    useEffect(() => {
+        if (searchParams) {
+            const callbackUrl = searchParams.get("callbackUrl");
+            if (callbackUrl) setCallbackUrl(callbackUrl);
+        }
+    }, [searchParams]);
 
     return (
         <main className="flex flex-col items-center md:justify-center h-screen">

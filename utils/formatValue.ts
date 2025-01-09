@@ -7,6 +7,8 @@ export const formatParameterValue = (value: any, type: EditableParameterType): s
             return formatDate({ date: value });
         case "array":
             return value.join(", ");
+        case "object":
+            return null;
         default:
             return value;
     }

@@ -13,6 +13,8 @@ import { createChange } from "@/actions/changes/change.create";
 import { sendMail } from "@/actions/mail";
 import { createSubject } from "@/utils/mail";
 import { MailSubject } from "@/types/MailSubject";
+import { checkAuth } from "@/actions/checkAuth";
+import { redirect } from "next/navigation";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);
@@ -117,18 +119,25 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
     };
 
     const sendNewOpeningHours = async () => {
+        if ((await checkAuth()) === null) return redirect("/signin");
         setIsSending(true);
-        await createChange({
-            tower_id: tower.id,
-            field: "openingHours",
-            type: "object",
-            old_value: tower.openingHours,
-            new_value: openingHours,
-        });
-        await sendMail({
-            subject: createSubject(MailSubject.Info, "Změna otevírací doby"),
-            text: `Byl vytvořen návrh otevírací doby rozhledny ${tower.name}.`,
-        });
+        setErrorText("");
+        try {
+            await createChange({
+                tower_id: tower.id,
+                field: "openingHours",
+                type: "object",
+                old_value: tower.openingHours,
+                new_value: openingHours,
+            });
+            await sendMail({
+                subject: createSubject(MailSubject.Info, "Změna otevírací doby"),
+                text: `Byl vytvořen návrh otevírací doby rozhledny ${tower.name}.`,
+            });
+        } catch (e) {
+            setErrorText("Nepodařilo se odeslat návrh. Zkuste to prosím později.");
+            return setIsSending(false);
+        }
         setIsSending(false);
         setStep(5);
     };
@@ -139,7 +148,10 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
         <>
             <div
                 className="btn btn-warning btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
-                onClick={() => dialogRef?.current?.showModal()}
+                onClick={async () => {
+                    if ((await checkAuth()) !== null) dialogRef?.current?.showModal();
+                    else return redirect("/signin");
+                }}
             >
                 Navrhnout úpravu
             </div>

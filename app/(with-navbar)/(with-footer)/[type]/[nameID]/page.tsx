@@ -17,7 +17,8 @@ import Carousel from "@/components/tower/top/Carousel";
 import { notFound } from "next/navigation";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
 
-async function TowerPage({ params: { nameID } }: { params: { nameID: string } }) {
+async function TowerPage({ params }: { params }) {
+    const { nameID } = await params;
     const tower = await getTowerObjectByNameID(nameID);
     if (!tower) notFound();
     const [towerImages, { count, avg }] = await Promise.all([getUrlsTowerGallery(tower.id), getTowerRatingAndCount(tower.id)]);
@@ -54,8 +55,9 @@ async function TowerPage({ params: { nameID } }: { params: { nameID: string } })
 
 export default TowerPage;
 
-export async function generateMetadata({ params }: { params: { nameID: string } }): Promise<Metadata> {
-    const tower = await getTowerObjectByNameID(params.nameID);
+export async function generateMetadata({ params }: { params }): Promise<Metadata> {
+    const { nameID } = await params;
+    const tower = await getTowerObjectByNameID(nameID);
 
     if (!tower) {
         return {
