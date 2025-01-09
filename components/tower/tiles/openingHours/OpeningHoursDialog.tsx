@@ -14,13 +14,14 @@ import { sendMail } from "@/actions/mail";
 import { createSubject } from "@/utils/mail";
 import { MailSubject } from "@/types/MailSubject";
 import { checkAuth } from "@/actions/checkAuth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);
     const [openingHours, setOpeningHours] = useState<OpeningHours>(tower.openingHours);
     const [errorText, setErrorText] = useState("");
     const [isSending, setIsSending] = useState(false);
+    const router = useRouter();
 
     const handleTypeChange = (type: OpeningHoursType) => {
         setOpeningHours((old) => ({ ...old, type }));
@@ -119,7 +120,7 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
     };
 
     const sendNewOpeningHours = async () => {
-        if ((await checkAuth()) === null) return redirect("/signin");
+        if ((await checkAuth()) === null) return router.push("/signin");
         setIsSending(true);
         setErrorText("");
         try {
@@ -150,7 +151,7 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                 className="btn btn-warning btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
                 onClick={async () => {
                     if ((await checkAuth()) !== null) dialogRef?.current?.showModal();
-                    else return redirect("/signin");
+                    else return router.push("/signin");
                 }}
             >
                 Navrhnout úpravu
