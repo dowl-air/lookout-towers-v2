@@ -1,13 +1,12 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { useFormState } from "react-dom";
 
+import { useActionState, useEffect, useRef } from "react";
 import { sendContactMessage } from "@/actions/mails/sendContactMessage";
 import ContactDialogButton from "@/components/homepage/ContactDialogButton";
 import { User } from "next-auth";
 
 const ContactDialog = ({ user }: { user: User }) => {
-    const [state, formAction] = useFormState(sendContactMessage, null);
+    const [state, formAction] = useActionState(sendContactMessage, null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {

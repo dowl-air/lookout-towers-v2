@@ -1,38 +1,80 @@
+# Lookout Towers
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## Description
+
+Website of community database of **lookout towers**, observatories and other objects designed to discover beautiful views. I created this website to better connect lookout tower lovers, which of course includes me. The goal of this website is to map all lookout towers in the Czech Republic (so far), store current information about them that will be freely available to everyone, and last but not least, allow users to preserve their visits and memories.
+
+The project leverages **Next.js** for server-side rendering and static site generation, **Tailwind CSS** for styling, and follows modern **TypeScript** practices.
+
+## Features
+
+- User authentication using `next-auth v5` (found in `auth.ts`).
+- Modular UI components (located in `components/`).
+- Tailwind CSS for responsive and modern design.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up the project locally.
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Node.js (version 22 or higher recommended)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/dowl-air/lookout-towers-v2.git
+    cd lookout-towers-v2
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+### Running the Development Server
+
+Start the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+A brief overview of the main folders and files:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- **`actions/`**: Contains action handlers or utilities.
+- **`app/`**: Main application logic, including pages and routes.
+- **`auth.ts`**: Authentication-related functionality.
+- **`components/`**: Reusable UI components.
+- **`public/`**: Public assets like images.
+- **`utils/`**: Utility functions for common tasks.
+- **`types/`**: TypeScript types and interfaces.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Scripts
 
-## Learn More
+Useful scripts defined in `package.json`:
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev`: Start the development server.
+- `npm run build`: Build the application for production.
+- `npm start`: Start the production server.
+- `npm run lint`: Run linter to check for code issues.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Daniel Patek](https://github.com/dowl-air)

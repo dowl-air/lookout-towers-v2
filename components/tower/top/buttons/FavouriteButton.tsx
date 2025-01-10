@@ -1,7 +1,6 @@
 "use client";
-import { useFormState } from "react-dom";
-import { useOptimistic } from "react";
 
+import { useActionState, useOptimistic } from "react";
 import { addToFavourites, removeFromFavourites } from "@/actions/favourites/favourites.action";
 
 export const FavouriteButton = ({ isFavouriteInit, towerID }: { isFavouriteInit: boolean; towerID: string }) => {
@@ -10,7 +9,7 @@ export const FavouriteButton = ({ isFavouriteInit, towerID }: { isFavouriteInit:
         return !isFavourite ? await addToFavourites(towerID) : await removeFromFavourites(towerID);
     };
 
-    const [isFav, action] = useFormState(toggleFavourite, isFavouriteInit);
+    const [isFav, action] = useActionState(toggleFavourite, isFavouriteInit);
     const [optimisticState, update] = useOptimistic(isFav, (_, optimistic) => optimistic);
 
     return (

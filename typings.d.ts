@@ -1,5 +1,5 @@
 import { GeoPoint, Timestamp } from "firebase/firestore";
-import { OpeningHoursForbiddenType, OpeningHoursType } from "./utils/constants";
+import { OpeningHours } from "@/types/OpeningHours";
 
 export type GPS = {
     latitude: number;
@@ -28,12 +28,6 @@ export type UserFromDB = {
     name: string;
     emailVerified: boolean | null;
     image: string;
-};
-
-export type Filter = {
-    searchTerm: string;
-    province: string;
-    county: string;
 };
 
 export type TowerFirebase = {
@@ -118,17 +112,4 @@ export type Visit = {
     text: string;
     created: string;
     urls?: string[];
-};
-
-export type OpeningHours = {
-    type: OpeningHoursType;
-    months?: number[];
-    days?: number[];
-    forbidden_type?: OpeningHoursForbiddenType;
-    time_start?: number;
-    time_end?: number;
-    lunch_break?: boolean;
-    lunch_start?: number;
-    lunch_end?: number;
-    note?: string;
 };

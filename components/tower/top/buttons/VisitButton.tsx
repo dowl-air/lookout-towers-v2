@@ -1,14 +1,15 @@
 "use client";
+
 import { getVisit } from "@/actions/visits/visits.action";
 import { VisitModal } from "@/components/shared/VisitModalForm";
 import { Tower, Visit } from "@/typings";
 import { formatDate } from "@/utils/date";
 import { showModalWithoutFocus } from "@/utils/showModal";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 
 export const VisitButton = ({ visitInit, tower }: { visitInit: Visit | null; tower: Tower }) => {
     const toggleVisit = async () => await getVisit(tower.id);
-    const [isVisited, action] = useFormState(toggleVisit, visitInit);
+    const [isVisited, action] = useActionState(toggleVisit, visitInit);
 
     return (
         <form action={action} id="form-visit-button" className="flex flex-col justify-center gap-2">
