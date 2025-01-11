@@ -7,3 +7,11 @@ export const formatDate = ({ date, long = false }: { date: Date | string | numbe
         year: "numeric",
     });
 };
+
+export const formatDateYear = ({ date }: { date: Date | string | number }) => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString("cs", {
+        timeZone: "Europe/Prague",
+        year: "numeric",
+    });
+};

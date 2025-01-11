@@ -2,6 +2,7 @@
 
 import { getTowerRatingAndCount } from "@/actions/towers/towers.action";
 import { Tower } from "@/typings";
+import { normalizeTypesenseTowerObject } from "@/utils/normalizeTowerObject";
 
 const Typesense = require("typesense");
 
@@ -44,13 +45,13 @@ export const searchTowers = async ({
     });
 
     if (res.found === 0) return { found: res.found, towers: [], ratings: [] };
-    if (!include_ratings) return { found: res.found, towers: res.hits.map((elm) => elm.document), ratings: [] };
+    if (!include_ratings) return { found: res.found, towers: res.hits.map((elm) => normalizeTypesenseTowerObject(elm.document)), ratings: [] };
 
     const ratings = await Promise.all(res.hits.map((elm) => getTowerRatingAndCount(elm.document.id)));
 
     return {
         found: res.found,
-        towers: res.hits.map((elm) => elm.document),
+        towers: res.hits.map((elm) => normalizeTypesenseTowerObject(elm.document)),
         ratings: ratings.map((elm, index) => ({ ...elm, id: res.hits[index].document.id })),
     };
 };

@@ -6,8 +6,10 @@ import "swiper/css";
 //todo somehow ssr this component, use different slider idk
 import { Tower } from "@/typings";
 import TowerCardClient from "./TowerCard";
+import useLocation from "@/hooks/useLocation";
 
 export default function ImageSlider({ towers, ratings }: { towers: Tower[]; ratings: { avg: number; count: number }[] }) {
+    const { location } = useLocation();
     return (
         <Swiper
             centeredSlides
@@ -49,6 +51,7 @@ export default function ImageSlider({ towers, ratings }: { towers: Tower[]; rati
                         avg={ratings[index].avg}
                         count={ratings[index].count}
                         photoUrl={item.mainPhotoUrl}
+                        userLocation={location}
                     />
                 </SwiperSlide>
             ))}

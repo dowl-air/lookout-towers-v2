@@ -64,7 +64,7 @@ export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [b
                     return [false, `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${dayFrom}h`];
                 }
             }
-            return [false, `Otevřeno od ${MONTHS_CZECH_4[monthFrom - 1].toLocaleLowerCase()}`];
+            return [false, `Otevřeno od ${MONTHS_CZECH_4[monthFrom].toLocaleLowerCase()}`];
         case OpeningHoursType.EveryMonth:
             if (days.includes(new Date().getDay())) {
                 if (dayFrom <= new Date().getHours() && dayTo >= new Date().getHours()) {
