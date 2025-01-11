@@ -124,6 +124,9 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
         setIsSending(true);
         setErrorText("");
         try {
+            if (Object.keys(openingHours).includes("note")) {
+                delete (openingHours as any).note;
+            }
             await createChange({
                 tower_id: tower.id,
                 field: "openingHours",

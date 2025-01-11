@@ -30,22 +30,3 @@ export type OpeningHours = {
     detailText?: string;
     detailUrl?: string;
 };
-
-export const getOpeningHoursTypeName = (type: OpeningHoursType): string => {
-    switch (type) {
-        case OpeningHoursType.NonStop:
-            return "Volně přístupná";
-        case OpeningHoursType.Occasionally:
-            return "Příležitostně otevřená";
-        case OpeningHoursType.SomeMonths:
-            return "Pouze některé měsíce";
-        case OpeningHoursType.Forbidden:
-            return "Nepřístupná";
-        case OpeningHoursType.WillOpen:
-            return "Před zpřístupněním";
-        case OpeningHoursType.EveryMonth:
-            return "Otevřeno celoročně";
-        default:
-            return "Neznámá otevírací doba";
-    }
-};

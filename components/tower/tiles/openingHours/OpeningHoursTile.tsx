@@ -34,7 +34,7 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
             case OpeningHoursType.WillOpen:
                 return `${typeCap} bude zanedlouho zpřístupněna.`;
             case OpeningHoursType.SomeMonths:
-                return `${typeCap} je otevřena v období ${MONTHS_CZECH.at(openingHours.monthFrom)} - ${MONTHS_CZECH.at(openingHours.monthTo)}.`;
+                return `${typeCap} je otevřena v období ${MONTHS_CZECH.at(OH.monthFrom)} - ${MONTHS_CZECH.at(OH.monthTo)}.`;
             case OpeningHoursType.EveryMonth:
                 return `${typeCap} je otevřena celoročně.`;
             case OpeningHoursType.Unknown:
@@ -83,6 +83,7 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
                 ) : null}
 
                 {OH.detailText ? <p className="text-sm">{OH.detailText}</p> : null}
+                {(OH as any).note ? <p className="text-sm">{(OH as any).note}</p> : null}
 
                 {OH.detailUrl ? (
                     <Link href={OH.detailUrl} className="link text-sm" target="_blank">

@@ -4,12 +4,12 @@ import ApprovedIcon from "@/components/tower/tiles/changesHistory/ApprovedIcon";
 import NewIcon from "@/components/tower/tiles/changesHistory/NewIcon";
 import RejectedIcon from "@/components/tower/tiles/changesHistory/RejectedIcon";
 import { ChangeState } from "@/types/Change";
-import { getOpeningHoursTypeName } from "@/types/OpeningHours";
 import { Tower } from "@/typings";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/date";
 import { editableParameters } from "@/utils/editableParameters";
 import { formatParameterValue } from "@/utils/formatValue";
+import { getOpeningHoursTypeName } from "@/utils/openingHours";
 
 const ChangesHistory = async ({ tower }: { tower: Tower }) => {
     const towerChanges = await getChangesByTower(tower.id, "", 50); //todo? implement pagination

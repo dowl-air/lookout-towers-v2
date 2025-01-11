@@ -3,9 +3,12 @@ import { Tower } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
 import ThemedRating from "./ThemedRating";
+import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
+import { cn } from "@/utils/cn";
 
 const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?: boolean }) => {
     const { avg, count } = await getTowerRatingAndCount(tower.id);
+    const [state, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
 
     return (
         <Link href={`/${tower.type}/${tower.nameID}`}>
@@ -21,8 +24,18 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
                         unoptimized
                     />
                     {tower.opened ? (
-                        <div className="badge absolute bottom-2 left-2 text-white bg-transparent border-white">
+                        <span className="badge absolute bottom-2 left-2 text-white font-bold bg-black bg-opacity-50 border-white">
                             {new Date(typeof tower.opened === "number" ? +tower.opened * 1000 : tower.opened).getFullYear()}
+                        </span>
+                    ) : null}
+                    {openingHoursText !== "" ? (
+                        <div
+                            className={cn("badge absolute bottom-2 right-2 font-bold border-white", {
+                                "badge-success": state === true,
+                                "badge-error": state === false,
+                            })}
+                        >
+                            {openingHoursText}
                         </div>
                     ) : null}
                 </figure>

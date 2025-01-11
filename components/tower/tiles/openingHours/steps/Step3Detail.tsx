@@ -1,4 +1,5 @@
-import { getOpeningHoursTypeName, OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
+import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
+import { getOpeningHoursTypeName } from "@/utils/openingHours";
 import { useEffect } from "react";
 
 type OpeningHours = {

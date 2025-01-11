@@ -13,7 +13,8 @@ const ChangesAdmin = async () => {
                 <h1 className="text-xl">Celkem navrhovaných změn: {changes.length}</h1>
                 {changes.map((change) => {
                     const tower = towers.find((t) => t.id === change.tower_id);
-                    const parameter = editableParameters.find((p) => p.name === change.field);
+                    let parameter = editableParameters.find((p) => p.name === change.field);
+                    if (change.field === "openingHours") parameter = { label: "Otevírací doba", type: "object", name: "openingHours" };
                     return (
                         <div className="card bg-base-100 shadow-xl" key={change.id}>
                             <div className="card-body">
@@ -26,9 +27,13 @@ const ChangesAdmin = async () => {
                                     </Link>
                                     <div className="font-bold text-lg">{parameter.label}</div>
                                     <div className="flex flex-col">
-                                        <div className="text-error">{change.old_value}</div>
+                                        <div className="text-error">
+                                            {typeof change.old_value === "object" ? JSON.stringify(change.old_value) : change.old_value}
+                                        </div>
                                         <hr className="my-2" />
-                                        <div className="text-success">{change.new_value}</div>
+                                        <div className="text-success">
+                                            {typeof change.new_value === "object" ? JSON.stringify(change.new_value) : change.new_value}
+                                        </div>
                                     </div>
                                     <div className="flex flex-col gap-3">
                                         <ChangeButtons change={change} tower={tower} />
