@@ -7,22 +7,35 @@ import { Suspense } from "react";
 
 const PER_PAGE = 20;
 
-async function TowersPage(props: { searchParams?: Promise<{ query?: string; page?: number; county?: string; province?: string }> }) {
+async function TowersPage(props: {
+    searchParams?: Promise<{ query?: string; page?: number; county?: string; province?: string; location?: string; sort?: string }>;
+}) {
     const searchParams = await props.searchParams;
     const query = searchParams?.query || "";
     const page = searchParams?.page || 1;
     const county = searchParams?.county || "";
     const province = searchParams?.province || "";
+    const sort = searchParams?.sort || "";
+    let location = null;
+
+    if (searchParams?.location) {
+        const [latitude, longitude] = searchParams.location.split(",");
+        location = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+    }
 
     let filter_by = "";
     if (province) filter_by += `province:=${province}`;
     if (county) filter_by += filter_by ? ` && county:=${county}` : `county:=${county}`;
+
+    let sort_by = "name:asc";
+    if (sort === "distance" && location) sort_by = `gps(${location.lat}, ${location.lng}):asc`;
 
     const { towers, found } = await searchTowers({
         q: query,
         limit: PER_PAGE,
         offset: (page - 1) * PER_PAGE,
         filter_by,
+        sort_by,
     });
 
     const totalPages = Math.max(Math.ceil(found / PER_PAGE), 1);
@@ -31,8 +44,8 @@ async function TowersPage(props: { searchParams?: Promise<{ query?: string; page
         <div className="w-full max-w-7xl mx-auto mt-5 lg:mt-10 px-5">
             <article className="prose prose-sm lg:prose-base max-w-full">
                 <h1 className="mb-0 md:mb-6">Rozhledny a vyhlídky</h1>
-                <Filter />
             </article>
+            <Filter />
             <Pagination totalPages={totalPages} />
             <Suspense key={query + province + county} fallback={<ResultsSkeleton />}>
                 <Results towers={towers} />
