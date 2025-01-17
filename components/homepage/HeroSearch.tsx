@@ -49,7 +49,7 @@ function HeroSearch() {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
-                    <Link className="btn btn-primary join-item" href={{ pathname: "/rozhledny", query: { query } }}>
+                    <Link className="btn btn-primary join-item text-base md:text-lg" href={{ pathname: "/rozhledny", query: { query } }}>
                         Vyhledat
                     </Link>
                 </div>

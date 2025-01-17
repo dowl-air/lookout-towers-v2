@@ -1,4 +1,5 @@
 import HeroSearch from "@/components/homepage/HeroSearch";
+import LocationSearch from "@/components/homepage/LocationSearch";
 
 function Hero() {
     return (
@@ -9,7 +10,10 @@ function Hero() {
             <p className="[text-shadow:7px_9px_5px_rgba(0,0,0,0.6)] text-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl">
                 Jedinečné příběhy ve výškách
             </p>
-            <HeroSearch />
+            <div className="flex gap-3 md:gap-5 flex-col-reverse md:flex-row md:items-end">
+                <LocationSearch />
+                <HeroSearch />
+            </div>
         </div>
     );
 }
