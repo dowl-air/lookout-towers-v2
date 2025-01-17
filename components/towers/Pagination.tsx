@@ -20,13 +20,13 @@ const Pagination = ({ totalPages }: { totalPages: number }) => {
 
     return (
         <div className="join my-4 lg:my-8 w-full justify-center">
-            <Link href={createPageURL(currentPage === 1 ? 1 : currentPage - 1)} className="join-item btn">
+            <Link href={createPageURL(currentPage === 1 ? 1 : currentPage - 1)} className="join-item btn btn-sm sm:btn-md">
                 «
             </Link>
-            <button className="join-item btn">
+            <button className="join-item btn btn-sm sm:btn-md">
                 Strana {currentPage}/{totalPages}
             </button>
-            <Link href={createPageURL(currentPage === totalPages ? totalPages : currentPage + 1)} className="join-item btn">
+            <Link href={createPageURL(currentPage === totalPages ? totalPages : currentPage + 1)} className="join-item btn btn-sm sm:btn-md">
                 »
             </Link>
         </div>
