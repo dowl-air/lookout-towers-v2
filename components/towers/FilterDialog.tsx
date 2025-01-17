@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 
-const FilterDialog = forwardRef<HTMLDialogElement, { closeDialog: () => void }>(({ closeDialog }, ref) => {
+const FilterDialog = forwardRef<HTMLDialogElement, { closeDialog: () => void }>(function Func({ closeDialog }, ref) {
     return (
         <dialog className="modal modal-bottom sm:modal-middle" ref={ref}>
             <div className="modal-box">
