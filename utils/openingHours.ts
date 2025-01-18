@@ -32,8 +32,6 @@ export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [b
         case OpeningHoursType.Occasionally:
             return [false, "Příležitostně otevřená"];
         case OpeningHoursType.Forbidden:
-            console.log(forbiddenType);
-
             switch (forbiddenType) {
                 case OpeningHoursForbiddenType.Reconstruction:
                     return [false, "Rekonstrukce"];
@@ -44,7 +42,7 @@ export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [b
                 case OpeningHoursForbiddenType.Banned:
                     return [false, "Nepřístupná"];
                 default:
-                    return [false, "Nepřístupná"];
+                    return [false, "Uzavřeno"];
             }
         case OpeningHoursType.WillOpen:
             return [false, "Před zpřístupněním"];

@@ -23,7 +23,6 @@ const ChangesHistory = async ({ tower }: { tower: Tower }) => {
                 <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">Historie změn</h2>
                 <div className="overflow-x-auto flex flex-col gap-1">
                     {towerChanges.map((change, idx) => {
-                        console.log(change);
                         let parameter = editableParameters.find((param) => param.name === change.field);
                         if (change.field === "openingHours") parameter = { label: "Otevírací doba", type: "object", name: "openingHours" };
                         const user = users.find((user) => user.id === change.user_id);

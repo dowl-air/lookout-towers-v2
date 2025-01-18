@@ -26,8 +26,10 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
                         return `${typeCap} je právě v rekonstrukci.`;
                     case OpeningHoursForbiddenType.Temporary:
                         return `${typeCap} je dočasně uzavřena.`;
+                    case OpeningHoursForbiddenType.Gone:
+                        return `${typeCap} je zaniklá.`;
                     default:
-                        return `${typeCap} je označena jako zaniklá.`;
+                        return `${typeCap} je trvale uzavřena.`;
                 }
             case OpeningHoursType.Occasionally:
                 return `${typeCap} je přístupná příležitostně.`;
