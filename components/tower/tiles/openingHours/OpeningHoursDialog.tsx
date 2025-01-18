@@ -151,7 +151,7 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
     return (
         <>
             <div
-                className="btn btn-warning btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
+                className="btn btn-warning btn-xs sm:btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
                 onClick={async () => {
                     if ((await checkAuth()) !== null) dialogRef?.current?.showModal();
                     else return router.push("/signin");

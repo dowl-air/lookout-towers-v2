@@ -18,7 +18,7 @@ const ChangesHistory = async ({ tower }: { tower: Tower }) => {
     //todo add different types of changes (admission...)
     if (towerChanges.length === 0) return null;
     return (
-        <div className="card shadow-xl w-full mb-5">
+        <div className="card card-compact sm:card-normal shadow-xl w-full mb-5">
             <div className="card-body gap-0">
                 <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">Historie změn</h2>
                 <div className="overflow-x-auto flex flex-col gap-1">

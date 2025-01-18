@@ -26,9 +26,9 @@ async function TowerPage({ params }: { params }) {
     return (
         <div className="flex flex-col px-4 w-full">
             <div className="max-w-screen-xl w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
-                <div className="w-full prose sm:prose-xl max-w-screen-sm flex flex-col items-center lg:items-start flex-1 mt-7 lg:pl-2">
+                <div className="w-full prose sm:prose-xl max-w-screen-sm flex flex-col items-center lg:items-start flex-1 lg:pl-2 lg:mt-7">
                     <LocationBreadcrumbs tower={tower} />
-                    <h1 className="mt-5 lg:mt-6 lg:mb-8 lg:ml-1">{tower.name}</h1>
+                    <h1 className="mt-2 mb-2 lg:mt-6 lg:mb-8 lg:ml-1 text-center lg:text-left">{tower.name}</h1>
                     <Legend tower={tower} />
                     <RatingTop count={count} average={avg} />
                     <Buttons tower={tower} />

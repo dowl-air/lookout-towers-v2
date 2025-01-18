@@ -41,7 +41,9 @@ function Admission() {
                 </p> */}
                 <p></p>
             </div>
-            <div className="btn btn-warning btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex">Navrhnout úpravu</div>
+            <div className="btn btn-xs btn-warning sm:btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex">
+                Navrhnout úpravu
+            </div>
         </div>
     );
 }

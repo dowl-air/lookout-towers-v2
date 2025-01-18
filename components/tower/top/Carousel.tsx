@@ -14,8 +14,6 @@ import { useEffect, useRef, useState } from "react";
 import { Tower } from "@/typings";
 
 const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
-    const imagesToShow = images.slice(0, 6);
-
     const [loadingMain, setLoadingMain] = useState<boolean>(true);
     const imgRef = useRef<HTMLImageElement>(null);
     const [open, setOpen] = useState(false);
@@ -37,15 +35,15 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
 
     return (
         <>
-            <div className="flex flex-col mb-7 w-full md:w-[560px] xl:w-[600px]">
-                <figure className="h-72 sm:h-80 md:h-96 mt-10 mb-2">
-                    <div className="flex h-72 sm:h-80 md:h-96 w-full justify-center items-center">
+            <div className="flex flex-col sm:mb-7 w-full md:w-[560px] xl:w-[600px]">
+                <figure className="hidden sm:block h-56 sm:h-80 md:h-96 mt-4 lg:mt-10 mb-2">
+                    <div className="flex h-56 sm:h-80 md:h-96 w-full justify-center items-center">
                         <Image
                             priority
                             alt={tower.name}
                             src={images[0]}
                             className={cn(
-                                "object-contain rounded-xl h-72 sm:h-80 md:h-96 w-auto cursor-pointer hover:scale-[1.015] transform transition-transform",
+                                "object-contain rounded-xl h-56 sm:h-80 md:h-96 w-auto cursor-pointer hover:scale-[1.015] transform transition-transform",
                                 {
                                     hidden: loadingMain,
                                 }
@@ -66,12 +64,12 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
                 </figure>
 
                 <div
-                    className="h-28 w-auto p-1 flex overflow-x-hidden overflow-y-visible gap-2 my-3"
+                    className="mt-6 md:mt-0 h-28 w-auto p-1 flex overflow-x-hidden overflow-y-visible gap-2 my-3"
                     style={{
                         maskImage: "linear-gradient(to right, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 96%)",
                     }}
                 >
-                    {imagesToShow.map((image, idx) => {
+                    {images.map((image, idx) => {
                         return (
                             <Image
                                 key={idx}
@@ -79,7 +77,7 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
                                 alt={tower.name}
                                 height={112}
                                 width={112}
-                                className="object-cover rounded-lg cursor-pointer hover:scale-[1.03] transform transition-transform w-auto h-auto"
+                                className="sm:first:hidden object-cover rounded-lg cursor-pointer hover:scale-[1.03] transform transition-transform w-auto h-auto"
                                 unoptimized
                                 onClick={() => handleLightboxOpen(idx)}
                             />
