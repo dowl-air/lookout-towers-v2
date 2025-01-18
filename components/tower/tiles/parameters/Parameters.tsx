@@ -1,7 +1,7 @@
 import EditButton from "@/components/tower/tiles/parameters/dialog/EditButton";
 import ParametersEditDialog from "@/components/tower/tiles/parameters/ParametersEditDialog";
 import ParameterTile from "@/components/tower/tiles/parameters/ParameterTile";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { formatDate } from "@/utils/date";
 import { generateHeightText } from "@/utils/texts";
 

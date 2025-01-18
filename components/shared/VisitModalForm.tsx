@@ -1,9 +1,11 @@
 "use client";
+
 import { removeVisit, setVisit } from "@/actions/visits/visits.action";
-import { Tower, Visit } from "@/typings";
 import { useRef, useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
 import InfoIcon from "./InfoIcon";
+import { Visit } from "@/types/Visit";
+import { Tower } from "@/types/Tower";
 
 //! there should be form with id="form-visit-button" in the parent component (like in VisitButton.tsx)
 

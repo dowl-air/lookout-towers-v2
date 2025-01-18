@@ -2,9 +2,10 @@
 import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 
 import { db } from "@/utils/firebase";
-import { Tower, User } from "@/typings";
 import { unstable_cache as cache } from "next/cache";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
+import { User } from "@/types/User";
+import { Tower } from "@/types/Tower";
 
 export const getAllMembers = async () => {
     //todo add caching

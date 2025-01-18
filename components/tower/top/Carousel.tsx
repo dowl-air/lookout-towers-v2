@@ -1,4 +1,5 @@
 "use client";
+
 import Lightbox from "yet-another-react-lightbox";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
@@ -7,11 +8,10 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 
 const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
     const [loadingMain, setLoadingMain] = useState<boolean>(true);

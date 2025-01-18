@@ -1,10 +1,10 @@
-import { GPS, Tower, TowerFirebase } from "@/typings";
+import { Tower } from "@/types/Tower";
 
-export const normalizeTowerObject = (tower: TowerFirebase): Tower => {
+export const normalizeTowerObject = (tower: any): Tower => {
     const opened = tower.opened.toDate().toISOString();
     const modified = tower.modified.toDate().toISOString();
     const created = tower.created.toDate().toISOString();
-    const gps: GPS = tower.gps.toJSON();
+    const gps = tower.gps.toJSON();
     return { ...tower, opened: opened, modified: modified, created: created, gps: gps } as Tower;
 };
 

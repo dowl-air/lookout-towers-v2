@@ -1,5 +1,5 @@
 import TowerCard from "@/components/shared/TowerCard";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 
 const Results = async ({ towers }: { towers: Tower[] }) => {
     return (

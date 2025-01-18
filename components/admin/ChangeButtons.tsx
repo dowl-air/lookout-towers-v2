@@ -2,7 +2,7 @@
 
 import { updateChange } from "@/actions/changes/change.update";
 import { Change, ChangeState } from "@/types/Change";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { useState } from "react";
 
 const ChangeButtons = ({ change, tower }: { change: Change; tower: Tower }) => {

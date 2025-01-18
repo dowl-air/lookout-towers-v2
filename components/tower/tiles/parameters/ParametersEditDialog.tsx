@@ -6,7 +6,7 @@ import Step1 from "@/components/tower/tiles/parameters/edit/Step1";
 import Step2 from "@/components/tower/tiles/parameters/edit/Step2";
 import Step3 from "@/components/tower/tiles/parameters/edit/Step3";
 import { MailSubject } from "@/types/MailSubject";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { editableParameters } from "@/utils/editableParameters";
 import { createSubject } from "@/utils/mail";

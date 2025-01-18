@@ -1,12 +1,12 @@
 "use server";
 
-import { Rating } from "@/typings";
 import { checkAuth } from "../checkAuth";
 import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { getUser } from "../members/members.action";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
+import { Rating } from "@/types/Rating";
 
 export const getUserRating = async (towerID: string): Promise<Rating | null> => {
     const user = await checkAuth();

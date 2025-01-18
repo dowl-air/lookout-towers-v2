@@ -1,7 +1,7 @@
 "use client";
 
 import useLocation from "@/hooks/useLocation";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { formatDistance } from "@/utils/geo";
 import { getDistance } from "geolib";
 

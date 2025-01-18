@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-
 import HistoryText from "@/components/tower/tiles/HistoryText";
 import Map from "@/components/tower/tiles/Map";
 import Parameters from "@/components/tower/tiles/parameters/Parameters";

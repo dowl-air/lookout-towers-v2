@@ -1,4 +1,4 @@
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 
 export type EditableParameterType = "text" | "select" | "number" | "array" | "date" | "object";
 

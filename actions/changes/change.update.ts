@@ -1,8 +1,9 @@
 "use server";
+
 import { checkAuth } from "@/actions/checkAuth";
 import { changeTower } from "@/actions/towers/tower.change";
 import { ChangeState } from "@/types/Change";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";

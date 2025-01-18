@@ -1,9 +1,9 @@
 "use client";
+
 import { useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 import Image from "next/image";
-
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 
 type MapProps = {
     lat: number;

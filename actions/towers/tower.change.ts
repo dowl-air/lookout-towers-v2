@@ -1,7 +1,7 @@
 "use server";
 
 import { getChange } from "@/actions/changes/change.get";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";

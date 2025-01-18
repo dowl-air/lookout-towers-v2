@@ -4,7 +4,7 @@ import ApprovedIcon from "@/components/tower/tiles/changesHistory/ApprovedIcon";
 import NewIcon from "@/components/tower/tiles/changesHistory/NewIcon";
 import RejectedIcon from "@/components/tower/tiles/changesHistory/RejectedIcon";
 import { ChangeState } from "@/types/Change";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/date";
 import { editableParameters } from "@/utils/editableParameters";

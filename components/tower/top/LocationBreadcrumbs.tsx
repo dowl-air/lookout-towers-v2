@@ -1,6 +1,5 @@
+import { Tower } from "@/types/Tower";
 import Link from "next/link";
-
-import { Tower } from "@/typings";
 
 function LocationBreadcrumbs({ tower }: { tower: Tower }) {
     return (

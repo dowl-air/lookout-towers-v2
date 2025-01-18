@@ -1,11 +1,11 @@
 "use server";
+
 import { collection, getAggregateFromServer, getDocs, limit, orderBy, query, where, count, average, getDoc, doc } from "firebase/firestore";
 import { unstable_cache as cache } from "next/cache";
-
-import { Tower, TowerFirebase } from "@/typings";
 import { db } from "@/utils/firebase";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
+import { Tower } from "@/types/Tower";
 
 export const getTowerRatingAndCount = async (towerID: string): Promise<{ avg: number; count: number }> => {
     const cachedFn = cache(
@@ -40,7 +40,7 @@ export const getRandomTowers = cache(
             querySnapshot.forEach((doc) => {
                 if (!ids.has(doc.id)) {
                     ids.add(doc.id);
-                    towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
+                    towers.push(normalizeTowerObject(doc.data()));
                 }
             });
         }
@@ -58,7 +58,7 @@ export const getAllTowers = cache(
         const towers: Tower[] = [];
         const querySnapshot = await getDocs(collection(db, "towers"));
         querySnapshot.forEach((doc) => {
-            towers.push(normalizeTowerObject(doc.data() as TowerFirebase));
+            towers.push(normalizeTowerObject(doc.data()));
         });
         return towers;
     },
@@ -73,7 +73,7 @@ export const getTowerByID = async (id: string): Promise<Tower> => {
     const cachedFn = cache(
         async (id: string) => {
             const docSnap = await getDoc(doc(db, "towers", id));
-            return normalizeTowerObject(docSnap.data() as TowerFirebase);
+            return normalizeTowerObject(docSnap.data());
         },
         [CacheTag.Tower],
         {
@@ -92,7 +92,7 @@ export const getTowerObjectByNameID = async (name_id: string): Promise<Tower> =>
                 return null;
             }
             const doc = snap.docs[0];
-            return normalizeTowerObject(doc.data() as TowerFirebase);
+            return normalizeTowerObject(doc.data());
         },
         [CacheTag.Tower],
         {
@@ -123,7 +123,7 @@ export const getTowerOfTheDay = cache(
         const q = query(collection(db, "towers"), orderBy("random"), where("random", ">=", generatedRandom), limit(1));
         const snap = await getDocs(q);
         const doc = snap.docs[0];
-        return normalizeTowerObject(doc.data() as TowerFirebase);
+        return normalizeTowerObject(doc.data());
     },
     [CacheTag.TowerOfTheDay],
     {

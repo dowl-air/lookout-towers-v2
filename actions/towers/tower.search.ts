@@ -1,7 +1,7 @@
 "use server";
 
 import { getTowerRatingAndCount } from "@/actions/towers/towers.action";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { normalizeTypesenseTowerObject } from "@/utils/normalizeTowerObject";
 
 const Typesense = require("typesense");

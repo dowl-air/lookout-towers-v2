@@ -1,5 +1,7 @@
-import { Rating, Tower, Visit } from "@/typings";
+import { Visit } from "@/types/Visit";
 import ProfileVisitCard from "./ProfileVisitCard";
+import { Tower } from "@/types/Tower";
+import { Rating } from "@/types/Rating";
 
 function ProfileVisits({ visits, towers, ratings }: { visits: Visit[]; towers: Tower[]; ratings: Rating[] }) {
     const groupedVisits = visits.reduce((acc: Record<string, Visit[]>, visit) => {

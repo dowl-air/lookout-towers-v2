@@ -1,5 +1,5 @@
 import { EditableParameterType } from "@/types/EditableParameter";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 
 export enum ChangeState {
     New = "new",

@@ -2,7 +2,8 @@
 
 import { getVisit } from "@/actions/visits/visits.action";
 import { VisitModal } from "@/components/shared/VisitModalForm";
-import { Tower, Visit } from "@/typings";
+import { Tower } from "@/types/Tower";
+import { Visit } from "@/types/Visit";
 import { formatDate } from "@/utils/date";
 import { showModalWithoutFocus } from "@/utils/showModal";
 import { useActionState } from "react";

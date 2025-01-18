@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-
-import { Visit, Tower, Rating } from "@/typings";
 import { extractDomain } from "@/utils/extractDomain";
 import ThemedRating from "../shared/ThemedRating";
+import { Visit } from "@/types/Visit";
+import { Tower } from "@/types/Tower";
+import { Rating } from "@/types/Rating";
 
 function ProfileVisitCard({ visit, tower, rating }: { visit: Visit; tower: Tower | undefined; rating: Rating | undefined }) {
     return (

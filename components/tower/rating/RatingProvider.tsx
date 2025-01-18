@@ -1,7 +1,7 @@
 import { getTowerRatings, getUserRating } from "@/actions/ratings/ratings.action";
-import { Tower } from "@/typings";
 import RatingForm from "@/components/tower/rating/RatingForm";
 import { getUser } from "@/actions/members/members.action";
+import { Tower } from "@/types/Tower";
 
 const RatingFormProvider = async ({ tower }: { tower: Tower }) => {
     let [userRating, towerRatings] = await Promise.all([getUserRating(tower.id), getTowerRatings(tower.id)]);

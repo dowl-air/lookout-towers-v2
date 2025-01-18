@@ -1,5 +1,5 @@
 import ThemedRating from "@/components/shared/ThemedRating";
-import { Rating } from "@/typings";
+import { Rating } from "@/types/Rating";
 
 const getAverage = (reviews: Rating[]) => {
     const numbers = reviews.map((r) => r.rating);

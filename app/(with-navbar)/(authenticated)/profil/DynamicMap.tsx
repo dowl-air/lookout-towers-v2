@@ -1,5 +1,6 @@
 "use client";
-import { Tower } from "@/typings";
+
+import { Tower } from "@/types/Tower";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";

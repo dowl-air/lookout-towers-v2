@@ -1,4 +1,4 @@
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { editableParameters } from "@/utils/editableParameters";
 import { formatParameterValue } from "@/utils/formatValue";
 

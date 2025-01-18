@@ -1,10 +1,11 @@
 "use server";
-import { Visit } from "@/typings";
+
 import { checkAuth } from "../checkAuth";
 import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
+import { Visit } from "@/types/Visit";
 
 export const getVisit = async (towerID: string): Promise<Visit | null> => {
     const user = await checkAuth();

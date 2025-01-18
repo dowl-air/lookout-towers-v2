@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Tower } from "@/typings";
 import ThemedRating from "@/components/shared/ThemedRating";
 import { formatDateYear } from "@/utils/date";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 import { cn } from "@/utils/cn";
 import { getDistance } from "geolib";
 import { formatDistance } from "@/utils/geo";
+import { Tower } from "@/types/Tower";
 
 function TowerCardClient({
     tower,

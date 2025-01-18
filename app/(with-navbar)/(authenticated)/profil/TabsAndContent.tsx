@@ -1,7 +1,10 @@
 "use client";
-import { Rating, Tower, Visit } from "@/typings";
+
 import React, { useState } from "react";
 import ProfileVisits from "@/components/profile/ProfileVisits";
+import { Visit } from "@/types/Visit";
+import { Tower } from "@/types/Tower";
+import { Rating } from "@/types/Rating";
 
 function TabsAndContent({ visits, favs, towers, ratings }: { visits: Visit[]; favs: string[]; towers: Tower[]; ratings: Rating[] }) {
     const [page, setPage] = useState<string>("visited");

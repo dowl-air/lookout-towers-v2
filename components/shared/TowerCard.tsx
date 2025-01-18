@@ -1,5 +1,4 @@
 import { getTowerRatingAndCount } from "@/actions/towers/towers.action";
-import { Tower } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
 import ThemedRating from "./ThemedRating";
@@ -7,6 +6,7 @@ import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 import { cn } from "@/utils/cn";
 import { formatDateYear } from "@/utils/date";
 import TowerCardLocation from "@/components/shared/TowerCardLocation";
+import { Tower } from "@/types/Tower";
 
 const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?: boolean }) => {
     const { avg, count } = await getTowerRatingAndCount(tower.id);

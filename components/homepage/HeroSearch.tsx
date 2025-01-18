@@ -1,10 +1,10 @@
 "use client";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-
-import { Tower } from "@/typings";
 import { searchTowers } from "@/actions/towers/tower.search";
+import { Tower } from "@/types/Tower";
 
 const useDebouncedValue = (inputValue, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(inputValue);

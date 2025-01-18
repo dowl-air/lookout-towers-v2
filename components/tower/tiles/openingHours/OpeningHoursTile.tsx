@@ -1,5 +1,5 @@
 import { OpeningHours, OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
-import { Tower } from "@/typings";
+import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { DAYS_CZECH, MONTHS_CZECH } from "@/utils/constants";
 import Link from "next/link";

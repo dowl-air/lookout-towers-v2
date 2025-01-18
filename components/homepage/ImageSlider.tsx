@@ -4,9 +4,9 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 //todo somehow ssr this component, use different slider idk
-import { Tower } from "@/typings";
 import TowerCardClient from "./TowerCard";
 import useLocation from "@/hooks/useLocation";
+import { Tower } from "@/types/Tower";
 
 export default function ImageSlider({ towers, ratings }: { towers: Tower[]; ratings: { avg: number; count: number }[] }) {
     const { location } = useLocation();

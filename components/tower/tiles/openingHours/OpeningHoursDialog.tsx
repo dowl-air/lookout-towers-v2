@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Tower } from "@/typings";
 import { OpeningHours, OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
 import Step1 from "@/components/tower/tiles/openingHours/steps/Step1";
 import { cn } from "@/utils/cn";
@@ -15,6 +14,7 @@ import { createSubject } from "@/utils/mail";
 import { MailSubject } from "@/types/MailSubject";
 import { checkAuth } from "@/actions/checkAuth";
 import { useRouter } from "next/navigation";
+import { Tower } from "@/types/Tower";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);

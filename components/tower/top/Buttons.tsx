@@ -1,10 +1,10 @@
 import { loginRedirect } from "@/actions/login.redirect";
 import { auth } from "@/auth";
-import { Tower } from "@/typings";
 import { FavouriteButton } from "./buttons/FavouriteButton";
 import { checkFavourite } from "@/actions/favourites/favourites.action";
 import { VisitButton } from "./buttons/VisitButton";
 import { getVisit } from "@/actions/visits/visits.action";
+import { Tower } from "@/types/Tower";
 
 async function Buttons({ tower }: { tower: Tower }) {
     const session = await auth();
