@@ -28,7 +28,7 @@ async function Buttons({ tower }: { tower: Tower }) {
     const visit = await getVisit(tower.id);
 
     return (
-        <div className="flex flex-col gap-2 sm:flex-wrap lg:!mb-3">
+        <div className="flex lg:flex-col gap-2 sm:flex-wrap lg:!mb-3">
             <FavouriteButton isFavouriteInit={isFavourite} towerID={tower.id} />
             <VisitButton visitInit={visit} tower={tower} />
         </div>

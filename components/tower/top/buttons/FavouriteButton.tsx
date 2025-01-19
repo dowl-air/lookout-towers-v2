@@ -13,14 +13,14 @@ export const FavouriteButton = ({ isFavouriteInit, towerID }: { isFavouriteInit:
     const [optimisticState, update] = useOptimistic(isFav, (_, optimistic) => optimistic);
 
     return (
-        <form action={action} className="flex flex-col justify-center gap-2">
+        <form action={action}>
             <button
                 type="submit"
-                className={`btn min-w-64 ${
+                className={`btn md:min-w-64 btn-sm sm:btn-md whitespace-nowrap ${
                     optimisticState
                         ? "btn-success [&>span]:hover:hidden hover:btn-warning hover:before:content-['Odebrat_z_oblíbených']"
                         : "btn-primary"
-                } max-w-xs text-sm w-full min-[710px]:text-base"`}
+                } max-w-xs text-sm md:w-full min-[710px]:text-base"`}
             >
                 <span>{optimisticState ? "V oblíbených" : "Přidat do oblíbených"}</span>
             </button>

@@ -13,11 +13,11 @@ export const VisitButton = ({ visitInit, tower }: { visitInit: Visit | null; tow
     const [isVisited, action] = useActionState(toggleVisit, visitInit);
 
     return (
-        <form action={action} id="form-visit-button" className="flex flex-col justify-center gap-2">
+        <form action={action} id="form-visit-button">
             <button
-                className={`btn min-w-64 ${
+                className={`btn btn-sm sm:btn-md md:min-w-64 whitespace-nowrap ${
                     isVisited ? "btn-success [&>span]:hover:hidden hover:btn-warning hover:before:content-['Upravit_návštěvu']" : "btn-primary"
-                } max-w-xs text-sm w-full min-[710px]:text-base"`}
+                } max-w-xs text-sm md:w-full min-[710px]:text-base"`}
                 onClick={() => showModalWithoutFocus("visit_modal")}
             >
                 <span>{isVisited ? `Navštíveno ${formatDate({ date: isVisited.date, long: false })}` : "Přidat do navštívených"}</span>
