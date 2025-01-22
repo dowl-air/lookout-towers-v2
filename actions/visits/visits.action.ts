@@ -6,6 +6,8 @@ import { db } from "@/utils/firebase";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { Visit } from "@/types/Visit";
+import { getPhotos } from "@/actions/photos/towerPhotos.get";
+import { removePhoto } from "@/actions/photos/remove.action";
 
 export const getVisit = async (towerID: string): Promise<Visit | null> => {
     const user = await checkAuth();
@@ -16,7 +18,12 @@ export const getVisit = async (towerID: string): Promise<Visit | null> => {
             const snap = await getDoc(doc(db, "visits", `${userID}_${towerID}`));
             if (!snap.exists()) return null;
             const data = snap.data();
-            return { ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit;
+            const visit = { ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit;
+            if (visit.photoIds) {
+                const photos = await getPhotos(visit.photoIds);
+                visit.photos = photos;
+            }
+            return visit;
         },
         [CacheTag.UserTowerVisit],
         {
@@ -44,6 +51,12 @@ export const setVisit = async (towerID: string, visit: Omit<Visit, "created" | "
 
 export const removeVisit = async (towerID: string) => {
     const user = await checkAuth();
+    const snap = await getDoc(doc(db, "visits", `${user.id}_${towerID}`));
+    const data = snap.data();
+    if (data?.photoIds?.length > 0) {
+        const promises = data.photoIds.map((id: string) => removePhoto(id));
+        await Promise.all(promises);
+    }
     await deleteDoc(doc(db, "visits", `${user.id}_${towerID}`));
     revalidateTag(getCacheTagSpecific(CacheTag.TowerVisitsCount, towerID));
     revalidateTag(CacheTag.VisitsCount);

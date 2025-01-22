@@ -2,6 +2,9 @@ export const enum CacheTag {
     // todo? all tower objects - revalidate when a new tower is added or removed or edited
     Towers = "Towers",
 
+    // this cache is revalidated every 2 hours automatically
+    Photo = "Photo",
+
     // revalidates every 2 hours automatically
     RandomTowers = "RandomTowers",
 
@@ -21,6 +24,9 @@ export const enum CacheTag {
     // revalidate with specific tower ID when added or removed
     TowerVisitsCount = "TowerVisitsCount",
     TowerVisits = "TowerVisits",
+
+    // todo? revalidate with specific tower ID when tower photo is added or removed
+    TowerPhotos = "TowerPhotos",
 
     // revalidates automatically every hour
     TowerOfTheDay = "TowerOfTheDay",
