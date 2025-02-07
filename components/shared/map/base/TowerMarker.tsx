@@ -1,5 +1,5 @@
-import { defaultIcon, favouriteIcon, visitedIcon } from "@/components/shared/map/icons";
-import MapTowerCard from "@/components/shared/map/MapTowerCard";
+import { defaultIcon, favouriteIcon, visitedIcon } from "@/components/shared/map/base/icons";
+import MapTowerCard from "@/components/shared/map/base/MapTowerCard";
 import { Tower } from "@/types/Tower";
 import { Marker, Popup } from "react-leaflet";
 

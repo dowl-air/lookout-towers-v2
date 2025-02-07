@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import HistoryText from "@/components/tower/tiles/HistoryText";
-import Map from "@/components/tower/tiles/Map";
 import Parameters from "@/components/tower/tiles/parameters/Parameters";
 import OpeningHours from "@/components/tower/tiles/openingHours/OpeningHoursTile";
 import Admission from "@/components/tower/tiles/Admission";
@@ -15,6 +14,7 @@ import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Carousel from "@/components/tower/top/Carousel";
 import { notFound } from "next/navigation";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
+import TowerMapFixed from "@/components/shared/map/TowerMapFixed";
 
 async function TowerPage({ params }: { params }) {
     const { nameID } = await params;
@@ -45,7 +45,7 @@ async function TowerPage({ params }: { params }) {
                 </div>
                 {tower.history && <HistoryText text={tower.history} />}
                 <RatingFormProvider tower={tower} />
-                <Map lat={tower.gps.latitude} long={tower.gps.longitude} name={tower.name} />
+                <TowerMapFixed tower={tower} />
                 <ChangesHistory tower={tower} />
             </div>
         </div>
