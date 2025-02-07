@@ -1,10 +1,10 @@
-import DynamicMap from "./DynamicMap";
 import ProfileBox from "./ProfileBox";
 import TabsAndContent from "./TabsAndContent";
 import { getAllUserFavouritesIds } from "@/actions/favourites/favourites.action";
 import { getAllUserVisits } from "@/actions/visits/visits.action";
 import { getAllUserRatings } from "@/actions/ratings/ratings.action";
 import { getTowersByIDs } from "@/actions/towers/towers.action";
+import ProfileMapFixed from "@/components/shared/map/ProfileMapFixed";
 
 async function ProfilePage() {
     const promises = [getAllUserFavouritesIds(), getAllUserVisits(), getAllUserRatings()];
@@ -17,7 +17,7 @@ async function ProfilePage() {
             <div className="flex max-w-[calc(min(99vw,80rem))] w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
                 <ProfileBox score={visits.length} changes={0} favs={favouritesIds.length} ratings={ratings.length} visits={visits.length} />
                 <div className="flex h-[170px] w-[97vw] flex-grow sm:h-full">
-                    <DynamicMap lat={49.8237572} long={15.6086383} towers={towers} visits={visits.map((v) => v.tower_id)} favs={favouritesIds} />
+                    <ProfileMapFixed towers={towers} visits={visits} favourites={favouritesIds} />
                 </div>
             </div>
             <TabsAndContent visits={visits} favs={favouritesIds} towers={towers} ratings={ratings} />

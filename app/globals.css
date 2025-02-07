@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-#big_map > div > div.card {
-    width: auto !important;
+.leaflet-popup-content-wrapper {
+    padding: 0 !important;
+    overflow: hidden;
 }
 
-#big_map > div > div.card > div.card-body {
-    display: none !important;
+.leaflet-popup-content {
+    margin: 0 !important;
+    width: 100% !important;
 }
 
 .content {
