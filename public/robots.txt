@@ -2,4 +2,7 @@ User-Agent: *
 Allow: /
 Disallow: /profil/
 
+User-agent: CCBot
+Disallow: /
+
 Sitemap: https://rozhlednovysvet.cz/sitemap.xml
