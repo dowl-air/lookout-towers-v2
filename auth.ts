@@ -7,6 +7,7 @@ import { revalidateTag } from "next/cache";
 import { authFirestore } from "@/utils/authFirestore";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import Seznam from "@/utils/seznam.provider";
+import { sendMail } from "@/actions/mail";
 
 const providers: Provider[] = [
     Google({
@@ -37,6 +38,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
     events: {
         async createUser(message) {
+            await sendMail({
+                subject: "[RS][Info] Nový uživatel",
+                text: `Byl vytvořen nový uživatel s emailem ${message.user.email}`,
+            });
             revalidateTag(CacheTag.UsersCount);
         },
         async updateUser(message) {
