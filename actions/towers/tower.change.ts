@@ -14,6 +14,9 @@ export const changeTower = async (changeID: string, tower: Tower) => {
     if (change.type === "date") {
         newValue = new Date(newValue);
     }
+    if (change.type === "number") {
+        newValue = Number(newValue);
+    }
     await updateDoc(towerDoc, {
         [change.field]: newValue,
         modified: serverTimestamp(),
