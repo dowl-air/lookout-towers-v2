@@ -28,7 +28,7 @@ const TowerOfTheDay = async () => {
                     <div className="flex flex-col bg-base-100 rounded-xl p-6 items-center md:items-end">
                         <h2 className="text-2xl mb-3 text-center md:text-right">
                             Byla vybrána {towerTypeMappedUrl[tower.type] ?? tower.type}{" "}
-                            <Link className="font-bold underline underline-offset-2" href={`${tower.type}/${tower.nameID}`}>
+                            <Link className="font-bold underline underline-offset-2 whitespace-nowrap" href={`${tower.type}/${tower.nameID}`}>
                                 {tower.name}
                             </Link>
                             .
