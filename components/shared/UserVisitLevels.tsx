@@ -18,7 +18,7 @@ const UserVisitLevels = () => {
                             const { name, color, level } = getUserLevel(points);
                             return (
                                 <tr key={idx}>
-                                    <td className="text-base-content text-right">{points}</td>
+                                    <td className="text-base-content text-right font-bold">{points}</td>
                                     <td>
                                         <div className="badge text-nowrap" style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
                                             {name}

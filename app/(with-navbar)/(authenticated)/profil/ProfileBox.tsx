@@ -23,7 +23,7 @@ async function ProfileBox({
                 <>
                     {user.image ? (
                         <div className="avatar">
-                            <div className="w-28 rounded-full">
+                            <div className="w-20 rounded-full">
                                 <Image src={user.image} width={112} height={112} alt={"profile picture"} referrerPolicy="no-referrer" />
                             </div>
                         </div>
