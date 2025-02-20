@@ -67,17 +67,41 @@ export const removeVisit = async (towerID: string) => {
 };
 
 export const getAllUserVisits = async (): Promise<Visit[]> => {
-    //todo add cache
     const user = await checkAuth();
     if (!user) return [];
-    const visits: Visit[] = [];
-    const q = await query(collection(db, "visits"), where("user_id", "==", user.id));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        visits.push({ ...data, date: new Date(data.date).toISOString(), created: (data.created as Timestamp).toDate().toISOString() } as Visit);
-    });
-    return visits;
+
+    const cacheFn = cache(
+        async (userID: string) => {
+            const visits: Visit[] = [];
+            const q = await query(collection(db, "visits"), where("user_id", "==", userID), orderBy("date", "desc"));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                visits.push({
+                    ...data,
+                    date: new Date(data.date).toISOString(),
+                    created: (data.created as Timestamp).toDate().toISOString(),
+                } as Visit);
+            });
+            // get photos for each visit
+            const allPhotoIds = visits.reduce((acc: string[], visit) => {
+                if (visit.photoIds) {
+                    acc.push(...visit.photoIds);
+                }
+                return acc;
+            }, []);
+            const photos = await getPhotos(allPhotoIds);
+            visits.forEach((visit) => {
+                visit.photos = visit.photoIds ? visit.photoIds.map((id) => photos.find((p) => p.id === id)) : [];
+            });
+            return visits;
+        },
+        [CacheTag.UserVisits],
+        {
+            tags: [getCacheTagSpecific(CacheTag.UserVisits, user.id)],
+        }
+    );
+    return cacheFn(user.id);
 };
 
 export const getTowerVisits = async (towerID: string): Promise<Visit[]> => {

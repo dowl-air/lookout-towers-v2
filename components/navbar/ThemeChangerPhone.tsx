@@ -26,7 +26,7 @@ function ThemeChangerPhone() {
                 closeDrawer();
             }}
         >
-            {currentTheme === LIGHT_MODE ? <div>Tmavý režim</div> : <div>Světlý režim</div>}
+            <div className="text-xl">{currentTheme === LIGHT_MODE ? "Tmavý režim" : "Světlý režim"}</div>
         </li>
     );
 }

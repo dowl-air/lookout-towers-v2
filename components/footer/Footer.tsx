@@ -3,7 +3,7 @@ import UserVisitLevels from "../shared/UserVisitLevels";
 
 function Footer() {
     return (
-        <footer className="footer flex justify-center p-10 bg-neutral text-neutral-content">
+        <footer className="footer flex justify-center p-10 bg-neutral text-neutral-content ">
             <div className="flex justify-between flex-col md:flex-row gap-3 max-w-7xl w-full">
                 <div className="flex flex-col gap-3">
                     <div className="flex gap-2">

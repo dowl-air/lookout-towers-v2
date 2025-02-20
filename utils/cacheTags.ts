@@ -17,6 +17,9 @@ export const enum CacheTag {
     // [SPECIFIC towerID userID] revalidate when user favourites or unfavourites tower
     TowerFavourite = "TowerFavourite",
 
+    // [SPECIFIC userID] revalidate when user favourites or unfavourites tower
+    UserFavourites = "UserFavourites",
+
     // tower rating - revalidate with specific tower ID when added, edited or removed
     TowerRatingAndCount = "TowerRatingAndCount",
     TowerRatings = "TowerRatings",

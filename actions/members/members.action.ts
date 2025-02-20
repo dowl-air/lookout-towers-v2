@@ -38,7 +38,7 @@ export const getAllMembers = async () => {
     //get changes made by each user
     await Promise.all(
         users.map(async (user) => {
-            const q = query(collection(db, "changes"), where("userID", "==", user.id));
+            const q = query(collection(db, "changes"), where("user_id", "==", user.id));
             const snap = await getCountFromServer(q);
             user.changes = snap.data().count;
         })

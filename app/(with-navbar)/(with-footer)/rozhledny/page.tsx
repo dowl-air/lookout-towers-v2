@@ -5,7 +5,12 @@ import Results from "@/components/towers/Results";
 import ResultsSkeleton from "@/components/towers/ResultsSkeleton";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
 import { TowersFilter } from "@/utils/TowersFilter";
+import { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+    title: "Rozhledny",
+};
 
 const PER_PAGE = 20;
 

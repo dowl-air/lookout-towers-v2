@@ -5,8 +5,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     return (
         <>
             <NavbarDrawer>
-                <Navbar />
-                {children}
+                <div className="flex flex-col min-h-[100dvh]">
+                    <Navbar />
+                    {children}
+                </div>
             </NavbarDrawer>
         </>
     );

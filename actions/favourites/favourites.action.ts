@@ -1,10 +1,10 @@
 "use server";
-import { collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 
+import { collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { checkAuth } from "@/actions/checkAuth";
 import { db } from "@/utils/firebase";
 import { unstable_cache as cache, revalidateTag } from "next/cache";
-import { CacheTag, getCacheTagUserSpecific } from "@/utils/cacheTags";
+import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 
 export const checkFavourite = async (towerID: string) => {
     const user = await checkAuth();
@@ -33,6 +33,7 @@ export const addToFavourites = async (towerID: string) => {
         tower_id: towerID,
     });
     revalidateTag(getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID));
+    revalidateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
     return true;
 };
 
@@ -41,18 +42,28 @@ export const removeFromFavourites = async (towerID: string) => {
     if (!user) return false;
     await deleteDoc(doc(db, "favourites", `${user.id}_${towerID}`));
     revalidateTag(getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID));
+    revalidateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
     return false;
 };
 
 export const getAllUserFavouritesIds = async () => {
-    //todo add cache
     const user = await checkAuth();
     if (!user) return [];
-    const q = query(collection(db, "favourites"), where("user_id", "==", user.id));
-    const querySnapshot = await getDocs(q);
-    const favourites = [];
-    querySnapshot.forEach((doc) => {
-        favourites.push(doc.data().tower_id);
-    });
-    return favourites;
+
+    const cachedFn = cache(
+        async (userID: string) => {
+            const q = query(collection(db, "favourites"), where("user_id", "==", userID));
+            const querySnapshot = await getDocs(q);
+            const favourites = [];
+            querySnapshot.forEach((doc) => {
+                favourites.push(doc.data().tower_id);
+            });
+            return favourites;
+        },
+        [CacheTag.UserFavourites],
+        {
+            tags: [getCacheTagSpecific(CacheTag.UserFavourites, user.id)],
+        }
+    );
+    return cachedFn(user.id);
 };

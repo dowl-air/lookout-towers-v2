@@ -79,15 +79,24 @@ export const removeRating = async (towerID: string) => {
 };
 
 export const getAllUserRatings = async () => {
-    //todo add cache
     const user = await checkAuth();
     if (!user) return [];
-    const q = query(collection(db, "ratings"), where("user_id", "==", user.id));
-    const querySnapshot = await getDocs(q);
-    const ratings: Rating[] = [];
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        ratings.push({ ...data, created: (data.created as Timestamp).toDate().toISOString() } as Rating);
-    });
-    return ratings;
+
+    const cachedFn = cache(
+        async (userID: string) => {
+            const q = query(collection(db, "ratings"), where("user_id", "==", userID));
+            const querySnapshot = await getDocs(q);
+            const ratings: Rating[] = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                ratings.push({ ...data, created: (data.created as Timestamp).toDate().toISOString() } as Rating);
+            });
+            return ratings;
+        },
+        [CacheTag.UserRatings],
+        {
+            tags: [CacheTag.UserRatings, getCacheTagSpecific(CacheTag.UserRatings, user.id)],
+        }
+    );
+    return cachedFn(user.id);
 };

@@ -21,10 +21,18 @@ const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
                         <NavbarSideLink href="/mapa">Mapa</NavbarSideLink>
                     </li>
                     {session?.user && (
-                        <li>
-                            <NavbarSideLink href="/profil">Můj profil</NavbarSideLink>
-                        </li>
+                        <>
+                            <li>
+                                <NavbarSideLink href={"/navstivene"}>Navštívené rozhledny</NavbarSideLink>
+                            </li>
+                            <li>
+                                <NavbarSideLink href="/profil">Můj profil</NavbarSideLink>
+                            </li>
+                        </>
                     )}
+
+                    <ThemeChangerPhone />
+
                     {session?.user ? (
                         <li>
                             <form
@@ -35,7 +43,7 @@ const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
                                 }}
                                 className="block"
                             >
-                                <NavbarSideButton type="submit" className="w-full text-left">
+                                <NavbarSideButton type="submit" className="w-full text-left text-xl">
                                     Odhlásit se
                                 </NavbarSideButton>
                             </form>
@@ -55,7 +63,6 @@ const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
                             </form>
                         </li>
                     )}
-                    <ThemeChangerPhone />
                 </ul>
             </div>
         </div>
