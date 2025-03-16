@@ -1,7 +1,9 @@
 "use client";
 
+import COUNTRIES, { CountryCode } from "@/constants/countries";
 import { cn } from "@/utils/cn";
-import { countyShortList, materials, provincesList, towerType } from "@/utils/constants";
+import { materials, towerType } from "@/utils/constants";
+import { getAllCountiesFromCountryProvince, getAllCountryProvinces } from "@/utils/geography";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -11,7 +13,7 @@ const AddTowerPage = () => {
     const [name, setName] = useState<string>("");
     const [type, setType] = useState<string>("");
 
-    const [country, setCountry] = useState<string>("");
+    const [country, setCountry] = useState<CountryCode | "">("");
     const [province, setProvince] = useState<string>("");
     const [county, setCounty] = useState<string>("");
 
@@ -83,13 +85,17 @@ const AddTowerPage = () => {
                     className={cn("select select-bordered w-full text-sm sm:text-base mt-4", {
                         "select-primary font-bold": country,
                     })}
-                    onChange={(e) => setCountry(e.target.value)}
+                    onChange={(e) => setCountry(e.target.value as CountryCode)}
                     value={country}
                 >
                     <option value={""} disabled>
                         Stát *
                     </option>
-                    <option value={"Czechia"}>Česko</option>
+                    {COUNTRIES.map((country) => (
+                        <option key={country.code} value={country.code}>
+                            {country.emoji} {country.name}
+                        </option>
+                    ))}
                 </select>
 
                 <select
@@ -103,11 +109,12 @@ const AddTowerPage = () => {
                     <option value={""} disabled>
                         Kraj
                     </option>
-                    {provincesList.map((province) => (
-                        <option key={province} value={province}>
-                            {province}
-                        </option>
-                    ))}
+                    {country &&
+                        getAllCountryProvinces(country).map((province) => (
+                            <option key={province.code} value={province.code}>
+                                {province.name}
+                            </option>
+                        ))}
                 </select>
 
                 <select
@@ -121,11 +128,12 @@ const AddTowerPage = () => {
                     <option value={""} disabled>
                         Okres
                     </option>
-                    {countyShortList.map((county) => (
-                        <option key={county} value={county}>
-                            {county}
-                        </option>
-                    ))}
+                    {country &&
+                        getAllCountiesFromCountryProvince(country, province).map((county) => (
+                            <option key={county} value={county}>
+                                {county}
+                            </option>
+                        ))}
                 </select>
             </div>
 

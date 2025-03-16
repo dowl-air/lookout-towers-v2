@@ -1,0 +1,106 @@
+const PROVINCES_SK = [
+    {
+        name: "Bratislavský kraj",
+        shortName: "Bratislavský",
+        code: "BA",
+        counties: ["Bratislava", "Malacky", "Pezinok", "Senec"],
+    },
+    {
+        name: "Trnavský kraj",
+        shortName: "Trnavský",
+        code: "TT",
+        counties: ["Dunajská Streda", "Galanta", "Hlohovec", "Piešťany", "Senica", "Skalica", "Trnava"],
+    },
+    {
+        name: "Trenčianský kraj",
+        shortName: "Trenčianský",
+        code: "TN",
+        counties: [
+            "Bánovce nad Bebravou",
+            "Ilava",
+            "Myjava",
+            "Nové Mesto nad Váhom",
+            "Partizánske",
+            "Považská Bystrica",
+            "Prievidza",
+            "Púchov",
+            "Trenčín",
+        ],
+    },
+    {
+        name: "Nitrianský kraj",
+        shortName: "Nitrianský",
+        code: "NR",
+        counties: ["Komárno", "Levice", "Nitra", "Nové Zámky", "Šaľa", "Topoľčany", "Zlaté Moravce"],
+    },
+    {
+        name: "Žilinský kraj",
+        shortName: "Žilinský",
+        code: "ZA",
+        counties: [
+            "Bytča",
+            "Čadca",
+            "Dolný Kubín",
+            "Kysucké Nové Mesto",
+            "Liptovský Mikuláš",
+            "Martin",
+            "Námestovo",
+            "Ružomberok",
+            "Turčianske Teplice",
+            "Tvrdošín",
+            "Žilina",
+        ],
+    },
+    {
+        name: "Banskobystrický kraj",
+        shortName: "Banskobystrický",
+        code: "BB",
+        counties: [
+            "Banská Bystrica",
+            "Banská Štiavnica",
+            "Brezno",
+            "Detva",
+            "Krupina",
+            "Lučenec",
+            "Poltár",
+            "Revúca",
+            "Rimavská Sobota",
+            "Veľký Krtíš",
+            "Zvolen",
+            "Žarnovica",
+            "Žiar nad Hronom",
+        ],
+    },
+    {
+        name: "Prešovský kraj",
+        shortName: "Prešovský",
+        code: "PO",
+        counties: [
+            "Bardejov",
+            "Humenné",
+            "Kežmarok",
+            "Levoča",
+            "Medzilaborce",
+            "Poprad",
+            "Prešov",
+            "Sabinov",
+            "Snina",
+            "Stará Ľubovňa",
+            "Stropkov",
+            "Svidník",
+            "Vranov nad Topľou",
+        ],
+    },
+    {
+        name: "Košický kraj",
+        shortName: "Košický",
+        code: "KE",
+        counties: ["Gelnica", "Košice", "Košice-okolie", "Michalovce", "Rožňava", "Sobrance", "Spišská Nová Ves", "Trebišov"],
+    },
+];
+
+export default PROVINCES_SK;
+
+export const COUNTIES_SK = PROVINCES_SK.reduce((acc, province) => {
+    return [...acc, ...province.counties];
+}, []);

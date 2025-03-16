@@ -1,9 +1,11 @@
 "use client";
 
 import FilterDialog from "@/components/towers/FilterDialog";
+import { CountryCode } from "@/constants/countries";
+import PROVINCES_CZ from "@/constants/provinces/CZ";
 import useLocation from "@/hooks/useLocation";
 import { cn } from "@/utils/cn";
-import { countyShortList, provincesList, provincesMappedCounty } from "@/utils/constants";
+import { getAllCountiesFromCountry, getAllCountiesFromCountryProvince, getAllCountryProvinces, getProvinceByCounty } from "@/utils/geography";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -15,18 +17,21 @@ const Filter = () => {
     const { location } = useLocation();
     const dialogRef = useRef<HTMLDialogElement>(null);
 
-    const defaultProvince = searchParams.get("province") || "Všechny kraje";
-    const defaultCounty = searchParams.get("county") || "Všechny okresy";
-    const defaultSearchTerm = searchParams.get("query") || "";
-    const defaultSort = searchParams.get("sort") || "name";
+    const defaultCountry = (searchParams.get("country") as CountryCode) ?? "CZ";
+    const defaultProvince = searchParams.get("province") ?? "ALL";
+    const defaultCounty = searchParams.get("county") ?? "ALL";
+    const defaultSearchTerm = searchParams.get("query") ?? "";
+    const defaultSort = searchParams.get("sort") ?? "name";
 
-    let selectableCounties = countyShortList;
-    if (defaultProvince === "Hlavní město Praha") {
-        selectableCounties = ["Praha"];
-    } else if (defaultProvince !== "Všechny kraje") {
-        selectableCounties = countyShortList.filter((county) => provincesMappedCounty[county] === defaultProvince);
-    } else {
-        selectableCounties = countyShortList;
+    //TODO refactor to support multiple countries
+
+    let selectableCounties = getAllCountiesFromCountry(defaultCountry);
+    if (defaultProvince === PROVINCES_CZ[0].code) {
+        // Prague doesnt have counties
+        selectableCounties = [];
+    } else if (defaultProvince !== "ALL") {
+        // Filter counties by selected province
+        selectableCounties = getAllCountiesFromCountryProvince(defaultCountry, defaultProvince);
     }
 
     const handleSearch = useDebouncedCallback((term: string) => {
@@ -40,10 +45,10 @@ const Filter = () => {
         replace(`${pathname}?${params.toString()}`);
     }, 400);
 
-    const handleProvince = (province: string) => {
+    const handleProvince = (provinceCode: string) => {
         const params = new URLSearchParams(searchParams);
-        if (province !== "Všechny kraje") {
-            params.set("province", province);
+        if (provinceCode !== "ALL") {
+            params.set("province", provinceCode);
             params.delete("page");
             params.delete("county");
         } else {
@@ -68,9 +73,9 @@ const Filter = () => {
 
     const handleCounty = (county: string) => {
         const params = new URLSearchParams(searchParams);
-        if (county !== "Všechny okresy") {
+        if (county !== "ALL") {
             params.set("county", county);
-            params.set("province", provincesMappedCounty[county]);
+            params.set("province", getProvinceByCounty(defaultCountry, county).code);
             params.delete("page");
         } else {
             params.delete("county");
@@ -120,7 +125,6 @@ const Filter = () => {
                         <div className="flex gap-3 flex-nowrap" id="buttons-block">
                             <button className="btn self-end btn-sm sm:btn-md" onClick={openModal}>
                                 <svg
-                                    xmlns="http://www.w3.org/2000/svg"
                                     width="24"
                                     height="24"
                                     viewBox="0 0 24 24"
@@ -178,15 +182,15 @@ const Filter = () => {
                             </div>
                             <select
                                 className={cn("select select-bordered w-full", {
-                                    "text-primary": defaultProvince !== "Všechny kraje",
+                                    "text-primary": defaultProvince !== "ALL",
                                 })}
                                 value={defaultProvince}
                                 onChange={(e) => handleProvince(e.target.value)}
                             >
-                                <option>Všechny kraje</option>
-                                {provincesList.map((item, idx) => (
-                                    <option key={idx} value={item}>
-                                        {item}
+                                <option value="ALL">Všechny kraje</option>
+                                {getAllCountryProvinces("CZ").map((item, idx) => (
+                                    <option key={idx} value={item.code}>
+                                        {item.name}
                                     </option>
                                 ))}
                             </select>
@@ -197,12 +201,12 @@ const Filter = () => {
                             </div>
                             <select
                                 className={cn("select select-bordered w-full", {
-                                    "text-primary": defaultCounty !== "Všechny okresy",
+                                    "text-primary": defaultCounty !== "ALL",
                                 })}
                                 value={defaultCounty}
                                 onChange={(e) => handleCounty(e.target.value)}
                             >
-                                <option>Všechny okresy</option>
+                                <option value="ALL">Všechny okresy</option>
                                 {selectableCounties.map((item, idx) => (
                                     <option key={idx} value={item}>
                                         {item}

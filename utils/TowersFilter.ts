@@ -1,15 +1,18 @@
+import { CountryCode } from "@/constants/countries";
 import { OpeningHoursForbiddenType } from "@/types/OpeningHours";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
+import { getProvinceByCode } from "@/utils/geography";
 
 export class TowersFilter {
     private filters: string[] = [];
 
     constructor(searchParams: TowersSearchParams) {
-        const province = searchParams?.province || "";
+        const countryCode: CountryCode = searchParams?.countryCode ?? "CZ";
+        const provinceCode = searchParams?.provinceCode || "";
         const county = searchParams?.county || "";
         const showFilter = searchParams?.showFilter || "";
 
-        if (province) this.addFilter(`province:=${province}`);
+        if (provinceCode) this.addFilter(`province:=${getProvinceByCode(countryCode, provinceCode).name}`);
         if (county) this.addFilter(`county:=${county}`);
 
         switch (showFilter) {
