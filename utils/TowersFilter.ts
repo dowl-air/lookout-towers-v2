@@ -7,8 +7,8 @@ export class TowersFilter {
     private filters: string[] = [];
 
     constructor(searchParams: TowersSearchParams) {
-        const countryCode: CountryCode = searchParams?.countryCode ?? "CZ";
-        const provinceCode = searchParams?.provinceCode || "";
+        const countryCode: CountryCode = searchParams?.country ?? "CZ";
+        const provinceCode = searchParams?.province || "";
         const county = searchParams?.county || "";
         const showFilter = searchParams?.showFilter || "";
 
