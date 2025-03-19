@@ -16,7 +16,11 @@ const ChangesHistory = async ({ tower }: { tower: Tower }) => {
 
     if (towerChanges.length === 0 && towerVisits.length === 0) return null;
 
-    const data: (Change | Visit)[] = [...towerChanges, ...towerVisits].sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+    const data: (Change | Visit)[] = [...towerChanges, ...towerVisits].sort((a, b) => {
+        const dateA = "date" in a ? new Date(a.date).getTime() : new Date(a.created).getTime();
+        const dateB = "date" in b ? new Date(b.date).getTime() : new Date(b.created).getTime();
+        return dateB - dateA;
+    });
 
     return (
         <div className="card card-compact sm:card-normal shadow-xl w-full mb-5">
