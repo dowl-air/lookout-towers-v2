@@ -3,7 +3,7 @@ const PROVINCES_CZ = [
         name: "Hlavní město Praha",
         shortName: "Praha",
         code: "PR",
-        counties: [""],
+        counties: ["Praha"],
     },
     {
         name: "Středočeský kraj",

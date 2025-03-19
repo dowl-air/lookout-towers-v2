@@ -1,11 +1,11 @@
 import { getTowerOfTheDay, getTowerRatingAndCount, getTowerVisitsCount } from "@/actions/towers/towers.action";
-import { towerTypeMappedUrl } from "@/utils/constants";
 import Link from "next/link";
 import ThemedRating from "../shared/ThemedRating";
 import { formatDate } from "@/utils/date";
 import { getMostRecentTowerVisit } from "@/actions/visits/visits.action";
 import { User } from "next-auth";
 import { getUser } from "@/actions/members/members.action";
+import { towerTypes } from "@/constants/towerType";
 
 export const revalidate = 3600;
 
@@ -27,7 +27,7 @@ const TowerOfTheDay = async () => {
                 <div className="flex-1">
                     <div className="flex flex-col bg-base-100 rounded-xl p-6 items-center md:items-end">
                         <h2 className="text-2xl mb-3 text-center md:text-right">
-                            Byla vybrána {towerTypeMappedUrl[tower.type] ?? tower.type}{" "}
+                            Byla vybrána {towerTypes.find((el) => el.value === tower.type)?.name ?? tower.type}{" "}
                             <Link className="font-bold underline underline-offset-2 whitespace-nowrap" href={`${tower.type}/${tower.nameID}`}>
                                 {tower.name}
                             </Link>

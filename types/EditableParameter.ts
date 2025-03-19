@@ -6,5 +6,5 @@ export type EditableParameter = {
     name: keyof Tower;
     label: string;
     type: EditableParameterType;
-    typeOptions?: string[];
+    typeOptions?: string[] | { name: string; value: string }[];
 };
