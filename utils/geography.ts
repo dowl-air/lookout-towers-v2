@@ -6,9 +6,27 @@ export const getCountryByCode = (countryCode: CountryCode) => {
     return COUNTRIES.find((country) => country.code === countryCode);
 };
 
+export const getCountryByName = (countryName: string) => {
+    return COUNTRIES.find((country) => country.name === countryName);
+};
+
+export const isValidCountryCode = (countryCode: string): countryCode is CountryCode => {
+    return COUNTRIES.some((country) => country.code === countryCode);
+};
+
 export const getProvinceByCode = (countryCode: CountryCode, provinceCode: string) => {
     const provinces = getAllCountryProvinces(countryCode);
     return provinces.find((province) => province.code === provinceCode);
+};
+
+export const getProvinceByName = (countryCode: CountryCode, provinceName: string) => {
+    const provinces = getAllCountryProvinces(countryCode);
+    return provinces.find((province) => province.name === provinceName);
+};
+
+export const isValidProvinceCode = (countryCode: CountryCode, provinceCode: string): boolean => {
+    const provinces = getAllCountryProvinces(countryCode);
+    return provinces.some((province) => province.code === provinceCode);
 };
 
 export const getAllCountryProvinces = (countryCode: CountryCode): typeof PROVINCES_CZ => {
