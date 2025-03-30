@@ -73,6 +73,9 @@ export const getTowerByID = async (id: string): Promise<Tower> => {
     const cachedFn = cache(
         async (id: string) => {
             const docSnap = await getDoc(doc(db, "towers", id));
+            if (!docSnap.exists()) {
+                return null;
+            }
             return normalizeTowerObject(docSnap.data());
         },
         [CacheTag.Tower],
