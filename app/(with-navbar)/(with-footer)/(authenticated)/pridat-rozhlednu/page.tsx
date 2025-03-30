@@ -1,5 +1,6 @@
 "use client";
 
+import PhotosUpload from "@/components/add-tower/PhotosUpload";
 import TagCheckbox from "@/components/add-tower/TagCheckbox";
 import COUNTRIES, { CountryCode } from "@/constants/countries";
 import { MATERIALS } from "@/constants/materials";
@@ -372,9 +373,17 @@ const AddTowerPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="card card-compact sm:card-normal card-bordered shadow-md mt-4 w-full">
-                    <div className="card-body">hello</div>
+                    <div className="card-body">
+                        <div className="card-title">Fotky</div>
+                        <p className="mt-2">
+                            Fotky můžete nahrát z počítače, nebo je vložit pomocí odkazu z webu. Následně pomocí kliknutí označte hlavní fotografii,
+                            ve které by rozhledna měla být vidět ideálně celá a měla by být umístěna uprostřed fotografie.
+                        </p>
+                        <p className="mb-2">Je potřeba nahrát alespoň jednu fotografii.</p>
+                        <PhotosUpload />
+                    </div>
                 </div>
             </div>
         </div>
