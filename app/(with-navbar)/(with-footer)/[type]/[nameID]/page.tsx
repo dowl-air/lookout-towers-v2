@@ -15,6 +15,7 @@ import Carousel from "@/components/tower/top/Carousel";
 import { notFound } from "next/navigation";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
 import TowerMapFixed from "@/components/shared/map/TowerMapFixed";
+import Sources from "@/components/tower/tiles/Sources";
 
 async function TowerPage({ params }: { params }) {
     const { nameID } = await params;
@@ -35,7 +36,7 @@ async function TowerPage({ params }: { params }) {
                 <Carousel images={towerImages} tower={tower} />
             </div>
 
-            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full">
+            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full mb-6">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-center">
                     <OpeningHours tower={tower}>
                         <OpeningHoursDialog tower={tower} />
@@ -46,6 +47,7 @@ async function TowerPage({ params }: { params }) {
                 {tower.history && <HistoryText text={tower.history} />}
                 <RatingFormProvider tower={tower} />
                 <TowerMapFixed tower={tower} />
+                <Sources tower={tower} />
                 <ChangesHistory tower={tower} />
             </div>
         </div>
