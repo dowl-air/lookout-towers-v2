@@ -16,6 +16,7 @@ const MapPicker = dynamic(() => import("@/components/add-tower/MapPicker"), { ss
 
 const AddTowerPage = () => {
     const { tower, updateTower } = useNewTowerContext();
+    const [photos, setPhotos] = useState<(File | URL)[]>([]);
 
     const [clipboardError, setClipboardError] = useState<string>("");
 
@@ -36,6 +37,37 @@ const AddTowerPage = () => {
             setClipboardError("");
         } else {
             setClipboardError("Nepodařilo se získat GPS souřadnice ze schránky.");
+        }
+    };
+
+    const handleSubmit = () => {
+        if (!tower.name || !tower.type || !tower.country || !tower.gps) {
+            alert("Vyplňte prosím všechna povinná pole.");
+            return;
+        }
+        if (photos.length === 0) {
+            alert("Nahrajte alespoň jednu fotografii.");
+            return;
+        }
+        if (tower.gps.latitude < -90 || tower.gps.latitude > 90 || tower.gps.longitude < -180 || tower.gps.longitude > 180) {
+            alert("Zadejte prosím platné GPS souřadnice.");
+            return;
+        }
+        if (tower.height < 0 || tower.viewHeight < 0 || tower.observationDecksCount < 0 || tower.stairs < 0) {
+            alert("Zadejte prosím kladné hodnoty pro výšku, počet plošin a schodů.");
+            return;
+        }
+        if (tower.elevation < -500) {
+            alert("Zadejte prosím platnou nadmořskou výšku.");
+            return;
+        }
+        if (tower.material && tower.material.length === 0) {
+            alert("Vyberte alespoň jeden materiál.");
+            return;
+        }
+        if (tower.opened && new Date(tower.opened).getTime() > Date.now()) {
+            alert("Zadejte prosím platné datum zpřístupnění.");
+            return;
         }
     };
 
@@ -151,12 +183,12 @@ const AddTowerPage = () => {
                     {clipboardError && <div className="text-error text-sm mt-1">{clipboardError}</div>}
                 </div>
                 <label className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full", {})}>
-                    Latitude:
+                    Latitude *
                     <input className="w-full" type="text" defaultValue={tower.gps?.latitude.toFixed(8) ?? ""} disabled />
                 </label>
 
                 <label className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full", {})}>
-                    Longitude:
+                    Longitude *
                     <input className="w-full" type="text" defaultValue={tower.gps?.longitude.toFixed(8) ?? ""} disabled />
                 </label>
 
@@ -382,9 +414,14 @@ const AddTowerPage = () => {
                             ve které by rozhledna měla být vidět ideálně celá a měla by být umístěna uprostřed fotografie.
                         </p>
                         <p className="mb-2">Je potřeba nahrát alespoň jednu fotografii.</p>
-                        <PhotosUpload />
+                        <PhotosUpload photos={photos} setPhotos={setPhotos} />
                     </div>
                 </div>
+            </div>
+            <div className="flex flex-col md:flex-row gap-4 mt-4 mb-6 justify-end">
+                <button className="btn btn-primary w-full sm:w-60" onClick={handleSubmit}>
+                    Odeslat návrh
+                </button>
             </div>
         </div>
     );

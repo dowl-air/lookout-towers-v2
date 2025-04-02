@@ -1,10 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-const PhotosUpload = () => {
-    const [photos, setPhotos] = useState<(File | URL)[]>([]);
-
+const PhotosUpload = ({ photos, setPhotos }: { photos: (File | URL)[]; setPhotos: (p: unknown) => void }) => {
     const handleFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPhotos((prevPhotos) => [...prevPhotos, ...Array.from(e.target.files)]);
     };
