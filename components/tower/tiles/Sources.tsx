@@ -12,33 +12,43 @@ const Sources = ({ tower }: { tower: Tower }) => {
     return (
         <div className="card card-compact sm:card-normal w-full shadow-xl bg-[rgba(255,255,255,0.05)]">
             <div className="card-body">
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-4 flex-wrap">
                     <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">Odkazy a zdroje</h2>
                     <AddSource tower={tower} />
                 </div>
-                <div className="flex flex-col gap-1 overflow-y-auto mt-4">
-                    {tower.urls.map((url, idx) => {
-                        if (!url || url.length < 5) return null;
-                        const domainName = extractDomain(url);
-                        const logo = CONCURRENCE_LOGOS[domainName];
-                        return (
-                            <div key={idx} className="flex gap-3 items-center">
-                                <div className="opacity-65">[{idx + 1}]</div>
-                                {logo ? (
-                                    <div className="avatar">
-                                        <div className="w-7 rounded-full">
-                                            <img src={logo} />
+                <div className="flex flex-col gap-2.5 overflow-y-auto mt-4">
+                    {tower.urls
+                        .sort((url1, url2) => {
+                            const domainName1 = extractDomain(url1);
+                            const domainName2 = extractDomain(url2);
+                            const logo1 = CONCURRENCE_LOGOS[domainName1];
+                            const logo2 = CONCURRENCE_LOGOS[domainName2];
+                            if (logo1 && !logo2) return -1;
+                            if (!logo1 && logo2) return 1;
+                            return 0;
+                        })
+                        .map((url, idx) => {
+                            if (!url || url.length < 5) return null;
+                            const domainName = extractDomain(url);
+                            const logo = CONCURRENCE_LOGOS[domainName];
+                            return (
+                                <div key={idx} className="flex gap-4 items-center">
+                                    <div className="opacity-65">[{idx + 1}]</div>
+                                    {logo ? (
+                                        <div className="avatar">
+                                            <div className="w-7 rounded-full">
+                                                <img src={logo} className="!object-contain" />
+                                            </div>
                                         </div>
+                                    ) : null}
+                                    <div className="link">
+                                        <Link href={url} target="_blank" className="whitespace-nowrap">
+                                            {extractDomainAndPath(url, true)}
+                                        </Link>
                                     </div>
-                                ) : null}
-                                <div className="link">
-                                    <Link href={url} target="_blank">
-                                        {extractDomainAndPath(url)}
-                                    </Link>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                 </div>
             </div>
         </div>

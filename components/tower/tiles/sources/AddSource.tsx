@@ -13,7 +13,7 @@ const AddSource = ({ tower }: { tower: Tower }) => {
         <div className="flex gap-2 items-center">
             <input
                 type="text"
-                placeholder="Přidat odkaz"
+                placeholder="Vložit odkaz"
                 className={`input input-sm input-bordered w-full ${open ? "block" : "hidden"}`}
                 value={url}
                 onChange={(e) => {
@@ -39,6 +39,9 @@ const AddSource = ({ tower }: { tower: Tower }) => {
                         setUrl("");
                         setButtonText("Ke kontrole");
                         setOpen(false);
+                        setTimeout(() => {
+                            setButtonText("Přidat");
+                        }, 5000);
                     }
                     setOpen(true);
                 }}

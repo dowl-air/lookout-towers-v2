@@ -25,7 +25,9 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                 "mt-7": idx === 0,
             })}
         >
-            <time className="text-gray-400 mr-1 text-nowrap min-w-[88px] text-right">{formatDate({ date: change.created, long: false })}</time>
+            <time className="text-gray-400 mr-1 text-nowrap min-w-[75px] sm:min-w-[88px] text-right">
+                {formatDate({ date: change.created, long: false })}
+            </time>
             <div className="mx-1">
                 {isApproved ? <ApprovedIcon /> : null}
                 {isNew ? <NewIcon /> : null}
@@ -40,7 +42,10 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                 <span className="font-bold">{parameter.label}</span>.
             </span>
             {change.field === "urls" ? (
-                <span className="text-neutral-500">{`[ ${extractDomainAndPath(change.new_value[change.new_value.length - 1])} ]`}</span>
+                <span className="text-neutral-500 whitespace-nowrap">{`[ ${extractDomainAndPath(
+                    change.new_value[change.new_value.length - 1],
+                    true
+                )} ]`}</span>
             ) : (
                 <span className="flex gap-2 ml-2 text-nowrap">
                     <span className={"text-neutral-500"}>
@@ -66,7 +71,7 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                         <path d="M18 8L22 12L18 16" />
                         <path d="M2 12H22" />
                     </svg>
-                    <div>
+                    <div className="text-neutral-500">
                         <span
                             className={cn("text-neutral-500", {
                                 "text-success font-bold": isApproved,

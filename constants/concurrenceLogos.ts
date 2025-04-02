@@ -6,4 +6,10 @@ export const CONCURRENCE_LOGOS: Record<string, string> = {
     "cs.wikipedia.org": "/img/loga/Wikipedia_W.svg",
     "en.wikipedia.org": "/img/loga/Wikipedia_W.svg",
     "sk.wikipedia.org": "/img/loga/Wikipedia_W.svg",
+    "kudyznudy.cz": "/img/loga/kudyznudy.png",
+    "kudyznudy.sk": "/img/loga/kudyznudy.png",
+    "rozhlednovymrajem.cz": "/img/loga/rozhlednovymrajem.png",
+    "maps.google.com": "/img/loga/google_maps.svg",
+    "maps.app.goo.gl": "/img/loga/google_maps.svg",
+    "google.com": "/img/loga/google_maps.svg",
 };

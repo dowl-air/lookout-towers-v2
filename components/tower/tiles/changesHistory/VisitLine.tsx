@@ -11,7 +11,9 @@ const VisitLine = ({ visit, idx, user }: { visit: Visit; idx: number; user: User
                 "mt-7": idx === 0,
             })}
         >
-            <time className="text-gray-400 mr-1 text-nowrap min-w-[88px] text-right">{formatDate({ date: visit.date, long: false })}</time>
+            <time className="text-gray-400 mr-1 text-nowrap min-w-[75px] sm:min-w-[88px] text-right">
+                {formatDate({ date: visit.date, long: false })}
+            </time>
             <div className="mx-1">
                 <VisitedIcon />
             </div>

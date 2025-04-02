@@ -16,7 +16,9 @@ export const updateChange = async (changeID: string, state: ChangeState, tower: 
         state,
         modified: serverTimestamp(),
     });
-    await changeTower(changeID, tower);
+    if (state === ChangeState.Approved) {
+        await changeTower(changeID, tower);
+    }
     revalidateTag(getCacheTagSpecific(CacheTag.Change, changeID));
     revalidateTag(getCacheTagSpecific(CacheTag.ChangesTower, tower.id));
     revalidateTag(getCacheTagSpecific(CacheTag.ChangesUser, user.id));

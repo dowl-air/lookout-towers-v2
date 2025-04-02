@@ -9,14 +9,18 @@ export const extractDomain = (url: string): string => {
     }
 };
 
-export const extractDomainAndPath = (url: string): string => {
+export const extractDomainAndPath = (url: string, slice = false): string => {
     try {
         if (!url) return "Neznámá doména";
         const parsedUrl = new URL(url);
         let hostname = parsedUrl.hostname;
         const pathname = parsedUrl.pathname;
         hostname = hostname.startsWith("www.") ? hostname.slice(4) : hostname;
-        return `${hostname}${pathname}`.replace(".html", "").replace(".php", "").replace(".htm", "");
+        const str = `${hostname}${pathname}`.replace(".html", "").replace(".php", "").replace(".htm", "");
+        if (slice && str.length > 50) {
+            return `${str.slice(0, 50)}...`;
+        }
+        return str;
     } catch (error) {
         return url;
     }
