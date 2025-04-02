@@ -23,7 +23,7 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
             case OpeningHoursType.Forbidden:
                 switch (OH.forbiddenType) {
                     case OpeningHoursForbiddenType.Reconstruction:
-                        return `${typeCap} je právě v rekonstrukci.`;
+                        return `${typeCap} je právě v\u00a0rekonstrukci.`;
                     case OpeningHoursForbiddenType.Temporary:
                         return `${typeCap} je dočasně uzavřena.`;
                     case OpeningHoursForbiddenType.Gone:
@@ -36,7 +36,7 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
             case OpeningHoursType.WillOpen:
                 return `${typeCap} bude zanedlouho zpřístupněna.`;
             case OpeningHoursType.SomeMonths:
-                return `${typeCap} je otevřena v období ${MONTHS_CZECH.at(OH.monthFrom)} - ${MONTHS_CZECH.at(OH.monthTo)}.`;
+                return `${typeCap} je otevřena v\u00a0období `;
             case OpeningHoursType.EveryMonth:
                 return `${typeCap} je otevřena celoročně.`;
             case OpeningHoursType.Unknown:
@@ -73,6 +73,12 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
                     })}
                 >
                     {getHeading(tower?.type ?? "rozhledna")}
+                    {OH.type === OpeningHoursType.SomeMonths ? (
+                        <>
+                            <span className="whitespace-nowrap underline">{`${MONTHS_CZECH.at(OH.monthFrom)} - ${MONTHS_CZECH.at(OH.monthTo)}`}</span>
+                            <span>.</span>
+                        </>
+                    ) : null}
                 </p>
 
                 {OH.isLockedAtNight ? <p className="text-base md:text-lg">Zamčeno v noci</p> : null}
