@@ -52,7 +52,7 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                     <li className={`step ${step >= 2 ? "step-primary" : ""}`}>Dokončení</li>
                 </ul>
 
-                <div className="h-60 flex flex-col items-center justify-center gap-5">
+                <div className="h-64 flex flex-col items-center justify-center gap-5">
                     {step === 0 && <Step1 setParameter={setParameter} />}
                     {step === 1 && <Step2 newValue={newValue} setNewValue={setNewValue} parameter={parameter} tower={tower} />}
                     {step === 2 && <Step3 tower={tower} parameter={parameter} newValue={newValue} />}

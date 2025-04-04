@@ -17,6 +17,7 @@ const ChangesAdmin = async () => {
                     let parameter = editableParameters.find((p) => p.name === change.field);
                     if (change.field === "openingHours") parameter = { label: "Otevírací doba", type: "object", name: "openingHours" };
                     if (change.field === "urls") parameter = { name: "urls", label: "Odkazy", type: "array" };
+                    if (change.field === "admission") parameter = { name: "admission", label: "Vstupné", type: "object" };
                     return (
                         <div className="card bg-base-100 shadow-xl" key={change.id}>
                             <div className="card-body">

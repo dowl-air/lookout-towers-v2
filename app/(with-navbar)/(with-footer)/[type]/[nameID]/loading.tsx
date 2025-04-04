@@ -48,7 +48,7 @@ const Loading = () => {
             <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full mb-20">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-center">
                     <OpeningHoursTile tower={null} />
-                    <Admission />
+                    <Admission tower={null} />
                     <ParameterTile>
                         <div className="card-body items-center">
                             <table className="table-compact my-2 table-fixed">

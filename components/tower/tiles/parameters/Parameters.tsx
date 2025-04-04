@@ -2,6 +2,7 @@ import EditButton from "@/components/tower/tiles/parameters/dialog/EditButton";
 import ParametersEditDialog from "@/components/tower/tiles/parameters/ParametersEditDialog";
 import ParameterTile from "@/components/tower/tiles/parameters/ParameterTile";
 import { Tower } from "@/types/Tower";
+import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/date";
 import { generateHeightText } from "@/utils/texts";
 
@@ -48,6 +49,10 @@ function Parameters({ tower }: { tower: Tower }) {
                         <table className="table-compact w-full my-4 table-fixed">
                             <tbody>
                                 <tr>
+                                    <td className="text-right font-bold">Název</td>
+                                    <td>{tower.name}</td>
+                                </tr>
+                                <tr>
                                     <td className="text-right font-bold">Typ</td>
                                     <td>{tower.type}</td>
                                 </tr>
@@ -68,15 +73,29 @@ function Parameters({ tower }: { tower: Tower }) {
                                     <td>{tower.stairs}</td>
                                 </tr>
                                 <tr>
+                                    <td className="text-right font-bold">Počet vyhlídkových plošin</td>
+                                    <td
+                                        className={cn({
+                                            "text-error font-bold": !tower.observationDecksCount || tower.viewHeight < 0,
+                                        })}
+                                    >
+                                        {tower.observationDecksCount >= 0 ? tower.observationDecksCount : "neznámý počet"}
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td className="text-right font-bold">Výška rozhledny</td>
                                     <td>{generateHeightText(tower.height)}</td>
                                 </tr>
-                                {/* 
                                 <tr>
-                                    <td className="text-right font-bold">Výška plošiny</td>
-                                    <td>{generateHeightText(tower.viewHeight)}</td>
+                                    <td className="text-right font-bold">Výška výhledu</td>
+                                    <td
+                                        className={cn({
+                                            "text-error font-bold": !tower.viewHeight || tower.viewHeight < 0,
+                                        })}
+                                    >
+                                        {generateHeightText(tower.viewHeight)}
+                                    </td>
                                 </tr>
-                                */}
                                 <tr>
                                     <td className="text-right font-bold">Zpřístupnění</td>
                                     <td>{tower.opened ? formatDate({ date: tower.opened, long: true }) : "neznámé"}</td>
@@ -88,6 +107,16 @@ function Parameters({ tower }: { tower: Tower }) {
                                 <tr>
                                     <td className="text-right font-bold">Souřadnice</td>
                                     <td>{`${tower.gps.longitude.toFixed(6)}E ${tower.gps.latitude.toFixed(6)}N`}</td>
+                                </tr>
+                                <tr>
+                                    <td className="text-right font-bold">Vlastník</td>
+                                    <td
+                                        className={cn({
+                                            "text-error font-bold": !tower.owner,
+                                        })}
+                                    >
+                                        {tower.owner ? tower.owner : "neznámý vlastník"}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="text-right font-bold">Naposledy upraveno</td>

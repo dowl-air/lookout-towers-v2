@@ -1,6 +1,7 @@
 import ApprovedIcon from "@/components/tower/tiles/changesHistory/ApprovedIcon";
 import NewIcon from "@/components/tower/tiles/changesHistory/NewIcon";
 import RejectedIcon from "@/components/tower/tiles/changesHistory/RejectedIcon";
+import { getAdmissionTypeLabel } from "@/constants/admission";
 import { Change, ChangeState } from "@/types/Change";
 import { User } from "@/types/User";
 import { cn } from "@/utils/cn";
@@ -18,6 +19,7 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
     let parameter = editableParameters.find((param) => param.name === change.field);
     if (change.field === "openingHours") parameter = { label: "Otevírací doba", type: "object", name: "openingHours" };
     if (change.field === "urls") parameter = { name: "urls", label: "Odkazům", type: "array" };
+    if (change.field === "admission") parameter = { name: "admission", label: "Vstupné", type: "object" };
 
     return (
         <div
@@ -55,6 +57,9 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                             {change.field === "openingHours" ? (
                                 <span className="text-neutral-500">{getOpeningHoursTypeName(change.old_value.type)}</span>
                             ) : null}
+                            {change.field === "admission" ? (
+                                <span className="text-neutral-500">{` ${getAdmissionTypeLabel(change.old_value?.type)}`}</span>
+                            ) : null}
                         </span>
                     </span>
                     <svg
@@ -81,6 +86,9 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                             {formatParameterValue(change.new_value, parameter.type)}
                             {change.field === "openingHours" ? (
                                 <span className="text-neutral-500">{getOpeningHoursTypeName(change.new_value.type)}</span>
+                            ) : null}
+                            {change.field === "admission" ? (
+                                <span className="text-neutral-500">{` ${getAdmissionTypeLabel(change.new_value.type)}`}</span>
                             ) : null}
                         </span>
 

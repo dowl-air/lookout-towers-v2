@@ -9,6 +9,10 @@ export const formatParameterValue = (value: any, type: EditableParameterType): s
             return value.join(", ");
         case "object":
             return null;
+        case "number":
+            return value ? value.toString() : "Neznámé";
+        case "text":
+            return value ? value : "Neznámé";
         default:
             return value;
     }

@@ -41,7 +41,7 @@ async function TowerPage({ params }: { params }) {
                     <OpeningHours tower={tower}>
                         <OpeningHoursDialog tower={tower} />
                     </OpeningHours>
-                    <Admission />
+                    <Admission tower={tower} />
                     <Parameters tower={tower} />
                 </div>
                 {tower.history && <HistoryText text={tower.history} />}

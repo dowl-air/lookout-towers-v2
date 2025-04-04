@@ -30,7 +30,7 @@ const Step2 = ({
                     {type === "text" && (
                         <input
                             type="text"
-                            value={newValue}
+                            value={newValue || ""}
                             className="input input-bordered input-primary w-full max-w-xs mx-auto"
                             onChange={(e) => setNewValue(e.target.value)}
                         />
@@ -38,7 +38,7 @@ const Step2 = ({
                     {type === "number" && (
                         <input
                             type="number"
-                            value={newValue}
+                            value={newValue || ""}
                             className="input input-primary input-bordered w-full max-w-xs mx-auto"
                             onChange={(e) => setNewValue(e.target.value)}
                         />

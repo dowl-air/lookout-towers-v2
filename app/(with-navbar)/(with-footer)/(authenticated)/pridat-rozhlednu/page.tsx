@@ -4,7 +4,7 @@ import PhotosUpload from "@/components/add-tower/PhotosUpload";
 import TagCheckbox from "@/components/add-tower/TagCheckbox";
 import COUNTRIES, { CountryCode } from "@/constants/countries";
 import { MATERIALS } from "@/constants/materials";
-import { towerTypes } from "@/constants/towerType";
+import { TowerTypeEnum, towerTypes } from "@/constants/towerType";
 import { useNewTowerContext } from "@/context/NewTower";
 import { TowerTag } from "@/types/TowerTags";
 import { cn } from "@/utils/cn";
@@ -98,7 +98,7 @@ const AddTowerPage = () => {
                 className={cn("select select-bordered w-full text-sm sm:text-base mt-4", {
                     "select-primary font-bold": tower.type,
                 })}
-                onChange={(e) => updateTower({ type: e.target.value })}
+                onChange={(e) => updateTower({ type: e.target.value as TowerTypeEnum })}
                 value={tower.type ?? ""}
             >
                 <option value={""} disabled>
