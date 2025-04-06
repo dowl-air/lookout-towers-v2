@@ -1,12 +1,16 @@
 "use client";
 
+import { checkAuth } from "@/actions/checkAuth";
 import AdmissionDialog from "@/components/shared/admission/AdmissionDialog";
 import { getAdmissionTariffTypeLabel, getAdmissionTypeDescription } from "@/constants/admission";
 import { AdmissionType } from "@/types/Admission";
 import { Tower } from "@/types/Tower";
 import { getCurrency } from "@/utils/currency";
+import { useRouter } from "next/navigation";
 
 function Admission({ tower }: { tower: Tower }) {
+    const router = useRouter();
+
     return (
         <div className="card card-compact sm:card-normal min-w-[300px] max-w-[calc(min(94vw,420px))] sm:h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]">
             <div className="card-body">
@@ -45,7 +49,12 @@ function Admission({ tower }: { tower: Tower }) {
             </div>
             <div
                 className="btn btn-xs btn-warning sm:btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
-                onClick={() => (document.getElementById("admission_modal") as HTMLDialogElement)?.showModal()}
+                onClick={async () => {
+                    if (!(await checkAuth())) {
+                        return router.push("/signin");
+                    }
+                    (document.getElementById("admission_modal") as HTMLDialogElement)?.showModal();
+                }}
             >
                 Navrhnout úpravu
             </div>

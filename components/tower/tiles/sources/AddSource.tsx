@@ -1,13 +1,17 @@
 "use client";
 
 import { createChange } from "@/actions/changes/change.create";
+import { checkAuth } from "@/actions/checkAuth";
 import { Tower } from "@/types/Tower";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const AddSource = ({ tower }: { tower: Tower }) => {
     const [open, setOpen] = useState(false);
     const [buttonText, setButtonText] = useState("Přidat");
     const [url, setUrl] = useState("");
+
+    const router = useRouter();
 
     return (
         <div className="flex gap-2 items-center">
@@ -28,6 +32,9 @@ const AddSource = ({ tower }: { tower: Tower }) => {
             <button
                 className="btn btn-sm"
                 onClick={async () => {
+                    if (!(await checkAuth())) {
+                        return router.push("/signin");
+                    }
                     if (open && url.length > 5) {
                         await createChange({
                             field: "urls",
