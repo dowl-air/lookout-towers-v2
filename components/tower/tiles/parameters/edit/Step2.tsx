@@ -57,11 +57,17 @@ const Step2 = ({
                             className="select select-primary select-bordered w-full max-w-xs mx-auto"
                             onChange={(e) => setNewValue(e.target.value)}
                         >
-                            {typeOptions?.map((option) => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
+                            {parameter === "type"
+                                ? typeOptions?.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                          {option.name}
+                                      </option>
+                                  ))
+                                : typeOptions?.map((option) => (
+                                      <option key={option} value={option}>
+                                          {option}
+                                      </option>
+                                  ))}
                         </select>
                     )}
                     {type === "array" && (
@@ -74,9 +80,9 @@ const Step2 = ({
                                             checked={newValue.includes(option)}
                                             onChange={(e) => {
                                                 if (e.target.checked) {
-                                                    setNewValue([...newValue, option]);
+                                                    setNewValue([...newValue, option].filter((val) => typeOptions?.includes(val)));
                                                 } else {
-                                                    setNewValue(newValue.filter((val) => val !== option));
+                                                    setNewValue(newValue.filter((val) => val !== option).filter((val) => typeOptions?.includes(val)));
                                                 }
                                             }}
                                             className="checkbox checkbox-primary"
