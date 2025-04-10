@@ -29,7 +29,7 @@ const ProfileIconButton = async () => {
                     </label>
                 )}
 
-                <ul tabIndex={0} className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                <ul tabIndex={0} className="menu dropdown-content p-2 shadow-sm bg-base-100 rounded-box w-52 mt-4">
                     <li>
                         <Link href={"/navstivene"}>Navštívené rozhledny</Link>
                     </li>

@@ -11,7 +11,7 @@ async function Buttons({ tower }: { tower: Tower }) {
 
     if (!session?.user) {
         return (
-            <div className="flex flex-col gap-2 lg:!mb-3">
+            <div className="flex flex-col gap-2 lg:mb-3!">
                 <form action={loginRedirect} className="flex flex-row lg:flex-col justify-center gap-2 sm:flex-wrap">
                     <button type="submit" className="btn btn-primary btn-sm sm:btn-md max-w-xs lg:min-w-64 text-sm min-[710px]:text-base">
                         Přidat do oblíbených
@@ -28,7 +28,7 @@ async function Buttons({ tower }: { tower: Tower }) {
     const visit = await getVisit(tower.id);
 
     return (
-        <div className="flex lg:flex-col gap-2 sm:flex-wrap lg:!mb-3">
+        <div className="flex lg:flex-col gap-2 sm:flex-wrap lg:mb-3!">
             <FavouriteButton isFavouriteInit={isFavourite} towerID={tower.id} />
             <VisitButton visitInit={visit} tower={tower} />
         </div>

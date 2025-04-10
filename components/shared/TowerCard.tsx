@@ -47,8 +47,8 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
                         </div>
                     ) : null}
                 </figure>
-                <div className="card-body !px-3 md:!py-2 lg:!py-3 gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block text-base sm:text-lg md:text-xl">
+                <div className="card-body px-3! md:py-2! lg:py-3! gap-0">
+                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">
                         {tower.name}
                     </h2>
                     <div className="flex flex-row items-center">

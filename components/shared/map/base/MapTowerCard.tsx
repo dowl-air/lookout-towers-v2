@@ -84,8 +84,8 @@ const MapTowerCard = ({ tower, isFavourite = false, isVisited = false }: { tower
                     ) : null}
                 </figure>
 
-                <div className="card-body !py-3 !px-3 gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block text-xl text-black">{tower.name}</h2>
+                <div className="card-body py-3! px-3! gap-0">
+                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-xl text-black">{tower.name}</h2>
                     {/* <div className="flex items-center gap-2">
                         <ThemedRating size={20} value={avg} />
                         <div className="text-base text-gray-400 mt-0.5">{count}x</div>

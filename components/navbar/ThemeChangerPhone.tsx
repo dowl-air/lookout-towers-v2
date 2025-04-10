@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 
 import { closeDrawer } from "@/utils/closeDrawer";
 
-const LIGHT_MODE = "light";
-const DARK_MODE = "night";
+const LIGHT_MODE = "autumn";
+const DARK_MODE = "abyss";
 
 function ThemeChangerPhone() {
     const { theme, setTheme } = useTheme();

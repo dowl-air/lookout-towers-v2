@@ -13,8 +13,8 @@ function ProfileVisitCard({ visit, tower, rating, index }: { visit: Visit; tower
     return (
         <div className="card card-compact w-full bg-base-100 shadow-xl">
             <div className="card-body flex-row gap-3 justify-between">
-                <div className="flex flex-row gap-5 flex-wrap flex-grow xl:flex-nowrap">
-                    <div className="flex flex-grow gap-4 flex-wrap xl:flex-nowrap">
+                <div className="flex flex-row gap-5 flex-wrap grow xl:flex-nowrap">
+                    <div className="flex grow gap-4 flex-wrap xl:flex-nowrap">
                         <TowerPhoto tower={tower} index={index} />
                         <div className="flex flex-col gap-3">
                             <Link href={`/${tower.type}/${tower.nameID}`}>

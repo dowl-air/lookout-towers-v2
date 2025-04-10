@@ -21,7 +21,7 @@ async function ProfilePage() {
         <div className="flex flex-col items-center gap-3 mt-3 max-w-[calc(min(99vw,80rem))] m-auto">
             <div className="flex w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
                 <ProfileBox score={visits.length} changes={0} favs={favouritesIds.length} ratings={ratings.length} visits={visits.length} />
-                <div className="flex h-[250px] w-[97vw] flex-grow sm:h-full">
+                <div className="flex h-[250px] w-[97vw] grow sm:h-full">
                     <ProfileMapFixed towers={towers} visits={visits} favourites={favouritesIds} />
                 </div>
             </div>

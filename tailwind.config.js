@@ -11,13 +11,9 @@ module.exports = {
     },
     plugins: [
         require("@tailwindcss/typography"),
-        require("daisyui"),
         function ({ addVariant }) {
             addVariant("child", "& > *");
             addVariant("child-hover", "& > *:hover");
         },
     ],
-    daisyui: {
-        themes: ["light", "night"],
-    },
 };

@@ -29,7 +29,7 @@ const VisitPhotos = ({ visit, tower }: { visit: Visit; tower: Tower }) => {
     return (
         <>
             <div className="flex flex-col gap-3 basis-56">
-                <p className="text-base opacity-50 flex-grow-0">Moje fotografie</p>
+                <p className="text-base opacity-50 grow-0">Moje fotografie</p>
                 <div className="flex flex-wrap gap-2">
                     {visit.photos.map((photo, idx) => (
                         <figure

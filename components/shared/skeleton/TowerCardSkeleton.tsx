@@ -2,7 +2,7 @@ const TowerCardSkeleton = () => {
     return (
         <div className="card card-compact w-full mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
             <figure className="skeleton h-60 min-[437px]:h-52 sm:h-60 md:h-72" />
-            <div className="card-body !px-1 !py-2 md:!py-3 md:!px-3 gap-0">
+            <div className="card-body px-1! py-2! md:py-3! md:px-3! gap-0">
                 <div className="skeleton w-full h-5" />
                 <div className="mt-2 flex-row flex items-center">
                     <svg viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" className="w-5">

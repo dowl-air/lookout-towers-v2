@@ -25,8 +25,8 @@ async function TowerPage({ params }: { params }) {
 
     return (
         <div className="flex flex-col px-4 w-full">
-            <div className="max-w-screen-xl w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
-                <div className="w-full prose sm:prose-xl max-w-screen-sm flex flex-col items-center lg:items-start flex-1 lg:pl-2 lg:mt-7">
+            <div className="max-w-(--breakpoint-xl) w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
+                <div className="w-full prose sm:prose-xl max-w-(--breakpoint-sm) flex flex-col items-center lg:items-start flex-1 lg:pl-2 lg:mt-7">
                     <LocationBreadcrumbs tower={tower} />
                     <h1 className="mt-2 mb-2 lg:mt-6 lg:mb-8 lg:ml-1 text-center lg:text-left">{tower.name}</h1>
                     <Legend tower={tower} />
@@ -36,7 +36,7 @@ async function TowerPage({ params }: { params }) {
                 <Carousel images={towerImages} tower={tower} />
             </div>
 
-            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full mb-6">
+            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-(--breakpoint-xl) w-full mb-6">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-center">
                     <OpeningHours tower={tower}>
                         <OpeningHoursDialog tower={tower} />

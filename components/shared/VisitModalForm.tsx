@@ -116,7 +116,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
         <dialog ref={ref} id="visit_modal" className="modal modal-bottom sm:modal-middle">
             <div className="modal-box p-10">
                 <div className="flex flex-col justify-center gap-3">
-                    <h3 className="font-bold !text-xl !m-0">Zaznamenat návštěvu rozhledny {tower.name}</h3>
+                    <h3 className="font-bold text-xl! m-0!">Zaznamenat návštěvu rozhledny {tower.name}</h3>
                     <input autoFocus={true} style={{ display: "none" }} />
 
                     <div className="flex gap-2 justify-between">
@@ -140,15 +140,15 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                         datepickerClassNames: "top-12",
                                         language: "cs",
                                         theme: {
-                                            background: "!bg-base-100",
+                                            background: "bg-base-100!",
                                             todayBtn: "",
                                             clearBtn: "",
-                                            icons: "!bg-base-200 !text-base-content",
-                                            text: "!text-base-content",
-                                            disabledText: "!text-base-content",
-                                            input: "!bg-base-100 !border-primary !text-base-content !text-base",
+                                            icons: "bg-base-200! text-base-content!",
+                                            text: "text-base-content!",
+                                            disabledText: "text-base-content!",
+                                            input: "bg-base-100! border-primary! text-base-content! text-base!",
                                             inputIcon: "",
-                                            selected: "!bg-secondary !text-primary-content",
+                                            selected: "bg-secondary! text-primary-content!",
                                         },
                                     }}
                                     onChange={(selectedDate: Date) => setVisitedDate(selectedDate)}
@@ -164,7 +164,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                     value={visitedTime}
                                     type="time"
                                     name="time"
-                                    className="bg-base-100 outline-none text-base-content text-base max-w-24 sm:max-w-32"
+                                    className="bg-base-100 outline-hidden text-base-content text-base max-w-24 sm:max-w-32"
                                     onChange={(v) => {
                                         setVisitedTime(v.target.value);
                                     }}
@@ -214,7 +214,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                             {photos.map((photo) => {
                                 return (
                                     <div key={photo.url} className="relative">
-                                        <img src={photo.url} className="object-cover w-full h-24 !m-0 rounded-lg" />
+                                        <img src={photo.url} className="object-cover w-full h-24 m-0! rounded-lg" />
                                         <button
                                             className="btn btn-error btn-circle btn-xs absolute top-0.5 right-0.5"
                                             onClick={() => {
@@ -238,7 +238,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
                                 const url = URL.createObjectURL(photo);
                                 return (
                                     <div key={url} className="relative">
-                                        <img src={url} className="object-cover w-full h-24 !m-0 rounded-lg" />
+                                        <img src={url} className="object-cover w-full h-24 m-0! rounded-lg" />
                                         <button
                                             className="btn btn-error btn-circle btn-xs absolute top-0.5 right-0.5"
                                             onClick={() => {

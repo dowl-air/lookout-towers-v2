@@ -1,6 +1,96 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@config '../tailwind.config.js';
+
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+    name: "autumn";
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(95.814% 0 0);
+    --color-base-200: oklch(89.107% 0 0);
+    --color-base-300: oklch(82.4% 0 0);
+    --color-base-content: oklch(19.162% 0 0);
+    --color-primary: #204832;
+    --color-primary-content: oklch(98% 0.018 155.826);
+    --color-secondary: oklch(61.676% 0.169 23.865);
+    --color-secondary-content: oklch(12.335% 0.033 23.865);
+    --color-accent: oklch(73.425% 0.094 60.729);
+    --color-accent-content: oklch(14.685% 0.018 60.729);
+    --color-neutral: #492706;
+    --color-neutral-content: oklch(97% 0.013 17.38);
+    --color-info: oklch(69.224% 0.097 207.284);
+    --color-info-content: oklch(13.844% 0.019 207.284);
+    --color-success: oklch(60.995% 0.08 174.616);
+    --color-success-content: oklch(12.199% 0.016 174.616);
+    --color-warning: oklch(70.081% 0.164 56.844);
+    --color-warning-content: oklch(14.016% 0.032 56.844);
+    --color-error: oklch(53.07% 0.241 24.16);
+    --color-error-content: oklch(90.614% 0.048 24.16);
+    --radius-selector: 1rem;
+    --radius-field: 0.5rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+    name: "abyss";
+    default: false;
+    prefersdark: false;
+    color-scheme: "dark";
+    --color-base-100: oklch(20% 0 0);
+    --color-base-200: oklch(15% 0 0);
+    --color-base-300: oklch(10% 0 0);
+    --color-base-content: oklch(98% 0.016 73.684);
+    --color-primary: #376547;
+    --color-primary-content: oklch(97% 0.021 166.113);
+    --color-secondary: #472405;
+    --color-secondary-content: oklch(93% 0.032 17.717);
+    --color-accent: oklch(43% 0 0);
+    --color-accent-content: oklch(98% 0 0);
+    --color-neutral: #472405;
+    --color-neutral-content: oklch(93% 0.032 17.717);
+    --color-info: oklch(74% 0.16 232.661);
+    --color-info-content: oklch(29% 0.066 243.157);
+    --color-success: oklch(79% 0.209 151.711);
+    --color-success-content: oklch(26% 0.065 152.934);
+    --color-warning: oklch(84.8% 0.1962 84.62);
+    --color-warning-content: oklch(44.8% 0.1962 84.62);
+    --color-error: oklch(65% 0.1985 24.22);
+    --color-error-content: oklch(27% 0.1985 24.22);
+    --radius-selector: 1rem;
+    --radius-field: 1rem;
+    --radius-box: 1rem;
+    --size-selector: 0.21875rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
 
 .leaflet-popup-content-wrapper {
     padding: 0 !important;

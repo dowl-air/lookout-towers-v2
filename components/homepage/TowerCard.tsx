@@ -63,8 +63,8 @@ function TowerCardClient({
                         </div>
                     ) : null}
                 </figure>
-                <div className="card-body !px-2 !py-2 md:!py-3 md:!px-3 gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden overflow-ellipsis block text-base sm:text-lg md:text-xl">
+                <div className="card-body px-2! py-2! md:py-3! md:px-3! gap-0">
+                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">
                         {tower.name}
                     </h2>
                     <div className="flex items-center gap-2">

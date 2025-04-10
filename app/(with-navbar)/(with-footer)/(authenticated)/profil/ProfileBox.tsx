@@ -39,7 +39,7 @@ async function ProfileBox({
                 <ProfileBoxLevel score={score} />
             </div>
             <div className="flex flex-col justify-around text-primary font-bold p-3">
-                <div className="stats stats-vertical shadow">
+                <div className="stats stats-vertical shadow-sm">
                     <div className="stat w-60">
                         <div className="stat-figure text-primary">
                             <svg

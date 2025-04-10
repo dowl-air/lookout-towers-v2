@@ -6,7 +6,7 @@ const VisitRating = ({ rating }: { rating: Rating }) => {
 
     return (
         <div className="flex flex-col gap-3 basis-64">
-            <p className="text-base opacity-50 flex-grow-0">Moje hodnocení</p>
+            <p className="text-base opacity-50 grow-0">Moje hodnocení</p>
             <ThemedRating size={25} value={rating.rating} />
             <p className="text-base mr-3">{rating.text}</p>
         </div>

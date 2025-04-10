@@ -12,7 +12,7 @@ async function MapPage() {
     const [towers, favouriteTowersIds, visits] = await Promise.all([getAllTowers(), getAllUserFavouritesIds(), getAllUserVisits()]);
 
     return (
-        <div className="flex justify-center items-stretch flex-grow h-[calc(100dvh-66px)] md:h-[calc(100dvh-69px)]">
+        <div className="flex justify-center items-stretch grow h-[calc(100dvh-66px)] md:h-[calc(100dvh-69px)]">
             <MainMapFixed towers={towers} visits={visits} favourites={favouriteTowersIds} />
         </div>
     );

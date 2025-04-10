@@ -68,7 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </head>
             <body className="overflow-x-hidden">
                 <SessionProvider>
-                    <ThemeProvider enableSystem={false} defaultTheme="light">
+                    <ThemeProvider enableSystem={false} defaultTheme="autumn">
                         {children}
                     </ThemeProvider>
                 </SessionProvider>

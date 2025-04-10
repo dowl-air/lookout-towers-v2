@@ -18,7 +18,7 @@ export const FavouriteButton = ({ isFavouriteInit, towerID }: { isFavouriteInit:
                 type="submit"
                 className={`btn md:min-w-64 btn-sm sm:btn-md whitespace-nowrap ${
                     optimisticState
-                        ? "btn-success [&>span]:hover:hidden hover:btn-warning hover:before:content-['Odebrat_z_oblíbených']"
+                        ? "btn-success hover:[&>span]:hidden hover:btn-warning hover:before:content-['Odebrat_z_oblíbených']"
                         : "btn-primary"
                 } max-w-xs text-sm md:w-full min-[710px]:text-base"`}
             >

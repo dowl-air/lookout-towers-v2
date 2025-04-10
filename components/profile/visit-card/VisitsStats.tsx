@@ -31,7 +31,7 @@ const VisitsStats = async ({ visits, towers }: { visits: Visit[]; towers: Tower[
     });
 
     return (
-        <div className="stats w-fit shadow flex flex-wrap mb-5">
+        <div className="stats w-fit shadow-sm flex flex-wrap mb-5">
             <div className="stat w-44">
                 <div className="stat-title">Celkem navštíveno</div>
                 <div className="stat-value">{visits.length}</div>

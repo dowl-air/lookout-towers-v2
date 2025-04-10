@@ -56,11 +56,11 @@ function HeroSearch() {
             </label>
             <div
                 tabIndex={0}
-                className={`dropdown-content !p-0 z-[10] card card-compact w-full shadow bg-base-100 text-base-content mt-1 ${
+                className={`dropdown-content !p-0 z-10 card card-compact w-full shadow bg-base-100 text-base-content mt-1 ${
                     searchResults?.length == 0 && "hidden"
                 }`}
             >
-                <div className="!px-0 !py-2 !gap-0 card-body">
+                <div className="px-0! py-2! gap-0! card-body">
                     {searchResults.map((elm) => (
                         <Link key={elm.id} href={`/${elm.type}/${elm.nameID}`} className="rounded-md px-4 py-2 hover:bg-base-200">
                             <div className="flex gap-3">

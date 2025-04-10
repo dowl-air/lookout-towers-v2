@@ -7,8 +7,8 @@ import ParameterTile from "@/components/tower/tiles/parameters/ParameterTile";
 const Loading = () => {
     return (
         <div className="flex flex-col px-4 w-full">
-            <div className="max-w-screen-xl w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
-                <div className="w-full prose sm:prose-xl max-w-screen-sm flex flex-col items-center lg:items-start flex-1 mt-7 lg:pl-2">
+            <div className="max-w-(--breakpoint-xl) w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
+                <div className="w-full prose sm:prose-xl max-w-(--breakpoint-sm) flex flex-col items-center lg:items-start flex-1 mt-7 lg:pl-2">
                     <div className="skeleton w-64 h-8 mt-5" />
                     <h1 className="skeleton w-96 h-14 mt-6 lg:mt-10 lg:mb-8 lg:ml-1"></h1>
                     <div className="skeleton w-[600px] h-9" />
@@ -45,7 +45,7 @@ const Loading = () => {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-screen-xl w-full mb-20">
+            <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-(--breakpoint-xl) w-full mb-20">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-center">
                     <OpeningHoursTile tower={null} />
                     <Admission tower={null} />

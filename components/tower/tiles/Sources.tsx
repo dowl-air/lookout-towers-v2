@@ -37,7 +37,7 @@ const Sources = ({ tower }: { tower: Tower }) => {
                                     {logo ? (
                                         <div className="avatar">
                                             <div className="w-7 rounded-full">
-                                                <img src={logo} className="!object-contain" />
+                                                <img src={logo} className="object-contain!" />
                                             </div>
                                         </div>
                                     ) : null}

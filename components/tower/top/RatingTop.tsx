@@ -14,7 +14,7 @@ const RatingTop = ({ count, average }: { count: number; average: number }) => {
             <div onClick={scroll_} className="mt-4 hidden lg:block">
                 <ThemedRating value={average} size={45} className="mt-9 cursor-pointer" />
             </div>
-            <p className="text-xs sm:text-sm !mt-0 !mb-3 pl-1 cursor-pointer" onClick={() => scroll()}>
+            <p className="text-xs sm:text-sm mt-0! mb-3! pl-1 cursor-pointer" onClick={() => scroll()}>
                 {count ? `Hodnoceno ${count}x` : "Zatím nikdo nehodnotil."}
             </p>
         </>
