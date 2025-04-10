@@ -10,6 +10,5 @@ export const sendContactMessage = async (prev: any, formData: FormData) => {
     return await sendMail({
         subject: createSubject(MailSubject.Contact, "Nová zpráva"),
         text: `Od: ${formData.get("name")} (${formData.get("email")})\n\n${message}`,
-        from: formData.get("email") as string,
     });
 };
