@@ -10,8 +10,8 @@ function Parameters({ tower }: { tower: Tower }) {
     return (
         <>
             <ParameterTile>
-                <div className="card-body items-center">
-                    <table className="table-compact my-2 table-fixed">
+                <div className="card-body items-center justify-center">
+                    <table className="mt-0 mb-0 table-compact table-fixed">
                         <tbody>
                             <tr>
                                 <td className="font-bold text-right">Materiál</td>

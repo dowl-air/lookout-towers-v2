@@ -72,12 +72,12 @@ const AdmissionDialog = ({ tower, setNewTower = undefined }: { tower: Tower; set
                     Ceny jsou pro tuto oblast ve měně <span className="font-bold">{getCurrency(tower.country).code}</span>.
                 </p>
                 <form className="mb-4">
-                    <div className="form-control w-full">
+                    <div className="form-control w-full mt-5">
                         <label className="label">
                             <span className="label-text">Typ vstupného</span>
                         </label>
                         <select
-                            className={cn("select w-full select-bordered", {
+                            className={cn("select w-full select-bordered mt-2 text-lg", {
                                 "select-warning": type === AdmissionType.PAID,
                                 "select-success": type === AdmissionType.FREE || type === AdmissionType.DONATION,
                             })}

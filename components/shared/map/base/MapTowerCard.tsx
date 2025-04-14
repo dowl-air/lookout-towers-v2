@@ -62,7 +62,7 @@ const MapTowerCard = ({ tower, isFavourite = false, isVisited = false }: { tower
                     {tower.opened ? (
                         <span
                             className={cn(
-                                "badge badge-sm lg:badge-md absolute bottom-7 lg:bottom-8 right-2 text-white font-bold bg-black bg-opacity-50 border-white",
+                                "badge badge-sm lg:badge-md absolute bottom-7.5 lg:bottom-8.5 right-1.5 text-white font-bold bg-black! bg-opacity-50 border-white",
                                 {
                                     "bottom-2 lg:bottom-2": openingHoursText === "",
                                 }
@@ -71,10 +71,9 @@ const MapTowerCard = ({ tower, isFavourite = false, isVisited = false }: { tower
                             {formatDateYear({ date: tower.opened })}
                         </span>
                     ) : null}
-
                     {openingHoursText !== "" ? (
                         <div
-                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-2 font-bold border-white", {
+                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-1.5 font-bold border-white", {
                                 "badge-success": state === true,
                                 "badge-error": state === false,
                             })}

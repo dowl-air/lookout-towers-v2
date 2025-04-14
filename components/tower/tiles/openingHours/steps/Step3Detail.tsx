@@ -36,7 +36,7 @@ const Step3Detail = ({
             <h3 className="font-bold">{getOpeningHoursTypeName(type)}</h3>
 
             {isForbidden ? (
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                     <label className="label cursor-pointer justify-start gap-3">
                         <input
                             type="radio"
@@ -76,19 +76,19 @@ const Step3Detail = ({
                 </div>
             ) : null}
 
-            <label>
+            <label className="flex flex-col gap-2">
                 <div className="label">
                     <span className="label-text">Detailní popis</span>
                 </div>
                 <textarea
-                    className="textarea w-64 sm:w-80 textarea-primary"
+                    className="textarea sm:w-80 textarea-primary w-full"
                     placeholder={isForbidden ? "Okolnosti uzavření, důvody..." : "Informace o otevření, kdy je možné navštívit..."}
                     maxLength={500}
                     value={detailText}
                     onChange={(e) => handleDetailTextChange(e.target.value)}
                 ></textarea>
             </label>
-            <label>
+            <label className="flex flex-col gap-2">
                 <div className="label">
                     <span className="label-text">URL adresa</span>
                 </div>

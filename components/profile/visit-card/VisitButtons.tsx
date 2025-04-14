@@ -4,7 +4,7 @@ import Link from "next/link";
 const VisitButtons = ({ tower }: { tower: Tower }) => {
     return (
         <div className="w-10 flex flex-col gap-3 items-end">
-            <Link href={`/${tower.type}/${tower.nameID}`} className="btn btn-circle btn-secondary">
+            <Link href={`/${tower.type}/${tower.nameID}`} className="btn btn-circle btn-primary">
                 <svg
                     width="24"
                     height="24"
@@ -19,7 +19,7 @@ const VisitButtons = ({ tower }: { tower: Tower }) => {
                     <path d="m15 5 4 4" />
                 </svg>
             </Link>
-            <button className="btn btn-circle btn-secondary">
+            <button className="btn btn-circle btn-primary">
                 <svg
                     width="24"
                     height="24"

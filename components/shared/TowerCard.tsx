@@ -27,7 +27,7 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
                     {tower.opened ? (
                         <span
                             className={cn(
-                                "badge badge-sm lg:badge-md absolute bottom-7 lg:bottom-8 right-2 text-white font-bold bg-black bg-opacity-50 border-white",
+                                "badge badge-sm lg:badge-md absolute bottom-7.5 lg:bottom-8.5 right-1.5 text-white font-bold bg-black! bg-opacity-50 border-white",
                                 {
                                     "bottom-2 lg:bottom-2": openingHoursText === "",
                                 }
@@ -38,7 +38,7 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
                     ) : null}
                     {openingHoursText !== "" ? (
                         <div
-                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-2 font-bold border-white", {
+                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-1.5 font-bold border-white", {
                                 "badge-success": state === true,
                                 "badge-error": state === false,
                             })}
@@ -48,9 +48,7 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
                     ) : null}
                 </figure>
                 <div className="card-body px-3! md:py-2! lg:py-3! gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">
-                        {tower.name}
-                    </h2>
+                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">{tower.name}</h2>
                     <div className="flex flex-row items-center">
                         <ThemedRating size={20} value={avg} />
                         <div className="flex lg:gap-1 text-md text-gray-400 ml-2">{count}x</div>

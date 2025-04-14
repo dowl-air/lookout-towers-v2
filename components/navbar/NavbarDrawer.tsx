@@ -7,10 +7,11 @@ import { auth, signIn, signOut } from "@/auth";
 
 const NavbarDrawer = async ({ children }: { children: React.ReactNode }) => {
     const session = await auth();
+
     return (
         <div className="drawer">
             <input id="side-drawer" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content min-h-screen">{children}</div>
+            <div className="drawer-content flex flex-col min-h-dvh">{children}</div>
             <div className="drawer-side z-10">
                 <label htmlFor="side-drawer" className="drawer-overlay"></label>
                 <ul tabIndex={0} className="menu p-4 w-80 h-full bg-base-200">

@@ -48,7 +48,7 @@ const Step1 = ({
                 <span className="label-text text-base">Volně přístupná</span>
             </label>
 
-            <label className="label cursor-pointer justify-start ml-8 gap-2">
+            <label className="label cursor-pointer justify-start ml-8 gap-2 mt-2">
                 <input
                     type="checkbox"
                     checked={isLockedAtNight}
@@ -72,7 +72,7 @@ const Step1 = ({
                 <span className="label-text text-base">S otevírací dobou po celý rok</span>
             </label>
 
-            <label className="label cursor-pointer justify-start gap-3">
+            <label className="label cursor-pointer justify-start gap-3 my-2">
                 <input
                     type="radio"
                     value={OpeningHoursType.SomeMonths}
@@ -136,7 +136,7 @@ const Step1 = ({
                 <span className="label-text text-base">Příležitostně otevřená</span>
             </label>
 
-            <label className="label cursor-pointer justify-start gap-3">
+            <label className="label cursor-pointer justify-start gap-3 mt-2">
                 <input
                     type="radio"
                     value={OpeningHoursType.Forbidden}

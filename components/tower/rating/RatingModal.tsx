@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 
 import ThemedRating from "@/components/shared/ThemedRating";
 import { editRating, removeRating } from "@/actions/ratings/ratings.action";
+import { getTowerType4 } from "@/constants/towerType";
 
 const RatingModal = ({ tower, initRating }) => {
     const [rating, setRating] = useState(initRating?.rating ?? 0);
@@ -27,11 +28,13 @@ const RatingModal = ({ tower, initRating }) => {
     return (
         <dialog ref={modalRef} id="tower-rating-modal" className="modal modal-bottom sm:modal-middle">
             <form method="dialog" className="modal-box">
-                <h3 className="font-bold text-lg text-base-content">Hodnocení pro {tower.name}</h3>
+                <h3 className="font-bold text-lg text-base-content">
+                    Hodnocení {getTowerType4(tower.type)} {tower.name}
+                </h3>
                 <ThemedRating readonly={false} value={rating} size={40} className="mt-3" setValue={setRating} />
-                <div className={`ml-1 ${rating > 0 ? "text-primary" : "text-error"} text-primary`}>{`Vaše hodnocení: ${rating}`}</div>
+                <div className={`ml-1 ${rating > 0 ? "" : ""}`}>{`Vaše hodnocení: ${rating}`}</div>
                 <textarea
-                    className="textarea textarea-primary text-secondary text-base w-full mt-4 min-h-[100px]"
+                    className="textarea text-base w-full mt-4 min-h-[100px]"
                     placeholder="Co se vám líbilo? Co by se dalo zlepšit? Co vás překvapilo?"
                     value={text}
                     onChange={(e) => setText(e.target.value)}

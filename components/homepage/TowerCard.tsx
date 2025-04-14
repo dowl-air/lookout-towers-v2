@@ -27,6 +27,7 @@ function TowerCardClient({
 }) {
     const [state, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
     const locationDistance = userLocation ? getDistance(userLocation, tower.gps, 100) : null;
+
     return (
         <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
             <div className="card card-compact min-[437px]:w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
@@ -43,7 +44,7 @@ function TowerCardClient({
                     {tower.opened ? (
                         <span
                             className={cn(
-                                "badge badge-sm lg:badge-md absolute bottom-7 lg:bottom-8 right-2 text-white font-bold bg-black bg-opacity-50 border-white",
+                                "badge badge-sm lg:badge-md absolute bottom-7.5 lg:bottom-8.5 right-1.5 text-white font-bold bg-black! bg-opacity-50 border-white",
                                 {
                                     "bottom-2 lg:bottom-2": openingHoursText === "",
                                 }
@@ -54,7 +55,7 @@ function TowerCardClient({
                     ) : null}
                     {openingHoursText !== "" ? (
                         <div
-                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-2 font-bold border-white", {
+                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-1.5 font-bold border-white", {
                                 "badge-success": state === true,
                                 "badge-error": state === false,
                             })}
@@ -64,9 +65,7 @@ function TowerCardClient({
                     ) : null}
                 </figure>
                 <div className="card-body px-2! py-2! md:py-3! md:px-3! gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">
-                        {tower.name}
-                    </h2>
+                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">{tower.name}</h2>
                     <div className="flex items-center gap-2">
                         <ThemedRating size={20} value={avg} />
                         <div className="text-base text-gray-400 mt-0.5">{count}x</div>
