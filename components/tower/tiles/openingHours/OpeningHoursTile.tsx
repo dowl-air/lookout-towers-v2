@@ -63,7 +63,10 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
     };
 
     return (
-        <div className="card card-compact sm:card-normal min-w-[300px] max-w-[calc(min(94vw,420px))] sm:min-h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]">
+        <div
+            tabIndex={0}
+            className="card card-compact sm:card-normal min-w-[300px] max-w-[calc(min(94vw,420px))] sm:min-h-[225px] flex-1 overflow-hidden shadow-xl group bg-[rgba(255,255,255,0.05)]"
+        >
             <div className="card-body">
                 <h2 className="card-title text-base sm:text-lg md:text-xl">Otevírací doba</h2>
                 <p

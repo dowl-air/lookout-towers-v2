@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { OpeningHours, OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
 import Step1 from "@/components/tower/tiles/openingHours/steps/Step1";
 import { cn } from "@/utils/cn";
@@ -9,12 +11,10 @@ import Step3Hours from "@/components/tower/tiles/openingHours/steps/Step3Hours";
 import Step3Detail from "@/components/tower/tiles/openingHours/steps/Step3Detail";
 import OpeningHoursTile from "@/components/tower/tiles/openingHours/OpeningHoursTile";
 import { createChange } from "@/actions/changes/change.create";
-import { sendMail } from "@/actions/mail";
-import { createSubject } from "@/utils/mail";
-import { MailSubject } from "@/types/MailSubject";
 import { checkAuth } from "@/actions/checkAuth";
-import { useRouter } from "next/navigation";
 import { Tower } from "@/types/Tower";
+import OpeningHoursButton from "@/components/tower/tiles/openingHours/OpeniongHoursButton";
+import Dialog from "@/components/shared/dialog/Dialog";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);
@@ -134,10 +134,6 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                 old_value: tower.openingHours,
                 new_value: openingHours,
             });
-            await sendMail({
-                subject: createSubject(MailSubject.Info, "Změna otevírací doby"),
-                text: `Byl vytvořen návrh otevírací doby rozhledny ${tower.name}.`,
-            });
         } catch (e) {
             setErrorText("Nepodařilo se odeslat návrh. Zkuste to prosím později.");
             return setIsSending(false);
@@ -146,144 +142,129 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
         setStep(5);
     };
 
-    const dialogRef = useRef<HTMLDialogElement>(null);
-
     return (
         <>
-            <div
-                className="btn btn-warning btn-xs sm:btn-sm hidden absolute top-[0.1rem] right-[0.5rem] group-hover:inline-flex"
-                onClick={async () => {
-                    if ((await checkAuth()) !== null) dialogRef?.current?.showModal();
-                    else return router.push("/signin");
-                }}
+            <OpeningHoursButton />
+
+            <Dialog
+                id="opening_hours_modal"
+                title={`Úprava otevírací doby ${tower.name}`}
+                actions={[
+                    {
+                        label: "Zpět",
+                        action: () => {
+                            if (
+                                step === 4 &&
+                                (openingHours.type === OpeningHoursType.Forbidden ||
+                                    openingHours.type === OpeningHoursType.WillOpen ||
+                                    openingHours.type === OpeningHoursType.Occasionally)
+                            ) {
+                                return setStep(3);
+                            }
+                            if (
+                                openingHours.type === OpeningHoursType.Forbidden ||
+                                openingHours.type === OpeningHoursType.WillOpen ||
+                                openingHours.type === OpeningHoursType.Occasionally ||
+                                (step === 4 && openingHours.type === OpeningHoursType.NonStop)
+                            ) {
+                                return setStep(1);
+                            }
+
+                            setStep((prev) => prev - 1);
+                        },
+                        customClass: `btn-primary btn-outline ${step > 1 && step <= 4 ? "inline-flex" : "hidden"}`,
+                    },
+                    {
+                        label: openingHours.type === OpeningHoursType.NonStop || step === 3 ? "Dokončit" : "Pokračovat",
+                        action: () => manageStepper(),
+                        customClass: `btn ${errorText ? "btn-disabled" : "btn-primary"} ${step >= 4 ? "hidden" : "inline-flex"}`,
+                    },
+                    {
+                        label: isSending ? <span className="loading loading-spinner loading-md"></span> : "Odeslat",
+                        action: sendNewOpeningHours,
+                        customClass: `btn btn-primary ${step === 4 ? "inline-flex" : "hidden"}`,
+                    },
+                ]}
+                onClose={() => setStep(1)}
             >
-                Navrhnout úpravu
-            </div>
+                <ul className="steps my-5 w-full">
+                    <li className="step step-primary">Stav</li>
 
-            <dialog ref={dialogRef} className="modal modal-bottom sm:modal-middle">
-                <div className="modal-box flex flex-col gap-3">
-                    <h3 className="font-bold text-lg self-center text-base-content">Úprava otevírací doby {tower.name}</h3>
-
-                    <ul className="steps mb-2 text-base-content">
-                        <li className="step step-primary">Stav</li>
-
-                        {openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths ? (
-                            <li className={cn("step", { "step-primary": step > 1 })}>Dny</li>
-                        ) : null}
-
-                        {openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths ? (
-                            <li className={cn("step", { "step-primary": step > 2 })}>Časy</li>
-                        ) : null}
-
-                        {openingHours.type === OpeningHoursType.Forbidden ||
-                        openingHours.type === OpeningHoursType.Occasionally ||
-                        openingHours.type === OpeningHoursType.WillOpen ? (
-                            <li className={cn("step", { "step-primary": step > 2 })}>Detail</li>
-                        ) : null}
-
-                        <li className={cn("step", { "step-primary": step >= 4 })}>Dokončení</li>
-                    </ul>
-
-                    {step === 1 ? (
-                        <Step1
-                            currentType={openingHours.type}
-                            monthFrom={openingHours.monthFrom ?? -1}
-                            monthTo={openingHours.monthTo ?? -1}
-                            isLockedAtNight={Boolean(openingHours.isLockedAtNight)}
-                            handleTypeChange={handleTypeChange}
-                            handleMonthFromChange={handleMonthFromChange}
-                            handleMonthToChange={handleMonthToChange}
-                            handleIsLockedAtNightChange={handleIsLockedAtNightChange}
-                            setErrorText={setErrorText}
-                        />
+                    {openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths ? (
+                        <li className={cn("step", { "step-primary": step > 1 })}>Dny</li>
                     ) : null}
 
-                    {step === 2 ? <Step2 days={openingHours.days ?? []} handleDaysChange={handleDaysChange} setErrorText={setErrorText} /> : null}
-
-                    {step === 3 && (openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths) ? (
-                        <Step3Hours
-                            dayFrom={openingHours.dayFrom ?? -1}
-                            dayTo={openingHours.dayTo ?? -1}
-                            lunchBreak={Boolean(openingHours.lunchBreak)}
-                            lunchFrom={openingHours.lunchFrom ?? -1}
-                            lunchTo={openingHours.lunchTo ?? -1}
-                            handleDayFrom={handleDayFromChange}
-                            handleDayTo={handleDayToChange}
-                            handleLunchBreak={handleLunchBreakChange}
-                            handleLunchFrom={handleLunchFromChange}
-                            handleLunchTo={handleLunchToChange}
-                            setErrorText={setErrorText}
-                        />
+                    {openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths ? (
+                        <li className={cn("step", { "step-primary": step > 2 })}>Časy</li>
                     ) : null}
 
-                    {step === 3 && openingHours.type !== OpeningHoursType.EveryMonth && openingHours.type !== OpeningHoursType.SomeMonths ? (
-                        <Step3Detail
-                            detailText={openingHours.detailText ?? ""}
-                            detailUrl={openingHours.detailUrl ?? ""}
-                            handleDetailTextChange={handleDetailTextChange}
-                            handleDetailUrlChange={handleDetailUrlChange}
-                            type={openingHours.type}
-                            forbiddenType={openingHours.forbiddenType}
-                            handleForbiddenTypeChange={handleForbiddenTypeChange}
-                            setErrorText={setErrorText}
-                        />
+                    {openingHours.type === OpeningHoursType.Forbidden ||
+                    openingHours.type === OpeningHoursType.Occasionally ||
+                    openingHours.type === OpeningHoursType.WillOpen ? (
+                        <li className={cn("step", { "step-primary": step > 2 })}>Detail</li>
                     ) : null}
 
-                    <div className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
-                        <h3 className="text-center font-bold pt-5">Takto bude vypadat nová dlaždice s otevírací dobou: </h3>
-                        <OpeningHoursTile openingHours={openingHours} />
-                    </div>
+                    <li className={cn("step", { "step-primary": step >= 4 })}>Dokončení</li>
+                </ul>
 
-                    <div className={`${step === 5 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
-                        <h3 className="text-center font-bold py-5">
-                            Děkujeme za navržení změny otevírací doby. Tato změna bude zaslána správci a po schválení bude zveřejněna.
-                        </h3>
-                    </div>
+                {step === 1 ? (
+                    <Step1
+                        currentType={openingHours.type}
+                        monthFrom={openingHours.monthFrom ?? -1}
+                        monthTo={openingHours.monthTo ?? -1}
+                        isLockedAtNight={Boolean(openingHours.isLockedAtNight)}
+                        handleTypeChange={handleTypeChange}
+                        handleMonthFromChange={handleMonthFromChange}
+                        handleMonthToChange={handleMonthToChange}
+                        handleIsLockedAtNightChange={handleIsLockedAtNightChange}
+                        setErrorText={setErrorText}
+                    />
+                ) : null}
 
-                    {errorText && <p className="text-error self-end">{errorText}</p>}
+                {step === 2 ? <Step2 days={openingHours.days ?? []} handleDaysChange={handleDaysChange} setErrorText={setErrorText} /> : null}
 
-                    <div className="modal-action">
-                        <button
-                            className="btn btn-error mr-auto"
-                            onClick={() => {
-                                dialogRef?.current?.close();
-                                setStep(1);
-                            }}
-                        >
-                            Zavřít
-                        </button>
+                {step === 3 && (openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths) ? (
+                    <Step3Hours
+                        dayFrom={openingHours.dayFrom ?? -1}
+                        dayTo={openingHours.dayTo ?? -1}
+                        lunchBreak={Boolean(openingHours.lunchBreak)}
+                        lunchFrom={openingHours.lunchFrom ?? -1}
+                        lunchTo={openingHours.lunchTo ?? -1}
+                        handleDayFrom={handleDayFromChange}
+                        handleDayTo={handleDayToChange}
+                        handleLunchBreak={handleLunchBreakChange}
+                        handleLunchFrom={handleLunchFromChange}
+                        handleLunchTo={handleLunchToChange}
+                        setErrorText={setErrorText}
+                    />
+                ) : null}
 
-                        {step > 1 && step < 4 ? (
-                            <button
-                                className="btn btn-outline btn-primary"
-                                onClick={() => {
-                                    if (
-                                        openingHours.type === OpeningHoursType.Forbidden ||
-                                        openingHours.type === OpeningHoursType.WillOpen ||
-                                        openingHours.type === OpeningHoursType.Occasionally
-                                    )
-                                        return setStep(1);
-                                    setStep((prev) => prev - 1);
-                                }}
-                            >
-                                Zpět
-                            </button>
-                        ) : null}
-                        <button
-                            className={`btn ${errorText ? "btn-disabled" : "btn-primary"} ${step >= 4 ? "hidden" : "inline-flex"}`}
-                            onClick={() => manageStepper()}
-                        >
-                            {openingHours.type === OpeningHoursType.NonStop || step === 3 ? "Dokončit" : "Pokračovat"}
-                        </button>
-                        <button className={`btn btn-primary ${step === 4 ? "inline-flex" : "hidden"}`} onClick={sendNewOpeningHours}>
-                            {isSending ? <span className="loading loading-spinner loading-md"></span> : "Odeslat"}
-                        </button>
-                    </div>
+                {step === 3 && openingHours.type !== OpeningHoursType.EveryMonth && openingHours.type !== OpeningHoursType.SomeMonths ? (
+                    <Step3Detail
+                        detailText={openingHours.detailText ?? ""}
+                        detailUrl={openingHours.detailUrl ?? ""}
+                        handleDetailTextChange={handleDetailTextChange}
+                        handleDetailUrlChange={handleDetailUrlChange}
+                        type={openingHours.type}
+                        forbiddenType={openingHours.forbiddenType}
+                        handleForbiddenTypeChange={handleForbiddenTypeChange}
+                        setErrorText={setErrorText}
+                    />
+                ) : null}
+
+                <div className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
+                    <h3 className="text-center font-bold pt-5">Takto bude vypadat nová dlaždice s otevírací dobou: </h3>
+                    <OpeningHoursTile openingHours={openingHours} />
                 </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button onClick={() => setStep(1)}>zavřít</button>
-                </form>
-            </dialog>
+
+                <div className={`${step === 5 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
+                    <h3 className="text-center font-bold py-5">
+                        Děkujeme za navržení změny otevírací doby. Tato změna bude zaslána správci a po schválení bude zveřejněna.
+                    </h3>
+                </div>
+
+                {errorText && <p className="text-error self-end mt-5">{errorText}</p>}
+            </Dialog>
         </>
     );
 }
