@@ -1,15 +1,12 @@
 "use client";
 
 import { createChange } from "@/actions/changes/change.create";
-import { sendMail } from "@/actions/mail";
 import Step1 from "@/components/tower/tiles/parameters/edit/Step1";
 import Step2 from "@/components/tower/tiles/parameters/edit/Step2";
 import Step3 from "@/components/tower/tiles/parameters/edit/Step3";
-import { MailSubject } from "@/types/MailSubject";
 import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { editableParameters } from "@/utils/editableParameters";
-import { createSubject } from "@/utils/mail";
 import { useEffect, useState } from "react";
 
 const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
@@ -115,10 +112,6 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                                             type: editableParameters.find((p) => p.name === parameter)?.type || "text",
                                             new_value: newValue,
                                             old_value: tower[parameter as keyof Tower],
-                                        });
-                                        await sendMail({
-                                            subject: createSubject(MailSubject.Info, "Návrh změny parametru"),
-                                            text: `Byl vytvořen návrh změny parametru ${parameter} rozhledny ${tower.name} na hodnotu ${newValue}.`,
                                         });
                                     } catch (e) {
                                         setError(e.message);
