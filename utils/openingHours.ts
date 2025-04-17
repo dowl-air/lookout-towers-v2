@@ -20,6 +20,30 @@ export const getOpeningHoursTypeName = (type: OpeningHoursType): string => {
     }
 };
 
+const isCurentMonthOpen = (openingHours: OpeningHours): boolean => {
+    const { monthFrom, monthTo } = openingHours;
+    const currentMonth = new Date().getMonth();
+    return currentMonth >= monthFrom && currentMonth <= monthTo;
+};
+
+const isCurrentDayOpen = (openingHours: OpeningHours): boolean => {
+    const { days } = openingHours;
+    const currentDay = new Date().getDay();
+    return days.includes(currentDay);
+};
+
+const isCurrentHourOpen = (openingHours: OpeningHours): boolean => {
+    const { dayFrom, dayTo } = openingHours;
+    const currentHour = new Date().getHours();
+    return currentHour >= dayFrom && currentHour <= dayTo;
+};
+
+const getNextOpenDay = (openingHours: OpeningHours): number => {
+    const { days } = openingHours;
+    const currentDay = new Date().getDay();
+    return days.find((day) => day > currentDay) || days[0];
+};
+
 export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [boolean, string] => {
     const { type, monthFrom, monthTo, isLockedAtNight, forbiddenType, dayFrom, dayTo, days } = openingHours;
     switch (type) {
@@ -40,41 +64,44 @@ export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [b
                 case OpeningHoursForbiddenType.Gone:
                     return [false, "Zaniklá"];
                 case OpeningHoursForbiddenType.Banned:
-                    return [false, "Nepřístupná"];
-                default:
                     return [false, "Uzavřeno"];
+                default:
+                    return [false, "Nepřístupná"];
             }
         case OpeningHoursType.WillOpen:
             return [false, "Před zpřístupněním"];
         case OpeningHoursType.SomeMonths:
-            if (new Date().getMonth() + 1 >= monthFrom && new Date().getMonth() + 1 <= monthTo) {
-                if (days.includes(new Date().getDay())) {
-                    if (dayFrom <= new Date().getHours() && dayTo >= new Date().getHours()) {
+            if (isCurentMonthOpen(openingHours)) {
+                if (isCurrentDayOpen(openingHours)) {
+                    // today is open
+                    if (isCurrentHourOpen(openingHours)) {
                         return [true, `Otevřeno do ${dayTo}h`];
                     } else {
-                        const currentDay = new Date().getDay();
-                        const nextDay = days.find((day) => day > currentDay) || days[0];
+                        const nextDay = getNextOpenDay(openingHours);
                         return [false, `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${dayFrom}h`];
                     }
                 } else {
-                    const currentDay = new Date().getDay();
-                    const nextDay = days.find((day) => day > currentDay) || days[0];
-                    return [false, `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${dayFrom}h`];
-                }
-            }
-            return [false, `Otevřeno od ${MONTHS_CZECH_4[monthFrom].toLocaleLowerCase()}`];
-        case OpeningHoursType.EveryMonth:
-            if (days.includes(new Date().getDay())) {
-                if (dayFrom <= new Date().getHours() && dayTo >= new Date().getHours()) {
-                    return [true, `Otevřeno do ${dayTo}h`];
-                } else {
-                    const currentDay = new Date().getDay();
-                    const nextDay = days.find((day) => day > currentDay) || days[0];
+                    // this month is open, but not today
+                    const nextDay = getNextOpenDay(openingHours);
                     return [false, `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${dayFrom}h`];
                 }
             } else {
-                const currentDay = new Date().getDay();
-                const nextDay = days.find((day) => day > currentDay) || days[0];
+                // from which month is it open
+                return [false, `Otevřeno od ${MONTHS_CZECH_4[monthFrom].toLocaleLowerCase()}`];
+            }
+
+        case OpeningHoursType.EveryMonth:
+            if (isCurrentDayOpen(openingHours)) {
+                // today is open
+                if (isCurrentHourOpen(openingHours)) {
+                    return [true, `Otevřeno do ${dayTo}h`];
+                } else {
+                    const nextDay = getNextOpenDay(openingHours);
+                    return [false, `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${dayFrom}h`];
+                }
+            } else {
+                // this month is open, but not today
+                const nextDay = getNextOpenDay(openingHours);
                 return [false, `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${dayFrom}h`];
             }
         default:
