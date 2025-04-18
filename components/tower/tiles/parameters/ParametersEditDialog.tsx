@@ -56,7 +56,7 @@ const ParametersEditDialog = ({ tower }: { tower: Tower }) => {
                     {step === 3 && (
                         <div className="text-center">
                             <p className="text-lg font-bold mb-3">Děkujeme za návrh úpravy parametru.</p>
-                            <p>Po schválení administrátorem bude změna provedena. Stav změny můžete sledovat na svém profilu.</p>
+                            <p>Po schválení administrátorem bude změna provedena. Stav změny můžete sledovat níže zde na stránce rozhledny.</p>
                         </div>
                     )}
                     {error && <p className="text-error text-sm text-end">{error}</p>}

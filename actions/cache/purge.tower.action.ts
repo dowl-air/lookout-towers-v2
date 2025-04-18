@@ -25,3 +25,24 @@ export const revalidateTower = async (formData: FormData) => {
 
     return tower.id;
 };
+
+export const revalidateTowerByIDOrNameID = async (tower_id: string) => {
+    if (!tower_id) return null;
+    let tower = await getTowerByID(tower_id);
+    if (!tower) {
+        tower = await getTowerObjectByNameID(tower_id);
+        if (!tower) return "Tower not found";
+    }
+
+    revalidateTag(CacheTag.Towers);
+    revalidateTag(CacheTag.TowersCount);
+    revalidateTag(CacheTag.LastChangeDate);
+    revalidateTag(getCacheTagSpecific(CacheTag.Tower, tower.id));
+    revalidateTag(getCacheTagSpecific(CacheTag.Tower, tower.nameID));
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerGallery, tower.id));
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, tower.id));
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerVisitsCount, tower.id));
+    revalidateTag(getCacheTagSpecific(CacheTag.TowerPhotos, tower.id));
+
+    return tower.id;
+};
