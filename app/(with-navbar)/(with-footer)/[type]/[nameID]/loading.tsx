@@ -10,9 +10,9 @@ const Loading = () => {
             <div className="max-w-(--breakpoint-xl) w-full flex flex-col items-center lg:items-start lg:justify-between lg:flex-row mx-auto">
                 <div className="w-full prose sm:prose-xl max-w-(--breakpoint-sm) flex flex-col items-center lg:items-start flex-1 mt-7 lg:pl-2">
                     <div className="skeleton w-64 h-8 mt-5" />
-                    <h1 className="skeleton w-96 h-14 mt-6 lg:mt-10 lg:mb-8 lg:ml-1"></h1>
-                    <div className="skeleton w-[600px] h-9" />
-                    <div className="skeleton w-[400px] h-9 mt-5" />
+                    <h1 className="skeleton w-96 h-14 mt-6 sm:mt-10 lg:mb-8 max-w-full"></h1>
+                    <div className="skeleton w-[600px] h-9 max-w-full" />
+                    <div className="skeleton w-[400px] h-9 mt-5 max-w-full" />
                     <div className="skeleton w-56 h-16 my-10" />
                     <div className="flex flex-col gap-2">
                         <form action={loginRedirect} className="flex flex-row lg:flex-col justify-center gap-2 flex-wrap">
@@ -39,7 +39,7 @@ const Loading = () => {
                         }}
                     >
                         {[...Array(5)].map((image, idx) => {
-                            return <div key={idx} className="skeleton w-28 h-28" />;
+                            return <div key={idx} className="skeleton w-28 h-[104px]" />;
                         })}
                     </div>
                 </div>

@@ -10,7 +10,7 @@ function capitalizeFirstLetter(string: string): string {
 }
 
 const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; openingHours?: OpeningHours; children?: ReactNode }) => {
-    const OH: OpeningHours = tower ? tower.openingHours : openingHours || { type: 0 };
+    const OH: OpeningHours = tower ? tower.openingHours : openingHours;
 
     const isErrorColor = (): boolean => [OpeningHoursType.Forbidden, OpeningHoursType.Occasionally, OpeningHoursType.Unknown].includes(OH.type);
     const isSuccessfulColor = (): boolean => [OpeningHoursType.NonStop, OpeningHoursType.WillOpen].includes(OH.type);
@@ -69,38 +69,46 @@ const OpeningHoursTile = ({ tower, openingHours, children }: { tower?: Tower; op
         >
             <div className="card-body">
                 <h2 className="card-title text-base sm:text-lg md:text-xl">Otevírací doba</h2>
-                <p
-                    className={cn("text-base md:text-lg font-bold", {
-                        "text-error": isErrorColor(),
-                        "text-success": isSuccessfulColor(),
-                    })}
-                >
-                    {getHeading(tower?.type ?? "rozhledna")}
-                    {OH.type === OpeningHoursType.SomeMonths ? (
-                        <>
-                            <span className="whitespace-nowrap underline">{`${MONTHS_CZECH.at(OH.monthFrom)} - ${MONTHS_CZECH.at(OH.monthTo)}`}</span>
-                            <span>.</span>
-                        </>
-                    ) : null}
-                </p>
+                {OH ? (
+                    <>
+                        <p
+                            className={cn("text-base md:text-lg font-bold", {
+                                "text-error": isErrorColor(),
+                                "text-success": isSuccessfulColor(),
+                            })}
+                        >
+                            {getHeading(tower?.type ?? "rozhledna")}
+                            {OH.type === OpeningHoursType.SomeMonths ? (
+                                <>
+                                    <span className="whitespace-nowrap underline">{`${MONTHS_CZECH.at(OH.monthFrom)} - ${MONTHS_CZECH.at(
+                                        OH.monthTo
+                                    )}`}</span>
+                                    <span>.</span>
+                                </>
+                            ) : null}
+                        </p>
 
-                {OH.isLockedAtNight ? <p className="text-base md:text-lg">Zamčeno v noci</p> : null}
+                        {OH.isLockedAtNight ? <p className="text-base md:text-lg">Zamčeno v noci</p> : null}
 
-                {OH.type === OpeningHoursType.SomeMonths || OH.type === OpeningHoursType.EveryMonth ? (
-                    <p className="text-base md:text-lg">
-                        {getDaysString()} {getTimeString()}
-                        {getLunchString()}
-                    </p>
-                ) : null}
+                        {OH.type === OpeningHoursType.SomeMonths || OH.type === OpeningHoursType.EveryMonth ? (
+                            <p className="text-base md:text-lg">
+                                {getDaysString()} {getTimeString()}
+                                {getLunchString()}
+                            </p>
+                        ) : null}
 
-                {OH.detailText ? <p className="text-sm">{OH.detailText}</p> : null}
-                {(OH as any).note ? <p className="text-sm">{(OH as any).note}</p> : null}
+                        {OH.detailText ? <p className="text-sm">{OH.detailText}</p> : null}
+                        {(OH as any).note ? <p className="text-sm">{(OH as any).note}</p> : null}
 
-                {OH.detailUrl ? (
-                    <Link href={OH.detailUrl} className="link text-sm" target="_blank">
-                        Více informací
-                    </Link>
-                ) : null}
+                        {OH.detailUrl ? (
+                            <Link href={OH.detailUrl} className="link text-sm" target="_blank">
+                                Více informací
+                            </Link>
+                        ) : null}
+                    </>
+                ) : (
+                    <span className="skeleton h-6 w-full mt-3" />
+                )}
             </div>
             {children}
         </div>
