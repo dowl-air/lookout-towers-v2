@@ -131,7 +131,7 @@ async function AboutMe() {
                     </a>
                 </div>
             </div>
-            <div className="flex-1 max-w-[500px] h-full flex flex-col items-center sm:items-start mb-10">
+            <div className="flex-1 max-w-[500px] flex flex-col items-center sm:items-start mb-10">
                 <h2 className="text-3xl md:text-4xl mt-5">O tomto webu</h2>
                 <article className="mt-4 md:mt-5 text-center sm:text-left">
                     Rozhlednový svět je komunitní databáze vyhlídkových věží, pozorovatelen a dalších objektů určených k objevování krásných výhledů.
