@@ -1,9 +1,11 @@
 {
     "depcheck": {
         "ignoreMatches": [
+            "@tailwindcss/postcss",
             "postcss",
             "@types/node",
-            "autoprefixer"
+            "autoprefixer",
+            "daisyui"
         ]
     }
 }
