@@ -34,7 +34,7 @@ export type Tower = {
     owner?: string;
     province?: string;
     stairs: number;
-    tags?: Record<TowerTag, boolean>;
+    tags?: TowerTag[];
     type: TowerTypeEnum;
     urls?: [string];
     viewText?: string; //todo merge to description

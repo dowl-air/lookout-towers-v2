@@ -16,12 +16,17 @@ import { notFound } from "next/navigation";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
 import TowerMapFixed from "@/components/shared/map/TowerMapFixed";
 import Sources from "@/components/tower/tiles/Sources";
+import { listTowerPhotos } from "@/actions/photos/towerPhotos.list";
 
 async function TowerPage({ params }: { params }) {
     const { nameID } = await params;
     const tower = await getTowerObjectByNameID(nameID);
     if (!tower) notFound();
-    const [towerImages, { count, avg }] = await Promise.all([getUrlsTowerGallery(tower.id), getTowerRatingAndCount(tower.id)]);
+    const [towerImages, towerUserImages, { count, avg }] = await Promise.all([
+        getUrlsTowerGallery(tower.id),
+        listTowerPhotos(tower.id),
+        getTowerRatingAndCount(tower.id),
+    ]);
 
     return (
         <div className="flex flex-col px-4 w-full">
@@ -33,7 +38,7 @@ async function TowerPage({ params }: { params }) {
                     <RatingTop count={count} average={avg} />
                     <Buttons tower={tower} />
                 </div>
-                <Carousel images={towerImages} tower={tower} />
+                <Carousel images={towerImages} userImages={towerUserImages} tower={tower} />
             </div>
 
             <div className="flex flex-col gap-6 items-center justify-center self-center mx-1 sm:mx-3 flex-1 max-w-(--breakpoint-xl) w-full mb-6">

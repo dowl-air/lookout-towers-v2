@@ -30,3 +30,14 @@ export const changeTower = async (changeID: string, tower: Tower) => {
     revalidateTag(getCacheTagSpecific(CacheTag.Tower, change.tower_id));
     revalidateTag(getCacheTagSpecific(CacheTag.Tower, tower.nameID));
 };
+
+export const changeTowerMainPhoto = async (towerID: string, mainPhotoUrl: string) => {
+    const towerDoc = await doc(db, "towers", towerID);
+    await updateDoc(towerDoc, {
+        mainPhotoUrl,
+        modified: serverTimestamp(),
+    });
+    revalidateTag(CacheTag.Towers);
+    revalidateTag(CacheTag.LastChangeDate);
+    revalidateTag(getCacheTagSpecific(CacheTag.Tower, towerID));
+};

@@ -1,11 +1,15 @@
 "use client";
 
+import { uploadPhoto } from "@/actions/photos/upload.action";
+import { addTower } from "@/actions/towers/tower.add";
+import { changeTowerMainPhoto } from "@/actions/towers/tower.change";
 import PhotosUpload from "@/components/add-tower/PhotosUpload";
 import TagCheckbox from "@/components/add-tower/TagCheckbox";
 import COUNTRIES, { CountryCode } from "@/constants/countries";
 import { MATERIALS } from "@/constants/materials";
 import { TowerTypeEnum, towerTypes } from "@/constants/towerType";
 import { useNewTowerContext } from "@/context/NewTower";
+import { Tower } from "@/types/Tower";
 import { TowerTag } from "@/types/TowerTags";
 import { cn } from "@/utils/cn";
 import { getAllCountiesFromCountryProvince, getAllCountryProvinces } from "@/utils/geography";
@@ -15,8 +19,9 @@ import { useState } from "react";
 const MapPicker = dynamic(() => import("@/components/add-tower/MapPicker"), { ssr: false });
 
 const AddTowerPage = () => {
-    const { tower, updateTower } = useNewTowerContext();
-    const [photos, setPhotos] = useState<(File | URL)[]>([]);
+    const { tower, updateTower, reset } = useNewTowerContext();
+    const [photos, setPhotos] = useState<(File | string)[]>([]);
+    const [mainIndex, setMainIndex] = useState<number>(0);
 
     const [clipboardError, setClipboardError] = useState<string>("");
 
@@ -40,7 +45,7 @@ const AddTowerPage = () => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!tower.name || !tower.type || !tower.country || !tower.gps) {
             alert("Vyplňte prosím všechna povinná pole.");
             return;
@@ -69,6 +74,22 @@ const AddTowerPage = () => {
             alert("Zadejte prosím platné datum zpřístupnění.");
             return;
         }
+
+        const newID = await addTower(tower as Tower);
+
+        console.log("New tower ID:", newID);
+
+        const uploadPromises = photos.map((photo, index) => uploadPhoto(photo, newID, true, index === mainIndex));
+        const publicURLs = await Promise.all(uploadPromises);
+
+        console.log("Uploaded photos:", publicURLs);
+
+        await changeTowerMainPhoto(newID, publicURLs[mainIndex]);
+
+        alert("Rozhledna byla úspěšně přidána.");
+        // Optionally, redirect or reset the form
+        reset();
+        setPhotos([]);
     };
 
     return (
@@ -86,7 +107,7 @@ const AddTowerPage = () => {
             <h2 className="text-lg mt-6">Základní údaje</h2>
 
             <label
-                className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                     "input-primary": tower.name,
                 })}
             >
@@ -204,7 +225,7 @@ const AddTowerPage = () => {
                         <div className="card-title">Parametry</div>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-2 w-full", {
                                 "input-primary font-bold": tower.height > -1,
                             })}
                         >
@@ -218,7 +239,7 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                                 "input-primary font-bold": tower.viewHeight > -1,
                             })}
                         >
@@ -232,7 +253,7 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                                 "input-primary font-bold": tower.observationDecksCount > -1,
                             })}
                         >
@@ -246,7 +267,7 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                                 "input-primary font-bold": tower.elevation > -500,
                             })}
                         >
@@ -260,7 +281,7 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                                 "input-primary font-bold": tower.stairs > -1,
                             })}
                         >
@@ -274,7 +295,7 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                                 "input-primary font-bold": tower.opened,
                             })}
                         >
@@ -283,12 +304,12 @@ const AddTowerPage = () => {
                                 className="w-full"
                                 type="date"
                                 value={tower.opened ? new Date(tower.opened).toISOString().split("T")[0] : ""}
-                                onChange={(e) => updateTower({ opened: e.target.value })}
+                                onChange={(e) => updateTower({ opened: new Date(e.target.value) })}
                             />
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4", {
+                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
                                 "input-primary font-bold": tower.owner,
                             })}
                         >
@@ -303,7 +324,7 @@ const AddTowerPage = () => {
 
                         <div>
                             <div className="card-title mt-4">Materiál</div>
-                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-1">
+                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
                                 {MATERIALS.map((m) => (
                                     <label className="label cursor-pointer justify-start gap-1" key={m}>
                                         <input
@@ -329,8 +350,8 @@ const AddTowerPage = () => {
                     <div className="card-body">
                         <div className="card-title">Podrobnosti</div>
 
-                        <div>
-                            <div className="grid grid-cols-2">
+                        <div className="mt-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasTelescope} updateTower={updateTower} text="Dalekohled k dispozici" />
                                 <TagCheckbox
                                     tower={tower}
@@ -347,7 +368,7 @@ const AddTowerPage = () => {
                             </div>
 
                             <div className="divider">Dostupnost</div>
-                            <div className="grid grid-cols-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 <TagCheckbox tower={tower} towerTag={TowerTag.NeedToBorrowKey} updateTower={updateTower} text="Nutné zapůjčit klíč" />
                                 <TagCheckbox
                                     tower={tower}
@@ -372,7 +393,7 @@ const AddTowerPage = () => {
 
                             <div className="divider">Zázemí</div>
 
-                            <div className="grid grid-cols-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasToilet} updateTower={updateTower} text="Toaleta" />
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasSnacks} updateTower={updateTower} text="Drobné občerstvení" />
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasRestaurant} updateTower={updateTower} text="Restaurace" />
@@ -395,7 +416,7 @@ const AddTowerPage = () => {
 
                             <div className="divider">Bezpečnost</div>
 
-                            <div className="grid grid-cols-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasSlipperySurface} updateTower={updateTower} text="Kluzké povrchy" />
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasSteepStairs} updateTower={updateTower} text="Příkré schody" />
                                 <TagCheckbox tower={tower} towerTag={TowerTag.HasSmallRailings} updateTower={updateTower} text="Nízké zábradlí" />
@@ -414,7 +435,7 @@ const AddTowerPage = () => {
                             ve které by rozhledna měla být vidět ideálně celá a měla by být umístěna uprostřed fotografie.
                         </p>
                         <p className="mb-2">Je potřeba nahrát alespoň jednu fotografii.</p>
-                        <PhotosUpload photos={photos} setPhotos={setPhotos} />
+                        <PhotosUpload photos={photos} setPhotos={setPhotos} setMainIndex={setMainIndex} mainIndex={mainIndex} />
                     </div>
                 </div>
             </div>

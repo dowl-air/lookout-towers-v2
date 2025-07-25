@@ -17,15 +17,16 @@ const TagCheckbox = ({
             <input
                 type="checkbox"
                 className="checkbox"
-                checked={!!tower.tags?.[towerTag]}
-                onChange={() =>
-                    updateTower({
-                        tags: {
-                            ...tower.tags,
-                            [towerTag]: !tower.tags?.[towerTag],
-                        },
-                    })
-                }
+                checked={tower.tags?.includes(towerTag) ?? false}
+                onChange={() => {
+                    const currentTags = tower.tags || [];
+                    const isChecked = currentTags.includes(towerTag);
+                    const newTags = isChecked
+                        ? currentTags.filter(tag => tag !== towerTag)
+                        : [...currentTags, towerTag];
+                    
+                    updateTower({ tags: newTags });
+                }}
             />
             <span className="label-text">{text}</span>
         </label>

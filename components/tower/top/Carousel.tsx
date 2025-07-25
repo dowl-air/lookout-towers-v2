@@ -12,8 +12,9 @@ import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Tower } from "@/types/Tower";
+import { Photo } from "@/types/Photo";
 
-const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
+const Carousel = ({ images, userImages, tower }: { images: string[]; userImages: Photo[]; tower: Tower }) => {
     const [loadingMain, setLoadingMain] = useState<boolean>(true);
     const imgRef = useRef<HTMLImageElement>(null);
     const [open, setOpen] = useState(false);
@@ -33,6 +34,17 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
         setOpen(true);
     };
 
+    const mainPhoto = userImages.find((image) => image.isMain) || images[0];
+
+    const allImagesWithMainFirst: Photo[] = [
+        ...images.map((image) => ({ url: image, created: new Date(), id: "", user_id: "", tower_id: tower.id, isPublic: true, isMain: false })),
+        ...userImages,
+    ].sort((a, b) => {
+        if (a.isMain === b.isMain) return 0;
+        if (a.isMain) return -1;
+        return 1;
+    });
+
     return (
         <>
             <div className="flex flex-col sm:mb-7 w-full md:w-[560px] xl:w-[600px]">
@@ -41,7 +53,7 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
                         <Image
                             priority
                             alt={tower.name}
-                            src={images[0]}
+                            src={allImagesWithMainFirst[0].url}
                             className={cn(
                                 "object-contain rounded-xl h-56 sm:h-80 md:h-96 w-auto cursor-pointer hover:scale-[1.015] transform transition-transform",
                                 {
@@ -69,11 +81,11 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
                         maskImage: "linear-gradient(to right, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 96%)",
                     }}
                 >
-                    {images.map((image, idx) => {
+                    {allImagesWithMainFirst.map((image, idx) => {
                         return (
                             <Image
                                 key={idx}
-                                src={image}
+                                src={image.url}
                                 alt={tower.name}
                                 height={112}
                                 width={112}
@@ -88,9 +100,9 @@ const Carousel = ({ images, tower }: { images: string[]; tower: Tower }) => {
             <Lightbox
                 open={open}
                 close={() => setOpen(false)}
-                slides={images.map((image) => {
+                slides={allImagesWithMainFirst.map((image) => {
                     return {
-                        src: image,
+                        src: image.url,
                         caption: tower.name,
                     };
                 })}

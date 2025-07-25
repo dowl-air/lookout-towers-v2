@@ -4,8 +4,10 @@ import { checkAuth } from "@/actions/checkAuth";
 import { getTowerObjectByNameID } from "@/actions/towers/towers.action";
 import { OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
-import { db } from "@/utils/firebase";
-import { addDoc, collection, serverTimestamp, updateDoc } from "firebase/firestore";
+import { CacheTag } from "@/utils/cacheTags";
+import { db, firebase } from "@/utils/firebase";
+import { addDoc, collection, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
+import { revalidateTag } from "next/cache";
 
 export const addTower = async (tower: Tower) => {
     const user = await checkAuth();
@@ -27,12 +29,27 @@ export const addTower = async (tower: Tower) => {
         };
     }
 
+    tower.gps = new GeoPoint(tower.gps.latitude, tower.gps.longitude);
+
     const newTowerRef = await addDoc(collection(db, "towers"), tower);
-    await updateDoc(newTowerRef, {
+
+    const updateObject = {
         id: newTowerRef.id,
         nameID,
         created: serverTimestamp(),
         modified: serverTimestamp(),
         random: Math.random(),
-    });
+    };
+
+    if (!tower.opened) updateObject["opened"] = serverTimestamp();
+    if (!tower.stairs) updateObject["stairs"] = 0;
+    if (!tower.elevation) updateObject["elevation"] = 0;
+    if (!tower.height) updateObject["height"] = 0;
+
+    await updateDoc(newTowerRef, updateObject);
+
+    revalidateTag(CacheTag.Towers);
+    revalidateTag(CacheTag.LastChangeDate);
+
+    return newTowerRef.id;
 };
