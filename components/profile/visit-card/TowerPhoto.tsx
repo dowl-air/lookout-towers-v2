@@ -13,7 +13,6 @@ const TowerPhoto = ({ tower, index }: { tower: Tower; index: number }) => {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                         className="object-cover object-top"
                         fill
-                        unoptimized
                     />
                     <span className="absolute top-0 left-0 text-white bg-black bg-opacity-50 p-2 rounded-br-lg text-lg">#{index}</span>
                 </figure>

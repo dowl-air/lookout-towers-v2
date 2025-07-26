@@ -18,7 +18,6 @@ const MapTowerCard = ({ tower, isFavourite = false, isVisited = false }: { tower
                         priority={false}
                         className="object-cover object-top block"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                        unoptimized
                     />
 
                     <div className="absolute top-0 left-3 flex gap-2">

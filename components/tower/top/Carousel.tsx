@@ -65,7 +65,6 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
                             height={600}
                             width={600}
                             onClick={() => handleLightboxOpen(0)}
-                            unoptimized
                         />
                         <span
                             className={cn("skeleton w-full h-full rounded-xl mx-20", {

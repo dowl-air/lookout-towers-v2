@@ -42,7 +42,6 @@ const VisitPhotos = ({ visit, tower }: { visit: Visit; tower: Tower }) => {
                                 src={photo.url}
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                                 className="object-cover"
-                                unoptimized
                                 fill
                             />
                         </figure>
