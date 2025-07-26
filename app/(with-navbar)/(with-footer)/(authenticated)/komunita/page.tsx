@@ -36,7 +36,7 @@ const ComunityPage = async () => {
                                         <div className="flex items-center gap-3">
                                             <div className="avatar">
                                                 <div className="mask mask-squircle w-12 h-12">
-                                                    <Image src={member.image} alt={member.name} width={48} height={48} />
+                                                    <Image src={member.image} alt={member.name} width={48} height={48} unoptimized />
                                                 </div>
                                             </div>
                                             <div>
@@ -49,7 +49,10 @@ const ComunityPage = async () => {
                                     <td>
                                         <div className="flex flex-wrap gap-1">
                                             {member.id === "iMKZNJV5PE4XQjnKmZut" && <div className="badge bg-red-600 text-white">Autor</div>}
-                                            <div className="badge" style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}>
+                                            <div
+                                                className="badge whitespace-nowrap"
+                                                style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}
+                                            >
                                                 {name}
                                             </div>
                                         </div>
