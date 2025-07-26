@@ -1,31 +1,31 @@
 const COUNTRIES = [
     {
-        name: "Česko",
+        name: "Czechia",
         code: "CZ",
         emoji: "🇨🇿",
     },
     {
-        name: "Slovensko",
+        name: "Slovakia",
         code: "SK",
         emoji: "🇸🇰",
     },
     {
-        name: "Polsko",
+        name: "Poland",
         code: "PL",
         emoji: "🇵🇱",
     },
     {
-        name: "Maďarsko",
+        name: "Hungary",
         code: "HU",
         emoji: "🇭🇺",
     },
     {
-        name: "Rakousko",
+        name: "Austria",
         code: "AT",
         emoji: "🇦🇹",
     },
     {
-        name: "Německo",
+        name: "Germany",
         code: "DE",
         emoji: "🇩🇪",
     },

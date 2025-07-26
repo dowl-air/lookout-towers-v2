@@ -51,6 +51,7 @@ const Filter = () => {
             params.set("province", provinceCode);
             params.delete("page");
             params.delete("county");
+            params.set("country", defaultCountry);
         } else {
             params.delete("province");
             params.delete("county");
@@ -77,6 +78,7 @@ const Filter = () => {
             params.set("county", county);
             params.set("province", getProvinceByCounty(defaultCountry, county).code);
             params.delete("page");
+            params.set("country", defaultCountry);
         } else {
             params.delete("county");
         }
@@ -188,7 +190,7 @@ const Filter = () => {
                                 onChange={(e) => handleProvince(e.target.value)}
                             >
                                 <option value="ALL">Všechny kraje</option>
-                                {getAllCountryProvinces("CZ").map((item, idx) => (
+                                {getAllCountryProvinces(defaultCountry).map((item, idx) => (
                                     <option key={idx} value={item.code}>
                                         {item.name}
                                     </option>

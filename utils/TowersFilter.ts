@@ -1,19 +1,33 @@
 import { CountryCode } from "@/constants/countries";
 import { OpeningHoursForbiddenType } from "@/types/OpeningHours";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
-import { getProvinceByCode } from "@/utils/geography";
+import { getProvinceByCode, isValidCountryCode } from "@/utils/geography";
 
 export class TowersFilter {
     private filters: string[] = [];
 
     constructor(searchParams: TowersSearchParams) {
-        const countryCode: CountryCode = searchParams?.country ?? "CZ";
+        const countryCode: CountryCode = searchParams?.country;
         const provinceCode = searchParams?.province || "";
         const county = searchParams?.county || "";
+
         const showFilter = searchParams?.showFilter || "";
 
-        if (provinceCode) this.addFilter(`province:=${getProvinceByCode(countryCode, provinceCode).name}`);
-        if (county) this.addFilter(`county:=${county}`);
+        if (isValidCountryCode(countryCode)) {
+            if (countryCode === "CZ") {
+                this.addFilter(`country:=Czechia`);
+            } else {
+                this.addFilter(`country:=${countryCode}`);
+            }
+
+            if (provinceCode && countryCode === "CZ") {
+                this.addFilter(`province:=${getProvinceByCode(countryCode, provinceCode).name}`);
+            } else if (provinceCode && countryCode) {
+                this.addFilter(`province:=${getProvinceByCode(countryCode, provinceCode).code}`);
+            }
+
+            if (county && provinceCode && countryCode) this.addFilter(`county:=${county}`);
+        }
 
         switch (showFilter) {
             case "showOnlyGone":
