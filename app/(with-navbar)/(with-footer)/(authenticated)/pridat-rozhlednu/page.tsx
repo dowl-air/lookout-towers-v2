@@ -1,5 +1,6 @@
 "use client";
 
+import { revalidateTowerByIDOrNameID } from "@/actions/cache/purge.tower.action";
 import { uploadPhoto } from "@/actions/photos/upload.action";
 import { addTower } from "@/actions/towers/tower.add";
 import { changeTowerMainPhoto } from "@/actions/towers/tower.change";
@@ -85,6 +86,8 @@ const AddTowerPage = () => {
         console.log("Uploaded photos:", publicURLs);
 
         await changeTowerMainPhoto(newID, publicURLs[mainIndex]);
+
+        await revalidateTowerByIDOrNameID(newID);
 
         alert("Rozhledna byla úspěšně přidána.");
         // Optionally, redirect or reset the form
