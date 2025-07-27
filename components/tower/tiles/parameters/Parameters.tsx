@@ -1,6 +1,7 @@
 import EditButton from "@/components/tower/tiles/parameters/dialog/EditButton";
 import ParametersEditDialog from "@/components/tower/tiles/parameters/ParametersEditDialog";
 import ParameterTile from "@/components/tower/tiles/parameters/ParameterTile";
+import { getTowerTypeName } from "@/constants/towerType";
 import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/date";
@@ -54,7 +55,7 @@ function Parameters({ tower }: { tower: Tower }) {
                                 </tr>
                                 <tr>
                                     <td className="text-right font-bold">Typ</td>
-                                    <td>{tower.type}</td>
+                                    <td>{getTowerTypeName(tower.type)}</td>
                                 </tr>
                                 <tr>
                                     <td className="text-right font-bold">Materiál</td>

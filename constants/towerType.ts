@@ -26,6 +26,11 @@ export const towerTypes: { name: string; value: TowerTypeEnum; name_4: string }[
     { name: "zajímavost", value: TowerTypeEnum.ZAJIMAVOST, name_4: "zajímavosti" },
 ];
 
+export const getTowerTypeName = (type: TowerTypeEnum): string => {
+    const towerType = towerTypes.find((tower) => tower.value === type);
+    return towerType ? towerType.name : type;
+};
+
 export const getTowerType4 = (type: TowerTypeEnum): string => {
     const towerType = towerTypes.find((tower) => tower.value === type);
     return towerType ? towerType.name_4 : type;

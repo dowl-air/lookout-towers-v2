@@ -1,3 +1,4 @@
+import { getTowerTypeName } from "@/constants/towerType";
 import { OpeningHoursForbiddenType, OpeningHoursType, OpeningHours } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
 
@@ -44,7 +45,8 @@ function Legend({ tower }: { tower: Tower }) {
     const height = tower.height ? tower.height : -1;
     const stairs = tower.stairs ? tower.stairs : -1;
     const elevation = tower.elevation ? tower.elevation : 0;
-    const typeCap = tower.type ? capitalizeFirstLetter(tower.type) : "Rozhledna";
+    const typeName = getTowerTypeName(tower.type);
+    const typeCap = capitalizeFirstLetter(typeName) || "Rozhledna";
 
     return (
         <legend className="text-center lg:text-left">{`${generareHeight(height, typeCap)} ${generateStairs(stairs)} ${generateElevation(
