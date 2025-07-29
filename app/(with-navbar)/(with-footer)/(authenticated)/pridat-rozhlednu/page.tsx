@@ -13,7 +13,7 @@ import { useNewTowerContext } from "@/context/NewTower";
 import { Tower } from "@/types/Tower";
 import { TowerTag } from "@/types/TowerTags";
 import { cn } from "@/utils/cn";
-import { getAllCountiesFromCountryProvince, getAllCountryProvinces } from "@/utils/geography";
+import { findInfoByGPS, getAllCountiesFromCountryProvince, getAllCountryProvinces } from "@/utils/geography";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -25,6 +25,33 @@ const AddTowerPage = () => {
     const [mainIndex, setMainIndex] = useState<number>(0);
 
     const [clipboardError, setClipboardError] = useState<string>("");
+    const [gpsError, setGpsError] = useState<string>("");
+
+    const handleFindInfoByGPS = async () => {
+        if (!tower.gps) {
+            setGpsError("GPS souřadnice nejsou k dispozici.");
+            return;
+        }
+
+        const result = await findInfoByGPS({
+            lat: tower.gps.latitude,
+            lng: tower.gps.longitude,
+        });
+        if (!result) {
+            setGpsError("Nepodařilo se najít informace podle GPS souřadnic.");
+            return;
+        }
+
+        setGpsError("");
+
+        updateTower({
+            ...tower,
+            name: result.name || tower.name,
+            country: result.countryCode || tower.country,
+            province: result.provinceCode || tower.province,
+            county: result.county || tower.county,
+        });
+    };
 
     const parsePositionFromClipboard = async () => {
         const text = await navigator.clipboard.readText();
@@ -195,11 +222,7 @@ const AddTowerPage = () => {
 
             <h2 className="text-lg mt-6">Pozice na mapě</h2>
 
-            <div className="rounded-xl overflow-hidden mt-2">
-                <MapPicker pickedPosition={tower.gps ?? null} setPickedPosition={(gps) => updateTower({ gps: gps })} />
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <div className="flex flex-col sm:flex-row gap-4 mt-2">
                 <div>
                     <button className="btn btn-primary w-60" onClick={parsePositionFromClipboard}>
                         Vložit GPS ze schránky
@@ -216,10 +239,16 @@ const AddTowerPage = () => {
                     <input className="w-full" type="text" defaultValue={tower.gps?.longitude.toFixed(8) ?? ""} disabled />
                 </label>
 
-                <label className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full", {})}>
-                    GPS hash:
-                    <input className="w-full" type="text" disabled />
-                </label>
+                <div>
+                    <button className="btn btn-primary w-60" onClick={handleFindInfoByGPS}>
+                        Zjistit základní údaje z GPS
+                    </button>
+                    {gpsError && <div className="text-error text-sm mt-1">{gpsError}</div>}
+                </div>
+            </div>
+
+            <div className="rounded-xl overflow-hidden mt-4">
+                <MapPicker pickedPosition={tower.gps ?? null} setPickedPosition={(gps) => updateTower({ gps: gps })} />
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">

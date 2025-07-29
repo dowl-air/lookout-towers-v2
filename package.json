@@ -13,6 +13,7 @@
     "dependencies": {
         "@auth/firebase-adapter": "^2.10.0",
         "clsx": "^2.1.1",
+        "fastest-levenshtein": "^1.0.16",
         "firebase": "^12.0.0",
         "firebase-admin": "^13.4.0",
         "geolib": "^3.3.4",
