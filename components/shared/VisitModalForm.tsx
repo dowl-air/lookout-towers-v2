@@ -45,7 +45,7 @@ export const VisitModal = ({ initVisit, tower }: { initVisit: Visit | null; towe
 
     const uploadNewPhotos = async (): Promise<string[]> => {
         if (photosToUpload.length > 0) {
-            const newPhotos = await Promise.all(photosToUpload.map((photo) => uploadPhoto(photo, tower.id, false)));
+            const newPhotos = await Promise.all(photosToUpload.map((photo) => uploadPhoto(photo, tower.id, false, false, null, false)));
             return newPhotos;
         }
         return [];

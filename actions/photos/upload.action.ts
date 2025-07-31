@@ -8,7 +8,14 @@ import { addDoc, collection, deleteDoc, serverTimestamp, updateDoc } from "fireb
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { revalidateTag } from "next/cache";
 
-export const uploadPhoto = async (file: File | string, towerId: string, isPublic: boolean, isMain?: boolean, note?: PhotoNote): Promise<string> => {
+export const uploadPhoto = async (
+    file: File | string,
+    towerId: string,
+    isPublic: boolean,
+    isMain?: boolean,
+    note?: PhotoNote,
+    returnUrl: boolean = true
+): Promise<string> => {
     const user = await checkAuth();
     if (!user) throw new Error("Unauthorized.");
 
@@ -49,7 +56,7 @@ export const uploadPhoto = async (file: File | string, towerId: string, isPublic
 
         revalidateTag(getCacheTagSpecific(CacheTag.Tower, towerId));
 
-        return downloadURL;
+        return returnUrl ? downloadURL : doc.id;
     } catch (error) {
         console.error("Error uploading photo: ", error);
         // delete the entry in database
