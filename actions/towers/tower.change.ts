@@ -19,7 +19,7 @@ export const changeTower = async (changeID: string, tower: Tower) => {
     }
     if (change.field === "urls") {
         // only add one new value to the end of the array
-        newValue = [...tower.urls, change.new_value[change.new_value.length - 1]];
+        newValue = [...(tower.urls || []), change.new_value[change.new_value.length - 1]];
     }
     await updateDoc(towerDoc, {
         [change.field]: newValue,

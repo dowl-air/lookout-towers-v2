@@ -8,12 +8,14 @@ const ChangeValueAdmin = ({ type, value }: { type: EditableParameterType; value:
     } else if (type === "number") {
         return <span>{value}</span>;
     } else if (type === "array") {
-        return (
+        return value && value.length > 0 ? (
             <div className="flex flex-col">
                 {value.map((item: any, index: number) => (
                     <span key={index}>{item}</span>
                 ))}
             </div>
+        ) : (
+            <span>Žádné položky</span>
         );
     } else if (type === "date") {
         return <span>{new Date(value).toLocaleDateString()}</span>;
