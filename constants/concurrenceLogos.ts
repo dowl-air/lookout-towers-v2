@@ -13,4 +13,5 @@ export const CONCURRENCE_LOGOS: Record<string, string> = {
     "maps.google.com": "/img/loga/google_maps.svg",
     "maps.app.goo.gl": "/img/loga/google_maps.svg",
     "google.com": "/img/loga/google_maps.svg",
+    "waze.com": "/img/loga/waze.jpeg",
 };
