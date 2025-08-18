@@ -5,11 +5,13 @@ import Counter from "yet-another-react-lightbox/plugins/counter";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-import { cn } from "@/utils/cn";
 import Image from "next/image";
+
+import { cn } from "@/utils/cn";
 import { useEffect, useRef, useState } from "react";
 import { Tower } from "@/types/Tower";
 import { Photo } from "@/types/Photo";
@@ -33,8 +35,6 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
         });
         setOpen(true);
     };
-
-    const mainPhoto = userImages.find((image) => image.isMain) || images[0];
 
     const allImagesWithMainFirst: Photo[] = [
         ...images.map((image) => ({ url: image, created: new Date(), id: "", user_id: "", tower_id: tower.id, isPublic: true, isMain: false })),
@@ -89,7 +89,8 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
                                 height={112}
                                 width={112}
                                 className="sm:first:hidden object-cover rounded-lg cursor-pointer hover:scale-[1.03] transform transition-transform w-auto h-auto"
-                                unoptimized
+                                // only optimize new user images
+                                unoptimized={image.id === ""}
                                 onClick={() => handleLightboxOpen(idx)}
                             />
                         );
@@ -106,7 +107,7 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
                     };
                 })}
                 index={currentSlide}
-                plugins={[Counter, Slideshow, Fullscreen, Thumbnails]}
+                plugins={[Counter, Slideshow, Fullscreen, Thumbnails, Zoom]}
                 counter={{ container: { style: { top: 0, bottom: "unset" } } }}
                 thumbnails={{
                     border: 0,
