@@ -26,3 +26,17 @@ export const favouriteIcon = L.icon({
     shadowSize: [41, 41],
     shadowAnchor: [13, 41],
 });
+
+export const locationIcon = L.divIcon({
+    className: "location-marker",
+    html: `<div style="
+        width: 16px; 
+        height: 16px; 
+        background-color: #3b82f6; 
+        border: 3px solid white; 
+        border-radius: 50%; 
+        box-shadow: 0 0 0 2px #3b82f6;
+    "></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+});

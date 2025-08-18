@@ -1,3 +1,4 @@
+import TowerCardLocation from "@/components/shared/TowerCardLocation";
 import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { formatDateYear } from "@/utils/date";
@@ -7,6 +8,7 @@ import Link from "next/link";
 
 const MapTowerCard = ({ tower, isFavourite = false, isVisited = false }: { tower: Tower; isFavourite?: boolean; isVisited?: boolean }) => {
     const [state, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
+
     return (
         <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
             <div className="card card-compact cursor-pointer w-[225px] rounded-none">
@@ -99,6 +101,7 @@ const MapTowerCard = ({ tower, isFavourite = false, isVisited = false }: { tower
                             </svg>
                             <div className="ml-0.5 md:ml-1 text-base text-black">{tower.county}</div>
                         </div>
+                        <TowerCardLocation tower={tower} />
                     </div>
                 </div>
             </div>
