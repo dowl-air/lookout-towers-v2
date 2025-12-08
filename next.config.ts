@@ -1,8 +1,11 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+    cacheComponents: true,
+    reactCompiler: true,
     experimental: {
         serverActions: {
-            bodySizeLimit: "5mb",
+            bodySizeLimit: "10mb",
         },
     },
     images: {
@@ -28,4 +31,4 @@ const nextConfig = {
     },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

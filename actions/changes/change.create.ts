@@ -1,5 +1,8 @@
 "use server";
 
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { updateTag } from "next/cache";
+
 import { checkAuth } from "@/actions/checkAuth";
 import { sendMail } from "@/actions/mail";
 import { Change, ChangeState } from "@/types/Change";
@@ -7,10 +10,10 @@ import { MailSubject } from "@/types/MailSubject";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { createSubject } from "@/utils/mail";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { revalidateTag } from "next/cache";
 
-export const createChange = async (change: Omit<Change, "user_id" | "id" | "created" | "state">) => {
+export const createChange = async (
+    change: Omit<Change, "user_id" | "id" | "created" | "state">
+) => {
     const user = await checkAuth();
     if (!user) throw new Error("Unauthorized.");
 
@@ -40,10 +43,10 @@ export const createChange = async (change: Omit<Change, "user_id" | "id" | "crea
         `,
     });
 
-    revalidateTag(CacheTag.ChangesCount);
-    revalidateTag(CacheTag.UnresolvedChanges);
-    revalidateTag(getCacheTagSpecific(CacheTag.ChangesTower, change.tower_id));
-    revalidateTag(getCacheTagSpecific(CacheTag.ChangesUser, user.id));
+    updateTag(CacheTag.ChangesCount);
+    updateTag(CacheTag.UnresolvedChanges);
+    updateTag(getCacheTagSpecific(CacheTag.ChangesTower, change.tower_id));
+    updateTag(getCacheTagSpecific(CacheTag.ChangesUser, user.id));
 
     return doc.id;
 };

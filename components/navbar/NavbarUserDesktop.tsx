@@ -1,25 +1,35 @@
-import { auth, signIn } from "@/auth";
-import ProfileIconButton from "@/components/navbar/ProfileIconButton";
+import { Suspense } from "react";
 
-const NavbarUser = async () => {
-    const session = await auth();
+import { signIn } from "@/auth";
+import ProfileIconButton from "@/components/navbar/ProfileIconButton";
+import { verifyUser } from "@/data/auth";
+
+const NavbarUserSuspense = async () => {
+    const { isAuth } = await verifyUser();
+
+    if (isAuth) {
+        return <ProfileIconButton />;
+    } else {
+        return (
+            <form
+                action={async () => {
+                    "use server";
+                    await signIn();
+                }}
+            >
+                <button type="submit" className="btn btn-sm btn-primary ml-3 md:btn-md">
+                    Přihlásit se
+                </button>
+            </form>
+        );
+    }
+};
+
+const NavbarUser = () => {
     return (
-        <>
-            {session?.user ? (
-                <ProfileIconButton />
-            ) : (
-                <form
-                    action={async () => {
-                        "use server";
-                        await signIn();
-                    }}
-                >
-                    <button type="submit" className="btn btn-sm btn-primary ml-3 md:btn-md">
-                        Přihlásit se
-                    </button>
-                </form>
-            )}
-        </>
+        <Suspense fallback={null}>
+            <NavbarUserSuspense />
+        </Suspense>
     );
 };
 

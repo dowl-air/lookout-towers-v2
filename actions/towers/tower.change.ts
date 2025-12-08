@@ -1,11 +1,12 @@
 "use server";
 
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { updateTag } from "next/cache";
+
 import { getChange } from "@/actions/changes/change.get";
 import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { revalidateTag } from "next/cache";
 
 export const changeTower = async (changeID: string, tower: Tower) => {
     const change = await getChange(changeID);
@@ -25,10 +26,10 @@ export const changeTower = async (changeID: string, tower: Tower) => {
         [change.field]: newValue,
         modified: serverTimestamp(),
     });
-    revalidateTag(CacheTag.Towers);
-    revalidateTag(CacheTag.LastChangeDate);
-    revalidateTag(getCacheTagSpecific(CacheTag.Tower, change.tower_id));
-    revalidateTag(getCacheTagSpecific(CacheTag.Tower, tower.nameID));
+    updateTag(CacheTag.Towers);
+    updateTag(CacheTag.LastChangeDate);
+    updateTag(getCacheTagSpecific(CacheTag.Tower, change.tower_id));
+    updateTag(getCacheTagSpecific(CacheTag.Tower, tower.nameID));
 };
 
 export const changeTowerMainPhoto = async (towerID: string, mainPhotoUrl: string) => {
@@ -37,7 +38,7 @@ export const changeTowerMainPhoto = async (towerID: string, mainPhotoUrl: string
         mainPhotoUrl,
         modified: serverTimestamp(),
     });
-    revalidateTag(CacheTag.Towers);
-    revalidateTag(CacheTag.LastChangeDate);
-    revalidateTag(getCacheTagSpecific(CacheTag.Tower, towerID));
+    updateTag(CacheTag.Towers);
+    updateTag(CacheTag.LastChangeDate);
+    updateTag(getCacheTagSpecific(CacheTag.Tower, towerID));
 };

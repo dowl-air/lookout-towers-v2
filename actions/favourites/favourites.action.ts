@@ -1,10 +1,21 @@
 "use server";
 
-import { collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import {
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    serverTimestamp,
+    setDoc,
+    where,
+} from "firebase/firestore";
+import { unstable_cache as cache, updateTag } from "next/cache";
+
 import { checkAuth } from "@/actions/checkAuth";
-import { db } from "@/utils/firebase";
-import { unstable_cache as cache, revalidateTag } from "next/cache";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
+import { db } from "@/utils/firebase";
 
 export const checkFavourite = async (towerID: string) => {
     const user = await checkAuth();
@@ -18,7 +29,10 @@ export const checkFavourite = async (towerID: string) => {
         },
         [CacheTag.TowerFavourite],
         {
-            tags: [CacheTag.TowerFavourite, getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID)],
+            tags: [
+                CacheTag.TowerFavourite,
+                getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID),
+            ],
         }
     );
     return cachedFn(towerID, user.id);
@@ -32,8 +46,8 @@ export const addToFavourites = async (towerID: string) => {
         user_id: user.id,
         tower_id: towerID,
     });
-    revalidateTag(getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID));
-    revalidateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
+    updateTag(getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID));
+    updateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
     return true;
 };
 
@@ -41,8 +55,8 @@ export const removeFromFavourites = async (towerID: string) => {
     const user = await checkAuth();
     if (!user) return false;
     await deleteDoc(doc(db, "favourites", `${user.id}_${towerID}`));
-    revalidateTag(getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID));
-    revalidateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
+    updateTag(getCacheTagUserSpecific(CacheTag.TowerFavourite, user.id, towerID));
+    updateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
     return false;
 };
 

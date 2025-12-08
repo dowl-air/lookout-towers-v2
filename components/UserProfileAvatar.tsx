@@ -1,32 +1,37 @@
 import Image from "next/image";
-import React from "react";
 
-function UserProfileAvatar({ name, image, size = 48 }: { name: string; image?: string; size?: number }) {
+function UserProfileAvatar({
+    name,
+    image,
+    size = 48,
+}: {
+    name: string;
+    image?: string;
+    size?: number;
+}) {
     return (
         <>
             {image ? (
-                <label tabIndex={0}>
-                    <div className="avatar cursor-pointer">
-                        <div className="rounded-full" style={{ width: `${size}px` }}>
-                            <Image
-                                src={image}
-                                width={size}
-                                height={size}
-                                alt={`profile picture of ${name}`}
-                                referrerPolicy="no-referrer"
-                                unoptimized
-                            />
-                        </div>
+                <div className="avatar cursor-pointer">
+                    <div className="rounded-full" style={{ width: `${size}px` }}>
+                        <Image
+                            src={image}
+                            width={size}
+                            height={size}
+                            alt={`profile picture of ${name}`}
+                            referrerPolicy="no-referrer"
+                        />
                     </div>
-                </label>
+                </div>
             ) : (
-                <label tabIndex={0}>
-                    <div className="avatar placeholder cursor-pointer">
-                        <div className="bg-neutral-focus text-neutral-content rounded-full" style={{ width: `${size}px` }}>
-                            <span>{name ? name.substring(0, 2) : "TY"}</span>
-                        </div>
+                <div className="avatar avatar-placeholder cursor-pointer">
+                    <div
+                        className="bg-neutral text-neutral-content rounded-full"
+                        style={{ width: `${size}px`, height: `${size}px` }}
+                    >
+                        {name ? name.substring(0, 2) : "TY"}
                     </div>
-                </label>
+                </div>
             )}
         </>
     );

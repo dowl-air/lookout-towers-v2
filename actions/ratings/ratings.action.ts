@@ -1,12 +1,24 @@
 "use server";
 
-import { checkAuth } from "../checkAuth";
-import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
-import { db } from "@/utils/firebase";
-import { getUser } from "../members/members.action";
-import { revalidateTag, unstable_cache as cache } from "next/cache";
-import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
+import {
+    Timestamp,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    serverTimestamp,
+    setDoc,
+    where,
+} from "firebase/firestore";
+import { updateTag, unstable_cache as cache } from "next/cache";
+
+import { checkAuth } from "@/actions/checkAuth";
+import { getUser } from "@/actions/members/members.action";
 import { Rating } from "@/types/Rating";
+import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
+import { db } from "@/utils/firebase";
 
 export const getUserRating = async (towerID: string): Promise<Rating | null> => {
     const user = await checkAuth();
@@ -14,14 +26,24 @@ export const getUserRating = async (towerID: string): Promise<Rating | null> => 
 
     const cachedFn = cache(
         async (towerID: string, userID: string) => {
-            const [snap, member] = await Promise.all([await getDoc(doc(db, "ratings", `${userID}_${towerID}`)), getUser(userID)]);
+            const [snap, member] = await Promise.all([
+                await getDoc(doc(db, "ratings", `${userID}_${towerID}`)),
+                getUser(userID),
+            ]);
             if (!snap.exists()) return null;
             const data = snap.data();
-            return { ...data, created: (data.created as Timestamp).toDate().toISOString(), user: member } as Rating;
+            return {
+                ...data,
+                created: (data.created as Timestamp).toDate().toISOString(),
+                user: member,
+            } as Rating;
         },
         [CacheTag.UserTowerRating],
         {
-            tags: [CacheTag.UserTowerRating, getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id)],
+            tags: [
+                CacheTag.UserTowerRating,
+                getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id),
+            ],
         }
     );
     return cachedFn(towerID, user.id);
@@ -35,7 +57,10 @@ export const getTowerRatings = async (towerID: string): Promise<Rating[]> => {
             const ratings: Rating[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                ratings.push({ ...data, created: (data.created as Timestamp).toDate().toISOString() } as Rating);
+                ratings.push({
+                    ...data,
+                    created: (data.created as Timestamp).toDate().toISOString(),
+                } as Rating);
             });
             return ratings;
         },
@@ -60,22 +85,22 @@ export const editRating = async (towerID: string, rating: number, text: string) 
         created: serverTimestamp(),
     });
 
-    revalidateTag(CacheTag.RatingsCount);
-    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
-    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
-    revalidateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
-    revalidateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id));
+    updateTag(CacheTag.RatingsCount);
+    updateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
+    updateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
+    updateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
+    updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id));
 };
 
 export const removeRating = async (towerID: string) => {
     const user = await checkAuth();
     await deleteDoc(doc(db, "ratings", `${user.id}_${towerID}`));
 
-    revalidateTag(CacheTag.RatingsCount);
-    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
-    revalidateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
-    revalidateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
-    revalidateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id));
+    updateTag(CacheTag.RatingsCount);
+    updateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
+    updateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
+    updateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
+    updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id));
 };
 
 export const getAllUserRatings = async () => {
@@ -89,7 +114,10 @@ export const getAllUserRatings = async () => {
             const ratings: Rating[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                ratings.push({ ...data, created: (data.created as Timestamp).toDate().toISOString() } as Rating);
+                ratings.push({
+                    ...data,
+                    created: (data.created as Timestamp).toDate().toISOString(),
+                } as Rating);
             });
             return ratings;
         },

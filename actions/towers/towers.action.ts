@@ -1,13 +1,28 @@
 "use server";
 
-import { collection, getAggregateFromServer, getDocs, limit, orderBy, query, where, count, average, getDoc, doc } from "firebase/firestore";
+import {
+    collection,
+    getAggregateFromServer,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    where,
+    count,
+    average,
+    getDoc,
+    doc,
+} from "firebase/firestore";
 import { unstable_cache as cache } from "next/cache";
+
+import { Tower } from "@/types/Tower";
+import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
-import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
-import { Tower } from "@/types/Tower";
 
-export const getTowerRatingAndCount = async (towerID: string): Promise<{ avg: number; count: number }> => {
+export const getTowerRatingAndCount = async (
+    towerID: string
+): Promise<{ avg: number; count: number }> => {
     const cachedFn = cache(
         async (towerID: string) => {
             const q = query(collection(db, "ratings"), where("tower_id", "==", towerID));
@@ -23,7 +38,10 @@ export const getTowerRatingAndCount = async (towerID: string): Promise<{ avg: nu
         },
         [CacheTag.TowerRatingAndCount],
         {
-            tags: [CacheTag.TowerRatingAndCount, getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID)],
+            tags: [
+                CacheTag.TowerRatingAndCount,
+                getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID),
+            ],
         }
     );
     return cachedFn(towerID);
@@ -35,7 +53,12 @@ export const getRandomTowers = cache(
         const towers: Tower[] = [];
         while (towers.length < count) {
             const rnd = Math.random();
-            const q = query(collection(db, "towers"), where("random", ">", rnd), orderBy("random"), limit(count - towers.length));
+            const q = query(
+                collection(db, "towers"),
+                where("random", ">", rnd),
+                orderBy("random"),
+                limit(count - towers.length)
+            );
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
                 if (!ids.has(doc.id)) {
@@ -112,29 +135,6 @@ export const getTowersByIDs = async (ids: string[]): Promise<Tower[]> => {
     return towers;
 };
 
-export const getTowerOfTheDay = cache(
-    async (): Promise<Tower> => {
-        const today = new Date();
-        const seedValue = parseInt(
-            `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, "0")}${today.getDate().toString().padStart(2, "0")}`
-        );
-        const seededRandom = (seed: number) => {
-            const x = Math.sin(seed) * 10000;
-            return x - Math.floor(x);
-        };
-        const generatedRandom = seededRandom(seedValue);
-        const q = query(collection(db, "towers"), orderBy("random"), where("random", ">=", generatedRandom), limit(1));
-        const snap = await getDocs(q);
-        const doc = snap.docs[0];
-        return normalizeTowerObject(doc.data());
-    },
-    [CacheTag.TowerOfTheDay],
-    {
-        revalidate: 60 * 60,
-        tags: [CacheTag.TowerOfTheDay],
-    }
-);
-
 export const getTowerVisitsCount = async (towerID: string) => {
     const cachedFn = cache(
         async (towerID: string) => {
@@ -149,7 +149,10 @@ export const getTowerVisitsCount = async (towerID: string) => {
         },
         [CacheTag.TowerVisitsCount],
         {
-            tags: [CacheTag.TowerVisitsCount, getCacheTagSpecific(CacheTag.TowerVisitsCount, towerID)],
+            tags: [
+                CacheTag.TowerVisitsCount,
+                getCacheTagSpecific(CacheTag.TowerVisitsCount, towerID),
+            ],
         }
     );
     return cachedFn(towerID);

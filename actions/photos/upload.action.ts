@@ -1,12 +1,13 @@
 "use server";
 
+import { addDoc, collection, deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { updateTag } from "next/cache";
+
 import { checkAuth } from "@/actions/checkAuth";
 import { PhotoNote } from "@/types/Photo";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db, storage } from "@/utils/firebase";
-import { addDoc, collection, deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { revalidateTag } from "next/cache";
 
 export const uploadPhoto = async (
     file: File | string,
@@ -54,7 +55,7 @@ export const uploadPhoto = async (
             id: doc.id,
         });
 
-        revalidateTag(getCacheTagSpecific(CacheTag.Tower, towerId));
+        updateTag(getCacheTagSpecific(CacheTag.Tower, towerId));
 
         return returnUrl ? downloadURL : doc.id;
     } catch (error) {

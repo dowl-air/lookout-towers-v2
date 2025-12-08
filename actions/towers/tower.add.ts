@@ -1,13 +1,14 @@
 "use server";
 
+import { addDoc, collection, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
+import { updateTag } from "next/cache";
+
 import { checkAuth } from "@/actions/checkAuth";
 import { getTowerObjectByNameID } from "@/actions/towers/towers.action";
 import { OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
 import { CacheTag } from "@/utils/cacheTags";
-import { db, firebase } from "@/utils/firebase";
-import { addDoc, collection, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
-import { revalidateTag } from "next/cache";
+import { db } from "@/utils/firebase";
 
 export const addTower = async (tower: Tower) => {
     const user = await checkAuth();
@@ -48,8 +49,8 @@ export const addTower = async (tower: Tower) => {
 
     await updateDoc(newTowerRef, updateObject);
 
-    revalidateTag(CacheTag.Towers);
-    revalidateTag(CacheTag.LastChangeDate);
+    updateTag(CacheTag.Towers);
+    updateTag(CacheTag.LastChangeDate);
 
     return newTowerRef.id;
 };

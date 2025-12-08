@@ -1,12 +1,13 @@
 "use server";
 
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { updateTag } from "next/cache";
+
 import { checkAdmin } from "@/actions/checkAdmin";
 import { checkAuth } from "@/actions/checkAuth";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db, storage } from "@/utils/firebase";
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { revalidateTag } from "next/cache";
 
 export const removePhoto = async (photoId: string) => {
     const user = await checkAuth();
@@ -24,5 +25,5 @@ export const removePhoto = async (photoId: string) => {
     await deleteObject(storageRef);
     await deleteDoc(docRef);
 
-    revalidateTag(getCacheTagSpecific(CacheTag.Tower, photo.tower_id));
+    updateTag(getCacheTagSpecific(CacheTag.Tower, photo.tower_id));
 };

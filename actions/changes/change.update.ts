@@ -1,13 +1,14 @@
 "use server";
 
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { updateTag } from "next/cache";
+
 import { checkAuth } from "@/actions/checkAuth";
 import { changeTower } from "@/actions/towers/tower.change";
 import { ChangeState } from "@/types/Change";
 import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { revalidateTag } from "next/cache";
 
 export const updateChange = async (changeID: string, state: ChangeState, tower: Tower) => {
     const user = await checkAuth();
@@ -19,9 +20,9 @@ export const updateChange = async (changeID: string, state: ChangeState, tower: 
     if (state === ChangeState.Approved) {
         await changeTower(changeID, tower);
     }
-    revalidateTag(getCacheTagSpecific(CacheTag.Change, changeID));
-    revalidateTag(getCacheTagSpecific(CacheTag.ChangesTower, tower.id));
-    revalidateTag(getCacheTagSpecific(CacheTag.ChangesUser, user.id));
-    revalidateTag(CacheTag.ChangesTower);
-    revalidateTag(CacheTag.UnresolvedChanges);
+    updateTag(getCacheTagSpecific(CacheTag.Change, changeID));
+    updateTag(getCacheTagSpecific(CacheTag.ChangesTower, tower.id));
+    updateTag(getCacheTagSpecific(CacheTag.ChangesUser, user.id));
+    updateTag(CacheTag.ChangesTower);
+    updateTag(CacheTag.UnresolvedChanges);
 };

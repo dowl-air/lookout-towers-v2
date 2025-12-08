@@ -2,7 +2,7 @@ import { FirestoreAdapter } from "@auth/firebase-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import type { Provider } from "next-auth/providers";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 import { authFirestore } from "@/utils/authFirestore";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
@@ -42,10 +42,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 subject: "[RS][Info] Nový uživatel",
                 text: `Byl vytvořen nový uživatel s emailem ${message.user.email}`,
             });
-            revalidateTag(CacheTag.UsersCount);
+            updateTag(CacheTag.UsersCount);
         },
         async updateUser(message) {
-            revalidateTag(getCacheTagSpecific(CacheTag.User, message.user.id));
+            updateTag(getCacheTagSpecific(CacheTag.User, message.user.id));
         },
     },
 });

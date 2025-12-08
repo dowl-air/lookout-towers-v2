@@ -1,4 +1,5 @@
 "use client";
+
 import { closeDrawer } from "@/utils/closeDrawer";
 
 interface NavbarSideButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
