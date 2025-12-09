@@ -2,10 +2,10 @@ import { UserRoundSearch } from "lucide-react";
 import { Suspense } from "react";
 
 import NavbarSideLink from "@/components/navbar/NavbarSideLink";
-import { verifyUser } from "@/data/auth";
+import { checkUser } from "@/data/auth";
 
 const ProfileLinkSuspense = async () => {
-    const { isAuth } = await verifyUser();
+    const { isAuth } = await checkUser();
     if (!isAuth) return null;
 
     return (

@@ -2,16 +2,23 @@ import { Suspense } from "react";
 
 import ContactButton from "@/components/homepage/ContactButton";
 import ContactDialog from "@/components/homepage/ContactDialog";
-import { verifyUser } from "@/data/auth";
+import { checkUser } from "@/data/auth";
 import { getCurrentUser } from "@/data/user/user";
 
 const AboutMeContactButtonSuspense = async () => {
-    const { isAuth } = await verifyUser();
-    const user = await getCurrentUser();
+    const { isAuth } = await checkUser();
+    if (isAuth === false) {
+        return (
+            <>
+                <ContactButton isAuth={false} />
+            </>
+        );
+    }
 
+    const user = await getCurrentUser();
     return (
         <>
-            <ContactButton isAuth={isAuth} />
+            <ContactButton isAuth />
             {isAuth ? <ContactDialog user={user} /> : null}
         </>
     );

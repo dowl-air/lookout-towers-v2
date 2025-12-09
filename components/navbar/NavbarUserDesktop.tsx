@@ -2,10 +2,10 @@ import { Suspense } from "react";
 
 import { signIn } from "@/auth";
 import ProfileIconButton from "@/components/navbar/ProfileIconButton";
-import { verifyUser } from "@/data/auth";
+import { checkUser } from "@/data/auth";
 
 const NavbarUserSuspense = async () => {
-    const { isAuth } = await verifyUser();
+    const { isAuth } = await checkUser();
 
     if (isAuth) {
         return <ProfileIconButton />;

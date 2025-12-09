@@ -4,10 +4,10 @@ import { Suspense } from "react";
 
 import { signOut } from "@/auth";
 import NavbarSideButton from "@/components/navbar/NavbarSideButton";
-import { verifyUser } from "@/data/auth";
+import { checkUser } from "@/data/auth";
 
 const LogoutLinkSuspense = async () => {
-    const { isAuth } = await verifyUser();
+    const { isAuth } = await checkUser();
     if (!isAuth) return null;
 
     return (
