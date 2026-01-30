@@ -6,11 +6,19 @@ import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const tower_id = (await params).id;
 
-    if (!tower_id) return null;
+    if (!tower_id)
+        return new Response(JSON.stringify({ error: "Missing tower ID" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        });
     let tower = await getTowerByID(tower_id);
     if (!tower) {
         tower = await getTowerObjectByNameID(tower_id);
-        if (!tower) return "Tower not found";
+        if (!tower)
+            return new Response(JSON.stringify({ error: "Tower not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
     }
 
     revalidateTag(CacheTag.Towers, { expire: 0 });
