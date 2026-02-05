@@ -2,6 +2,8 @@ export const enum CacheTag {
     // todo? all tower objects - revalidate when a new tower is added or removed or edited
     Towers = "Towers",
 
+    TowersMap = "TowersMap",
+
     // this cache is revalidated every 2 hours automatically
     Photo = "Photo",
 
@@ -82,4 +84,8 @@ export const enum CacheTag {
 
 export const getCacheTagSpecific = (tag: CacheTag, id: string | number): string => `${tag}-${id}`;
 
-export const getCacheTagUserSpecific = (tag: CacheTag, userID: string, id: string | number): string => `${tag}-${id}-${userID}`;
+export const getCacheTagUserSpecific = (
+    tag: CacheTag,
+    userID: string,
+    id: string | number
+): string => `${tag}-${id}-${userID}`;

@@ -1,13 +1,11 @@
-"use client";
-
-import { Tower } from "@/types/Tower";
-import { Marker } from "react-leaflet";
-import { defaultIcon } from "@/components/shared/map/base/icons";
-import MapBase from "@/components/shared/map/base/MapBase";
 import { Bike, Car, Milestone } from "lucide-react";
-import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
+import Image from "next/image";
 
-const TowerMap = ({ tower }: { tower: Tower }) => {
+import { TowerMap } from "@/components/shared/map/TowerMap";
+import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
+import { Tower } from "@/types/Tower";
+
+const MapTile = ({ tower }: { tower: Tower }) => {
     const { latitude, longitude } = tower.gps;
 
     // Generate direction URLs for different map services
@@ -23,19 +21,33 @@ const TowerMap = ({ tower }: { tower: Tower }) => {
 
     return (
         <div className="card shadow-xl mx-auto w-full max-w-7xl flex flex-col md:flex-row">
-            <div className="h-96 sm:h-[30rem] lg:h-[34rem] rounded-xl rounded-b-none md:rounded-b-xl md:rounded-r-none overflow-hidden touch-none w-full">
-                <MapBase center={{ lat: latitude, lng: longitude }} zoom={12}>
-                    <Marker position={{ lat: latitude, lng: longitude }} icon={defaultIcon} title={tower.name} />
-                </MapBase>
+            <div className="h-96 sm:h-120 lg:h-136 rounded-xl rounded-b-none md:rounded-b-xl md:rounded-r-none overflow-hidden touch-none w-full">
+                {/* <MapBase center={{ lat: latitude, lng: longitude }} zoom={12}>
+                    <Marker
+                        position={{ lat: latitude, lng: longitude }}
+                        icon={defaultIcon}
+                        title={tower.name}
+                    />
+                </MapBase> */}
+                <TowerMap tower={tower} />
             </div>
 
             <div className="flex gap-3 justify-center flex-col px-6 py-3 card-body">
-                <h4 className="card-title text-base sm:text-lg md:text-xl text-nowrap my-2">Vyhledat trasu</h4>
+                <h4 className="card-title text-base sm:text-lg md:text-xl text-nowrap my-2">
+                    Vyhledat trasu
+                </h4>
 
                 <div className="flex gap-2 items-center">
                     <div className="avatar">
                         <div className="w-7 rounded-full">
-                            <img src={CONCURRENCE_LOGOS["mapy.com"]} className="object-contain!" loading="lazy" />
+                            <Image
+                                src={CONCURRENCE_LOGOS["mapy.com"]}
+                                alt="mapy.com logo"
+                                className="object-contain!"
+                                loading="lazy"
+                                width={28}
+                                height={28}
+                            />
                         </div>
                     </div>
                     <p>Mapy.com</p>
@@ -74,7 +86,14 @@ const TowerMap = ({ tower }: { tower: Tower }) => {
                 <div className="flex gap-2 items-center mt-2">
                     <div className="avatar">
                         <div className="w-7 rounded-full">
-                            <img src={CONCURRENCE_LOGOS["maps.google.com"]} className="object-contain!" loading="lazy" />
+                            <Image
+                                src={CONCURRENCE_LOGOS["maps.google.com"]}
+                                alt="Google Maps logo"
+                                className="object-contain!"
+                                loading="lazy"
+                                width={28}
+                                height={28}
+                            />
                         </div>
                     </div>
                     <p>Google Maps</p>
@@ -93,7 +112,14 @@ const TowerMap = ({ tower }: { tower: Tower }) => {
                 <div className="flex gap-2 items-center mt-2">
                     <div className="avatar">
                         <div className="w-7 rounded-full">
-                            <img src={CONCURRENCE_LOGOS["waze.com"]} className="object-cover!" loading="lazy" />
+                            <Image
+                                src={CONCURRENCE_LOGOS["waze.com"]}
+                                alt="Waze logo"
+                                className="object-cover!"
+                                loading="lazy"
+                                width={28}
+                                height={28}
+                            />
                         </div>
                     </div>
                     <p>Waze</p>
@@ -113,4 +139,4 @@ const TowerMap = ({ tower }: { tower: Tower }) => {
     );
 };
 
-export default TowerMap;
+export default MapTile;

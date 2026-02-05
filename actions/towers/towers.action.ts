@@ -76,22 +76,6 @@ export const getRandomTowers = cache(
     }
 );
 
-export const getAllTowers = cache(
-    async (): Promise<Tower[]> => {
-        const towers: Tower[] = [];
-        const querySnapshot = await getDocs(collection(db, "towers"));
-        querySnapshot.forEach((doc) => {
-            towers.push(normalizeTowerObject(doc.data()));
-        });
-        return towers;
-    },
-    [CacheTag.Towers],
-    {
-        tags: [CacheTag.Towers],
-        revalidate: 60 * 60 * 24 * 7, // revalidate once a week (backup in case of a bug in the cache tag mechanism)
-    }
-);
-
 export const getTowerByID = async (id: string): Promise<Tower> => {
     const cachedFn = cache(
         async (id: string) => {

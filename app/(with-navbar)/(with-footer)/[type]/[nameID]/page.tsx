@@ -5,11 +5,11 @@ import { TouristAttraction, WithContext } from "schema-dts";
 import { listTowerPhotos } from "@/actions/photos/towerPhotos.list";
 import { getUrlsTowerGallery } from "@/actions/towers/tower.photo";
 import { getTowerObjectByNameID, getTowerRatingAndCount } from "@/actions/towers/towers.action";
-import TowerMapFixed from "@/components/shared/map/TowerMapFixed";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Admission from "@/components/tower/tiles/Admission";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
 import HistoryText from "@/components/tower/tiles/HistoryText";
+import MapTile from "@/components/tower/tiles/MapTile";
 import OpeningHoursDialog from "@/components/tower/tiles/openingHours/OpeningHoursDialog";
 import OpeningHours from "@/components/tower/tiles/openingHours/OpeningHoursTile";
 import Parameters from "@/components/tower/tiles/parameters/Parameters";
@@ -19,6 +19,7 @@ import Carousel from "@/components/tower/top/Carousel";
 import Legend from "@/components/tower/top/Legend";
 import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
 import RatingTop from "@/components/tower/top/RatingTop";
+import { MapProvider } from "@/context/MapContext";
 
 async function TowerPage({ params }: { params }) {
     const { nameID } = await params;
@@ -89,7 +90,9 @@ async function TowerPage({ params }: { params }) {
                     </div>
                     {tower.history && <HistoryText text={tower.history} />}
                     <RatingFormProvider tower={tower} />
-                    <TowerMapFixed tower={tower} />
+                    <MapProvider>
+                        <MapTile tower={tower} />
+                    </MapProvider>
                     <Sources tower={tower} />
                     <ChangesHistory tower={tower} />
                 </div>
