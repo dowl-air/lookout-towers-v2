@@ -41,6 +41,15 @@ export function MapTileSwitcher({ selectedProviderId, onProviderChange }: MapTil
     const selectedLayer =
         layerOptions.find((layer) => layer.id === selectedProviderId) || layerOptions[0];
 
+    const onLayerClick = (layerId: string) => {
+        setIsHovered(false);
+
+        const layer = layerOptions.find((l) => l.id === layerId);
+        if (layer?.provider) {
+            onProviderChange(layerId);
+        }
+    };
+
     return (
         <div
             className="absolute bottom-24 sm:bottom-8 left-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 z-1000"
@@ -52,14 +61,14 @@ export function MapTileSwitcher({ selectedProviderId, onProviderChange }: MapTil
                 className={`order-first sm:order-last flex items-center gap-2 transition-all duration-300 ease-out ${
                     isHovered
                         ? "opacity-100 translate-y-0 sm:translate-y-0 sm:translate-x-0"
-                        : "opacity-0 translate-y-4 sm:translate-y-0 sm:-translate-x-4 pointer-events-none"
+                        : "opacity-0 translate-y-4 sm:translate-y-0 sm:-translate-x-4 pointer-events-none w-0 h-0"
                 }`}
             >
                 <div className="flex items-center gap-2 rounded-2xl shadow-xl p-1 border bg-slate-700">
                     {layerOptions.map((layer) => (
                         <button
                             key={layer.id}
-                            onClick={() => layer.provider && onProviderChange(layer.id)}
+                            onClick={() => onLayerClick(layer.id)}
                             disabled={!layer.provider}
                             className={`flex flex-col items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl transition-all cursor-pointer ${
                                 selectedProviderId === layer.id

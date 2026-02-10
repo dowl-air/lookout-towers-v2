@@ -8,7 +8,7 @@ import ThemeChanger from "@/components/navbar/ThemeChanger";
 
 function Navbar() {
     return (
-        <div className="border-b border-base-300 w-full sticky top-0 z-10 backdrop-blur-md bg-base-100 bg-opacity-70 border-opacity-60">
+        <div className="border-b border-base-300 w-full sticky top-0 z-10000 backdrop-blur-md bg-base-100 bg-opacity-70 border-opacity-60">
             <div className="navbar max-w-7xl mx-auto px-3">
                 <div className="navbar-start">
                     <label

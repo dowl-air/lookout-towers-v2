@@ -1,6 +1,5 @@
 "use client";
 
-import { TileLayer, MapContainer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet/dist/images/marker-shadow.png";
 import L from "leaflet";
@@ -8,7 +7,7 @@ import { useEffect } from "react";
 
 type Position = { latitude: number; longitude: number };
 
-const MapEvents = ({
+/* const MapEvents = ({
     setPickedPosition,
     pickedPosition,
 }: {
@@ -28,12 +27,12 @@ const MapEvents = ({
     }, [pickedPosition]);
 
     return null;
-};
+}; */
 
 const MapPicker = ({ pickedPosition, setPickedPosition }: { pickedPosition: Position; setPickedPosition: (position: Position) => void }) => {
-    if (typeof window === "undefined") return null;
+    /* if (typeof window === "undefined")  */return null;
 
-    const icon = L.icon({
+    /* const icon = L.icon({
         iconUrl: "/img/marker_red.png",
         shadowUrl: "/img/marker-shadow.png",
         iconSize: [23, 32],
@@ -51,7 +50,7 @@ const MapPicker = ({ pickedPosition, setPickedPosition }: { pickedPosition: Posi
             {pickedPosition && <Marker position={[pickedPosition.latitude, pickedPosition.longitude]} icon={icon}></Marker>}
             <MapEvents setPickedPosition={setPickedPosition} pickedPosition={pickedPosition} />
         </MapContainer>
-    );
+    ); */
 };
 
 export default MapPicker;
