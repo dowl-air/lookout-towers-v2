@@ -1,10 +1,9 @@
 import "server-only";
 
-import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { cacheLife } from "next/cache";
 import { cache } from "react";
 
-import { db } from "@/utils/firebase";
+import { db } from "@/utils/firebase-admin";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 
 export const getTowerOfTheDay = cache(async () => {
@@ -23,13 +22,15 @@ export const getTowerOfTheDay = cache(async () => {
         return x - Math.floor(x);
     };
     const generatedRandom = seededRandom(seedValue);
-    const q = query(
-        collection(db, "towers"),
-        orderBy("random"),
-        where("random", ">=", generatedRandom),
-        limit(1)
-    );
-    const snap = await getDocs(q);
+
+    const snap = await db
+        .collection("towers")
+        .orderBy("random")
+        .where("random", ">=", generatedRandom)
+        .limit(1)
+        .get();
+
     const doc = snap.docs[0];
+
     return { tower: normalizeTowerObject(doc.data()), date: today.toISOString() };
 });

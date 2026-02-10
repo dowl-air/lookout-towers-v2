@@ -4,7 +4,15 @@ export const normalizeTowerObject = (tower: any): Tower => {
     const opened = tower.opened.toDate().toISOString();
     const modified = tower.modified.toDate().toISOString();
     const created = tower.created.toDate().toISOString();
-    const gps = tower.gps.toJSON();
+
+    if (tower.gps && typeof tower.gps.toJSON === "function") {
+        tower.gps = tower.gps.toJSON();
+    } else {
+        const latitude = tower.gps.latitude || tower.gps.lat;
+        const longitude = tower.gps.longitude || tower.gps.lng;
+        tower.gps = { latitude, longitude };
+    }
+
     if (
         tower.mapycz &&
         tower.mapycz.lastMapped &&
@@ -12,10 +20,11 @@ export const normalizeTowerObject = (tower: any): Tower => {
     ) {
         tower.mapycz.lastMapped = tower.mapycz.lastMapped.toDate().toISOString();
     }
+
     if (tower.gmaps && tower.gmaps.mappedAt && typeof tower.gmaps.mappedAt.toDate === "function") {
         tower.gmaps.mappedAt = tower.gmaps.mappedAt.toDate().toISOString();
     }
-    return { ...tower, opened: opened, modified: modified, created: created, gps: gps } as Tower;
+    return { ...tower, opened: opened, modified: modified, created: created } as Tower;
 };
 
 export const normalizeTypesenseTowerObject = (tower: any): Tower => {

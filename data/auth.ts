@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 
 import { auth } from "@/auth";
+
 /**
  * Verify if user is authenticated, redirect to signin if not
  *
