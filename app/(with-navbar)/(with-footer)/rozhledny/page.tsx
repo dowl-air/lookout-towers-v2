@@ -6,6 +6,7 @@ import ResultsSkeleton from "@/components/towers/ResultsSkeleton";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
 import { TowersFilter } from "@/utils/TowersFilter";
 import { Metadata } from "next";
+import { connection } from "next/server";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -15,6 +16,8 @@ export const metadata: Metadata = {
 const PER_PAGE = 20;
 
 async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> }) {
+    await connection();
+
     const searchParams = await props.searchParams;
     const query = searchParams?.query || "";
     const page = searchParams?.page || 1;
@@ -46,12 +49,34 @@ async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> })
             <article className="prose prose-sm lg:prose-base max-w-full">
                 <h1 className="mb-0 md:mb-6">Rozhledny a vyhlídky</h1>
             </article>
-            <Filter />
-            <Pagination totalPages={totalPages} />
+            <Suspense
+                fallback={
+                    <div className="card card-compact md:card-normal w-full shadow-xl min-h-28" />
+                }
+            >
+                <Filter searchParams={searchParams || {}} />
+            </Suspense>
+            <Suspense fallback={null}>
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={Number(page)}
+                    pathname="/rozhledny"
+                    searchParams={searchParams || {}}
+                />
+            </Suspense>
             <Suspense key={query} fallback={<ResultsSkeleton />}>
                 <Results towers={towers} />
             </Suspense>
-            {totalPages > 1 ? <Pagination totalPages={totalPages} /> : null}
+            {totalPages > 1 ? (
+                <Suspense fallback={null}>
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={Number(page)}
+                        pathname="/rozhledny"
+                        searchParams={searchParams || {}}
+                    />
+                </Suspense>
+            ) : null}
         </div>
     );
 }

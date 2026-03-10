@@ -1,20 +1,23 @@
 import { Metadata } from "next";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
-import { getAllUserFavouritesIds } from "@/actions/favourites/favourites.action";
-import { getAllUserRatings } from "@/actions/ratings/ratings.action";
-import { getTowersByIDs } from "@/actions/towers/towers.action";
-import { getAllUserVisits } from "@/actions/visits/visits.action";
+import ProfileBox from "@/app/(with-navbar)/(with-footer)/(authenticated)/profil/ProfileBox";
 import { ProfileMap } from "@/components/shared/map/ProfileMap";
 import { MapProvider } from "@/context/MapContext";
+import { getAllUserRatings } from "@/data/rating/ratings";
 import { TowerMapDTO } from "@/data/tower/towers-map";
-
-import ProfileBox from "./ProfileBox";
+import { getTowersByIDs } from "@/data/tower/towers";
+import { getAllUserFavouritesIds } from "@/data/user/user-favourites";
+import { getAllUserVisits } from "@/data/user/user-visits";
 
 export const metadata: Metadata = {
     title: "Profil",
 };
 
-async function ProfilePage() {
+async function ProfileContent() {
+    await connection();
+
     const [favouritesIds, visits, ratings] = await Promise.all([
         getAllUserFavouritesIds(),
         getAllUserVisits(),
@@ -64,6 +67,18 @@ async function ProfilePage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+function ProfilePage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="flex flex-col items-center gap-3 mt-3 max-w-[calc(min(99vw,80rem))] m-auto" />
+            }
+        >
+            <ProfileContent />
+        </Suspense>
     );
 }
 

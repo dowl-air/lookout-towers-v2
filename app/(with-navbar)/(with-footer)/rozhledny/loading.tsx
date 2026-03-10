@@ -9,9 +9,14 @@ const Loading = () => {
         <div className="w-full max-w-7xl mx-auto mt-5 lg:mt-10 px-5">
             <article className="prose prose-sm lg:prose-base max-w-full">
                 <h1 className="mb-0 md:mb-6">Rozhledny a vyhlídky</h1>
-                <Filter />
+                <Filter searchParams={{}} />
             </article>
-            <Pagination totalPages={totalPages} />
+            <Pagination
+                totalPages={totalPages}
+                currentPage={1}
+                pathname="/rozhledny"
+                searchParams={{}}
+            />
             <ResultsSkeleton />
         </div>
     );

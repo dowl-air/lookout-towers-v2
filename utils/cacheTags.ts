@@ -42,6 +42,9 @@ export const enum CacheTag {
     // revalidate when user is added
     UsersCount = "UsersCount",
 
+    // Community page
+    UsersCommunity = "UsersCommunity",
+
     // todo? revalidate when new change is published
     ChangesCount = "ChangesCount",
 

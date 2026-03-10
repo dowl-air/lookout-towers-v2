@@ -74,6 +74,20 @@ Useful scripts defined in `package.json`:
 - `npm run build`: Build the application for production.
 - `npm start`: Start the production server.
 - `npm run lint`: Run linter to check for code issues.
+- `npm run test:e2e`: Run Playwright end-to-end tests against a manually started local app.
+- `npm run test:e2e:headed`: Run Playwright end-to-end tests in headed mode.
+
+### End-to-End Testing
+
+Start the application manually on `http://127.0.0.1:3000` or `http://localhost:3000`, then run:
+
+```bash
+npm run test:e2e
+```
+
+The Playwright suite covers public routes and a local-only authenticated `/profil` scenario.
+
+For authenticated tests, the suite uses a test-only local route at `/api/test-auth/login` that creates a temporary Auth.js session for a fixed test user. The route is available only outside production and only on `localhost` / `127.0.0.1`, so Playwright never has to automate a third-party OAuth provider page or fill a password.
 
 ## Contributors
 

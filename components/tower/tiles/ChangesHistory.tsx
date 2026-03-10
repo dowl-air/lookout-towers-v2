@@ -1,16 +1,24 @@
-import { getChangesByTower } from "@/actions/changes/change.get";
-import { getUser } from "@/actions/members/members.action";
-import { getTowerVisits } from "@/actions/visits/visits.action";
 import ChangeLine from "@/components/tower/tiles/changesHistory/ChangeLine";
 import VisitLine from "@/components/tower/tiles/changesHistory/VisitLine";
+import { getChangesByTower } from "@/data/change/changes";
+import { getUserById } from "@/data/user/user";
+import { getTowerVisits } from "@/data/user/user-visits";
 import { Change } from "@/types/Change";
 import { Tower } from "@/types/Tower";
 import { Visit } from "@/types/Visit";
 
 const ChangesHistory = async ({ tower }: { tower: Tower }) => {
-    const [towerChanges, towerVisits] = await Promise.all([getChangesByTower(tower.id, "", 50), getTowerVisits(tower.id)]); //todo? implement pagination
-    const uniqueUserIDs = [...new Set([...towerChanges.map((change) => change.user_id), ...towerVisits.map((visit) => visit.user_id)])];
-    const users = await Promise.all(uniqueUserIDs.map((id) => getUser(id)));
+    const [towerChanges, towerVisits] = await Promise.all([
+        getChangesByTower(tower.id, "", 50),
+        getTowerVisits(tower.id),
+    ]); //todo? implement pagination
+    const uniqueUserIDs = [
+        ...new Set([
+            ...towerChanges.map((change) => change.user_id),
+            ...towerVisits.map((visit) => visit.user_id),
+        ]),
+    ];
+    const users = await Promise.all(uniqueUserIDs.map((id) => getUserById(id)));
 
     //todo add different types of changes (admission...)
 
@@ -25,7 +33,9 @@ const ChangesHistory = async ({ tower }: { tower: Tower }) => {
     return (
         <div className="card card-compact sm:card-normal shadow-xl w-full mb-5">
             <div className="card-body gap-0">
-                <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">Historie změn a návštěv</h2>
+                <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">
+                    Historie změn a návštěv
+                </h2>
                 <div className="overflow-x-auto flex flex-col gap-1 max-h-96 overflow-y-auto">
                     {data.map((object, idx) => {
                         const user = users.find((user) => user.id === object.user_id);

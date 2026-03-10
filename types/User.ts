@@ -7,6 +7,7 @@ export type User = {
     id: string;
     visits?: number;
     changes?: number;
+    ratings?: number;
     lastVisited?: {
         tower: Tower;
         date: string;

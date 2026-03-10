@@ -1,6 +1,6 @@
 import { revalidateTag } from "next/cache";
 
-import { getTowerByID, getTowerObjectByNameID } from "@/actions/towers/towers.action";
+import { getTowerByID, getTowerObjectByNameID } from "@/data/tower/towers";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {

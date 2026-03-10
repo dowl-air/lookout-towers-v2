@@ -17,5 +17,6 @@ export type Change = {
     type: EditableParameterType;
     old_value: any;
     new_value: any;
-    created: number | Date;
+    created: string | number | Date;
+    modified?: string | Date;
 };

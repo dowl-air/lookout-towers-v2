@@ -2,6 +2,7 @@ import "server-only";
 
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
 
 const { privateKey } = JSON.parse(process.env.GOOGLE_PRIVATE_KEY);
 
@@ -16,3 +17,7 @@ if (!getApps().length) {
 }
 
 export const db = getFirestore();
+export const storage = getStorage();
+export const storageBucket = storage.bucket(
+    process.env.FIREBASE_storageBucket || "lookout-towers.appspot.com"
+);

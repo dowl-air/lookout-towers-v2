@@ -4,24 +4,46 @@ import FilterDialog from "@/components/towers/FilterDialog";
 import { CountryCode } from "@/constants/countries";
 import PROVINCES_CZ from "@/constants/provinces/CZ";
 import useLocation from "@/hooks/useLocation";
+import { TowersSearchParams } from "@/types/TowersSearchParams";
 import { cn } from "@/utils/cn";
-import { getAllCountiesFromCountry, getAllCountiesFromCountryProvince, getAllCountryProvinces, getProvinceByCounty } from "@/utils/geography";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+    getAllCountiesFromCountry,
+    getAllCountiesFromCountryProvince,
+    getAllCountryProvinces,
+    getProvinceByCounty,
+} from "@/utils/geography";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
-const Filter = () => {
-    const searchParams = useSearchParams();
+const Filter = ({ searchParams }: { searchParams: TowersSearchParams }) => {
     const { replace } = useRouter();
     const pathname = usePathname();
     const { location } = useLocation();
     const dialogRef = useRef<HTMLDialogElement>(null);
 
-    const defaultCountry = (searchParams.get("country") as CountryCode) ?? "CZ";
-    const defaultProvince = searchParams.get("province") ?? "ALL";
-    const defaultCounty = searchParams.get("county") ?? "ALL";
-    const defaultSearchTerm = searchParams.get("query") ?? "";
-    const defaultSort = searchParams.get("sort") ?? "name";
+    const getParams = () => {
+        const params = new URLSearchParams();
+
+        Object.entries(searchParams).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                value.forEach((item) => params.append(key, item));
+                return;
+            }
+
+            if (value !== undefined && value !== null && value !== "") {
+                params.set(key, String(value));
+            }
+        });
+
+        return params;
+    };
+
+    const defaultCountry = (searchParams.country as CountryCode) ?? "CZ";
+    const defaultProvince = searchParams.province ?? "ALL";
+    const defaultCounty = searchParams.county ?? "ALL";
+    const defaultSearchTerm = searchParams.query ?? "";
+    const defaultSort = searchParams.sort ?? "name";
 
     //TODO refactor to support multiple countries
 
@@ -35,7 +57,7 @@ const Filter = () => {
     }
 
     const handleSearch = useDebouncedCallback((term: string) => {
-        const params = new URLSearchParams(searchParams);
+        const params = getParams();
         if (term) {
             params.set("query", term);
             params.delete("page");
@@ -46,7 +68,7 @@ const Filter = () => {
     }, 400);
 
     const handleProvince = (provinceCode: string) => {
-        const params = new URLSearchParams(searchParams);
+        const params = getParams();
         if (provinceCode !== "ALL") {
             params.set("province", provinceCode);
             params.delete("page");
@@ -61,7 +83,7 @@ const Filter = () => {
 
     const handleSort = (sort: string) => {
         document.getElementById("buttons-block").focus();
-        const params = new URLSearchParams(searchParams);
+        const params = getParams();
         if (sort === "distance") {
             params.set("location", `${location.latitude},${location.longitude}`);
             params.set("sort", sort);
@@ -73,7 +95,7 @@ const Filter = () => {
     };
 
     const handleCounty = (county: string) => {
-        const params = new URLSearchParams(searchParams);
+        const params = getParams();
         if (county !== "ALL") {
             params.set("county", county);
             params.set("province", getProvinceByCounty(defaultCountry, county).code);
@@ -107,7 +129,12 @@ const Filter = () => {
                                 <span className="label-text">Podrobné hledání</span>
                             </div>
                             <div className="input input-bordered grow flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 opacity-70">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                    className="h-4 w-4 opacity-70"
+                                >
                                     <path
                                         fillRule="evenodd"
                                         d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
@@ -142,7 +169,11 @@ const Filter = () => {
                             </button>
 
                             <div className="dropdown self-end">
-                                <div tabIndex={0} role="button" className="btn btn-sm sm:btn-md flex-nowrap">
+                                <div
+                                    tabIndex={0}
+                                    role="button"
+                                    className="btn btn-sm sm:btn-md flex-nowrap"
+                                >
                                     <svg
                                         width="24"
                                         height="24"
@@ -159,9 +190,14 @@ const Filter = () => {
                                         <path d="M11 8h7" />
                                         <path d="M11 12h4" />
                                     </svg>
-                                    <span className="whitespace-nowrap">Dle {defaultSort === "distance" ? "vzdálenosti" : "názvu"}</span>
+                                    <span className="whitespace-nowrap">
+                                        Dle {defaultSort === "distance" ? "vzdálenosti" : "názvu"}
+                                    </span>
                                 </div>
-                                <div tabIndex={0} className="menu dropdown-content bg-base-100 rounded-box z-1 w-44 p-2 shadow-sm">
+                                <div
+                                    tabIndex={0}
+                                    className="menu dropdown-content bg-base-100 rounded-box z-1 w-44 p-2 shadow-sm"
+                                >
                                     <li onClick={() => handleSort("name")}>
                                         <a>Podle názvu</a>
                                     </li>

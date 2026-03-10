@@ -2,9 +2,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TouristAttraction, WithContext } from "schema-dts";
 
-import { listTowerPhotos } from "@/actions/photos/towerPhotos.list";
-import { getUrlsTowerGallery } from "@/actions/towers/tower.photo";
-import { getTowerObjectByNameID, getTowerRatingAndCount } from "@/actions/towers/towers.action";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Admission from "@/components/tower/tiles/Admission";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
@@ -20,6 +17,9 @@ import Legend from "@/components/tower/top/Legend";
 import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
 import RatingTop from "@/components/tower/top/RatingTop";
 import { MapProvider } from "@/context/MapContext";
+import { listTowerPhotos } from "@/data/photo/tower-photos";
+import { getUrlsTowerGallery } from "@/data/tower/tower-gallery";
+import { getTowerObjectByNameID, getTowerRatingAndCount } from "@/data/tower/towers";
 
 async function TowerPage({ params }: { params }) {
     const { nameID } = await params;

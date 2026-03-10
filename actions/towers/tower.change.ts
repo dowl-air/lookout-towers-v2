@@ -3,7 +3,7 @@
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { updateTag } from "next/cache";
 
-import { getChange } from "@/actions/changes/change.get";
+import { getChange } from "@/data/change/changes";
 import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";

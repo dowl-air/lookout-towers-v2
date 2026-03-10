@@ -4,7 +4,7 @@ import { addDoc, collection, GeoPoint, serverTimestamp, updateDoc } from "fireba
 import { updateTag } from "next/cache";
 
 import { checkAuth } from "@/actions/checkAuth";
-import { getTowerObjectByNameID } from "@/actions/towers/towers.action";
+import { getTowerObjectByNameID } from "@/data/tower/towers";
 import { OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
 import { CacheTag } from "@/utils/cacheTags";

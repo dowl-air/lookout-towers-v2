@@ -1,6 +1,6 @@
 "use server";
 
-import { getTowerRatingAndCount } from "@/actions/towers/towers.action";
+import { getTowerRatingAndCount } from "@/data/tower/towers";
 import { Tower } from "@/types/Tower";
 import { normalizeTypesenseTowerObject } from "@/utils/normalizeTowerObject";
 
@@ -34,7 +34,11 @@ export const searchTowers = async ({
     sort_by?: string;
     filter_by?: string;
     include_ratings?: boolean;
-}): Promise<{ towers: Tower[]; found: number; ratings: { avg: number; count: number; id: string }[] }> => {
+}): Promise<{
+    towers: Tower[];
+    found: number;
+    ratings: { avg: number; count: number; id: string }[];
+}> => {
     const res = await client.collections("towers").documents().search({
         q,
         query_by,
@@ -45,9 +49,16 @@ export const searchTowers = async ({
     });
 
     if (res.found === 0) return { found: res.found, towers: [], ratings: [] };
-    if (!include_ratings) return { found: res.found, towers: res.hits.map((elm) => normalizeTypesenseTowerObject(elm.document)), ratings: [] };
+    if (!include_ratings)
+        return {
+            found: res.found,
+            towers: res.hits.map((elm) => normalizeTypesenseTowerObject(elm.document)),
+            ratings: [],
+        };
 
-    const ratings = await Promise.all(res.hits.map((elm) => getTowerRatingAndCount(elm.document.id)));
+    const ratings = await Promise.all(
+        res.hits.map((elm) => getTowerRatingAndCount(elm.document.id))
+    );
 
     return {
         found: res.found,

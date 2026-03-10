@@ -1,4 +1,4 @@
-import { getTowersCount } from "@/actions/towers/tower.stats";
+import { getTotalTowersCount } from "@/data/tower/total-count";
 import { Tower } from "@/types/Tower";
 import { Visit } from "@/types/Visit";
 import { formatDateYear } from "@/utils/date";
@@ -7,13 +7,14 @@ const VisitsStats = async ({ visits, towers }: { visits: Visit[]; towers: Tower[
     if (!visits || visits.length === 0)
         return (
             <div className="px-3 text-lg font-bold">
-                Zde budou zobrazeny statistiky navštívených rozhleden. Přidejte si alespoň jednu rozhlednu mezi navštívené.
+                Zde budou zobrazeny statistiky navštívených rozhleden. Přidejte si alespoň jednu
+                rozhlednu mezi navštívené.
             </div>
         );
 
     const firstVisit = visits[visits.length - 1];
 
-    const allTowersCount = await getTowersCount();
+    const allTowersCount = await getTotalTowersCount();
 
     const percentageOfVisitedTowers = ((visits.length / allTowersCount) * 100).toFixed(2);
 
@@ -45,7 +46,9 @@ const VisitsStats = async ({ visits, towers }: { visits: Visit[]; towers: Tower[
             <div className="stat w-44">
                 <div className="stat-title">První návštěva</div>
                 <div className="stat-value">{formatDateYear({ date: firstVisit.date })}</div>
-                <div className="stat-desc">{towers.find((t) => t.id === firstVisit.tower_id).name}</div>
+                <div className="stat-desc">
+                    {towers.find((t) => t.id === firstVisit.tower_id).name}
+                </div>
             </div>
             <div className="stat w-44">
                 <div className="stat-title">Nejvíce za den</div>

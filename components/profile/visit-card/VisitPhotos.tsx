@@ -13,6 +13,12 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 
 const VisitPhotos = ({ visit, tower }: { visit: Visit; tower: Tower }) => {
+    const lightboxStyles = {
+        root: {
+            "--yarl__portal_zindex": 20000,
+        },
+    } as const;
+
     const [open, setOpen] = useState(false);
     const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -55,6 +61,7 @@ const VisitPhotos = ({ visit, tower }: { visit: Visit; tower: Tower }) => {
                     finite: true,
                 }}
                 close={() => setOpen(false)}
+                styles={lightboxStyles}
                 slides={visit.photos.map((image) => {
                     return {
                         src: image.url,

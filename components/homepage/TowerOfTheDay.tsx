@@ -2,12 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { User } from "next-auth";
 
-import { getUser } from "@/actions/members/members.action";
-import { getTowerRatingAndCount, getTowerVisitsCount } from "@/actions/towers/towers.action";
-import { getMostRecentTowerVisit } from "@/actions/visits/visits.action";
 import ThemedRating from "@/components/shared/ThemedRating";
 import { towerTypes } from "@/constants/towerType";
+import { getTowerRatingAndCount, getTowerVisitsCount } from "@/data/tower/towers";
 import { getTowerOfTheDay } from "@/data/tower/tower-of-the-day";
+import { getUserById } from "@/data/user/user";
+import { getMostRecentTowerVisit } from "@/data/user/user-visits";
 import { formatDate } from "@/utils/date";
 
 export const revalidate = 3600;
@@ -21,7 +21,7 @@ const TowerOfTheDay = async () => {
         getTowerVisitsCount(tower.id),
         getMostRecentTowerVisit(tower.id),
     ]);
-    if (towerRecentVisit) user = await getUser(towerRecentVisit.user_id);
+    if (towerRecentVisit) user = await getUserById(towerRecentVisit.user_id);
 
     return (
         <div className="max-w-[1070px] w-full mx-auto px-4 mt-10 mb-10">

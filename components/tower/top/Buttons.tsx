@@ -1,9 +1,9 @@
 import { loginRedirect } from "@/actions/login.redirect";
 import { auth } from "@/auth";
+import { checkFavourite } from "@/data/user/user-favourites";
+import { getVisit } from "@/data/user/user-visits";
 import { FavouriteButton } from "./buttons/FavouriteButton";
-import { checkFavourite } from "@/actions/favourites/favourites.action";
 import { VisitButton } from "./buttons/VisitButton";
-import { getVisit } from "@/actions/visits/visits.action";
 import { Tower } from "@/types/Tower";
 
 async function Buttons({ tower }: { tower: Tower }) {
@@ -12,11 +12,20 @@ async function Buttons({ tower }: { tower: Tower }) {
     if (!session?.user) {
         return (
             <div className="flex flex-col gap-2 lg:mb-3!">
-                <form action={loginRedirect} className="flex flex-row lg:flex-col justify-center gap-2 sm:flex-wrap">
-                    <button type="submit" className="btn btn-primary btn-sm sm:btn-md max-w-xs lg:min-w-64 text-sm min-[710px]:text-base">
+                <form
+                    action={loginRedirect}
+                    className="flex flex-row lg:flex-col justify-center gap-2 sm:flex-wrap"
+                >
+                    <button
+                        type="submit"
+                        className="btn btn-primary btn-sm sm:btn-md max-w-xs lg:min-w-64 text-sm min-[710px]:text-base"
+                    >
                         Přidat do oblíbených
                     </button>
-                    <button type="submit" className="btn btn-primary btn-sm sm:btn-md max-w-xs lg:min-w-64 text-sm min-[710px]:text-base">
+                    <button
+                        type="submit"
+                        className="btn btn-primary btn-sm sm:btn-md max-w-xs lg:min-w-64 text-sm min-[710px]:text-base"
+                    >
                         Zaznamenat návštěvu
                     </button>
                 </form>

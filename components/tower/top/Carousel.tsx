@@ -16,7 +16,21 @@ import { useEffect, useRef, useState } from "react";
 import { Tower } from "@/types/Tower";
 import { Photo } from "@/types/Photo";
 
-const Carousel = ({ images, userImages, tower }: { images: string[]; userImages: Photo[]; tower: Tower }) => {
+const Carousel = ({
+    images,
+    userImages,
+    tower,
+}: {
+    images: string[];
+    userImages: Photo[];
+    tower: Tower;
+}) => {
+    const lightboxStyles = {
+        root: {
+            "--yarl__portal_zindex": 20000,
+        },
+    } as const;
+
     const [loadingMain, setLoadingMain] = useState<boolean>(true);
     const imgRef = useRef<HTMLImageElement>(null);
     const [open, setOpen] = useState(false);
@@ -37,7 +51,15 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
     };
 
     const allImagesWithMainFirst: Photo[] = [
-        ...images.map((image) => ({ url: image, created: new Date(), id: "", user_id: "", tower_id: tower.id, isPublic: true, isMain: false })),
+        ...images.map((image) => ({
+            url: image,
+            created: new Date(),
+            id: "",
+            user_id: "",
+            tower_id: tower.id,
+            isPublic: true,
+            isMain: false,
+        })),
         ...userImages,
     ].sort((a, b) => {
         if (a.isMain === b.isMain) return 0;
@@ -77,7 +99,8 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
                 <div
                     className="mt-6 md:mt-0 h-28 w-auto p-1 flex overflow-x-hidden overflow-y-visible gap-2 my-3"
                     style={{
-                        maskImage: "linear-gradient(to right, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 96%)",
+                        maskImage:
+                            "linear-gradient(to right, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 96%)",
                     }}
                 >
                     {allImagesWithMainFirst.map((image, idx) => {
@@ -100,6 +123,7 @@ const Carousel = ({ images, userImages, tower }: { images: string[]; userImages:
             <Lightbox
                 open={open}
                 close={() => setOpen(false)}
+                styles={lightboxStyles}
                 slides={allImagesWithMainFirst.map((image) => {
                     return {
                         src: image.url,

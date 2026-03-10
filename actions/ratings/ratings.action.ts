@@ -1,76 +1,12 @@
 "use server";
 
-import {
-    Timestamp,
-    collection,
-    deleteDoc,
-    doc,
-    getDoc,
-    getDocs,
-    query,
-    serverTimestamp,
-    setDoc,
-    where,
-} from "firebase/firestore";
-import { updateTag, unstable_cache as cache } from "next/cache";
+import { deleteDoc, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { updateTag } from "next/cache";
 
 import { checkAuth } from "@/actions/checkAuth";
-import { getUser } from "@/actions/members/members.action";
 import { Rating } from "@/types/Rating";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
-
-export const getUserRating = async (towerID: string): Promise<Rating | null> => {
-    const user = await checkAuth();
-    if (!user) return null;
-
-    const cachedFn = cache(
-        async (towerID: string, userID: string) => {
-            const [snap, member] = await Promise.all([
-                await getDoc(doc(db, "ratings", `${userID}_${towerID}`)),
-                getUser(userID),
-            ]);
-            if (!snap.exists()) return null;
-            const data = snap.data();
-            return {
-                ...data,
-                created: (data.created as Timestamp).toDate().toISOString(),
-                user: member,
-            } as Rating;
-        },
-        [CacheTag.UserTowerRating],
-        {
-            tags: [
-                CacheTag.UserTowerRating,
-                getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id),
-            ],
-        }
-    );
-    return cachedFn(towerID, user.id);
-};
-
-export const getTowerRatings = async (towerID: string): Promise<Rating[]> => {
-    const cachedFn = cache(
-        async (towerID: string) => {
-            const q = query(collection(db, "ratings"), where("tower_id", "==", towerID));
-            const querySnapshot = await getDocs(q);
-            const ratings: Rating[] = [];
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                ratings.push({
-                    ...data,
-                    created: (data.created as Timestamp).toDate().toISOString(),
-                } as Rating);
-            });
-            return ratings;
-        },
-        [CacheTag.TowerRatings],
-        {
-            tags: [CacheTag.TowerRatings, getCacheTagSpecific(CacheTag.TowerRatings, towerID)],
-        }
-    );
-    return cachedFn(towerID);
-};
 
 export const editRating = async (towerID: string, rating: number, text: string) => {
     const user = await checkAuth();
@@ -89,7 +25,7 @@ export const editRating = async (towerID: string, rating: number, text: string) 
     updateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
     updateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
     updateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
-    updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id));
+    updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, user.id, towerID));
 };
 
 export const removeRating = async (towerID: string) => {
@@ -100,31 +36,5 @@ export const removeRating = async (towerID: string) => {
     updateTag(getCacheTagSpecific(CacheTag.TowerRatingAndCount, towerID));
     updateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
     updateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
-    updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, towerID, user.id));
-};
-
-export const getAllUserRatings = async () => {
-    const user = await checkAuth();
-    if (!user) return [];
-
-    const cachedFn = cache(
-        async (userID: string) => {
-            const q = query(collection(db, "ratings"), where("user_id", "==", userID));
-            const querySnapshot = await getDocs(q);
-            const ratings: Rating[] = [];
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                ratings.push({
-                    ...data,
-                    created: (data.created as Timestamp).toDate().toISOString(),
-                } as Rating);
-            });
-            return ratings;
-        },
-        [CacheTag.UserRatings],
-        {
-            tags: [CacheTag.UserRatings, getCacheTagSpecific(CacheTag.UserRatings, user.id)],
-        }
-    );
-    return cachedFn(user.id);
+    updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, user.id, towerID));
 };

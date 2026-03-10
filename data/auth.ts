@@ -1,7 +1,6 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
-import { cache } from "react";
 
 import { auth } from "@/auth";
 
@@ -10,7 +9,7 @@ import { auth } from "@/auth";
  *
  * Use only when the user must be authenticated to access the page or data.
  */
-export const verifyUser = cache(async () => {
+export const verifyUser = async () => {
     const session = await auth();
 
     if (!session?.user) {
@@ -22,17 +21,21 @@ export const verifyUser = cache(async () => {
         userId: session.user.id,
         isAdmin: session.user.id === "iMKZNJV5PE4XQjnKmZut",
     };
-});
+};
 
 /**
  * Check if user is authenticated without redirecting
  */
-export const checkUser = cache(async () => {
+export const checkUser = async () => {
     const session = await auth();
 
     if (!session?.user) {
-        return { isAuth: false, userId: null };
+        return { isAuth: false, isAdmin: false, userId: null };
     }
 
-    return { isAuth: true, userId: session.user.id };
-});
+    return {
+        isAuth: true,
+        isAdmin: session.user.id === "iMKZNJV5PE4XQjnKmZut",
+        userId: session.user.id,
+    };
+};

@@ -54,6 +54,9 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+    const shouldLoadCloudflareAnalytics =
+        process.env.NODE_ENV === "production" && !!process.env.CLOUDFLARE_ANALYTICS_TOKEN;
+
     return (
         <html lang="cs" className="font-sans" suppressHydrationWarning>
             <head>
@@ -72,11 +75,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         {children}
                     </ThemeProvider>
                 </SessionProvider>
-                <script
-                    defer
-                    src="https://static.cloudflareinsights.com/beacon.min.js"
-                    data-cf-beacon={`{"token": "${process.env.CLOUDFLARE_ANALYTICS_TOKEN}"}`}
-                ></script>
+                {shouldLoadCloudflareAnalytics ? (
+                    <script
+                        defer
+                        src="https://static.cloudflareinsights.com/beacon.min.js"
+                        data-cf-beacon={`{"token": "${process.env.CLOUDFLARE_ANALYTICS_TOKEN}"}`}
+                    ></script>
+                ) : null}
             </body>
         </html>
     );

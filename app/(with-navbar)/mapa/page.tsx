@@ -1,16 +1,20 @@
 import { Metadata } from "next";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
-import { getAllUserFavouritesIds } from "@/actions/favourites/favourites.action";
-import { getAllUserVisits } from "@/actions/visits/visits.action";
 import { MapMain } from "@/components/shared/map/MainMap";
 import { MapProvider } from "@/context/MapContext";
 import { getAllTowersForMap } from "@/data/tower/towers-map";
+import { getAllUserFavouritesIds } from "@/data/user/user-favourites";
+import { getAllUserVisits } from "@/data/user/user-visits";
 
 export const metadata: Metadata = {
     title: "Mapa",
 };
 
-async function MapPage() {
+async function MapContent() {
+    await connection();
+
     const [towers, favouriteTowersIds, visits] = await Promise.all([
         getAllTowersForMap(),
         getAllUserFavouritesIds(),
@@ -28,6 +32,18 @@ async function MapPage() {
                 <MapMain towers={towers} />
             </MapProvider>
         </div>
+    );
+}
+
+function MapPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="flex justify-center items-stretch grow h-[calc(100dvh-66px)] md:h-[calc(100dvh-69px)]" />
+            }
+        >
+            <MapContent />
+        </Suspense>
     );
 }
 

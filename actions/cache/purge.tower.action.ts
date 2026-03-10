@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 
-import { getTowerByID, getTowerObjectByNameID } from "@/actions/towers/towers.action";
+import { getTowerByID, getTowerObjectByNameID } from "@/data/tower/towers";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 
 export const revalidateTower = async (formData: FormData) => {

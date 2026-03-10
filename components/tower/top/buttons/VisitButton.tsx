@@ -16,11 +16,17 @@ export const VisitButton = ({ visitInit, tower }: { visitInit: Visit | null; tow
         <form action={action} id="form-visit-button">
             <button
                 className={`btn btn-sm sm:btn-md md:min-w-64 whitespace-nowrap ${
-                    isVisited ? "btn-success hover:[&>span]:hidden hover:btn-warning hover:before:content-['Upravit_návštěvu']" : "btn-primary"
+                    isVisited
+                        ? "btn-success hover:[&>span]:hidden hover:btn-warning hover:before:content-['Upravit_návštěvu']"
+                        : "btn-primary"
                 } max-w-xs text-sm md:w-full min-[710px]:text-base"`}
                 onClick={() => showModalWithoutFocus("visit_modal")}
             >
-                <span>{isVisited ? `Navštíveno ${formatDate({ date: isVisited.date, long: false })}` : "Přidat do navštívených"}</span>
+                <span>
+                    {isVisited
+                        ? `Navštíveno ${formatDate({ date: isVisited.date, long: false })}`
+                        : "Přidat do navštívených"}
+                </span>
             </button>
             <VisitModal initVisit={isVisited} tower={tower} />
         </form>

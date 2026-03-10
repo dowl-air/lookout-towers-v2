@@ -26,3 +26,23 @@ export const getCurrentUser = cache(async () => {
         return null;
     }
 });
+
+export const getUserById = cache(async (id: string) => {
+    try {
+        const userSnap = await db.collection("users").doc(id).get();
+        if (!userSnap.exists) return null;
+
+        const data = userSnap.data();
+        const user: User = {
+            id: userSnap.id,
+            name: data.name,
+            email: data.email,
+            image: data.image,
+        };
+
+        return user;
+    } catch (error) {
+        console.log("Error fetching user data:", error);
+        return null;
+    }
+});
