@@ -1,94 +1,115 @@
 # Lookout Towers
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Lookout Towers is a Czech community website for lookout towers, observatories, and similar places with a view. It combines a public catalogue of towers with authenticated user features such as visits, favourites, ratings, profile pages, and community statistics.
 
-## Description
+## Highlights
 
-Website of community database of **lookout towers**, observatories and other objects designed to discover beautiful views. I created this website to better connect lookout tower lovers, which of course includes me. The goal of this website is to map all lookout towers in the Czech Republic (so far), store current information about them that will be freely available to everyone, and last but not least, allow users to preserve their visits and memories.
+- Public pages for homepage, map, tower detail, listing, and search.
+- Authenticated user flows for visits, favourites, ratings, and profile history.
+- Community and moderation-oriented features, including tower submissions and change tracking.
+- Firestore-backed data model with server-side caching and tag-based invalidation.
+- End-to-end coverage with Playwright, including local authenticated test flows.
 
-The project leverages **Next.js** for server-side rendering and static site generation, **Tailwind CSS** for styling, and follows modern **TypeScript** practices.
+## Tech stack
 
-## Features
+- Next.js 16 App Router with Turbopack and Cache Components.
+- React 19 + TypeScript.
+- Tailwind CSS 4 + daisyUI.
+- Auth.js / NextAuth v5 beta with Firebase adapter.
+- Firebase Firestore + Firebase Storage.
+- Typesense for search.
+- Playwright for end-to-end testing.
 
-- User authentication using `next-auth v5` (found in `auth.ts`).
-- Modular UI components (located in `components/`).
-- Tailwind CSS for responsive and modern design.
-
-## Getting Started
-
-Follow these steps to set up the project locally.
+## Quick start
 
 ### Prerequisites
 
-Ensure you have the following installed:
+- Node.js 22+
+- npm or pnpm
+- Firebase project credentials for both client and admin access
 
-- Node.js (version 22 or higher recommended)
-- npm or yarn
+### Install
 
-### Installation
+```bash
+git clone https://github.com/dowl-air/lookout-towers-v2.git
+cd lookout-towers-v2
+npm install
+```
 
-1. Clone the repository:
+### Configure environment
 
-    ```bash
-    git clone https://github.com/dowl-air/lookout-towers-v2.git
-    cd lookout-towers-v2
-    ```
+Create `.env.local` and provide the values used by the app:
 
-2. Install dependencies:
+- Firebase client SDK: `FIREBASE_apiKey`, `FIREBASE_authDomain`, `FIREBASE_databaseURL`, `FIREBASE_projectId`, `FIREBASE_storageBucket`, `FIREBASE_messagingSenderId`, `FIREBASE_appId`
+- Firebase admin / Auth adapter: `GOOGLE_PRIVATE_KEY`, `GOOGLE_PROJECTID`, `GOOGLE_CLIENT_EMAIL`
+- OAuth providers: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SEZNAM_CLIENT_ID`, `SEZNAM_CLIENT_SECRET`
+- Search: `TYPESENSE_HOST`, `TYPESENSE_KEY`
+- Mail: `SMTP_SERVER_USERNAME`, `SMTP_SERVER_PASSWORD`, `SITE_MAIL_RECIEVER`
+- Optional analytics: `CLOUDFLARE_ANALYTICS_TOKEN`
 
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
-
-### Running the Development Server
-
-Start the development server:
+### Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-## Project Structure
+## Available scripts
 
-A brief overview of the main folders and files:
+- `npm run dev` — start the development server
+- `npm run build` — create a production build
+- `npm start` — run the production build
+- `npm run lint` — run ESLint
+- `npm run typecheck` — run TypeScript without emitting files
+- `npm run test:e2e` — run Playwright tests against a manually started local app
+- `npm run test:e2e:headed` — run Playwright tests in headed mode
 
-- **`actions/`**: Contains action handlers or utilities.
-- **`app/`**: Main application logic, including pages and routes.
-- **`auth.ts`**: Authentication-related functionality.
-- **`components/`**: Reusable UI components.
-- **`public/`**: Public assets like images.
-- **`utils/`**: Utility functions for common tasks.
-- **`types/`**: TypeScript types and interfaces.
+## Project structure
 
-## Scripts
+- `app/` — App Router pages, layouts, route groups, and API routes
+- `actions/` — Server Actions for writes, auth checks, redirects, and mail sending
+- `data/` — server-side read layer, typically cached with `cache()` + `cacheTag()`
+- `components/` — reusable UI components
+- `utils/` — Firebase, serialization, cache tags, formatting, and shared helpers
+- `types/` — shared domain types
+- `tests/` — Playwright end-to-end tests
+- `proxy.ts` — route protection for authenticated and admin-only areas
 
-Useful scripts defined in `package.json`:
+## Architecture notes
 
-- `npm run dev`: Start the development server.
-- `npm run build`: Build the application for production.
-- `npm start`: Start the production server.
-- `npm run lint`: Run linter to check for code issues.
-- `npm run test:e2e`: Run Playwright end-to-end tests against a manually started local app.
-- `npm run test:e2e:headed`: Run Playwright end-to-end tests in headed mode.
+- Reads are primarily implemented in `data/` and use `@/utils/firebase-admin`.
+- Writes are primarily implemented in `actions/` and use `@/utils/firebase` plus `updateTag(...)` for cache invalidation.
+- Auth is configured in `auth.ts` with Google and Seznam providers.
+- Protected routes currently include `/navstivene`, `/komunita`, `/pridat-rozhlednu`, `/profil`, `/purge-cache`, and `/zmeny`.
 
-### End-to-End Testing
+## Testing
 
-Start the application manually on `http://127.0.0.1:3000` or `http://localhost:3000`, then run:
+Playwright expects the app to be started manually, by default on `http://127.0.0.1:3000`.
 
 ```bash
+npm run dev
 npm run test:e2e
 ```
 
-The Playwright suite covers public routes and a local-only authenticated `/profil` scenario.
+For authenticated scenarios, tests use the local-only `POST /api/test-auth/login` route. That route is disabled in production and only works on `localhost` or `127.0.0.1`, so tests do not need to automate third-party OAuth providers.
 
-For authenticated tests, the suite uses a test-only local route at `/api/test-auth/login` that creates a temporary Auth.js session for a fixed test user. The route is available only outside production and only on `localhost` / `127.0.0.1`, so Playwright never has to automate a third-party OAuth provider page or fill a password.
+## Important implementation detail
 
-## Contributors
+Firestore `Timestamp`, `GeoPoint`, and similar objects must not cross the server/client boundary unmodified. If raw Firestore values are passed to Client Components, Next.js build or render can fail with errors about “Only plain objects”.
+
+Use the existing helpers when shaping data for UI:
+
+- `@/utils/serializeFirestoreValue`
+- `@/utils/normalizeTowerObject`
+
+## Contributing notes
+
+- Keep imports grouped and alphabetized; ESLint enforces `import/order`.
+- Prefer existing helpers in `data/`, `actions/`, and `utils/` before adding new abstractions.
+- When changing a mutation, update the related cache invalidation in `@/utils/cacheTags.ts`.
+- When changing user-visible flows, update Playwright coverage where it already fits the suite structure.
+
+## Maintainer
 
 - [Daniel Patek](https://github.com/dowl-air)
