@@ -151,7 +151,7 @@ Before writing new Firestore queries, look for an existing function in `data/` o
 
 ### Playwright notes
 
-- Playwright expects a manually started local app.
+- Playwright auto-starts the local app with `npm run dev`, or reuses an already running one.
 - Base URL defaults to `http://127.0.0.1:3000`.
 - Authenticated tests use `POST /api/test-auth/login`.
 - That route only works outside production and only on `localhost` / `127.0.0.1`.

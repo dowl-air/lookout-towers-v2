@@ -62,7 +62,7 @@ Open `http://localhost:3000`.
 - `npm start` — run the production build
 - `npm run lint` — run ESLint
 - `npm run typecheck` — run TypeScript without emitting files
-- `npm run test:e2e` — run Playwright tests against a manually started local app
+- `npm run test:e2e` — run Playwright tests with an auto-started or reused local app
 - `npm run test:e2e:headed` — run Playwright tests in headed mode
 
 ## Project structure
@@ -85,10 +85,9 @@ Open `http://localhost:3000`.
 
 ## Testing
 
-Playwright expects the app to be started manually, by default on `http://127.0.0.1:3000`.
+Playwright starts the app automatically with `npm run dev`, or reuses an already running local server. The default base URL is `http://127.0.0.1:3000`.
 
 ```bash
-npm run dev
 npm run test:e2e
 ```
 

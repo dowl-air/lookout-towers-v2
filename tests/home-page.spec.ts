@@ -14,6 +14,10 @@ test("home page loads without browser errors", async ({ page }) => {
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByText("Rozhledny, věže a vyhlídky", { exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Prozkoumat mapu" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Procházet rozhledny" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Náhodný výběr" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Komunita v číslech" })).toBeVisible();
     await expect(
         page.getByText(
             "Vývoj na tomto webu stále probíhá a v současnosti je spuštěn ve zkušebním režimu.",
@@ -21,7 +25,7 @@ test("home page loads without browser errors", async ({ page }) => {
                 exact: true,
             }
         )
-    ).toBeVisible();
+    ).toHaveCount(0);
 
     expectNoBrowserErrors(browserErrors);
 });

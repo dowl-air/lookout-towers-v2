@@ -4,8 +4,8 @@ import { User } from "next-auth";
 
 import ThemedRating from "@/components/shared/ThemedRating";
 import { towerTypes } from "@/constants/towerType";
-import { getTowerRatingAndCount, getTowerVisitsCount } from "@/data/tower/towers";
 import { getTowerOfTheDay } from "@/data/tower/tower-of-the-day";
+import { getTowerRatingAndCount, getTowerVisitsCount } from "@/data/tower/towers";
 import { getUserById } from "@/data/user/user";
 import { getMostRecentTowerVisit } from "@/data/user/user-visits";
 import { formatDate } from "@/utils/date";
@@ -74,12 +74,16 @@ const TowerOfTheDay = async () => {
                     </div>
                 </div>
                 <div className="relative w-64 h-80 rounded-xl overflow-hidden">
-                    <Link href={`${tower.type}/${tower.nameID}`}>
+                    <Link
+                        href={`${tower.type}/${tower.nameID}`}
+                        className="relative block h-full w-full"
+                    >
                         <Image
                             src={tower.mainPhotoUrl}
                             alt={tower.name}
                             className="object-cover object-top"
                             fill
+                            sizes="(max-width: 768px) 16rem, 20rem"
                         />
                     </Link>
                 </div>
