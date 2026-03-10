@@ -1,21 +1,17 @@
 import "server-only";
 
-import { Timestamp } from "firebase-admin/firestore";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
 import { Photo } from "@/types/Photo";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 const normalizePhoto = (photoId: string, data: any): Photo =>
     ({
-        ...data,
+        ...(serializeFirestoreValue(data) as Record<string, unknown>),
         id: photoId,
-        created:
-            data.created instanceof Timestamp
-                ? data.created.toDate().toISOString()
-                : new Date(data.created).toISOString(),
     }) as Photo;
 
 export const listTowerPhotos = cache(async (towerId: string): Promise<Photo[]> => {

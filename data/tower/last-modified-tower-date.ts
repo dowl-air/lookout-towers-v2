@@ -1,11 +1,11 @@
 import "server-only";
 
-import { Timestamp } from "firebase-admin/firestore";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
 import { CacheTag } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 export const getLastModifiedTowerDate = cache(async () => {
     "use cache";
@@ -16,6 +16,6 @@ export const getLastModifiedTowerDate = cache(async () => {
     if (snap.empty) return new Date().toISOString();
 
     const doc = snap.docs[0];
-    const data = doc.data();
-    return (data.modified as Timestamp).toDate().toISOString();
+    const data = serializeFirestoreValue(doc.data()) as { modified?: string };
+    return data.modified || new Date().toISOString();
 });

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { Timestamp } from "firebase-admin/firestore";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
@@ -9,14 +8,11 @@ import { getUserById } from "@/data/user/user";
 import { Rating } from "@/types/Rating";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 const normalizeRating = (data: any): Rating =>
     ({
-        ...data,
-        created:
-            data.created instanceof Timestamp
-                ? data.created.toDate().toISOString()
-                : new Date(data.created).toISOString(),
+        ...(serializeFirestoreValue(data) as Record<string, unknown>),
     }) as Rating;
 
 export const getUserRating = cache(async (towerID: string): Promise<Rating | null> => {

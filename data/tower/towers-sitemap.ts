@@ -1,6 +1,5 @@
-import { Timestamp } from "firebase-admin/firestore";
-
 import { db } from "@/utils/firebase-admin";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 type TowerSitemapDTO = {
     id: string;
@@ -14,9 +13,17 @@ export const getAllTowersForSitemap = async () => {
 
     const towers: TowerSitemapDTO[] = [];
     snap.forEach((doc) => {
-        const t = doc.data() as TowerSitemapDTO;
-        t.modified = t.modified instanceof Timestamp ? t.modified.toDate() : t.modified;
-        towers.push(t);
+        const serialized = serializeFirestoreValue(doc.data()) as Omit<
+            TowerSitemapDTO,
+            "modified"
+        > & {
+            modified: string | Date;
+        };
+
+        towers.push({
+            ...serialized,
+            modified: new Date(serialized.modified),
+        });
     });
 
     return towers;

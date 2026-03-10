@@ -1,6 +1,5 @@
 import "server-only";
 
-import { Timestamp } from "firebase-admin/firestore";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
@@ -9,18 +8,11 @@ import { getPhotos } from "@/data/photo/photo";
 import { Visit } from "@/types/Visit";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 const normalizeVisit = (data: any): Visit =>
     ({
-        ...data,
-        date:
-            data.date instanceof Timestamp
-                ? data.date.toDate().toISOString()
-                : new Date(data.date).toISOString(),
-        created:
-            data.created instanceof Timestamp
-                ? data.created.toDate().toISOString()
-                : new Date(data.created).toISOString(),
+        ...(serializeFirestoreValue(data) as Record<string, unknown>),
     }) as Visit;
 
 const hydrateVisitPhotos = async (visits: Visit[]): Promise<Visit[]> => {

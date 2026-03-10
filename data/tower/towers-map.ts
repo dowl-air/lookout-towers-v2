@@ -1,12 +1,12 @@
 import "server-only";
 
-import { GeoPoint, Timestamp } from "firebase-admin/firestore";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
 import { Tower } from "@/types/Tower";
 import { CacheTag } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 export type TowerMapDTO = Pick<
     Tower,
@@ -47,13 +47,7 @@ export const getAllTowersForMap = cache(async () => {
 
     const towers: TowerMapDTO[] = [];
     snap.forEach((doc) => {
-        const t = doc.data() as TowerMapDTO;
-        t.opened = t.opened instanceof Timestamp ? t.opened.toDate() : t.opened;
-        t.gps =
-            t.gps instanceof GeoPoint
-                ? { latitude: t.gps.latitude, longitude: t.gps.longitude }
-                : t.gps;
-        towers.push(t);
+        towers.push(serializeFirestoreValue(doc.data()) as TowerMapDTO);
     });
     return towers;
 });

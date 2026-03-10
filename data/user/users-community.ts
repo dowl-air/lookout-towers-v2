@@ -5,6 +5,7 @@ import { User } from "@/types/User";
 import { CacheTag } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 const getVisitCount = async (userId: string) => {
     const snap = await db.collection("visits").where("user_id", "==", userId).count().get();
@@ -37,7 +38,12 @@ const getLastVisit = async (userId: string) => {
     const tower = normalizeTowerObject(towerSnap.data());
 
     const lastVisitData = snap.docs[0].data();
-    return { lastVisited: { tower, date: lastVisitData.date } };
+    return {
+        lastVisited: {
+            tower,
+            date: serializeFirestoreValue(lastVisitData.date) as string,
+        },
+    };
 };
 
 export const getAllMembers: () => Promise<User[]> = cache(async () => {
@@ -49,22 +55,25 @@ export const getAllMembers: () => Promise<User[]> = cache(async () => {
 
     return Promise.all(
         usersSnap.docs.map(async (doc) => {
-            const user: User = { ...doc.data(), id: doc.id } as User;
+            const userData = serializeFirestoreValue(doc.data()) as Record<string, unknown>;
 
             const [visits, ratings, changes, lastVisited] = await Promise.all([
-                getVisitCount(user.id),
-                getRatingCount(user.id),
-                getChangeCount(user.id),
-                getLastVisit(user.id),
+                getVisitCount(doc.id),
+                getRatingCount(doc.id),
+                getChangeCount(doc.id),
+                getLastVisit(doc.id),
             ]);
 
             return {
-                ...user,
+                id: doc.id,
+                name: typeof userData.name === "string" ? userData.name : "Uživatel",
+                email: typeof userData.email === "string" ? userData.email : "",
+                image: typeof userData.image === "string" ? userData.image : undefined,
                 visits,
                 ratings,
                 changes,
                 ...lastVisited,
-            };
+            } satisfies User;
         })
     );
 });

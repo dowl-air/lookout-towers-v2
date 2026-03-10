@@ -1,30 +1,35 @@
 import { Tower } from "@/types/Tower";
+import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
+
+const normalizeTowerGps = (gps: unknown) => {
+    if (!gps || typeof gps !== "object") {
+        return gps;
+    }
+
+    if ("latitude" in gps && "longitude" in gps) {
+        return {
+            latitude: gps.latitude,
+            longitude: gps.longitude,
+        };
+    }
+
+    if ("lat" in gps && "lng" in gps) {
+        return {
+            latitude: gps.lat,
+            longitude: gps.lng,
+        };
+    }
+
+    return gps;
+};
 
 export const normalizeTowerObject = (tower: any): Tower => {
-    const opened = tower.opened.toDate().toISOString();
-    const modified = tower.modified.toDate().toISOString();
-    const created = tower.created.toDate().toISOString();
+    const serialized = serializeFirestoreValue(tower) as Tower;
 
-    if (tower.gps && typeof tower.gps.toJSON === "function") {
-        tower.gps = tower.gps.toJSON();
-    } else {
-        const latitude = tower.gps.latitude || tower.gps.lat;
-        const longitude = tower.gps.longitude || tower.gps.lng;
-        tower.gps = { latitude, longitude };
-    }
-
-    if (
-        tower.mapycz &&
-        tower.mapycz.lastMapped &&
-        typeof tower.mapycz.lastMapped.toDate === "function"
-    ) {
-        tower.mapycz.lastMapped = tower.mapycz.lastMapped.toDate().toISOString();
-    }
-
-    if (tower.gmaps && tower.gmaps.mappedAt && typeof tower.gmaps.mappedAt.toDate === "function") {
-        tower.gmaps.mappedAt = tower.gmaps.mappedAt.toDate().toISOString();
-    }
-    return { ...tower, opened: opened, modified: modified, created: created } as Tower;
+    return {
+        ...serialized,
+        gps: normalizeTowerGps(serialized.gps),
+    } as Tower;
 };
 
 export const normalizeTypesenseTowerObject = (tower: any): Tower => {
