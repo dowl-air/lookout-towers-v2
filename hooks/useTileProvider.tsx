@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 
 import { getDefaultTileProvider, getTileProviderById } from "@/constants/tile-providers";
 import { TileProvider } from "@/types/Map";
+import { normalizeTheme } from "@/utils/theme";
 
 /**
  * Custom hook to manage map tile provider with theme-aware auto-switching
@@ -15,8 +16,9 @@ import { TileProvider } from "@/types/Map";
  * @returns Object with current tile provider and setter function
  */
 export function useMapTileProvider() {
-    const { theme } = useTheme();
+    const { resolvedTheme } = useTheme();
     const [manualProviderId, setManualProviderId] = useState<string | null>(null);
+    const normalizedTheme = normalizeTheme(resolvedTheme);
 
     // Determine which tile provider to use
     const tileProvider = useMemo<TileProvider>(() => {
@@ -26,16 +28,15 @@ export function useMapTileProvider() {
         }
 
         // Otherwise, auto-switch based on theme
-        if (theme === "abyss" || theme === "dark") {
+        if (normalizedTheme === "abyss") {
             return getTileProviderById("dark") || getDefaultTileProvider();
         }
 
         return getDefaultTileProvider();
-    }, [manualProviderId, theme]);
+    }, [manualProviderId, normalizedTheme]);
 
     // Get the current provider ID for UI state
-    const currentProviderId =
-        manualProviderId || (theme === "abyss" || theme === "dark" ? "dark" : "osm");
+    const currentProviderId = manualProviderId || (normalizedTheme === "abyss" ? "dark" : "osm");
 
     // Handler that resets manual selection when theme changes
     const setProviderId = (id: string | null) => {

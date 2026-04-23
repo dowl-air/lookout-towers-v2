@@ -1,4 +1,4 @@
-import { House, LayoutList, Map } from "lucide-react";
+import { House, LayoutList, Map, Users } from "lucide-react";
 
 import LoginLink from "@/components/navbar/links/LoginLink";
 import LogoutLink from "@/components/navbar/links/LogoutLink";
@@ -14,33 +14,41 @@ const NavbarDrawer = ({ children }: { children: React.ReactNode }) => {
             <div className="drawer-content flex flex-col min-h-dvh">{children}</div>
             <div className="drawer-side z-10000">
                 <label htmlFor="side-drawer" className="drawer-overlay"></label>
-                <ul tabIndex={0} className="menu p-4 w-80 h-full bg-base-200">
-                    <li>
-                        <NavbarSideLink href="/">
-                            <House />
-                            Domů
-                        </NavbarSideLink>
-                    </li>
-                    <li>
-                        <NavbarSideLink href="/rozhledny">
-                            <LayoutList />
-                            Rozhledny
-                        </NavbarSideLink>
-                    </li>
-                    <li>
-                        <NavbarSideLink href="/mapa">
-                            <Map />
-                            Mapa
-                        </NavbarSideLink>
-                    </li>
+                <nav aria-label="Mobile" className="h-full w-80 bg-base-200">
+                    <ul tabIndex={0} className="menu h-full p-4">
+                        <li>
+                            <NavbarSideLink href="/">
+                                <House />
+                                Domů
+                            </NavbarSideLink>
+                        </li>
+                        <li>
+                            <NavbarSideLink href="/rozhledny">
+                                <LayoutList />
+                                Rozhledny
+                            </NavbarSideLink>
+                        </li>
+                        <li>
+                            <NavbarSideLink href="/mapa">
+                                <Map />
+                                Mapa
+                            </NavbarSideLink>
+                        </li>
+                        <li>
+                            <NavbarSideLink href="/komunita">
+                                <Users />
+                                Komunita
+                            </NavbarSideLink>
+                        </li>
 
-                    <VisitedTowersLink />
-                    <ProfileLink />
-                    <LogoutLink />
-                    <LoginLink />
+                        <VisitedTowersLink />
+                        <ProfileLink />
+                        <LogoutLink />
+                        <LoginLink />
 
-                    <ThemeChangerPhone />
-                </ul>
+                        <ThemeChangerPhone />
+                    </ul>
+                </nav>
             </div>
         </div>
     );

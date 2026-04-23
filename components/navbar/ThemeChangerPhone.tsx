@@ -1,33 +1,30 @@
 "use client";
+
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 import { closeDrawer } from "@/utils/closeDrawer";
-
-const LIGHT_MODE = "autumn";
-const DARK_MODE = "abyss";
+import { DARK_MODE, LIGHT_MODE, normalizeTheme } from "@/utils/theme";
 
 function ThemeChangerPhone() {
-    const { theme, setTheme } = useTheme();
+    const { resolvedTheme, setTheme } = useTheme();
     const [currentTheme, setCurrentTheme] = useState(LIGHT_MODE);
 
+    const normalizedTheme = normalizeTheme(resolvedTheme);
+    const isDarkMode = normalizedTheme === DARK_MODE;
+
     const toggleTheme = () => {
-        setTheme(theme === DARK_MODE ? LIGHT_MODE : DARK_MODE);
+        setTheme(isDarkMode ? LIGHT_MODE : DARK_MODE);
+        closeDrawer();
     };
 
     useEffect(() => {
-        setCurrentTheme(theme || "");
-    }, [theme]);
+        setCurrentTheme(normalizedTheme || LIGHT_MODE);
+    }, [normalizedTheme]);
 
     return (
-        <li
-            onClick={() => {
-                toggleTheme();
-                closeDrawer();
-            }}
-            className="mt-auto"
-        >
-            <div className="text-xl" onClick={toggleTheme}>
+        <li className="mt-auto">
+            <button type="button" className="text-xl" onClick={toggleTheme}>
                 {currentTheme === LIGHT_MODE ? (
                     <>
                         <svg viewBox="0 0 24 24" width="24" height="24" className="fill-current">
@@ -43,7 +40,7 @@ function ThemeChangerPhone() {
                         <span>Světlý režim</span>
                     </>
                 )}
-            </div>
+            </button>
         </li>
     );
 }

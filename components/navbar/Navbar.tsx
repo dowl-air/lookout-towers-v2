@@ -8,7 +8,7 @@ import ThemeChanger from "@/components/navbar/ThemeChanger";
 
 function Navbar() {
     return (
-        <div className="border-b border-base-300 w-full sticky top-0 z-10000 backdrop-blur-md bg-base-100 bg-opacity-70 border-opacity-60">
+        <header className="border-b border-base-300 w-full sticky top-0 z-10000 backdrop-blur-md bg-base-100 bg-opacity-70 border-opacity-60">
             <div className="navbar max-w-7xl mx-auto px-3">
                 <div className="navbar-start">
                     <label
@@ -34,27 +34,32 @@ function Navbar() {
                     </Link>
                 </div>
 
-                <div className="navbar-center hidden md:flex">
-                    <ul className="menu menu-horizontal px-1">
+                <nav aria-label="Primary" className="navbar-center hidden md:flex">
+                    <ul className="menu menu-horizontal gap-1 rounded-full border border-base-300/70 bg-base-100/70 px-2 py-1 shadow-sm">
                         <li>
-                            <Link className="active:bg-secondary" href="/rozhledny">
+                            <Link className="rounded-full active:bg-secondary" href="/rozhledny">
                                 Rozhledny
                             </Link>
                         </li>
                         <li>
-                            <Link className="active:bg-secondary" href="/mapa">
+                            <Link className="rounded-full active:bg-secondary" href="/mapa">
                                 Mapa
                             </Link>
                         </li>
+                        <li>
+                            <Link className="rounded-full active:bg-secondary" href="/komunita">
+                                Komunita
+                            </Link>
+                        </li>
                     </ul>
-                </div>
+                </nav>
 
                 <div className="navbar-end items-center gap-3 hidden md:flex">
                     <ThemeChanger />
                     <NavbarUserDesktop />
                 </div>
             </div>
-        </div>
+        </header>
     );
 }
 
