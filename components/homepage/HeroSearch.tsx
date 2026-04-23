@@ -52,14 +52,14 @@ function HeroSearch() {
                         name="query"
                         type="search"
                         autoComplete="off"
-                        className="input input-bordered join-item w-full rounded-l-full border-base-300 bg-base-100 text-base-content"
+                        className="input input-bordered join-item w-full rounded-l-full border-base-300 bg-base-100 text-base-content focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
                         placeholder="Najít rozhlednu..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
                     <button
                         type="submit"
-                        className="btn btn-primary join-item rounded-r-full px-6 text-base md:text-lg"
+                        className="btn btn-primary join-item rounded-r-full px-6 text-base focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 md:text-lg"
                     >
                         Vyhledat
                     </button>
@@ -76,7 +76,7 @@ function HeroSearch() {
                         <Link
                             key={elm.id}
                             href={`/${elm.type}/${elm.nameID}`}
-                            className="rounded-md px-4 py-2 hover:bg-base-200"
+                            className="rounded-md px-4 py-2 hover:bg-base-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
                         >
                             <div className="flex gap-3">
                                 <div className="relative h-24 w-16 min-w-20 overflow-hidden rounded-md">

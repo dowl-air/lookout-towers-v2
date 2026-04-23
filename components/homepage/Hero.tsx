@@ -9,16 +9,19 @@ function Hero() {
                     Rozhledny, věže a vyhlídky
                 </h1>
                 <p className="max-w-3xl text-center text-base font-medium text-white/90 md:text-lg">
-                    Objevujte rozhledny po celém Česku, plánujte výlety a ukládejte si místa, která
-                    stojí za návštěvu.
+                    Najděte místa s výhledem, plánujte výlety na mapě a ukládejte si rozhledny, ke
+                    kterým se chcete vrátit.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
-                    <Link href="/mapa" className="btn btn-primary btn-lg">
+                    <Link
+                        href="/mapa"
+                        className="btn btn-primary btn-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
+                    >
                         Prozkoumat mapu
                     </Link>
                     <Link
                         href="/rozhledny"
-                        className="btn btn-outline btn-lg border-white text-white hover:border-white hover:bg-white hover:text-base-content"
+                        className="btn btn-outline btn-lg border-white text-white hover:border-white hover:bg-white hover:text-black! focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
                     >
                         Procházet rozhledny
                     </Link>

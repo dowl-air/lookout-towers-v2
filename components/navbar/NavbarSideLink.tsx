@@ -10,7 +10,11 @@ interface NavbarSideLinkProps extends LinkProps {
 
 const NavbarSideLink = ({ href, children }: NavbarSideLinkProps) => {
     return (
-        <Link onClick={closeDrawer} href={href} className="text-xl">
+        <Link
+            onClick={closeDrawer}
+            href={href}
+            className="text-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-200"
+        >
             {children}
         </Link>
     );

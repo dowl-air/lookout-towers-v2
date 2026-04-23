@@ -8,10 +8,16 @@ import { DARK_MODE, LIGHT_MODE, normalizeTheme } from "@/utils/theme";
 
 function ThemeChangerPhone() {
     const { resolvedTheme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
     const [currentTheme, setCurrentTheme] = useState(LIGHT_MODE);
 
     const normalizedTheme = normalizeTheme(resolvedTheme);
     const isDarkMode = normalizedTheme === DARK_MODE;
+    const toggleLabel = mounted
+        ? isDarkMode
+            ? "Přepnout na světlý režim"
+            : "Přepnout na tmavý režim"
+        : "Přepnout barevný režim";
 
     const toggleTheme = () => {
         setTheme(isDarkMode ? LIGHT_MODE : DARK_MODE);
@@ -19,12 +25,21 @@ function ThemeChangerPhone() {
     };
 
     useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
         setCurrentTheme(normalizedTheme || LIGHT_MODE);
     }, [normalizedTheme]);
 
     return (
         <li className="mt-auto">
-            <button type="button" className="text-xl" onClick={toggleTheme}>
+            <button
+                type="button"
+                className="text-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-200"
+                onClick={toggleTheme}
+                aria-label={toggleLabel}
+            >
                 {currentTheme === LIGHT_MODE ? (
                     <>
                         <svg viewBox="0 0 24 24" width="24" height="24" className="fill-current">

@@ -11,7 +11,7 @@ const NavbarUserMobileSuspense = async () => {
     const user = await getCurrentUser();
 
     return (
-        <label tabIndex={0} htmlFor="side-drawer">
+        <label tabIndex={0} htmlFor="side-drawer" aria-label="Otevřít navigaci profilu">
             <UserProfileAvatar name={user.name} image={user.image} size={32} />
         </label>
     );

@@ -12,11 +12,13 @@ function Navbar() {
             <div className="navbar max-w-7xl mx-auto px-3">
                 <div className="navbar-start">
                     <label
+                        aria-label="Otevřít navigaci"
                         tabIndex={0}
                         htmlFor="side-drawer"
-                        className="btn btn-ghost md:hidden flex flex-nowrap gap-1 p-0 min-[320px]:px-3"
+                        className="btn btn-ghost md:hidden flex flex-nowrap gap-1 p-0 min-[320px]:px-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
                     >
                         <TextAlignStart size={16} />
+                        <span className="sr-only">Otevřít navigaci</span>
                         <NavbarUserMobile />
                     </label>
                     <Link
@@ -37,17 +39,26 @@ function Navbar() {
                 <nav aria-label="Primary" className="navbar-center hidden md:flex">
                     <ul className="menu menu-horizontal gap-1 rounded-full border border-base-300/70 bg-base-100/70 px-2 py-1 shadow-sm">
                         <li>
-                            <Link className="rounded-full active:bg-secondary" href="/rozhledny">
+                            <Link
+                                className="rounded-full active:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+                                href="/rozhledny"
+                            >
                                 Rozhledny
                             </Link>
                         </li>
                         <li>
-                            <Link className="rounded-full active:bg-secondary" href="/mapa">
+                            <Link
+                                className="rounded-full active:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+                                href="/mapa"
+                            >
                                 Mapa
                             </Link>
                         </li>
                         <li>
-                            <Link className="rounded-full active:bg-secondary" href="/komunita">
+                            <Link
+                                className="rounded-full active:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+                                href="/komunita"
+                            >
                                 Komunita
                             </Link>
                         </li>

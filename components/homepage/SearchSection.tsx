@@ -24,7 +24,7 @@ function SearchSection() {
                             <Link
                                 key={search.href}
                                 href={search.href}
-                                className="btn btn-sm btn-ghost rounded-full border border-base-300 bg-base-200/60 px-4 hover:border-primary hover:bg-primary/10"
+                                className="btn btn-sm btn-ghost rounded-full border border-base-300 bg-base-200/60 px-4 hover:border-primary hover:bg-primary/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
                             >
                                 {search.label}
                             </Link>

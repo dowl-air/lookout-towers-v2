@@ -36,8 +36,11 @@ async function Stats() {
                     <div className="stat-value">{ratingsNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-title text-primary-content">Databáze aktualizována</div>
                     <div className="stat-value">{formatDate({ date: towersDate })}</div>
+                    <div className="stat-desc text-primary-content/80">
+                        Podle poslední upravené rozhledny
+                    </div>
                 </div>
             </div>
 
@@ -61,8 +64,11 @@ async function Stats() {
                     <div className="stat-value">{ratingsNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-title text-primary-content">Databáze aktualizována</div>
                     <div className="stat-value">{formatDate({ date: towersDate })}</div>
+                    <div className="stat-desc text-primary-content/80">
+                        Poslední upravená rozhledna
+                    </div>
                 </div>
             </div>
 
@@ -88,8 +94,11 @@ async function Stats() {
             </div>
             <div className="stats bg-primary text-primary-content stats-vertical hidden mt-3 min-[430px]:inline-grid sm:hidden">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Poslední změna</div>
+                    <div className="stat-title text-primary-content">Databáze aktualizována</div>
                     <div className="stat-value">{formatDate({ date: towersDate })}</div>
+                    <div className="stat-desc text-primary-content/80">
+                        Poslední upravená rozhledna
+                    </div>
                 </div>
             </div>
 
@@ -125,10 +134,13 @@ async function Stats() {
                 <div className="flex">
                     <div className="stat">
                         <div className="stat-title text-primary-content text-center text-sm">
-                            Poslední změna
+                            Aktualizováno
                         </div>
                         <div className="stat-value text-center text-2xl">
                             {formatDate({ date: towersDate })}
+                        </div>
+                        <div className="stat-desc text-center text-primary-content/80">
+                            Poslední upravená rozhledna
                         </div>
                     </div>
                 </div>

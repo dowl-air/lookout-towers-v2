@@ -15,15 +15,20 @@ function ThemeChanger() {
 
     const normalizedTheme = normalizeTheme(resolvedTheme);
     const isDarkMode = normalizedTheme === DARK_MODE;
+    const toggleLabel = mounted
+        ? isDarkMode
+            ? "Přepnout na světlý režim"
+            : "Přepnout na tmavý režim"
+        : "Přepnout barevný režim";
 
     const toggleTheme = () => {
         setTheme(isDarkMode ? LIGHT_MODE : DARK_MODE);
     };
 
     return (
-        <label className="swap swap-rotate">
+        <label className="swap swap-rotate rounded-full focus-within:outline-hidden focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-base-100">
             <input
-                aria-label="Přepnout barevný režim"
+                aria-label={toggleLabel}
                 onChange={toggleTheme}
                 type="checkbox"
                 checked={mounted ? !isDarkMode : false}
