@@ -1,7 +1,7 @@
 "use server";
 
 import { deleteDoc, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { updateTag } from "next/cache";
+import { refresh, revalidatePath, updateTag } from "next/cache";
 
 import { checkAuth } from "@/actions/checkAuth";
 import { removePhoto } from "@/actions/photos/remove.action";
@@ -10,11 +10,26 @@ import { Visit } from "@/types/Visit";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 
+type MutationOptions = {
+    revalidatePaths?: string[];
+};
+
+const revalidateAffectedPaths = (paths?: string[]) => {
+    if (!paths?.length) {
+        return;
+    }
+
+    [...new Set(paths.filter(Boolean))].forEach((path) => {
+        revalidatePath(path);
+    });
+};
+
 export const getVisit = async (towerID: string): Promise<Visit | null> => getVisitData(towerID);
 
 export const setVisit = async (
     towerID: string,
-    visit: Omit<Visit, "created" | "user_id" | "tower_id">
+    visit: Omit<Visit, "created" | "user_id" | "tower_id">,
+    options?: MutationOptions
 ) => {
     const user = await checkAuth();
     await setDoc(doc(db, "visits", `${user.id}_${towerID}`), {
@@ -28,10 +43,12 @@ export const setVisit = async (
     updateTag(getCacheTagSpecific(CacheTag.TowerVisits, towerID));
     updateTag(getCacheTagSpecific(CacheTag.UserVisits, user.id));
     updateTag(getCacheTagUserSpecific(CacheTag.UserTowerVisit, user.id, towerID));
+    revalidateAffectedPaths(options?.revalidatePaths);
+    refresh();
     return true;
 };
 
-export const removeVisit = async (towerID: string) => {
+export const removeVisit = async (towerID: string, options?: MutationOptions) => {
     const user = await checkAuth();
     const snap = await getDoc(doc(db, "visits", `${user.id}_${towerID}`));
     const data = snap.data();
@@ -45,5 +62,7 @@ export const removeVisit = async (towerID: string) => {
     updateTag(getCacheTagSpecific(CacheTag.TowerVisits, towerID));
     updateTag(getCacheTagSpecific(CacheTag.UserVisits, user.id));
     updateTag(getCacheTagUserSpecific(CacheTag.UserTowerVisit, user.id, towerID));
+    revalidateAffectedPaths(options?.revalidatePaths);
+    refresh();
     return false;
 };

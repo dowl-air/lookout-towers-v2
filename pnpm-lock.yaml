@@ -59,9 +59,6 @@ importers:
       swiper:
         specifier: ^12.0.3
         version: 12.0.3
-      tailwind-datepicker-react:
-        specifier: ^1.4.3
-        version: 1.4.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tailwindcss@4.1.17)
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
@@ -3516,16 +3513,6 @@ packages:
   swiper@12.0.3:
     resolution: {integrity: sha512-BHd6U1VPEIksrXlyXjMmRWO0onmdNPaTAFduzqR3pgjvi7KfmUCAm/0cj49u2D7B0zNjMw02TSeXfinC1hDCXg==}
     engines: {node: '>= 4.7.0'}
-
-  tailwind-datepicker-react@1.4.3:
-    resolution: {integrity: sha512-K/mX7GjsO8fvaN1/jZcEbCMb14VdBe0HGxBy36WK4zxfYOPB2tGMSAUo06so+BmsaVPU4dwmfDElK/6Uxaashw==}
-    peerDependencies:
-      react: '>=17'
-      react-dom: '>=17'
-      tailwindcss: '>=3'
-
-  tailwind-merge@1.14.0:
-    resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
 
   tailwind-merge@3.4.0:
     resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
@@ -7711,15 +7698,6 @@ snapshots:
   supports-preserve-symlinks-flag@1.0.0: {}
 
   swiper@12.0.3: {}
-
-  tailwind-datepicker-react@1.4.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tailwindcss@4.1.17):
-    dependencies:
-      react: 19.2.1
-      react-dom: 19.2.1(react@19.2.1)
-      tailwind-merge: 1.14.0
-      tailwindcss: 4.1.17
-
-  tailwind-merge@1.14.0: {}
 
   tailwind-merge@3.4.0: {}
 
