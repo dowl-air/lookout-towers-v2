@@ -42,7 +42,7 @@
 @plugin "daisyui/theme" {
     name: "abyss";
     default: false;
-    prefersdark: false;
+    prefersdark: true;
     color-scheme: "dark";
     --color-base-100: oklch(20% 0 0);
     --color-base-200: oklch(15% 0 0);

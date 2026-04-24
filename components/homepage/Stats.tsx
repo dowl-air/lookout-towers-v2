@@ -16,89 +16,90 @@ async function Stats() {
         ]
     );
 
+    const towersLabel = "Míst v databázi";
+    const usersLabel = "Registrovaných uživatelů";
+    const changesLabel = "Komunitních úprav";
+    const ratingsLabel = "Sdílených hodnocení";
+    const freshnessLabel = "Naposledy doplněno";
+    const freshnessDescription = "Podle poslední změny v katalogu";
+
     return (
         <div className="max-w-[1070px] self-center flex flex-col w-full px-4 my-4">
             <div className="stats bg-primary text-primary-content stats-horizontal mt-5 hidden lg:inline-grid">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-title text-primary-content">{towersLabel}</div>
                     <div className="stat-value">{towersNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-title text-primary-content">{usersLabel}</div>
                     <div className="stat-value">{usersNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-title text-primary-content">{changesLabel}</div>
                     <div className="stat-value">{changesNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-title text-primary-content">{ratingsLabel}</div>
                     <div className="stat-value">{ratingsNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Databáze aktualizována</div>
+                    <div className="stat-title text-primary-content">{freshnessLabel}</div>
                     <div className="stat-value">{formatDate({ date: towersDate })}</div>
-                    <div className="stat-desc text-primary-content/80">
-                        Podle poslední upravené rozhledny
-                    </div>
+                    <div className="stat-desc text-primary-content/80">{freshnessDescription}</div>
                 </div>
             </div>
 
             <div className="stats bg-primary self-center text-primary-content stats-horizontal mt-10 hidden sm:inline-grid lg:hidden">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-title text-primary-content">{towersLabel}</div>
                     <div className="stat-value">{towersNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-title text-primary-content">{usersLabel}</div>
                     <div className="stat-value">{usersNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-title text-primary-content">{changesLabel}</div>
                     <div className="stat-value">{changesNumber}</div>
                 </div>
             </div>
             <div className="stats bg-primary mx-auto text-primary-content stats-horizontal mt-3 hidden sm:inline-grid lg:hidden">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-title text-primary-content">{ratingsLabel}</div>
                     <div className="stat-value">{ratingsNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Databáze aktualizována</div>
+                    <div className="stat-title text-primary-content">{freshnessLabel}</div>
                     <div className="stat-value">{formatDate({ date: towersDate })}</div>
-                    <div className="stat-desc text-primary-content/80">
-                        Poslední upravená rozhledna
-                    </div>
+                    <div className="stat-desc text-primary-content/80">{freshnessDescription}</div>
                 </div>
             </div>
 
             <div className="stats bg-primary text-primary-content stats-horizontal mt-10 hidden min-[430px]:inline-grid sm:hidden">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Rozhleden v databázi</div>
+                    <div className="stat-title text-primary-content">{towersLabel}</div>
                     <div className="stat-value">{towersNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Aktivních uživatelů</div>
+                    <div className="stat-title text-primary-content">{usersLabel}</div>
                     <div className="stat-value">{usersNumber}</div>
                 </div>
             </div>
             <div className="stats bg-primary text-primary-content stats-horizontal mt-3 hidden min-[430px]:inline-grid sm:hidden">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Provedených úprav</div>
+                    <div className="stat-title text-primary-content">{changesLabel}</div>
                     <div className="stat-value">{changesNumber}</div>
                 </div>
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Přidaných hodnocení</div>
+                    <div className="stat-title text-primary-content">{ratingsLabel}</div>
                     <div className="stat-value">{ratingsNumber}</div>
                 </div>
             </div>
             <div className="stats bg-primary text-primary-content stats-vertical hidden mt-3 min-[430px]:inline-grid sm:hidden">
                 <div className="stat">
-                    <div className="stat-title text-primary-content">Databáze aktualizována</div>
+                    <div className="stat-title text-primary-content">{freshnessLabel}</div>
                     <div className="stat-value">{formatDate({ date: towersDate })}</div>
-                    <div className="stat-desc text-primary-content/80">
-                        Poslední upravená rozhledna
-                    </div>
+                    <div className="stat-desc text-primary-content/80">{freshnessDescription}</div>
                 </div>
             </div>
 
@@ -106,13 +107,13 @@ async function Stats() {
                 <div className="flex">
                     <div className="stat">
                         <div className="stat-title text-primary-content text-center text-sm">
-                            Rozhledny
+                            Místa
                         </div>
                         <div className="stat-value text-center text-2xl">{towersNumber}</div>
                     </div>
                     <div className="stat">
                         <div className="stat-title text-primary-content text-center text-sm">
-                            Uživatelé
+                            Komunita
                         </div>
                         <div className="stat-value text-center text-2xl">{usersNumber}</div>
                     </div>
@@ -134,13 +135,13 @@ async function Stats() {
                 <div className="flex">
                     <div className="stat">
                         <div className="stat-title text-primary-content text-center text-sm">
-                            Aktualizováno
+                            Doplněno
                         </div>
                         <div className="stat-value text-center text-2xl">
                             {formatDate({ date: towersDate })}
                         </div>
                         <div className="stat-desc text-center text-primary-content/80">
-                            Poslední upravená rozhledna
+                            Poslední změna v katalogu
                         </div>
                     </div>
                 </div>

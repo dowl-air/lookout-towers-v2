@@ -1,8 +1,11 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 
 import "./globals.css";
+
+const LIGHT_THEME_COLOR = "#f3f3f3";
+const DARK_THEME_COLOR = "#333333";
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://rozhlednovysvet.cz/"),
@@ -11,7 +14,7 @@ export const metadata: Metadata = {
         default: "Rozhlednový svět",
     },
     description:
-        "Rozhlednový svět je komunitní databáze vyhlídkových věží, pozorovatelen a dalších objektů určených k objevování krásných výhledů. Tento web jsem vytvořil z důvodu bližšího propojení milovníků rozhleden, ke kterým samozřejmě patřím i já. Cílem tohoto webu je zmapovat všechny rozhledny v Česku (zatím), ukládat o nich aktuální informace, které budou všem volně dostupné, a v neposlední řadě umožnit uživatelům uchovat své návštěvy a vzpomínky.",
+        "Rozhlednový svět je komunitní databáze vyhlídkových věží, pozorovatelen a dalších objektů určených k objevování krásných výhledů. Tento web jsem vytvořil z důvodu bližšího propojení milovníků rozhleden, ke kterým samozřejmě patřím i já. Cílem tohoto webu je zmapovat všechny rozhledny v Česku a okolí, ukládat o nich aktuální informace, které budou všem volně dostupné, a v neposlední řadě umožnit uživatelům uchovat své návštěvy a vzpomínky.",
     keywords: [
         "rozhledna",
         "pozorovatelna",
@@ -53,6 +56,20 @@ export const metadata: Metadata = {
     },
 };
 
+export const viewport: Viewport = {
+    colorScheme: "light dark",
+    themeColor: [
+        {
+            media: "(prefers-color-scheme: light)",
+            color: LIGHT_THEME_COLOR,
+        },
+        {
+            media: "(prefers-color-scheme: dark)",
+            color: DARK_THEME_COLOR,
+        },
+    ],
+};
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     const shouldLoadCloudflareAnalytics =
         process.env.NODE_ENV === "production" && !!process.env.CLOUDFLARE_ANALYTICS_TOKEN;
@@ -66,7 +83,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <link rel="manifest" href="/site.webmanifest" />
                 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
                 <meta name="msapplication-TileColor" content="#da532c" />
-                <meta name="theme-color" content="#ffffff" />
                 <meta name="seznam-wmt" content="CKyPJUbUK3WkiuaBcKGOztaUfvLm9uGX" />
             </head>
             <body className="overflow-x-hidden">

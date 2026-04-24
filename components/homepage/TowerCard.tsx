@@ -30,8 +30,8 @@ function TowerCardClient({
 
     return (
         <Link href={`/${tower.type || "rozhledna"}/${tower.nameID}`} scroll>
-            <div className="card card-compact min-[437px]:w-36 sm:w-40 md:w-44 lg:w-56 mx-auto transition-transform duration-200 cursor-pointer hover:scale-105 ">
-                <figure className="object-cover inline-block relative h-60 min-[437px]:h-52 sm:h-60 md:h-72">
+            <article className="card card-compact w-full max-w-[19rem] mx-auto overflow-hidden rounded-2xl bg-base-100 shadow-lg transition-transform duration-200 cursor-pointer hover:scale-105 sm:max-w-none min-[437px]:w-36 sm:w-40 md:w-44 lg:w-56">
+                <figure className="object-cover inline-block relative h-56 min-[437px]:h-52 sm:h-60 md:h-72">
                     <Image
                         src={photoUrl}
                         alt={tower.name}
@@ -54,36 +54,55 @@ function TowerCardClient({
                     ) : null}
                     {openingHoursText !== "" ? (
                         <div
-                            className={cn("badge badge-sm lg:badge-md absolute bottom-2 right-1.5 font-bold border-white", {
-                                "badge-success": state === true,
-                                "badge-error": state === false,
-                            })}
+                            className={cn(
+                                "badge badge-sm lg:badge-md absolute bottom-2 right-1.5 font-bold border-white",
+                                {
+                                    "badge-success": state === true,
+                                    "badge-error": state === false,
+                                }
+                            )}
                         >
                             {openingHoursText}
                         </div>
                     ) : null}
                 </figure>
-                <div className="card-body px-2! py-2! md:py-3! md:px-3! gap-0">
-                    <h2 className="card-title whitespace-nowrap overflow-hidden text-ellipsis block text-base sm:text-lg md:text-xl">{tower.name}</h2>
+                <div className="card-body gap-2 px-3! py-3! md:px-3! md:py-3!">
+                    <h3 className="card-title block text-base leading-tight sm:text-lg md:text-xl line-clamp-2">
+                        {tower.name}
+                    </h3>
                     <div className="flex items-center gap-2">
                         <ThemedRating size={20} value={avg} />
-                        <div className="text-base text-gray-400 mt-0.5">{count}x</div>
+                        <div className="mt-0.5 text-sm text-base-content/60 sm:text-base">
+                            {count}x
+                        </div>
                     </div>
-                    <div className="flex justify-between items-center mt-2">
-                        <div className="flex-row flex items-center">
-                            <svg viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" className="w-5">
+                    <div className="mt-1 flex flex-col gap-1 text-sm text-base-content/75 min-[437px]:flex-row min-[437px]:items-center min-[437px]:justify-between sm:text-base">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                            <svg
+                                viewBox="0 0 512 512"
+                                version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-5"
+                            >
                                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                    <g fill="currentColor" transform="translate(106.666667, 42.666667)">
+                                    <g
+                                        fill="currentColor"
+                                        transform="translate(106.666667, 42.666667)"
+                                    >
                                         <path d="M149.333333,7.10542736e-15 C231.807856,7.10542736e-15 298.666667,66.8588107 298.666667,149.333333 C298.666667,176.537017 291.413333,202.026667 278.683512,224.008666 C270.196964,238.663333 227.080238,313.32711 149.333333,448 C71.5864284,313.32711 28.4697022,238.663333 19.9831547,224.008666 C7.25333333,202.026667 2.84217094e-14,176.537017 2.84217094e-14,149.333333 C2.84217094e-14,66.8588107 66.8588107,7.10542736e-15 149.333333,7.10542736e-15 Z M149.333333,85.3333333 C113.987109,85.3333333 85.3333333,113.987109 85.3333333,149.333333 C85.3333333,184.679557 113.987109,213.333333 149.333333,213.333333 C184.679557,213.333333 213.333333,184.679557 213.333333,149.333333 C213.333333,113.987109 184.679557,85.3333333 149.333333,85.3333333 Z"></path>
                                     </g>
                                 </g>
                             </svg>
-                            <div className="ml-0.5 md:ml-1 text-sm lg:text-base">{tower.county}</div>
+                            <div className="min-w-0 truncate">{tower.county}</div>
                         </div>
-                        {locationDistance !== null ? <div className="whitespace-nowrap">{formatDistance(locationDistance)}</div> : null}
+                        {locationDistance !== null ? (
+                            <div className="whitespace-nowrap font-medium text-base-content/70">
+                                {formatDistance(locationDistance)}
+                            </div>
+                        ) : null}
                     </div>
                 </div>
-            </div>
+            </article>
         </Link>
     );
 }

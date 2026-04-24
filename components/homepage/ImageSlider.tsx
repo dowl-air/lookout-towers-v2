@@ -8,14 +8,20 @@ import TowerCardClient from "./TowerCard";
 import useLocation from "@/hooks/useLocation";
 import { Tower } from "@/types/Tower";
 
-export default function ImageSlider({ towers, ratings }: { towers: Tower[]; ratings: { avg: number; count: number }[] }) {
+export default function ImageSlider({
+    towers,
+    ratings,
+}: {
+    towers: Tower[];
+    ratings: { avg: number; count: number }[];
+}) {
     const { location } = useLocation();
     return (
         <Swiper
             centeredSlides
             grabCursor
             loop
-            spaceBetween={10}
+            spaceBetween={14}
             modules={[Autoplay]}
             autoplay={{
                 delay: 2500,
@@ -23,10 +29,10 @@ export default function ImageSlider({ towers, ratings }: { towers: Tower[]; rati
             }}
             breakpoints={{
                 0: {
-                    slidesPerView: 2,
+                    slidesPerView: 1.15,
                 },
                 437: {
-                    slidesPerView: 3,
+                    slidesPerView: 2.15,
                 },
                 585: {
                     slidesPerView: 4,
@@ -41,7 +47,7 @@ export default function ImageSlider({ towers, ratings }: { towers: Tower[]; rati
                     slidesPerView: 5,
                 },
             }}
-            className="max-w-[min(1280px,99vw)] md:mt-3"
+            className="max-w-[min(1280px,99vw)] px-4 md:mt-3 md:px-0"
         >
             {towers.map((item, index) => (
                 <SwiperSlide key={index} className="mt-5">

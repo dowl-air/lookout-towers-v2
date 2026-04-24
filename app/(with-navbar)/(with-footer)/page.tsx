@@ -82,7 +82,8 @@ async function HomePage() {
                     <div className="mb-5 flex flex-col gap-2 text-center md:text-left">
                         <h2 className="text-3xl font-bold md:text-4xl">Komunita v číslech</h2>
                         <p className="text-base-content/75 text-base md:text-lg">
-                            Rychlý přehled o růstu databáze i aktivitě celé komunity.
+                            Čísla ukazují, že katalog průběžně roste a komunita kolem něj dál
+                            doplňuje užitečné informace.
                         </p>
                     </div>
                 </section>
