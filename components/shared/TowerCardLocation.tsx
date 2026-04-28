@@ -2,19 +2,24 @@
 
 import { getDistance } from "geolib";
 
-import { TowerMapDTO } from "@/data/tower/towers-map";
 import useLocation from "@/hooks/useLocation";
 import { Tower } from "@/types/Tower";
+import { cn } from "@/utils/cn";
 import { formatDistance } from "@/utils/geo";
 
-const TowerCardLocation = ({ tower }: { tower: Tower | TowerMapDTO }) => {
+const TowerCardLocation = ({ gps, className }: { gps: Tower["gps"]; className?: string }) => {
     const { location } = useLocation();
+
     if (!location) {
         return null;
     }
-    const distance = getDistance(location, tower.gps, 100);
+
+    const distance = getDistance(location, gps, 100);
+
     return (
-        <div className="whitespace-nowrap text-black opacity-80">{formatDistance(distance)}</div>
+        <div className={cn("whitespace-nowrap text-sm text-base-content/70", className)}>
+            {formatDistance(distance)}
+        </div>
     );
 };
 
