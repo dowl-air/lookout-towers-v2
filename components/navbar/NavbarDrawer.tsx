@@ -3,6 +3,7 @@ import { House, LayoutList, Map, Users, X } from "lucide-react";
 import LoginLink from "@/components/navbar/links/LoginLink";
 import LogoutLink from "@/components/navbar/links/LogoutLink";
 import ProfileLink from "@/components/navbar/links/ProfileLink";
+import ProgressLink from "@/components/navbar/links/ProgressLink";
 import VisitedTowersLink from "@/components/navbar/links/VisitedTowersLink";
 import NavbarSideLink from "@/components/navbar/NavbarSideLink";
 import ThemeChangerPhone from "@/components/navbar/ThemeChangerPhone";
@@ -52,6 +53,7 @@ const NavbarDrawer = ({ children }: { children: React.ReactNode }) => {
                         </li>
 
                         <VisitedTowersLink />
+                        <ProgressLink />
                         <ProfileLink />
                         <LogoutLink />
                         <LoginLink />

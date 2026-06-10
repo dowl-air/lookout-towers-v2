@@ -2,7 +2,7 @@
 
 ## Project purpose
 
-Lookout Towers is a Czech community site for lookout towers, observatories, and similar places with views. The app combines public content (homepage, maps, tower detail, search) with authenticated user features (profile, visits, favourites, ratings, community statistics, tower submissions/changes).
+Lookout Towers is a Czech community site for lookout towers, observatories, and similar places with views. The app combines public content (homepage, maps, tower detail, search) with authenticated user features (profile, visits, favourites, ratings, personal progress, community statistics, tower submissions/changes).
 
 ## Verified stack
 
@@ -68,6 +68,7 @@ Examples:
 Protected routes currently include:
 
 - `/navstivene`
+- `/pokrok`
 - `/komunita`
 - `/pridat-rozhlednu`
 - `/profil`

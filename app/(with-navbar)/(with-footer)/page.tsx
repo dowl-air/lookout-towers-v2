@@ -12,7 +12,7 @@ import {
 } from "@/app/(with-navbar)/(with-footer)/homepageSeo";
 import AboutMe from "@/components/homepage/AboutMe";
 import Hero from "@/components/homepage/Hero";
-import ImageSlider from "@/components/homepage/ImageSlider";
+import ImageSliderNoSsr from "@/components/homepage/ImageSliderNoSsr";
 import ImageSliderSkeleton from "@/components/homepage/ImageSliderSkeleton";
 import SearchSection from "@/components/homepage/SearchSection";
 import Stats from "@/components/homepage/Stats";
@@ -76,7 +76,7 @@ async function HomePage() {
                     </div>
                 </section>
                 <Suspense fallback={<ImageSliderSkeleton />}>
-                    <ImageSlider towers={towers} ratings={ratings} />
+                    <ImageSliderNoSsr towers={towers} ratings={ratings} />
                 </Suspense>
                 <section className="mx-auto mt-16 flex w-full max-w-[1070px] flex-col px-4">
                     <div className="mb-5 flex flex-col gap-2 text-center md:text-left">

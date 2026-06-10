@@ -1,12 +1,14 @@
 "use client";
-import { Swiper, SwiperSlide } from "swiper/react";
+
 import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 //todo somehow ssr this component, use different slider idk
-import TowerCardClient from "./TowerCard";
 import useLocation from "@/hooks/useLocation";
 import { Tower } from "@/types/Tower";
+
+import TowerCardClient from "./TowerCard";
 
 export default function ImageSlider({
     towers,

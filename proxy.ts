@@ -21,6 +21,7 @@ export async function proxy(req: Request) {
 export const config = {
     matcher: [
         "/navstivene/:path*",
+        "/pokrok/:path*",
         "/komunita/:path*",
         "/pridat-rozhlednu/:path*",
         "/profil/:path*",

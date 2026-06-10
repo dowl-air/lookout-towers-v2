@@ -12,10 +12,14 @@ test("home page loads without browser errors", async ({ page }) => {
     expect(response?.ok()).toBeTruthy();
 
     await page.waitForLoadState("networkidle");
+    const hero = page.locator("section").filter({
+        has: page.getByRole("heading", { name: "Rozhledny, věže a vyhlídky" }),
+    });
+
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByText("Rozhledny, věže a vyhlídky", { exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Prozkoumat mapu" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Procházet rozhledny" })).toBeVisible();
+    await expect(hero.getByRole("heading", { name: "Rozhledny, věže a vyhlídky" })).toBeVisible();
+    await expect(hero.getByRole("link", { name: /Prozkoumat mapu/ })).toBeVisible();
+    await expect(hero.getByRole("link", { name: "Procházet rozhledny" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Náhodný výběr" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Komunita v číslech" })).toBeVisible();
     await expect(

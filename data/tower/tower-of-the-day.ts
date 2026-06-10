@@ -1,14 +1,16 @@
 import "server-only";
 
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
+import { CacheTag } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 
 export const getTowerOfTheDay = cache(async () => {
     "use cache";
     cacheLife("hours");
+    cacheTag(CacheTag.RandomTowers);
 
     const today = new Date();
     const seedValue = parseInt(
@@ -23,12 +25,20 @@ export const getTowerOfTheDay = cache(async () => {
     };
     const generatedRandom = seededRandom(seedValue);
 
-    const snap = await db
+    let snap = await db
         .collection("towers")
         .orderBy("random")
         .where("random", ">=", generatedRandom)
         .limit(1)
         .get();
+
+    if (snap.empty) {
+        snap = await db.collection("towers").orderBy("random").limit(1).get();
+    }
+
+    if (snap.empty) {
+        throw new Error("Tower of the day could not be selected because no towers exist.");
+    }
 
     const doc = snap.docs[0];
 
