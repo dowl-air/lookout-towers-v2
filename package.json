@@ -9,7 +9,6 @@
         "lint": "npx eslint .",
         "test:e2e": "playwright test",
         "test:e2e:headed": "playwright test --headed",
-        "migrate:opening-hours": "node scripts/migrate-opening-hours.mjs",
         "prettier": "npx prettier . --write --ignore-path .prettierignore \"*.{js,ts,tsx,jsx}\"",
         "prettier:check": "npx prettier . --check --ignore-path .prettierignore \"*.{js,ts,tsx,jsx}\"",
         "typecheck": "tsc --noEmit",
