@@ -1,17 +1,12 @@
 "use client";
 
-import { OpeningHoursType } from "@/types/OpeningHours";
-import { cn } from "@/utils/cn";
-import { MONTHS_CZECH } from "@/utils/constants";
 import { useEffect } from "react";
+
+import { OpeningHoursType } from "@/types/OpeningHours";
 
 type Step1Props = {
     currentType: OpeningHoursType;
     handleTypeChange: (type: OpeningHoursType) => void;
-    monthFrom: number;
-    monthTo: number;
-    handleMonthFromChange: (month: number) => void;
-    handleMonthToChange: (month: number) => void;
     isLockedAtNight: boolean;
     handleIsLockedAtNightChange: (isLockedAtNight: boolean) => void;
     setErrorText: (text: string) => void;
@@ -20,20 +15,16 @@ type Step1Props = {
 const Step1 = ({
     currentType,
     handleTypeChange,
-    monthFrom,
-    monthTo,
-    handleMonthFromChange,
-    handleMonthToChange,
     isLockedAtNight,
     handleIsLockedAtNightChange,
     setErrorText,
 }: Step1Props) => {
     useEffect(() => {
-        if (currentType === OpeningHoursType.SomeMonths && monthFrom >= 0 && monthTo >= 0) {
-            return setErrorText("");
-        }
         if (currentType >= 0) setErrorText("");
-    }, [currentType, monthFrom, monthTo]);
+    }, [currentType, setErrorText]);
+
+    const hasOpeningHours =
+        currentType === OpeningHoursType.EveryMonth || currentType === OpeningHoursType.SomeMonths;
 
     return (
         <div className="flex flex-col">
@@ -66,62 +57,11 @@ const Step1 = ({
                     type="radio"
                     value={OpeningHoursType.EveryMonth}
                     className="radio checked:bg-blue-500"
-                    checked={currentType === OpeningHoursType.EveryMonth}
+                    checked={hasOpeningHours}
                     onChange={(e) => handleTypeChange(+e.target.value)}
                 />
-                <span className="label-text text-base">S otevírací dobou po celý rok</span>
+                <span className="label-text text-base">Má otevírací dobu</span>
             </label>
-
-            <label className="label cursor-pointer justify-start gap-3 my-2">
-                <input
-                    type="radio"
-                    value={OpeningHoursType.SomeMonths}
-                    className="radio checked:bg-blue-500"
-                    checked={currentType === OpeningHoursType.SomeMonths}
-                    onChange={(e) => handleTypeChange(+e.target.value)}
-                />
-                <span className="label-text text-base">S otevírací dobou, ale jen některé měsíce</span>
-            </label>
-
-            <div className="flex gap-3 items-center ml-8">
-                <select
-                    className={cn("select select-primary text-base-content", {
-                        "select-disabled": currentType !== OpeningHoursType.SomeMonths,
-                    })}
-                    value={monthFrom}
-                    disabled={currentType !== OpeningHoursType.SomeMonths}
-                    onChange={(e) => handleMonthFromChange(+e.target.value)}
-                >
-                    <option disabled value={-1}>
-                        Od
-                    </option>
-                    {MONTHS_CZECH.map((m, idx) => (
-                        <option key={m} value={idx}>
-                            {m}
-                        </option>
-                    ))}
-                </select>
-
-                <div className="divider w-6"></div>
-
-                <select
-                    className={cn("select select-primary text-base-content", {
-                        "select-disabled": currentType !== OpeningHoursType.SomeMonths,
-                    })}
-                    value={monthTo}
-                    disabled={currentType !== OpeningHoursType.SomeMonths}
-                    onChange={(e) => handleMonthToChange(+e.target.value)}
-                >
-                    <option disabled value={-1}>
-                        Do
-                    </option>
-                    {MONTHS_CZECH.map((m, idx) => (
-                        <option key={m} value={idx}>
-                            {m}
-                        </option>
-                    ))}
-                </select>
-            </div>
 
             <div className="divider my-1"></div>
 
@@ -157,7 +97,9 @@ const Step1 = ({
                     checked={currentType === OpeningHoursType.WillOpen}
                     onChange={(e) => handleTypeChange(+e.target.value)}
                 />
-                <span className="label-text text-base">Před zpřístupněním nebo dokončením rekonstrukce</span>
+                <span className="label-text text-base">
+                    Před zpřístupněním nebo dokončením rekonstrukce
+                </span>
             </label>
         </div>
     );

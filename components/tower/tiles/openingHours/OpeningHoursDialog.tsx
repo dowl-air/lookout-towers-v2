@@ -1,20 +1,31 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { OpeningHours, OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
-import Step1 from "@/components/tower/tiles/openingHours/steps/Step1";
-import { cn } from "@/utils/cn";
-import Step2 from "@/components/tower/tiles/openingHours/steps/Step2";
-import Step3Hours from "@/components/tower/tiles/openingHours/steps/Step3Hours";
-import Step3Detail from "@/components/tower/tiles/openingHours/steps/Step3Detail";
-import OpeningHoursTile from "@/components/tower/tiles/openingHours/OpeningHoursTile";
 import { createChange } from "@/actions/changes/change.create";
 import { checkAuth } from "@/actions/checkAuth";
-import { Tower } from "@/types/Tower";
-import OpeningHoursButton from "@/components/tower/tiles/openingHours/OpeniongHoursButton";
 import Dialog from "@/components/shared/dialog/Dialog";
+import OpeningHoursTile from "@/components/tower/tiles/openingHours/OpeningHoursTile";
+import OpeningHoursButton from "@/components/tower/tiles/openingHours/OpeniongHoursButton";
+import Step1 from "@/components/tower/tiles/openingHours/steps/Step1";
+import Step2 from "@/components/tower/tiles/openingHours/steps/Step2";
+import Step3Detail from "@/components/tower/tiles/openingHours/steps/Step3Detail";
+import {
+    OpeningHours,
+    OpeningHoursForbiddenType,
+    OpeningHoursRange,
+    OpeningHoursType,
+} from "@/types/OpeningHours";
+import { Tower } from "@/types/Tower";
+import { cn } from "@/utils/cn";
+import {
+    createDefaultOpeningHoursRange,
+    getOpeningHoursRanges,
+    getOpeningHoursTypeFromRanges,
+    getOpeningHoursValidationError,
+    normalizeOpeningHours,
+} from "@/utils/openingHours";
 
 function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const [step, setStep] = useState<number>(1);
@@ -24,43 +35,37 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
     const router = useRouter();
 
     const handleTypeChange = (type: OpeningHoursType) => {
-        setOpeningHours((old) => ({ ...old, type }));
-    };
+        setOpeningHours((old) => {
+            if (type === OpeningHoursType.EveryMonth || type === OpeningHoursType.SomeMonths) {
+                const ranges = getOpeningHoursRanges(old);
 
-    const handleMonthFromChange = (month: number) => {
-        setOpeningHours((old) => ({ ...old, monthFrom: month }));
-    };
+                return {
+                    ...old,
+                    type: getOpeningHoursTypeFromRanges(
+                        ranges.length ? ranges : [createDefaultOpeningHoursRange()]
+                    ),
+                    ranges: ranges.length ? ranges : [createDefaultOpeningHoursRange()],
+                };
+            }
 
-    const handleMonthToChange = (month: number) => {
-        setOpeningHours((old) => ({ ...old, monthTo: month }));
+            return {
+                ...old,
+                type,
+                isLockedAtNight: type === OpeningHoursType.NonStop ? old.isLockedAtNight : false,
+            };
+        });
     };
 
     const handleIsLockedAtNightChange = (isLockedAtNight: boolean) => {
         setOpeningHours((old) => ({ ...old, isLockedAtNight }));
     };
 
-    const handleDaysChange = (days: number[]) => {
-        setOpeningHours((old) => ({ ...old, days }));
-    };
-
-    const handleDayFromChange = (dayFrom: number) => {
-        setOpeningHours((old) => ({ ...old, dayFrom }));
-    };
-
-    const handleDayToChange = (dayTo: number) => {
-        setOpeningHours((old) => ({ ...old, dayTo }));
-    };
-
-    const handleLunchBreakChange = (lunchBreak: boolean) => {
-        setOpeningHours((old) => ({ ...old, lunchBreak }));
-    };
-
-    const handleLunchFromChange = (lunchFrom: number) => {
-        setOpeningHours((old) => ({ ...old, lunchFrom }));
-    };
-
-    const handleLunchToChange = (lunchTo: number) => {
-        setOpeningHours((old) => ({ ...old, lunchTo }));
+    const handleRangesChange = (ranges: OpeningHoursRange[]) => {
+        setOpeningHours((old) => ({
+            ...old,
+            ranges,
+            type: getOpeningHoursTypeFromRanges(ranges),
+        }));
     };
 
     const handleDetailTextChange = (text: string) => {
@@ -81,40 +86,28 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                 switch (openingHours.type) {
                     case OpeningHoursType.NonStop:
                         return setStep(4);
-                    case OpeningHoursType.SomeMonths:
-                        if (openingHours.monthFrom === undefined || openingHours.monthFrom < 0) return setErrorText("Není vybrán měsíc od.");
-                        if (openingHours.monthTo === undefined || openingHours.monthTo < 0) return setErrorText("Není vybrán měsíc do.");
                     case OpeningHoursType.EveryMonth:
+                    case OpeningHoursType.SomeMonths:
                         return setStep(2);
                     default:
                         return setStep(3);
                 }
             case 2:
-                if (openingHours.days === undefined || openingHours.days.length === 0) return setErrorText("Není vybrán žádný den.");
-                return setStep(3);
+                const openingHoursError = getOpeningHoursValidationError(openingHours);
+                if (openingHoursError) return setErrorText(openingHoursError);
+                setErrorText("");
+                return setStep(4);
             default:
                 if (
                     openingHours.type === OpeningHoursType.Forbidden &&
-                    (openingHours.forbiddenType === undefined || openingHours.forbiddenType === null)
+                    (openingHours.forbiddenType === undefined ||
+                        openingHours.forbiddenType === null)
                 )
                     return setErrorText("Nebyla zvolena žádná možnost.");
 
-                if (openingHours.type === OpeningHoursType.SomeMonths || openingHours.type === OpeningHoursType.EveryMonth) {
-                    if (openingHours.dayFrom === -1 || openingHours.dayFrom === undefined)
-                        return setErrorText("Nebyl vybrán začátek otevírací doby.");
-                    if (openingHours.dayTo === -1 || openingHours.dayTo === undefined) return setErrorText("Nebyl vybrán konec otevírací doby.");
-                    if (openingHours.dayTo <= openingHours.dayFrom) return setErrorText("Otevírací doba musí začínat dříve, než končit.");
-                    if (openingHours.lunchBreak) {
-                        if (openingHours.lunchFrom === -1 || openingHours.lunchFrom === undefined)
-                            return setErrorText("Nebyl vybrán začátek přestávky.");
-                        if (openingHours.lunchTo === -1 || openingHours.lunchTo === undefined) return setErrorText("Nebyl vybrán konec přestávky.");
-                        if (openingHours.lunchFrom <= openingHours.dayFrom) return setErrorText("Přestávka začíná dříve než otevírací doba.");
-                        if (openingHours.lunchFrom >= openingHours.dayTo) return setErrorText("Přestávka začíná později než otevírací doba.");
-                        if (openingHours.lunchTo >= openingHours.dayTo) return setErrorText("Přestávka končí později, než končí otevírací doba.");
-                        if (openingHours.lunchTo <= openingHours.dayFrom) return setErrorText("Přestávka končí dříve, než začne otevírací doba.");
-                        if (openingHours.lunchTo <= openingHours.lunchFrom) return setErrorText("Přestávka musí začínat dříve, než končit.");
-                    }
-                }
+                const detailError = getOpeningHoursValidationError(openingHours);
+                if (detailError) return setErrorText(detailError);
+
                 return setStep(4);
         }
     };
@@ -127,14 +120,20 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
             if (Object.keys(openingHours).includes("note")) {
                 delete (openingHours as any).note;
             }
+            const newOpeningHours = normalizeOpeningHours(openingHours);
+            const validationError = getOpeningHoursValidationError(newOpeningHours);
+            if (validationError) {
+                setErrorText(validationError);
+                return setIsSending(false);
+            }
             await createChange({
                 tower_id: tower.id,
                 field: "openingHours",
                 type: "object",
                 old_value: tower.openingHours,
-                new_value: openingHours,
+                new_value: newOpeningHours,
             });
-        } catch (e) {
+        } catch {
             setErrorText("Nepodařilo se odeslat návrh. Zkuste to prosím později.");
             return setIsSending(false);
         }
@@ -153,6 +152,13 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                     {
                         label: "Zpět",
                         action: () => {
+                            if (
+                                step === 4 &&
+                                (openingHours.type === OpeningHoursType.EveryMonth ||
+                                    openingHours.type === OpeningHoursType.SomeMonths)
+                            ) {
+                                return setStep(2);
+                            }
                             if (
                                 step === 4 &&
                                 (openingHours.type === OpeningHoursType.Forbidden ||
@@ -175,12 +181,19 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                         customClass: `btn-primary btn-outline ${step > 1 && step <= 4 ? "inline-flex" : "hidden"}`,
                     },
                     {
-                        label: openingHours.type === OpeningHoursType.NonStop || step === 3 ? "Dokončit" : "Pokračovat",
+                        label:
+                            openingHours.type === OpeningHoursType.NonStop || step === 3
+                                ? "Dokončit"
+                                : "Pokračovat",
                         action: () => manageStepper(),
                         customClass: `btn ${errorText ? "btn-disabled" : "btn-primary"} ${step >= 4 ? "hidden" : "inline-flex"}`,
                     },
                     {
-                        label: isSending ? <span className="loading loading-spinner loading-md"></span> : "Odeslat",
+                        label: isSending ? (
+                            <span className="loading loading-spinner loading-md"></span>
+                        ) : (
+                            "Odeslat"
+                        ),
                         action: sendNewOpeningHours,
                         customClass: `btn btn-primary ${step === 4 ? "inline-flex" : "hidden"}`,
                     },
@@ -190,12 +203,9 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                 <ul className="steps my-5 w-full">
                     <li className="step step-primary">Stav</li>
 
-                    {openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths ? (
-                        <li className={cn("step", { "step-primary": step > 1 })}>Dny</li>
-                    ) : null}
-
-                    {openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths ? (
-                        <li className={cn("step", { "step-primary": step > 2 })}>Časy</li>
+                    {openingHours.type === OpeningHoursType.EveryMonth ||
+                    openingHours.type === OpeningHoursType.SomeMonths ? (
+                        <li className={cn("step", { "step-primary": step > 1 })}>Období</li>
                     ) : null}
 
                     {openingHours.type === OpeningHoursType.Forbidden ||
@@ -210,36 +220,28 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                 {step === 1 ? (
                     <Step1
                         currentType={openingHours.type}
-                        monthFrom={openingHours.monthFrom ?? -1}
-                        monthTo={openingHours.monthTo ?? -1}
                         isLockedAtNight={Boolean(openingHours.isLockedAtNight)}
                         handleTypeChange={handleTypeChange}
-                        handleMonthFromChange={handleMonthFromChange}
-                        handleMonthToChange={handleMonthToChange}
                         handleIsLockedAtNightChange={handleIsLockedAtNightChange}
                         setErrorText={setErrorText}
                     />
                 ) : null}
 
-                {step === 2 ? <Step2 days={openingHours.days ?? []} handleDaysChange={handleDaysChange} setErrorText={setErrorText} /> : null}
-
-                {step === 3 && (openingHours.type === OpeningHoursType.EveryMonth || openingHours.type === OpeningHoursType.SomeMonths) ? (
-                    <Step3Hours
-                        dayFrom={openingHours.dayFrom ?? -1}
-                        dayTo={openingHours.dayTo ?? -1}
-                        lunchBreak={Boolean(openingHours.lunchBreak)}
-                        lunchFrom={openingHours.lunchFrom ?? -1}
-                        lunchTo={openingHours.lunchTo ?? -1}
-                        handleDayFrom={handleDayFromChange}
-                        handleDayTo={handleDayToChange}
-                        handleLunchBreak={handleLunchBreakChange}
-                        handleLunchFrom={handleLunchFromChange}
-                        handleLunchTo={handleLunchToChange}
+                {step === 2 ? (
+                    <Step2
+                        ranges={getOpeningHoursRanges(openingHours)}
+                        detailText={openingHours.detailText ?? ""}
+                        detailUrl={openingHours.detailUrl ?? ""}
+                        handleDetailTextChange={handleDetailTextChange}
+                        handleDetailUrlChange={handleDetailUrlChange}
+                        handleRangesChange={handleRangesChange}
                         setErrorText={setErrorText}
                     />
                 ) : null}
 
-                {step === 3 && openingHours.type !== OpeningHoursType.EveryMonth && openingHours.type !== OpeningHoursType.SomeMonths ? (
+                {step === 3 &&
+                openingHours.type !== OpeningHoursType.EveryMonth &&
+                openingHours.type !== OpeningHoursType.SomeMonths ? (
                     <Step3Detail
                         detailText={openingHours.detailText ?? ""}
                         detailUrl={openingHours.detailUrl ?? ""}
@@ -252,14 +254,21 @@ function OpeningHoursDialog({ tower }: { tower: Tower }) {
                     />
                 ) : null}
 
-                <div className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
-                    <h3 className="text-center font-bold pt-5">Takto bude vypadat nová dlaždice s otevírací dobou: </h3>
+                <div
+                    className={`${step === 4 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}
+                >
+                    <h3 className="text-center font-bold pt-5">
+                        Takto bude vypadat nová dlaždice s otevírací dobou:{" "}
+                    </h3>
                     <OpeningHoursTile openingHours={openingHours} />
                 </div>
 
-                <div className={`${step === 5 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}>
+                <div
+                    className={`${step === 5 ? "flex" : "hidden"} flex-col items-center gap-3 text-base-content`}
+                >
                     <h3 className="text-center font-bold py-5">
-                        Děkujeme za navržení změny otevírací doby. Tato změna bude zaslána správci a po schválení bude zveřejněna.
+                        Děkujeme za navržení změny otevírací doby. Tato změna bude zaslána správci a
+                        po schválení bude zveřejněna.
                     </h3>
                 </div>
 

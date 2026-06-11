@@ -64,6 +64,15 @@ Open `http://localhost:3000`.
 - `npm run typecheck` — run TypeScript without emitting files
 - `npm run test:e2e` — run Playwright tests with an auto-started or reused local app
 - `npm run test:e2e:headed` — run Playwright tests in headed mode
+- `npm run migrate:opening-hours` — dry-run migration from legacy opening-hours fields to `ranges`
+
+Apply the opening-hours migration with:
+
+```bash
+npm run migrate:opening-hours -- --write
+```
+
+After a write migration, the script calls `/api/cache/purge/[id]` for each migrated tower. By default it uses `http://127.0.0.1:3000`; set `OPENING_HOURS_MIGRATION_CACHE_PURGE_BASE_URL` to purge another running deployment.
 
 ## Project structure
 

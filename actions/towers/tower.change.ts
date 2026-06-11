@@ -7,6 +7,7 @@ import { getChange } from "@/data/change/changes";
 import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
+import { getOpeningHoursValidationError, normalizeOpeningHours } from "@/utils/openingHours";
 
 export const changeTower = async (changeID: string, tower: Tower) => {
     const change = await getChange(changeID);
@@ -21,6 +22,11 @@ export const changeTower = async (changeID: string, tower: Tower) => {
     if (change.field === "urls") {
         // only add one new value to the end of the array
         newValue = [...(tower.urls || []), change.new_value[change.new_value.length - 1]];
+    }
+    if (change.field === "openingHours") {
+        newValue = normalizeOpeningHours(newValue);
+        const validationError = getOpeningHoursValidationError(newValue);
+        if (validationError) throw new Error(validationError);
     }
     await updateDoc(towerDoc, {
         [change.field]: newValue,

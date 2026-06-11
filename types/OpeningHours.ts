@@ -15,8 +15,20 @@ export enum OpeningHoursForbiddenType {
     Banned,
 }
 
+export type OpeningHoursRange = {
+    monthFrom: number;
+    monthTo: number;
+    days: number[];
+    dayFrom: number;
+    dayTo: number;
+    lunchBreak?: boolean;
+    lunchFrom?: number;
+    lunchTo?: number;
+};
+
 export type OpeningHours = {
     type: OpeningHoursType;
+    ranges?: OpeningHoursRange[];
     monthFrom?: number;
     monthTo?: number;
     isLockedAtNight?: boolean;

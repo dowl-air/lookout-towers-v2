@@ -1,4 +1,5 @@
 import { Tower } from "@/types/Tower";
+import { normalizeOpeningHours } from "@/utils/openingHours";
 import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 
 const normalizeTowerGps = (gps: unknown) => {
@@ -29,6 +30,7 @@ export const normalizeTowerObject = (tower: any): Tower => {
     return {
         ...serialized,
         gps: normalizeTowerGps(serialized.gps),
+        openingHours: normalizeOpeningHours(serialized.openingHours),
     } as Tower;
 };
 
@@ -40,5 +42,12 @@ export const normalizeTypesenseTowerObject = (tower: any): Tower => {
         latitude: tower.gps[0],
         longitude: tower.gps[1],
     };
-    return { ...tower, opened, modified, created, gps } as Tower;
+    return {
+        ...tower,
+        opened,
+        modified,
+        created,
+        gps,
+        openingHours: normalizeOpeningHours(tower.openingHours),
+    } as Tower;
 };

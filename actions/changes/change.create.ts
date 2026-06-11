@@ -10,12 +10,20 @@ import { MailSubject } from "@/types/MailSubject";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { createSubject } from "@/utils/mail";
+import { getOpeningHoursValidationError, normalizeOpeningHours } from "@/utils/openingHours";
 
 export const createChange = async (
     change: Omit<Change, "user_id" | "id" | "created" | "state">
 ) => {
     const user = await checkAuth();
     if (!user) throw new Error("Unauthorized.");
+
+    if (change.field === "openingHours") {
+        const validationError = getOpeningHoursValidationError(
+            normalizeOpeningHours(change.new_value)
+        );
+        if (validationError) throw new Error(validationError);
+    }
 
     const doc = await addDoc(collection(db, "changes"), {
         ...change,
