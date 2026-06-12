@@ -417,10 +417,10 @@ export const VisitModal = ({
                                 {photosToUpload.map((photo) => (
                                     <div
                                         key={`${photo.name}-${photo.lastModified}`}
-                                        className="flex items-center justify-between gap-3 rounded-2xl border border-base-300 bg-base-100 px-4 py-3 text-sm"
+                                        className="flex items-center gap-3 rounded-2xl border border-base-300 bg-base-100 px-4 py-3 text-sm"
                                     >
-                                        <div className="flex min-w-0 items-center gap-3">
-                                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-base-300 bg-base-200">
+                                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                                            <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-base-300 bg-base-200">
                                                 {photoPreviewUrls[
                                                     `${photo.name}-${photo.lastModified}`
                                                 ] ? (
@@ -434,7 +434,7 @@ export const VisitModal = ({
                                                         width={96}
                                                         height={96}
                                                         unoptimized
-                                                        className="h-full w-full object-cover"
+                                                        className="h-full w-full object-cover object-center"
                                                     />
                                                 ) : (
                                                     <div className="flex h-full w-full items-center justify-center text-[10px] text-base-content/50">
@@ -443,7 +443,7 @@ export const VisitModal = ({
                                                 )}
                                             </div>
 
-                                            <div className="min-w-0">
+                                            <div className="min-w-0 flex-1 self-center">
                                                 <p className="truncate font-medium text-base-content">
                                                     {photo.name}
                                                 </p>
@@ -455,7 +455,7 @@ export const VisitModal = ({
 
                                         <button
                                             type="button"
-                                            className="btn btn-ghost btn-sm text-error"
+                                            className="btn btn-ghost btn-sm shrink-0 text-error"
                                             onClick={() => {
                                                 setPhotosToUpload(
                                                     photosToUpload.filter((file) => file !== photo)

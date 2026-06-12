@@ -1,7 +1,8 @@
-import { Visit } from "@/types/Visit";
-import ProfileVisitCard from "./ProfileVisitCard";
-import { Tower } from "@/types/Tower";
 import { Rating } from "@/types/Rating";
+import { Tower } from "@/types/Tower";
+import { Visit } from "@/types/Visit";
+
+import ProfileVisitCard from "./ProfileVisitCard";
 
 function ProfileVisits({ visits, towers, ratings }: { visits: Visit[]; towers: Tower[]; ratings: Rating[] }) {
     return (

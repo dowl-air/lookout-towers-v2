@@ -3,13 +3,13 @@
 import { useState } from "react";
 
 import { createChange } from "@/actions/changes/change.create";
+import Dialog from "@/components/shared/dialog/Dialog";
 import { ADMISSION_TARIFF_TYPES, ADMISSION_TYPES } from "@/constants/admission";
 import { getTowerType4 } from "@/constants/towerType";
 import { AdmissionType } from "@/types/Admission";
 import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
 import { getCurrency } from "@/utils/currency";
-import Dialog from "@/components/shared/dialog/Dialog";
 import { closeModal } from "@/utils/showModal";
 
 const DIALOG_NAME = "admission_modal";

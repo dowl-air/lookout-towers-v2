@@ -6,8 +6,8 @@ import ProfileBox from "@/app/(with-navbar)/(with-footer)/(authenticated)/profil
 import { ProfileMap } from "@/components/shared/map/ProfileMap";
 import { MapProvider } from "@/context/MapContext";
 import { getAllUserRatings } from "@/data/rating/ratings";
-import { TowerMapDTO } from "@/data/tower/towers-map";
 import { getTowersByIDs } from "@/data/tower/towers";
+import { TowerMapDTO } from "@/data/tower/towers-map";
 import { getAllUserFavouritesIds } from "@/data/user/user-favourites";
 import { getAllUserVisits } from "@/data/user/user-visits";
 

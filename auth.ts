@@ -1,13 +1,13 @@
 import { FirestoreAdapter } from "@auth/firebase-adapter";
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import type { Provider } from "next-auth/providers";
 import { updateTag } from "next/cache";
+import NextAuth from "next-auth";
+import type { Provider } from "next-auth/providers";
+import Google from "next-auth/providers/google";
 
+import { sendMail } from "@/actions/mail";
 import { authFirestore } from "@/utils/authFirestore";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import Seznam from "@/utils/seznam.provider";
-import { sendMail } from "@/actions/mail";
 
 const providers: Provider[] = [
     Google({

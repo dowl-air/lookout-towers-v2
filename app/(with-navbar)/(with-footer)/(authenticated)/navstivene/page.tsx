@@ -1,12 +1,14 @@
+import { Metadata } from "next";
+import { connection } from "next/server";
+import { Suspense } from "react";
+
+import ProfileVisits from "@/components/profile/ProfileVisits";
+import VisitsStats from "@/components/profile/visit-card/VisitsStats";
 import { getAllUserRatings } from "@/data/rating/ratings";
 import { getTowersByIDs } from "@/data/tower/towers";
 import { getAllUserFavouritesIds } from "@/data/user/user-favourites";
 import { getAllUserVisits } from "@/data/user/user-visits";
-import ProfileVisits from "@/components/profile/ProfileVisits";
-import VisitsStats from "@/components/profile/visit-card/VisitsStats";
-import { Metadata } from "next";
-import { connection } from "next/server";
-import { Suspense } from "react";
+
 
 export const metadata: Metadata = {
     title: "Navštívené rozhledny",

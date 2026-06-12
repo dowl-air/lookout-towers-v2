@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { checkAuth } from "@/actions/checkAuth";
+
 import ProfileBoxLevel from "./ProfileBoxLevel";
 
 async function ProfileBox({

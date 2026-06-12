@@ -2,8 +2,6 @@
 
 import "leaflet/dist/leaflet.css";
 import "leaflet/dist/images/marker-shadow.png";
-import L from "leaflet";
-import { useEffect } from "react";
 
 type Position = { latitude: number; longitude: number };
 
@@ -29,8 +27,11 @@ type Position = { latitude: number; longitude: number };
     return null;
 }; */
 
-const MapPicker = ({ pickedPosition, setPickedPosition }: { pickedPosition: Position; setPickedPosition: (position: Position) => void }) => {
-    /* if (typeof window === "undefined")  */return null;
+const MapPicker = (_props: {
+    pickedPosition: Position | null;
+    setPickedPosition: (position: Position) => void;
+}) => {
+    /* if (typeof window === "undefined")  */ return null;
 
     /* const icon = L.icon({
         iconUrl: "/img/marker_red.png",

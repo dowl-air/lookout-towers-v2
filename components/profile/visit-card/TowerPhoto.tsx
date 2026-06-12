@@ -1,6 +1,7 @@
-import { Tower } from "@/types/Tower";
 import Image from "next/image";
 import Link from "next/link";
+
+import { Tower } from "@/types/Tower";
 
 const TowerPhoto = ({ tower, index }: { tower: Tower; index: number }) => {
     return (

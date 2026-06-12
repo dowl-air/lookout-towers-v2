@@ -1,8 +1,9 @@
+import Link from "next/link";
+
 import AddSource from "@/components/tower/tiles/sources/AddSource";
 import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
 import { Tower } from "@/types/Tower";
 import { extractDomain, extractDomainAndPath } from "@/utils/extractDomain";
-import Link from "next/link";
 
 const Sources = ({ tower }: { tower: Tower }) => {
     const hasSomeSources = tower.urls && tower.urls.length > 0;
@@ -11,7 +12,9 @@ const Sources = ({ tower }: { tower: Tower }) => {
         <div className="card card-compact sm:card-normal w-full shadow-xl bg-[rgba(255,255,255,0.05)]">
             <div className="card-body">
                 <div className="flex justify-between gap-4 flex-wrap">
-                    <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">Odkazy a zdroje</h2>
+                    <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">
+                        Odkazy a zdroje
+                    </h2>
                     <AddSource tower={tower} />
                 </div>
                 <div className="flex flex-col gap-2.5 overflow-y-auto mt-4">
@@ -36,12 +39,21 @@ const Sources = ({ tower }: { tower: Tower }) => {
                                         {logo ? (
                                             <div className="avatar">
                                                 <div className="w-7 rounded-full">
-                                                    <img src={logo} className="object-contain!" />
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={logo}
+                                                        alt={`${domainName} logo`}
+                                                        className="object-contain!"
+                                                    />
                                                 </div>
                                             </div>
                                         ) : null}
                                         <div className="link">
-                                            <Link href={url} target="_blank" className="whitespace-nowrap">
+                                            <Link
+                                                href={url}
+                                                target="_blank"
+                                                className="whitespace-nowrap"
+                                            >
                                                 {extractDomainAndPath(url, true)}
                                             </Link>
                                         </div>
@@ -49,7 +61,9 @@ const Sources = ({ tower }: { tower: Tower }) => {
                                 );
                             })
                     ) : (
-                        <div className="text-sm text-gray-500">Žádné zdroje zatím nebyly přidány.</div>
+                        <div className="text-sm text-gray-500">
+                            Žádné zdroje zatím nebyly přidány.
+                        </div>
                     )}
                 </div>
             </div>

@@ -1,7 +1,8 @@
 "use server";
 
-import { auth } from "@/auth";
 import { User } from "next-auth";
+
+import { auth } from "@/auth";
 
 export const checkAuth = async (): Promise<User | null> => {
     const session = await auth();

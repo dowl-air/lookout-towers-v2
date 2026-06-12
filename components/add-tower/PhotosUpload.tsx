@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { cn } from "@/utils/cn";
 
 const PhotosUpload = ({
@@ -26,11 +28,18 @@ const PhotosUpload = ({
             <div className="flex items-center gap-3 justify-between flex-wrap">
                 <input type="file" multiple className="file-input" onChange={handleFilesSelect} />
                 <div className="flex items-center gap-3">
-                    <input id="input-photo-url" type="text" placeholder="Vložit odkaz na fotku" className="input input-bordered" />
+                    <input
+                        id="input-photo-url"
+                        type="text"
+                        placeholder="Vložit odkaz na fotku"
+                        className="input input-bordered"
+                    />
                     <button
                         className="btn"
                         onClick={() => {
-                            const elm = document.getElementById("input-photo-url") as HTMLInputElement;
+                            const elm = document.getElementById(
+                                "input-photo-url"
+                            ) as HTMLInputElement;
                             try {
                                 const url = new URL(elm.value);
                                 setPhotos((prevPhotos) => [...prevPhotos, new URL(url).toString()]);
@@ -50,12 +59,21 @@ const PhotosUpload = ({
                     <div
                         key={index}
                         title="Kliknutím nastavíte jako hlavní"
-                        className={cn("relative cursor-pointer rounded-lg mt-3", { "ring-2 ring-primary ring-offset-4": index === mainIndex })}
+                        className={cn("relative cursor-pointer rounded-lg mt-3", {
+                            "ring-2 ring-primary ring-offset-4": index === mainIndex,
+                        })}
                         onClick={() => setMainIndex(index)}
                     >
-                        <img
-                            src={photo instanceof File ? URL.createObjectURL(photo) : photo.toString()}
+                        <Image
+                            src={
+                                photo instanceof File
+                                    ? URL.createObjectURL(photo)
+                                    : photo.toString()
+                            }
                             alt="preview"
+                            width={144}
+                            height={144}
+                            unoptimized
                             className="w-36 h-36 object-cover rounded-lg"
                         />
                         <button

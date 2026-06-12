@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
+
 import { updateChange } from "@/actions/changes/change.update";
 import { Change, ChangeState } from "@/types/Change";
 import { Tower } from "@/types/Tower";
-import { useState } from "react";
 
 const ChangeButtons = ({ change, tower }: { change: Change; tower: Tower }) => {
     const [loading, setLoading] = useState(false);

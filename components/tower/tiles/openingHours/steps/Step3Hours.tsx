@@ -1,5 +1,6 @@
-import { cn } from "@/utils/cn";
 import { useEffect } from "react";
+
+import { cn } from "@/utils/cn";
 
 type Step3HoursProps = {
     dayFrom: number;

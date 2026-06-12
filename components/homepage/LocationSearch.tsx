@@ -1,7 +1,8 @@
 "use client";
 
-import useLocation from "@/hooks/useLocation";
 import { useRouter } from "next/navigation";
+
+import useLocation from "@/hooks/useLocation";
 
 const LocationSearch = () => {
     const { location } = useLocation();

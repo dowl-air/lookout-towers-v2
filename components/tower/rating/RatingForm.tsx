@@ -1,16 +1,17 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { loginRedirect } from "@/actions/login.redirect";
-import { cn } from "@/utils/cn";
-import RatingModal from "@/components/tower/rating/RatingModal";
-import UserRating from "@/components/tower/rating/UserRating";
-import RatingStats from "@/components/tower/rating/RatingStats";
-import { showModalWithoutFocus } from "@/utils/showModal";
 import { useActionState } from "react";
-import { Tower } from "@/types/Tower";
+
+import { loginRedirect } from "@/actions/login.redirect";
+import RatingModal from "@/components/tower/rating/RatingModal";
+import RatingStats from "@/components/tower/rating/RatingStats";
+import UserRating from "@/components/tower/rating/UserRating";
 import { Rating } from "@/types/Rating";
+import { Tower } from "@/types/Tower";
 import { User } from "@/types/User";
+import { cn } from "@/utils/cn";
+import { showModalWithoutFocus } from "@/utils/showModal";
 
 const RatingForm = ({
     tower,

@@ -1,3 +1,7 @@
+import { Metadata } from "next";
+import { connection } from "next/server";
+import { Suspense } from "react";
+
 import { searchTowers } from "@/actions/towers/tower.search";
 import Filter from "@/components/towers/Filter";
 import Pagination from "@/components/towers/Pagination";
@@ -5,9 +9,6 @@ import Results from "@/components/towers/Results";
 import ResultsSkeleton from "@/components/towers/ResultsSkeleton";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
 import { TowersFilter } from "@/utils/TowersFilter";
-import { Metadata } from "next";
-import { connection } from "next/server";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
     title: "Rozhledny",

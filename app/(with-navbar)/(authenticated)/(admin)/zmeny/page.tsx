@@ -1,9 +1,11 @@
+import Image from "next/image";
+import Link from "next/link";
+
 import ChangeValueAdmin from "@/app/(with-navbar)/(authenticated)/(admin)/zmeny/ChangeValueAdmin";
 import ChangeButtons from "@/components/admin/ChangeButtons";
 import { getUnresolvedChanges } from "@/data/change/changes";
 import { getTowersByIDs } from "@/data/tower/towers";
 import { editableParameters } from "@/utils/editableParameters";
-import Link from "next/link";
 
 const ChangesAdmin = async () => {
     const changes = await getUnresolvedChanges();
@@ -32,9 +34,11 @@ const ChangesAdmin = async () => {
                                 <div className="flex gap-6 items-center flex-nowrap">
                                     <Link href={`/${tower.type}/${tower.nameID}`}>
                                         <div className="w-40 h-40">
-                                            <img
+                                            <Image
                                                 src={tower.mainPhotoUrl}
                                                 alt={tower.name}
+                                                width={160}
+                                                height={160}
                                                 className="w-full h-40 object-cover rounded-xl"
                                             />
                                         </div>

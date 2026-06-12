@@ -1,9 +1,9 @@
 "use client";
 
-import { getProviders, signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { getProviders, signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function SignInPage() {
     const [providers, setProviders] = useState<unknown>({});

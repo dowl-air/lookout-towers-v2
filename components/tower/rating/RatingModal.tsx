@@ -1,8 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
 
-import ThemedRating from "@/components/shared/ThemedRating";
 import { editRating, removeRating } from "@/actions/ratings/ratings.action";
+import ThemedRating from "@/components/shared/ThemedRating";
 import { getTowerType4 } from "@/constants/towerType";
 
 const RatingModal = ({ tower, initRating }) => {

@@ -1,8 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { checkAuth } from "@/actions/checkAuth";
 import { showModalWithoutFocus } from "@/utils/showModal";
-import { useRouter } from "next/navigation";
 
 const EditButton = () => {
     const router = useRouter();

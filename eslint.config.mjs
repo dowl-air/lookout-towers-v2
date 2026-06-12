@@ -5,7 +5,7 @@ import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 
 export default defineConfig([
-    globalIgnores(["node_modules/**", ".next/**"]),
+    globalIgnores(["node_modules/**", ".next/**", "postcss.config.js", "tailwind.config.js"]),
     {
         files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
 

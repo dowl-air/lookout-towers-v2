@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Tower } from "@/types/Tower";
 import {
     getAllCountryProvinces,
@@ -8,7 +10,6 @@ import {
     isValidCountryCode,
     isValidProvinceCode,
 } from "@/utils/geography";
-import Link from "next/link";
 
 function LocationBreadcrumbs({ tower }: { tower: Tower }) {
     let country = isValidCountryCode(tower.country) ? getCountryByCode(tower.country) : getCountryByName(tower.country);

@@ -1,6 +1,6 @@
+import RatingForm from "@/components/tower/rating/RatingForm";
 import { getTowerRatings, getUserRating } from "@/data/rating/ratings";
 import { getUserById } from "@/data/user/user";
-import RatingForm from "@/components/tower/rating/RatingForm";
 import { Tower } from "@/types/Tower";
 
 const RatingFormProvider = async ({ tower }: { tower: Tower }) => {

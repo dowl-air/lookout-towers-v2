@@ -1,5 +1,9 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
+import { useRef } from "react";
+import { useDebouncedCallback } from "use-debounce";
+
 import FilterDialog from "@/components/towers/FilterDialog";
 import { CountryCode } from "@/constants/countries";
 import PROVINCES_CZ from "@/constants/provinces/CZ";
@@ -12,9 +16,6 @@ import {
     getAllCountryProvinces,
     getProvinceByCounty,
 } from "@/utils/geography";
-import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
-import { useDebouncedCallback } from "use-debounce";
 
 const Filter = ({ searchParams }: { searchParams: TowersSearchParams }) => {
     const { replace } = useRouter();

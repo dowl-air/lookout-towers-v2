@@ -1,8 +1,10 @@
-import UserProfileAvatar from "@/components/UserProfileAvatar";
+import { User } from "next-auth";
+
 import ThemedRating from "@/components/shared/ThemedRating";
+import UserProfileAvatar from "@/components/UserProfileAvatar";
 import { Rating } from "@/types/Rating";
 import { formatDate } from "@/utils/date";
-import { User } from "next-auth";
+
 
 const UserRating = ({ rating, user }: { rating: Rating; user: User }) => {
     if (user === undefined) return null;
