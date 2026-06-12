@@ -31,6 +31,7 @@ function TowerCardClient({
             href={`/${tower.type || "rozhledna"}/${tower.nameID}`}
             scroll
             title={tower.name}
+            aliases={tower.aliases}
             photoUrl={photoUrl}
             typeLabel={tower.type}
             placeLabel={tower.county ?? tower.province ?? tower.country}

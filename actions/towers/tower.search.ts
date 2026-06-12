@@ -6,6 +6,9 @@ import { normalizeTypesenseTowerObject } from "@/utils/normalizeTowerObject";
 
 const Typesense = require("typesense");
 
+const DEFAULT_QUERY_BY = "name,aliases";
+const FALLBACK_QUERY_BY = "name";
+
 const client = new Typesense.Client({
     nodes: [
         {
@@ -20,7 +23,7 @@ const client = new Typesense.Client({
 
 export const searchTowers = async ({
     q,
-    query_by = "name",
+    query_by = DEFAULT_QUERY_BY,
     limit = 5,
     offset = 0,
     sort_by = "name:asc",
@@ -39,14 +42,35 @@ export const searchTowers = async ({
     found: number;
     ratings: { avg: number; count: number; id: string }[];
 }> => {
-    const res = await client.collections("towers").documents().search({
+    const searchParams = {
         q,
         query_by,
         limit,
         offset,
         sort_by,
         filter_by,
-    });
+    };
+
+    let res;
+
+    try {
+        res = await client.collections("towers").documents().search(searchParams);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const canFallbackToNameOnly = query_by === DEFAULT_QUERY_BY && message.includes("aliases");
+
+        if (!canFallbackToNameOnly) {
+            throw error;
+        }
+
+        res = await client
+            .collections("towers")
+            .documents()
+            .search({
+                ...searchParams,
+                query_by: FALLBACK_QUERY_BY,
+            });
+    }
 
     if (res.found === 0) return { found: res.found, towers: [], ratings: [] };
     if (!include_ratings)

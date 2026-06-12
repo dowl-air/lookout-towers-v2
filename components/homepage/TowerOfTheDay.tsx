@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import ThemedRating from "@/components/shared/ThemedRating";
+import TowerAliases from "@/components/shared/TowerAliases";
 import TowerFavouriteAction from "@/components/shared/TowerFavouriteAction";
 import TowerVisitAction from "@/components/shared/TowerVisitAction";
 import { towerTypes } from "@/constants/towerType";
@@ -151,6 +152,10 @@ const TowerOfTheDay = async () => {
                                 {towerTypeName}
                             </p>
                             <h3 className="mt-2 text-3xl font-bold leading-tight">{tower.name}</h3>
+                            <TowerAliases
+                                aliases={tower.aliases}
+                                className="text-sm text-white/75 md:text-base"
+                            />
                             <p className="mt-2 text-sm text-white/80 md:text-base">
                                 {tower.county}
                             </p>

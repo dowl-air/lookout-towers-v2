@@ -1,15 +1,27 @@
 import Link from "next/link";
-import { Visit } from "@/types/Visit";
-import { Tower } from "@/types/Tower";
-import { Rating } from "@/types/Rating";
-import VisitUrls from "@/components/profile/visit-card/VisitUrls";
-import { formatDate } from "@/utils/date";
-import VisitPhotos from "@/components/profile/visit-card/VisitPhotos";
-import TowerPhoto from "@/components/profile/visit-card/TowerPhoto";
-import VisitRating from "@/components/profile/visit-card/VisitRating";
-import VisitButtons from "@/components/profile/visit-card/VisitButtons";
 
-function ProfileVisitCard({ visit, tower, rating, index }: { visit: Visit; tower: Tower; rating: Rating | null; index: number }) {
+import TowerPhoto from "@/components/profile/visit-card/TowerPhoto";
+import VisitButtons from "@/components/profile/visit-card/VisitButtons";
+import VisitPhotos from "@/components/profile/visit-card/VisitPhotos";
+import VisitRating from "@/components/profile/visit-card/VisitRating";
+import VisitUrls from "@/components/profile/visit-card/VisitUrls";
+import TowerAliases from "@/components/shared/TowerAliases";
+import { Rating } from "@/types/Rating";
+import { Tower } from "@/types/Tower";
+import { Visit } from "@/types/Visit";
+import { formatDate } from "@/utils/date";
+
+function ProfileVisitCard({
+    visit,
+    tower,
+    rating,
+    index,
+}: {
+    visit: Visit;
+    tower: Tower;
+    rating: Rating | null;
+    index: number;
+}) {
     return (
         <div className="card card-compact w-full bg-base-100 shadow-xl">
             <div className="card-body flex-row gap-3 justify-between">
@@ -20,6 +32,7 @@ function ProfileVisitCard({ visit, tower, rating, index }: { visit: Visit; tower
                             <Link href={`/${tower.type}/${tower.nameID}`}>
                                 <article className="prose">
                                     <h2 className="text-lg lg:text-xl xl:text-2xl">{tower.name}</h2>
+                                    <TowerAliases aliases={tower.aliases} className="text-sm" />
                                 </article>
                             </Link>
                             <time className="text-base opacity-50">

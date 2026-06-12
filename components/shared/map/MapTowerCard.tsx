@@ -46,6 +46,7 @@ const MapTowerCard = ({ tower }: MapTowerCardProps) => {
             href={`/${tower.type || "rozhledna"}/${tower.nameID}`}
             scroll
             title={tower.name}
+            aliases={tower.aliases}
             photoUrl={tower.mainPhotoUrl}
             typeLabel={tower.type}
             placeLabel={tower.county ?? tower.province ?? tower.country}
@@ -62,6 +63,7 @@ const MapTowerCard = ({ tower }: MapTowerCardProps) => {
             contentClassName="p-3"
             overlayClassName="p-3"
             titleClassName="text-lg"
+            aliasesClassName="text-xs"
             footerClassName="text-xs"
             showVisited={tower.isVisited}
             showFavourite={tower.isFavourite}

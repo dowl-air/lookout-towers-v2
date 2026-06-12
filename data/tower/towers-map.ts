@@ -14,6 +14,7 @@ export type TowerMapDTO = Pick<
     | "openingHours"
     | "nameID"
     | "name"
+    | "aliases"
     | "gps"
     | "type"
     | "mainPhotoUrl"
@@ -35,6 +36,7 @@ export const getAllTowersForMap = cache(async () => {
             "openingHours",
             "nameID",
             "name",
+            "aliases",
             "gps",
             "type",
             "mainPhotoUrl",

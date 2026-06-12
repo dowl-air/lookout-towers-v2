@@ -34,6 +34,7 @@ type GMaps = {
 export type Tower = {
     access?: string; // todo merge to description
     admission?: Admission;
+    aliases?: string[];
     country: string | CountryCode;
     county?: string;
     created: string | Date;

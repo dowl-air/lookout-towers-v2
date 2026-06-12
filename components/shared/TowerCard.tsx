@@ -11,6 +11,7 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
         <TowerCardBase
             href={`/${tower.type}/${tower.nameID}`}
             title={tower.name}
+            aliases={tower.aliases}
             photoUrl={tower.mainPhotoUrl}
             typeLabel={tower.type}
             placeLabel={tower.county ?? tower.province ?? tower.country}

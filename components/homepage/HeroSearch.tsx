@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { searchTowers } from "@/actions/towers/tower.search";
+import TowerAliases from "@/components/shared/TowerAliases";
 import { Tower } from "@/types/Tower";
 
 const useDebouncedValue = (inputValue, delay) => {
@@ -67,14 +68,14 @@ function HeroSearch() {
             </form>
             <div
                 tabIndex={0}
-                className={`dropdown-content z-10 mt-3 w-full overflow-hidden rounded-[1.5rem] border border-base-300/70 bg-base-100/96 text-base-content shadow-[0_30px_70px_-28px_rgba(15,23,42,0.45)] backdrop-blur ${
+                className={`dropdown-content z-10 mt-3 w-full overflow-hidden rounded-3xl border border-base-300/70 bg-base-100/96 text-base-content shadow-[0_30px_70px_-28px_rgba(15,23,42,0.45)] backdrop-blur ${
                     searchResults?.length == 0 && "hidden"
                 }`}
             >
                 <div className="border-b border-base-300/60 px-5 py-3 text-sm font-medium text-base-content/55">
                     Nejbližší výsledky
                 </div>
-                <div className="max-h-[26rem] overflow-y-auto px-2 py-2">
+                <div className="max-h-104 overflow-y-auto px-2 py-2">
                     {searchResults.map((elm) => (
                         <Link
                             key={elm.id}
@@ -99,6 +100,7 @@ function HeroSearch() {
                                         {elm.type}
                                     </span>
                                 </div>
+                                <TowerAliases aliases={elm.aliases} className="mt-1 text-left" />
                                 <div className="mt-3 flex items-center gap-2 text-sm text-base-content/60">
                                     <svg
                                         viewBox="0 0 512 512"

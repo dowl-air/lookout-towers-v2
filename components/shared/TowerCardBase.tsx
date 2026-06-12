@@ -4,6 +4,7 @@ import { Clock3, MapPinCheckInside, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import TowerAliases from "@/components/shared/TowerAliases";
 import TowerCardLocation from "@/components/shared/TowerCardLocation";
 import { Tower } from "@/types/Tower";
 import { cn } from "@/utils/cn";
@@ -11,6 +12,7 @@ import { cn } from "@/utils/cn";
 type TowerCardBaseProps = {
     href: string;
     title: string;
+    aliases?: string[];
     photoUrl: string;
     typeLabel: string;
     placeLabel: string;
@@ -28,6 +30,7 @@ type TowerCardBaseProps = {
     imageClassName?: string;
     overlayClassName?: string;
     titleClassName?: string;
+    aliasesClassName?: string;
     contentClassName?: string;
     distanceClassName?: string;
     footerClassName?: string;
@@ -38,6 +41,7 @@ type TowerCardBaseProps = {
 const TowerCardBase = ({
     href,
     title,
+    aliases,
     photoUrl,
     typeLabel,
     placeLabel,
@@ -55,6 +59,7 @@ const TowerCardBase = ({
     imageClassName,
     overlayClassName,
     titleClassName,
+    aliasesClassName,
     contentClassName,
     distanceClassName,
     footerClassName,
@@ -141,6 +146,10 @@ const TowerCardBase = ({
                         >
                             {title}
                         </TitleTag>
+                        <TowerAliases
+                            aliases={aliases}
+                            className={cn("text-xs text-white/70 sm:text-sm", aliasesClassName)}
+                        />
                     </div>
                 </figure>
 

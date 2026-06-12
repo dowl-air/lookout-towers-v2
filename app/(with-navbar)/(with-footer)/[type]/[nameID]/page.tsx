@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TouristAttraction, WithContext } from "schema-dts";
 
+import TowerAliases from "@/components/shared/TowerAliases";
 import RatingFormProvider from "@/components/tower/rating/RatingProvider";
 import Admission from "@/components/tower/tiles/Admission";
 import ChangesHistory from "@/components/tower/tiles/ChangesHistory";
@@ -73,6 +74,10 @@ async function TowerPage({ params }: { params }) {
                         <h1 className="mt-2 mb-2 lg:mt-6 lg:mb-8 lg:ml-1 text-center lg:text-left">
                             {tower.name}
                         </h1>
+                        <TowerAliases
+                            aliases={tower.aliases}
+                            className="mb-4 text-center text-base lg:ml-1 lg:text-left"
+                        />
                         <Legend tower={tower} />
                         <RatingTop count={count} average={avg} />
                         <Buttons tower={tower} />
