@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { searchTowers } from "@/actions/towers/tower.search";
 import TowerAliases from "@/components/shared/TowerAliases";
+import { getTowerTypeName } from "@/constants/towerType";
 import { Tower } from "@/types/Tower";
 
 const useDebouncedValue = (inputValue, delay) => {
@@ -97,7 +98,7 @@ function HeroSearch() {
                                         {elm.name}
                                     </h3>
                                     <span className="rounded-full bg-base-200 px-2.5 py-1 text-xs font-medium uppercase tracking-[0.14em] text-base-content/55">
-                                        {elm.type}
+                                        {getTowerTypeName(elm.type)}
                                     </span>
                                 </div>
                                 <TowerAliases aliases={elm.aliases} className="mt-1 text-left" />

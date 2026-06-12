@@ -17,9 +17,11 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
     const isNew = change.state === ChangeState.New;
 
     let parameter = editableParameters.find((param) => param.name === change.field);
-    if (change.field === "openingHours") parameter = { label: "Otevírací doba", type: "object", name: "openingHours" };
+    if (change.field === "openingHours")
+        parameter = { label: "Otevírací doba", type: "object", name: "openingHours" };
     if (change.field === "urls") parameter = { name: "urls", label: "Odkazům", type: "array" };
-    if (change.field === "admission") parameter = { name: "admission", label: "Vstupné", type: "object" };
+    if (change.field === "admission")
+        parameter = { name: "admission", label: "Vstupné", type: "object" };
 
     return (
         <div
@@ -53,9 +55,15 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                     <span className={"text-neutral-500"}>
                         {"[ "}
                         <span className={cn({ "line-through": isApproved })}>
-                            {formatParameterValue(change.old_value, parameter.type)}
+                            {formatParameterValue(
+                                change.old_value,
+                                parameter.type,
+                                parameter.typeOptions
+                            )}
                             {change.field === "openingHours" ? (
-                                <span className="text-neutral-500">{getOpeningHoursTypeName(change.old_value.type)}</span>
+                                <span className="text-neutral-500">
+                                    {getOpeningHoursTypeName(change.old_value.type)}
+                                </span>
                             ) : null}
                             {change.field === "admission" ? (
                                 <span className="text-neutral-500">{` ${getAdmissionTypeLabel(change.old_value?.type)}`}</span>
@@ -83,9 +91,15 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                                 "line-through": isRejected,
                             })}
                         >
-                            {formatParameterValue(change.new_value, parameter.type)}
+                            {formatParameterValue(
+                                change.new_value,
+                                parameter.type,
+                                parameter.typeOptions
+                            )}
                             {change.field === "openingHours" ? (
-                                <span className="text-neutral-500">{getOpeningHoursTypeName(change.new_value.type)}</span>
+                                <span className="text-neutral-500">
+                                    {getOpeningHoursTypeName(change.new_value.type)}
+                                </span>
                             ) : null}
                             {change.field === "admission" ? (
                                 <span className="text-neutral-500">{` ${getAdmissionTypeLabel(change.new_value.type)}`}</span>

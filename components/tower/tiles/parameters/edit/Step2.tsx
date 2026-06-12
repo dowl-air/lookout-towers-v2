@@ -20,7 +20,9 @@ const Step2 = ({
             <h3 className="flex w-full justify-center text-lg font-bold">{label}</h3>
             <div className="flex w-full justify-center gap-1 flex-wrap">
                 <p>Aktuální hodnota: </p>
-                <div className="font-bold">{formatParameterValue(tower[parameter as keyof Tower], type)}</div>
+                <div className="font-bold">
+                    {formatParameterValue(tower[parameter as keyof Tower], type, typeOptions)}
+                </div>
             </div>
             <div className="flex justify-center w-full">
                 <label className="form-control w-full max-w-xs">
@@ -80,9 +82,19 @@ const Step2 = ({
                                             checked={newValue.includes(option)}
                                             onChange={(e) => {
                                                 if (e.target.checked) {
-                                                    setNewValue([...newValue, option].filter((val) => typeOptions?.includes(val)));
+                                                    setNewValue(
+                                                        [...newValue, option].filter((val) =>
+                                                            typeOptions?.includes(val)
+                                                        )
+                                                    );
                                                 } else {
-                                                    setNewValue(newValue.filter((val) => val !== option).filter((val) => typeOptions?.includes(val)));
+                                                    setNewValue(
+                                                        newValue
+                                                            .filter((val) => val !== option)
+                                                            .filter((val) =>
+                                                                typeOptions?.includes(val)
+                                                            )
+                                                    );
                                                 }
                                             }}
                                             className="checkbox checkbox-primary"

@@ -2,6 +2,7 @@
 
 import { getDistance } from "geolib";
 
+import { getTowerTypeName } from "@/constants/towerType";
 import { Tower } from "@/types/Tower";
 import { formatDistance } from "@/utils/geo";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
@@ -33,7 +34,7 @@ function TowerCardClient({
             title={tower.name}
             aliases={tower.aliases}
             photoUrl={photoUrl}
-            typeLabel={tower.type}
+            typeLabel={getTowerTypeName(tower.type)}
             placeLabel={tower.county ?? tower.province ?? tower.country}
             regionLabel={tower.province ?? tower.country}
             priority={priority}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { getTowerTypeName } from "@/constants/towerType";
 import { TowerMapDTO } from "@/data/tower/towers-map";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 
@@ -48,7 +49,7 @@ const MapTowerCard = ({ tower }: MapTowerCardProps) => {
             title={tower.name}
             aliases={tower.aliases}
             photoUrl={tower.mainPhotoUrl}
-            typeLabel={tower.type}
+            typeLabel={getTowerTypeName(tower.type)}
             placeLabel={tower.county ?? tower.province ?? tower.country}
             regionLabel={tower.province ?? tower.country}
             openingHoursLabel={openingHoursText || undefined}
