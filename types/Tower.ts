@@ -31,6 +31,12 @@ type GMaps = {
     wheelchair_accessible_entrance?: boolean;
 };
 
+type TowerTexts = {
+    generatedAt?: string | Date;
+    heroDescription?: string;
+    seoDescription?: string;
+};
+
 export type Tower = {
     access?: string; // todo merge to description
     admission?: Admission;
@@ -64,6 +70,7 @@ export type Tower = {
     province?: string;
     stairs: number;
     tags?: TowerTag[];
+    texts?: TowerTexts;
     type: TowerTypeEnum;
     urls?: [string];
     viewText?: string; //todo merge to description

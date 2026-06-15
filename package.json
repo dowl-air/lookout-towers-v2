@@ -4,19 +4,18 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "ai-test": "tsx scripts/hello-ai.ts",
+        "generate-towers-texts": "tsx scripts/generate-towers-texts.ts",
         "build": "next build",
         "start": "next start",
         "lint": "npx eslint .",
-        "test:e2e": "playwright test",
-        "test:e2e:headed": "playwright test --headed",
-        "prettier": "npx prettier . --write --ignore-path .prettierignore \"*.{js,ts,tsx,jsx}\"",
-        "prettier:check": "npx prettier . --check --ignore-path .prettierignore \"*.{js,ts,tsx,jsx}\"",
         "typecheck": "tsc --noEmit",
         "check": "npm-check",
         "update": "npm-check -u"
     },
     "dependencies": {
         "@auth/firebase-adapter": "^2.11.1",
+        "@openrouter/sdk": "^0.12.79",
         "clsx": "^2.1.1",
         "fastest-levenshtein": "^1.0.16",
         "firebase": "^12.6.0",
@@ -44,7 +43,6 @@
         "@eslint/eslintrc": "^3.3.3",
         "@eslint/js": "^9.39.1",
         "@next/eslint-plugin-next": "^16.0.7",
-        "@playwright/test": "^1.58.2",
         "@tailwindcss/postcss": "^4.1.17",
         "@tailwindcss/typography": "^0.5.19",
         "@types/leaflet": "^1.9.21",
@@ -62,6 +60,7 @@
         "npm-check": "^6.0.1",
         "postcss": "^8.5.6",
         "schema-dts": "^1.1.5",
-        "tailwindcss": "^4.1.17"
+        "tailwindcss": "^4.1.17",
+        "tsx": "^4.22.4"
     }
 }

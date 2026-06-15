@@ -44,6 +44,7 @@ Create `.env.local` and provide the values used by the app:
 - Firebase admin / Auth adapter: `GOOGLE_PRIVATE_KEY`, `GOOGLE_PROJECTID`, `GOOGLE_CLIENT_EMAIL`
 - OAuth providers: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SEZNAM_CLIENT_ID`, `SEZNAM_CLIENT_SECRET`
 - Search: `TYPESENSE_HOST`, `TYPESENSE_KEY`
+- AI scripts: `OPENROUTER_API_KEY`
 - Mail: `SMTP_SERVER_USERNAME`, `SMTP_SERVER_PASSWORD`, `SITE_MAIL_RECIEVER`
 - Optional analytics: `CLOUDFLARE_ANALYTICS_TOKEN`
 
@@ -58,6 +59,8 @@ Open `http://localhost:3000`.
 ## Available scripts
 
 - `npm run dev` — start the development server
+- `npm run ai-test` — run the OpenRouter hello-world script from `scripts/hello-ai.ts`
+- `npm run generate-towers-texts` — generate `heroDescription` and `seoDescription` drafts for towers with OpenRouter
 - `npm run build` — create a production build
 - `npm start` — run the production build
 - `npm run lint` — run ESLint
@@ -93,6 +96,19 @@ npm run test:e2e
 ```
 
 For authenticated scenarios, tests use the local-only `POST /api/test-auth/login` route. That route is disabled in production and only works on `localhost` or `127.0.0.1`, so tests do not need to automate third-party OAuth providers.
+
+## AI text generation
+
+`npm run generate-towers-texts` reads tower data from Firestore, fetches text from each tower's `urls`, and generates Czech `heroDescription` and `seoDescription` drafts using OpenRouter. By default it writes results to `scripts/output/generated-tower-texts.json` and does not update Firestore.
+
+Useful options:
+
+- `npm run generate-towers-texts -- --limit 5` — generate texts for the first 5 towers
+- `npm run generate-towers-texts -- --tower <tower-id>` — generate texts for one tower
+- `npm run generate-towers-texts -- --output tmp/tower-texts.json` — change output file
+- `npm run generate-towers-texts -- --write` — also write generated fields back to Firestore
+
+Set `OPENROUTER_MODEL` to override the default `openrouter/owl-alpha` model.
 
 ## Important implementation detail
 

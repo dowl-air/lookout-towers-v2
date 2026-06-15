@@ -11,7 +11,6 @@ Lookout Towers is a Czech community site for lookout towers, observatories, and 
 - Tailwind CSS 4 + daisyUI.
 - Auth.js / NextAuth v5 beta with Firebase adapter.
 - Firestore + Firebase Storage.
-- Playwright for end-to-end coverage.
 - ESLint flat config with import ordering enforced.
 
 ## Repository map
@@ -22,7 +21,6 @@ Lookout Towers is a Czech community site for lookout towers, observatories, and 
 - `components/`: UI components; some are server components, some client components.
 - `utils/`: Shared helpers for Firebase, cache tags, serialization, formatting, and normalization.
 - `types/`: Shared TS types used across server and client code.
-- `tests/`: Playwright end-to-end tests.
 - `proxy.ts`: Route protection for authenticated/admin areas.
 
 ## Runtime architecture
@@ -144,25 +142,16 @@ Before writing new Firestore queries, look for an existing function in `data/` o
 ### Available commands
 
 - `npm run dev`
+- `npm run ai-test`
+- `npm run generate-towers-texts`
 - `npm run build`
 - `npm run lint`
 - `npm run typecheck`
-- `npm run test:e2e`
-- `npm run test:e2e:headed`
 
-### Playwright notes
+### Browser verification
 
-- Playwright auto-starts the local app with `npm run dev`, or reuses an already running one.
-- Base URL defaults to `http://127.0.0.1:3000`.
-- Authenticated tests use `POST /api/test-auth/login`.
-- That route only works outside production and only on `localhost` / `127.0.0.1`.
-
-Useful test helpers:
-
-- `tests/auth.ts`
-- `tests/browser-errors.ts`
-
-When changing user-visible behavior, prefer adding or updating a Playwright test if the flow is already covered by the suite structure.
+- Do not add Playwright tests in this project.
+- User-facing functionality is verified live in the browser only when the change is large enough to warrant it or when visual/runtime behavior needs confirmation.
 
 ## Known sharp edges
 
@@ -178,7 +167,7 @@ Before editing:
 1. Identify whether the code is server-only, client-only, or crossing the boundary.
 2. Check whether a matching helper already exists in `data/`, `actions/`, or `utils/`.
 3. Identify which cache tags are read and which action should invalidate them.
-4. Identify the narrowest verification step: lint, typecheck, build, or Playwright.
+4. Identify the narrowest verification step: lint, typecheck, build, or live browser verification.
 
 Before finishing:
 
@@ -196,7 +185,7 @@ The current `README.md` now provides a solid contributor-facing overview of:
 - local setup and required environment variables,
 - primary scripts,
 - high-level architecture,
-- Playwright local-auth testing,
+- browser-based verification expectations,
 - the Firestore serialization pitfall.
 
 Use `README.md` for onboarding and local setup. Use this `AGENTS.md` as the repository-specific operational guide for implementation details, cache behavior, server/client boundaries, and safe change practices.
