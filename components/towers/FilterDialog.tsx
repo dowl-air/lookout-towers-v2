@@ -2,13 +2,16 @@
 
 import { forwardRef } from "react";
 
-const FilterDialog = forwardRef<HTMLDialogElement, { closeDialog: () => void }>(function Func({ closeDialog }, ref) {
+const FilterDialog = forwardRef<HTMLDialogElement, { closeDialog: () => void }>(function Func(
+    { closeDialog },
+    ref
+) {
     return (
         <dialog className="modal modal-bottom sm:modal-middle" ref={ref}>
             <div className="modal-box">
                 <h3 className="font-bold text-lg">Filtrovat rozhledny</h3>
                 <p className="py-4">Tato funkce bude brzy dostupná.</p>
-                <div className="modal-action">
+                <div className="modal-action flex flex-wrap items-center justify-end gap-2">
                     {/* <form method="dialog">
                         <button className="btn btn-error">Zavřít</button>
                     </form> */}

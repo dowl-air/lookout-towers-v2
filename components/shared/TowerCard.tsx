@@ -1,6 +1,7 @@
 import { getTowerTypeName } from "@/constants/towerType";
 import { getTowerRatingAndCount } from "@/data/tower/towers";
 import { Tower } from "@/types/Tower";
+import { formatTowerPlaceLabels } from "@/utils/geography";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 
 import TowerCardBase from "./TowerCardBase";
@@ -8,6 +9,8 @@ import TowerCardBase from "./TowerCardBase";
 const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?: boolean }) => {
     const { avg, count } = await getTowerRatingAndCount(tower.id);
     const [state, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
+    const { placeLabel, regionLabel } = formatTowerPlaceLabels(tower);
+
     return (
         <TowerCardBase
             href={`/${tower.type}/${tower.nameID}`}
@@ -15,8 +18,8 @@ const TowerCard = async ({ tower, priority = false }: { tower: Tower; priority?:
             aliases={tower.aliases}
             photoUrl={tower.mainPhotoUrl}
             typeLabel={getTowerTypeName(tower.type)}
-            placeLabel={tower.county ?? tower.province ?? tower.country}
-            regionLabel={tower.province ?? tower.country}
+            placeLabel={placeLabel}
+            regionLabel={regionLabel}
             priority={priority}
             openingHoursLabel={openingHoursText || undefined}
             openingHoursState={state}

@@ -1,12 +1,14 @@
-import { Bike, Car, Milestone } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
 
 import { TowerMap } from "@/components/shared/map/TowerMap";
+import CopyGpsButton from "@/components/tower/tiles/CopyGpsButton";
 import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
 import { Tower } from "@/types/Tower";
 
 const MapTile = ({ tower }: { tower: Tower }) => {
     const { latitude, longitude } = tower.gps;
+    const coordinates = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
     // Generate direction URLs for different map services
     const getDirectionUrls = () => {
@@ -20,7 +22,10 @@ const MapTile = ({ tower }: { tower: Tower }) => {
     const directionUrls = getDirectionUrls();
 
     return (
-        <div className="card shadow-xl mx-auto w-full max-w-7xl flex flex-col md:flex-row">
+        <div
+            id="mapa"
+            className="card mx-auto flex w-full max-w-7xl scroll-mt-24 flex-col shadow-xl md:flex-row"
+        >
             <div className="h-96 sm:h-120 lg:h-136 rounded-xl rounded-b-none md:rounded-b-xl md:rounded-r-none overflow-hidden touch-none w-full">
                 {/* <MapBase center={{ lat: latitude, lng: longitude }} zoom={12}>
                     <Marker
@@ -32,107 +37,83 @@ const MapTile = ({ tower }: { tower: Tower }) => {
                 <TowerMap tower={tower} />
             </div>
 
-            <div className="flex gap-3 justify-center flex-col px-6 py-3 card-body">
+            <div className="card-body flex flex-col justify-center gap-4 px-6 py-5">
                 <h4 className="card-title text-base sm:text-lg md:text-xl text-nowrap my-2">
-                    Vyhledat trasu
+                    Poloha
                 </h4>
 
-                <div className="flex gap-2 items-center">
+                <div className="mb-3 space-y-3 rounded-lg border border-base-300/70 bg-base-200/35 p-3">
+                    <div className="flex min-w-0 items-center gap-2 text-sm font-semibold text-base-content/70">
+                        <MapPin className="size-4 text-primary" />
+                        <span>GPS</span>
+                        <span className="min-w-0 whitespace-nowrap font-mono text-sm font-bold text-base-content">
+                            {coordinates}
+                        </span>
+                    </div>
+                    <CopyGpsButton coordinates={coordinates} className="w-full justify-center" />
+                </div>
+
+                <a
+                    href={directionUrls.mapyCz}
+                    className="btn btn-outline btn-sm w-full justify-start whitespace-nowrap sm:btn-md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     <div className="avatar">
-                        <div className="w-7 rounded-full">
+                        <div className="w-6 rounded-full">
                             <Image
                                 src={CONCURRENCE_LOGOS["mapy.com"]}
-                                alt="mapy.com logo"
+                                alt=""
                                 className="object-contain!"
                                 loading="lazy"
-                                width={28}
-                                height={28}
+                                width={24}
+                                height={24}
                             />
                         </div>
                     </div>
-                    <p>Mapy.com</p>
-                </div>
-
-                <div className="flex gap-2">
-                    <a
-                        href={directionUrls.mapyCz + "&routeType=car_fast_traffic"}
-                        className="btn whitespace-nowrap btn-sm sm:btn-md"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Car className="w-4 h-4" />
-                        Autem
-                    </a>
-                    <a
-                        href={directionUrls.mapyCz + "&routeType=bike_mountain"}
-                        className="btn whitespace-nowrap btn-sm sm:btn-md"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Bike className="w-4 h-4" />
-                        Na kole
-                    </a>
-                    <a
-                        href={directionUrls.mapyCz + "&routeType=foot_fast"}
-                        className="btn whitespace-nowrap btn-sm sm:btn-md"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Milestone className="w-4 h-4" />
-                        Pěšky
-                    </a>
-                </div>
-
-                <div className="flex gap-2 items-center mt-2">
-                    <div className="avatar">
-                        <div className="w-7 rounded-full">
-                            <Image
-                                src={CONCURRENCE_LOGOS["maps.google.com"]}
-                                alt="Google Maps logo"
-                                className="object-contain!"
-                                loading="lazy"
-                                width={28}
-                                height={28}
-                            />
-                        </div>
-                    </div>
-                    <p>Google Maps</p>
-                </div>
+                    Navigovat pomocí Mapy.com
+                </a>
 
                 <a
                     href={directionUrls.googleMaps}
-                    className="btn whitespace-nowrap max-w-[86px] sm:max-w-[100px] btn-sm sm:btn-md"
+                    className="btn btn-outline btn-sm w-full justify-start whitespace-nowrap sm:btn-md"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <Car className="w-4 h-4" />
-                    Autem
-                </a>
-
-                <div className="flex gap-2 items-center mt-2">
                     <div className="avatar">
-                        <div className="w-7 rounded-full">
+                        <div className="w-6 rounded-full">
                             <Image
-                                src={CONCURRENCE_LOGOS["waze.com"]}
-                                alt="Waze logo"
-                                className="object-cover!"
+                                src={CONCURRENCE_LOGOS["maps.google.com"]}
+                                alt=""
+                                className="object-contain!"
                                 loading="lazy"
-                                width={28}
-                                height={28}
+                                width={24}
+                                height={24}
                             />
                         </div>
                     </div>
-                    <p>Waze</p>
-                </div>
+                    Navigovat pomocí Google Maps
+                </a>
 
                 <a
                     href={directionUrls.waze}
-                    className="btn whitespace-nowrap max-w-[86px] sm:max-w-[100px] btn-sm sm:btn-md"
+                    className="btn btn-outline btn-sm w-full justify-start whitespace-nowrap sm:btn-md"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <Car className="w-4 h-4" />
-                    Autem
+                    <div className="avatar">
+                        <div className="w-6 rounded-full">
+                            <Image
+                                src={CONCURRENCE_LOGOS["waze.com"]}
+                                alt=""
+                                className="object-cover!"
+                                loading="lazy"
+                                width={24}
+                                height={24}
+                            />
+                        </div>
+                    </div>
+                    Navigovat pomocí Waze
                 </a>
             </div>
         </div>

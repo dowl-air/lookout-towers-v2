@@ -5,6 +5,7 @@ import { getDistance } from "geolib";
 import { getTowerTypeName } from "@/constants/towerType";
 import { Tower } from "@/types/Tower";
 import { formatDistance } from "@/utils/geo";
+import { formatTowerPlaceLabels } from "@/utils/geography";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 
 import TowerCardBase from "../shared/TowerCardBase";
@@ -26,6 +27,7 @@ function TowerCardClient({
 }) {
     const [state, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
     const locationDistance = userLocation ? getDistance(userLocation, tower.gps, 100) : null;
+    const { placeLabel, regionLabel } = formatTowerPlaceLabels(tower);
 
     return (
         <TowerCardBase
@@ -35,8 +37,8 @@ function TowerCardClient({
             aliases={tower.aliases}
             photoUrl={photoUrl}
             typeLabel={getTowerTypeName(tower.type)}
-            placeLabel={tower.county ?? tower.province ?? tower.country}
-            regionLabel={tower.province ?? tower.country}
+            placeLabel={placeLabel}
+            regionLabel={regionLabel}
             priority={priority}
             openingHoursLabel={openingHoursText || undefined}
             openingHoursState={state}

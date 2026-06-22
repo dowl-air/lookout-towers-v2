@@ -11,6 +11,7 @@ import { getTowerOfTheDay } from "@/data/tower/tower-of-the-day";
 import { getTowerRatingAndCount, getTowerVisitsCount } from "@/data/tower/towers";
 import { getMostRecentTowerVisit } from "@/data/user/user-visits";
 import { formatDate } from "@/utils/date";
+import { formatCountyName } from "@/utils/geography";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 
 export const revalidate = 3600;
@@ -93,6 +94,7 @@ const TowerOfTheDay = async () => {
     const revalidatePaths = ["/", `/${tower.type}/${tower.nameID}`];
     const towerTypeName =
         towerTypes.find((towerType) => towerType.value === tower.type)?.name ?? tower.type;
+    const countyLabel = formatCountyName(tower.county);
     const [, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
     const openedYear = tower.opened ? new Date(tower.opened).getFullYear() : null;
     const materialsText = tower.material.length
@@ -156,9 +158,7 @@ const TowerOfTheDay = async () => {
                                 aliases={tower.aliases}
                                 className="text-sm text-white/75 md:text-base"
                             />
-                            <p className="mt-2 text-sm text-white/80 md:text-base">
-                                {tower.county}
-                            </p>
+                            <p className="mt-2 text-sm text-white/80 md:text-base">{countyLabel}</p>
                         </div>
                     </Link>
 
@@ -200,7 +200,7 @@ const TowerOfTheDay = async () => {
                                 <div className="rounded-2xl bg-base-200 px-4 py-3">
                                     <dt className="text-base-content/55">Lokalita</dt>
                                     <dd className="mt-1 font-semibold text-base-content">
-                                        {tower.county}
+                                        {countyLabel}
                                     </dd>
                                 </div>
                                 <div className="rounded-2xl bg-base-200 px-4 py-3">

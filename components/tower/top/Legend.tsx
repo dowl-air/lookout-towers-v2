@@ -49,7 +49,7 @@ function Legend({ tower }: { tower: Tower }) {
     const typeCap = capitalizeFirstLetter(typeName) || "Rozhledna";
 
     return (
-        <legend className="text-center lg:text-left">{`${generareHeight(height, typeCap)} ${generateStairs(stairs)} ${generateElevation(
+        <legend className="text-left">{`${generareHeight(height, typeCap)} ${generateStairs(stairs)} ${generateElevation(
             elevation
         )} a ${generateHeading(tower.openingHours)}`}</legend>
     );

@@ -11,6 +11,7 @@ import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { createSubject } from "@/utils/mail";
 import { getOpeningHoursValidationError, normalizeOpeningHours } from "@/utils/openingHours";
+import { getNormalizedHttpUrl, hasUrl } from "@/utils/url";
 
 export const createChange = async (
     change: Omit<Change, "user_id" | "id" | "created" | "state">
@@ -23,6 +24,21 @@ export const createChange = async (
             normalizeOpeningHours(change.new_value)
         );
         if (validationError) throw new Error(validationError);
+    }
+
+    if (change.field === "urls") {
+        const oldUrls = Array.isArray(change.old_value) ? change.old_value : [];
+        const newUrls = Array.isArray(change.new_value) ? change.new_value : [];
+        const proposedUrl = newUrls[newUrls.length - 1];
+        const normalizedUrl =
+            typeof proposedUrl === "string" ? getNormalizedHttpUrl(proposedUrl) : null;
+
+        if (!normalizedUrl)
+            throw new Error("Zadejte platnou URL adresu začínající http:// nebo https://.");
+        if (hasUrl(oldUrls, normalizedUrl))
+            throw new Error("Tento odkaz už je u rozhledny přidaný.");
+
+        change.new_value = [...oldUrls, normalizedUrl];
     }
 
     const doc = await addDoc(collection(db, "changes"), {

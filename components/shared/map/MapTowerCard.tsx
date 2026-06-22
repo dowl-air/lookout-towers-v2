@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { getTowerTypeName } from "@/constants/towerType";
 import { TowerMapDTO } from "@/data/tower/towers-map";
+import { formatTowerPlaceLabels } from "@/utils/geography";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
 
 import TowerCardBase from "../TowerCardBase";
@@ -15,6 +16,7 @@ interface MapTowerCardProps {
 const MapTowerCard = ({ tower }: MapTowerCardProps) => {
     const [state, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
     const [rating, setRating] = useState<{ avg: number; count: number } | null>(null);
+    const { placeLabel, regionLabel } = formatTowerPlaceLabels(tower);
 
     useEffect(() => {
         let isActive = true;
@@ -50,8 +52,8 @@ const MapTowerCard = ({ tower }: MapTowerCardProps) => {
             aliases={tower.aliases}
             photoUrl={tower.mainPhotoUrl}
             typeLabel={getTowerTypeName(tower.type)}
-            placeLabel={tower.county ?? tower.province ?? tower.country}
-            regionLabel={tower.province ?? tower.country}
+            placeLabel={placeLabel}
+            regionLabel={regionLabel}
             openingHoursLabel={openingHoursText || undefined}
             openingHoursState={state}
             ratingLabel={

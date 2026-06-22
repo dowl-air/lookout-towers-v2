@@ -6,9 +6,11 @@ import { useEffect, useRef, useState } from "react";
 import { removePhoto } from "@/actions/photos/remove.action";
 import { uploadPhoto } from "@/actions/photos/upload.action";
 import { removeVisit, setVisit } from "@/actions/visits/visits.action";
+import TowerModal from "@/components/shared/dialog/TowerModal";
 import { Photo } from "@/types/Photo";
 import { Tower } from "@/types/Tower";
 import { Visit } from "@/types/Visit";
+import { getNormalizedHttpUrl } from "@/utils/url";
 
 const MAX_VISIT_PHOTOS = 5;
 const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
@@ -33,7 +35,9 @@ function normalizeUrl(value: string) {
         return "";
     }
 
-    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    const valueWithProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+    return getNormalizedHttpUrl(valueWithProtocol) ?? valueWithProtocol;
 }
 
 function isValidVisitUrl(value: string) {
@@ -286,316 +290,295 @@ export const VisitModal = ({
     const maxDate = toDateInputValue(new Date());
 
     return (
-        <dialog ref={ref} className="modal modal-bottom sm:modal-middle" onClose={onCloseAction}>
-            <div className="modal-box max-w-3xl rounded-4xl border border-base-300/70 bg-base-100 px-5 py-6 shadow-2xl sm:px-8 sm:py-8">
-                <div className="flex flex-col gap-6">
-                    <div className="space-y-2">
-                        <h3 className="m-0! text-2xl font-bold leading-tight text-base-content">
-                            Zaznamenat návštěvu rozhledny {tower.name}
-                        </h3>
-                        <p className="text-sm text-base-content/65">
-                            Uložte si datum, dojmy, fotky a soukromé odkazy k návštěvě. Tyto údaje
-                            uvidíte jen vy.
-                        </p>
+        <TowerModal
+            dialogRef={ref}
+            title={`Zaznamenat návštěvu rozhledny ${tower.name}`}
+            description="Uložte si datum, dojmy, fotky a soukromé odkazy k návštěvě. Tyto údaje uvidíte jen vy."
+            onClose={onCloseAction}
+            showCloseAction={false}
+            className="max-w-3xl"
+            leadingActions={
+                initVisit
+                    ? [
+                          {
+                              label: "Odstranit návštěvu",
+                              onClick: remove,
+                              className: "btn-outline btn-error",
+                              disabled: loading,
+                          },
+                      ]
+                    : []
+            }
+            actions={[
+                {
+                    label: loading ? (
+                        <span className="loading loading-spinner loading-sm" />
+                    ) : (
+                        "Uložit návštěvu"
+                    ),
+                    onClick: update,
+                    className: "btn-primary min-w-44",
+                    disabled: loading,
+                },
+            ]}
+        >
+            <div className="flex flex-col gap-6">
+                {validationErrors.length > 0 ? (
+                    <div className="rounded-2xl border border-error/25 bg-error/8 px-4 py-3 text-sm text-error">
+                        <p className="font-semibold">Před uložením opravte následující:</p>
+                        <ul className="mt-2 list-disc pl-5">
+                            {validationErrors.map((error) => (
+                                <li key={error}>{error}</li>
+                            ))}
+                        </ul>
                     </div>
+                ) : null}
 
-                    {validationErrors.length > 0 ? (
-                        <div className="rounded-2xl border border-error/25 bg-error/8 px-4 py-3 text-sm text-error">
-                            <p className="font-semibold">Před uložením opravte následující:</p>
-                            <ul className="mt-2 list-disc pl-5">
-                                {validationErrors.map((error) => (
-                                    <li key={error}>{error}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : null}
-
-                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(10rem,11rem)]">
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="visit-date"
-                                className="flex items-center gap-2 text-sm font-medium text-base-content/80"
-                            >
-                                <span>Datum návštěvy</span>
-                            </label>
-                            <input
-                                id="visit-date"
-                                type="date"
-                                value={visitedDate}
-                                min="1800-01-01"
-                                max={maxDate}
-                                className="input input-bordered h-14 w-full rounded-2xl border-base-300 bg-base-100 px-4 text-base text-base-content"
-                                onChange={(event) => setVisitedDate(event.target.value)}
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="visit-time"
-                                className="flex items-center gap-2 text-sm font-medium text-base-content/80"
-                            >
-                                <span>Čas návštěvy</span>
-                            </label>
-                            <div className="rounded-2xl border border-base-300 bg-base-100 px-4 py-3 ring-offset-2 transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-                                <input
-                                    id="visit-time"
-                                    value={visitedTime}
-                                    type="time"
-                                    name="time"
-                                    className="w-full bg-transparent text-base text-base-content outline-hidden"
-                                    onChange={(event) => setVisitedTime(event.target.value)}
-                                    disabled={loading}
-                                />
-                            </div>
-                        </div>
+                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(10rem,11rem)]">
+                    <div className="space-y-2">
+                        <label
+                            htmlFor="visit-date"
+                            className="flex items-center gap-2 text-sm font-medium text-base-content/80"
+                        >
+                            <span>Datum návštěvy</span>
+                        </label>
+                        <input
+                            id="visit-date"
+                            type="date"
+                            value={visitedDate}
+                            min="1800-01-01"
+                            max={maxDate}
+                            className="input input-bordered h-14 w-full rounded-2xl border-base-300 bg-base-100 px-4 text-base text-base-content"
+                            onChange={(event) => setVisitedDate(event.target.value)}
+                            disabled={loading}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <label
-                            htmlFor="visit-text"
-                            className="text-sm font-medium text-base-content/80"
+                            htmlFor="visit-time"
+                            className="flex items-center gap-2 text-sm font-medium text-base-content/80"
                         >
-                            Popis návštěvy
+                            <span>Čas návštěvy</span>
                         </label>
-                        <textarea
-                            id="visit-text"
-                            className="textarea h-40 w-full rounded-3xl border border-base-300 bg-base-100 px-4 py-3 text-sm text-base-content resize-none md:resize-y"
-                            value={visitedText}
-                            maxLength={1000}
-                            placeholder="Co se vám líbilo? Jak jste se na rozhlednu dostali? Co vás překvapilo? Jaké bylo počasí?"
-                            onChange={(event) => setVisitedText(event.target.value)}
-                            disabled={loading}
-                        ></textarea>
-                        <div className="flex items-center justify-between text-xs text-base-content/55">
-                            <span>Volitelné, jen pro vaše poznámky.</span>
-                            <span>{visitedText.length}/1000</span>
-                        </div>
-                    </div>
-
-                    <div className="space-y-3 rounded-3xl border border-base-300/70 bg-base-200/35 p-4">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                            <label className="text-sm font-medium text-base-content/80">
-                                Přidat fotky
-                            </label>
-                            <span className="text-xs text-base-content/55">
-                                Max. {MAX_VISIT_PHOTOS} fotografií, do 5 MB na soubor.
-                            </span>
-                        </div>
-
-                        <input
-                            ref={fileSelectorRef}
-                            id="visit-photos"
-                            type="file"
-                            className="hidden"
-                            onChange={handleFileInput}
-                            multiple
-                            accept="image/*"
-                            disabled={!allowAddPhoto || loading}
-                        />
-
-                        <div className="flex flex-wrap items-center gap-3">
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm sm:btn-md"
-                                onClick={() => fileSelectorRef.current?.click()}
-                                disabled={!allowAddPhoto || loading}
-                            >
-                                Vybrat fotky
-                            </button>
-                            <span className="text-sm text-base-content/60">
-                                {allowAddPhoto
-                                    ? `Zbývá přidat ${MAX_VISIT_PHOTOS - photos.length - photosToUpload.length} fotografií.`
-                                    : "Dosáhli jste maximálního počtu fotografií."}
-                            </span>
-                        </div>
-
-                        {fileError ? <p className="text-sm text-error">{fileError}</p> : null}
-
-                        {photosToUpload.length > 0 ? (
-                            <div className="space-y-3">
-                                {photosToUpload.map((photo) => (
-                                    <div
-                                        key={`${photo.name}-${photo.lastModified}`}
-                                        className="flex items-center gap-3 rounded-2xl border border-base-300 bg-base-100 px-4 py-3 text-sm"
-                                    >
-                                        <div className="flex min-w-0 flex-1 items-center gap-3">
-                                            <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-base-300 bg-base-200">
-                                                {photoPreviewUrls[
-                                                    `${photo.name}-${photo.lastModified}`
-                                                ] ? (
-                                                    <Image
-                                                        src={
-                                                            photoPreviewUrls[
-                                                                `${photo.name}-${photo.lastModified}`
-                                                            ]
-                                                        }
-                                                        alt="Náhled nově přidané fotografie"
-                                                        width={96}
-                                                        height={96}
-                                                        unoptimized
-                                                        className="h-full w-full object-cover object-center"
-                                                    />
-                                                ) : (
-                                                    <div className="flex h-full w-full items-center justify-center text-[10px] text-base-content/50">
-                                                        Foto
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <div className="min-w-0 flex-1 self-center">
-                                                <p className="truncate font-medium text-base-content">
-                                                    {photo.name}
-                                                </p>
-                                                <p className="text-xs text-base-content/55">
-                                                    {formatFileSize(photo.size)}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            className="btn btn-ghost btn-sm shrink-0 text-error"
-                                            onClick={() => {
-                                                setPhotosToUpload(
-                                                    photosToUpload.filter((file) => file !== photo)
-                                                );
-                                                setFileError(null);
-                                            }}
-                                        >
-                                            Odebrat
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : null}
-
-                        {photos.length > 0 ? (
-                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                                {photos.map((photo) => (
-                                    <div
-                                        key={photo.url}
-                                        className="relative overflow-hidden rounded-2xl border border-base-300 bg-base-100"
-                                    >
-                                        <Image
-                                            src={photo.url}
-                                            alt="Fotografie z návštěvy"
-                                            width={320}
-                                            height={224}
-                                            className="h-28 w-full object-cover"
-                                        />
-                                        <button
-                                            type="button"
-                                            className="btn btn-error btn-circle btn-xs absolute right-2 top-2"
-                                            onClick={() => {
-                                                setPhotos(photos.filter((item) => item !== photo));
-                                            }}
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="2"
-                                                    d="M6 18L18 6M6 6l12 12"
-                                                />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : null}
-                    </div>
-
-                    <div className="space-y-3 rounded-3xl border border-base-300/70 bg-base-200/35 p-4">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                            <label className="text-sm font-medium text-base-content/80">
-                                Přidat odkazy
-                            </label>
-                            <span className="text-xs text-base-content/55">
-                                Například Strava, mapy nebo vlastní poznámka s odkazem.
-                            </span>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            {urls.map((url, idx) => (
-                                <input
-                                    key={idx}
-                                    type="url"
-                                    value={url}
-                                    placeholder="https://www.strava.com/activities/12345"
-                                    className="input input-bordered w-full rounded-2xl border-base-300 bg-base-100 text-sm"
-                                    inputMode="url"
-                                    onChange={(event) => {
-                                        const nextUrls = [...urls];
-                                        nextUrls[idx] = event.target.value;
-                                        setUrls(nextUrls);
-                                    }}
-                                    disabled={loading}
-                                />
-                            ))}
-                        </div>
-
-                        {urls.length < MAX_VISIT_LINKS ? (
-                            <button
-                                type="button"
-                                className="btn btn-outline btn-primary btn-sm self-start"
-                                onClick={() => {
-                                    setUrls([...urls, ""]);
-                                }}
+                        <div className="rounded-2xl border border-base-300 bg-base-100 px-4 py-3 ring-offset-2 transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                            <input
+                                id="visit-time"
+                                value={visitedTime}
+                                type="time"
+                                name="time"
+                                className="w-full bg-transparent text-base text-base-content outline-hidden"
+                                onChange={(event) => setVisitedTime(event.target.value)}
                                 disabled={loading}
-                            >
-                                Přidat další odkaz
-                            </button>
-                        ) : null}
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <div className="modal-action mt-8 flex-col gap-3 border-t border-base-300/70 pt-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
-                        {initVisit ? (
-                            <button
-                                type="button"
-                                className="btn btn-outline btn-error w-full"
-                                onClick={remove}
-                                disabled={loading}
-                            >
-                                Odstranit návštěvu
-                            </button>
-                        ) : null}
+                <div className="space-y-2">
+                    <label
+                        htmlFor="visit-text"
+                        className="text-sm font-medium text-base-content/80"
+                    >
+                        Popis návštěvy
+                    </label>
+                    <textarea
+                        id="visit-text"
+                        className="textarea h-40 w-full rounded-3xl border border-base-300 bg-base-100 px-4 py-3 text-sm text-base-content resize-none md:resize-y"
+                        value={visitedText}
+                        maxLength={1000}
+                        placeholder="Co se vám líbilo? Jak jste se na rozhlednu dostali? Co vás překvapilo? Jaké bylo počasí?"
+                        onChange={(event) => setVisitedText(event.target.value)}
+                        disabled={loading}
+                    ></textarea>
+                    <div className="flex items-center justify-between text-xs text-base-content/55">
+                        <span>Volitelné, jen pro vaše poznámky.</span>
+                        <span>{visitedText.length}/1000</span>
+                    </div>
+                </div>
+
+                <div className="space-y-3 rounded-3xl border border-base-300/70 bg-base-200/35 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <label className="text-sm font-medium text-base-content/80">
+                            Přidat fotky
+                        </label>
+                        <span className="text-xs text-base-content/55">
+                            Max. {MAX_VISIT_PHOTOS} fotografií, do 5 MB na soubor.
+                        </span>
+                    </div>
+
+                    <input
+                        ref={fileSelectorRef}
+                        id="visit-photos"
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileInput}
+                        multiple
+                        accept="image/*"
+                        disabled={!allowAddPhoto || loading}
+                    />
+
+                    <div className="flex flex-wrap items-center gap-3">
                         <button
                             type="button"
-                            className="btn btn-outline w-full"
-                            onClick={() => ref.current?.close()}
+                            className="btn btn-primary btn-sm sm:btn-md"
+                            onClick={() => fileSelectorRef.current?.click()}
+                            disabled={!allowAddPhoto || loading}
+                        >
+                            Vybrat fotky
+                        </button>
+                        <span className="text-sm text-base-content/60">
+                            {allowAddPhoto
+                                ? `Zbývá přidat ${MAX_VISIT_PHOTOS - photos.length - photosToUpload.length} fotografií.`
+                                : "Dosáhli jste maximálního počtu fotografií."}
+                        </span>
+                    </div>
+
+                    {fileError ? <p className="text-sm text-error">{fileError}</p> : null}
+
+                    {photosToUpload.length > 0 ? (
+                        <div className="space-y-3">
+                            {photosToUpload.map((photo) => (
+                                <div
+                                    key={`${photo.name}-${photo.lastModified}`}
+                                    className="flex items-center gap-3 rounded-2xl border border-base-300 bg-base-100 px-4 py-3 text-sm"
+                                >
+                                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                                        <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-base-300 bg-base-200">
+                                            {photoPreviewUrls[
+                                                `${photo.name}-${photo.lastModified}`
+                                            ] ? (
+                                                <Image
+                                                    src={
+                                                        photoPreviewUrls[
+                                                            `${photo.name}-${photo.lastModified}`
+                                                        ]
+                                                    }
+                                                    alt="Náhled nově přidané fotografie"
+                                                    width={96}
+                                                    height={96}
+                                                    unoptimized
+                                                    className="h-full w-full object-cover object-center"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center text-[10px] text-base-content/50">
+                                                    Foto
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="min-w-0 flex-1 self-center">
+                                            <p className="truncate font-medium text-base-content">
+                                                {photo.name}
+                                            </p>
+                                            <p className="text-xs text-base-content/55">
+                                                {formatFileSize(photo.size)}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm shrink-0 text-error"
+                                        onClick={() => {
+                                            setPhotosToUpload(
+                                                photosToUpload.filter((file) => file !== photo)
+                                            );
+                                            setFileError(null);
+                                        }}
+                                    >
+                                        Odebrat
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
+
+                    {photos.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                            {photos.map((photo) => (
+                                <div
+                                    key={photo.url}
+                                    className="relative overflow-hidden rounded-2xl border border-base-300 bg-base-100"
+                                >
+                                    <Image
+                                        src={photo.url}
+                                        alt="Fotografie z návštěvy"
+                                        width={320}
+                                        height={224}
+                                        className="h-28 w-full object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-error btn-circle btn-xs absolute right-2 top-2"
+                                        onClick={() => {
+                                            setPhotos(photos.filter((item) => item !== photo));
+                                        }}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
+
+                <div className="space-y-3 rounded-3xl border border-base-300/70 bg-base-200/35 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <label className="text-sm font-medium text-base-content/80">
+                            Přidat odkazy
+                        </label>
+                        <span className="text-xs text-base-content/55">
+                            Například Strava, mapy nebo vlastní poznámka s odkazem.
+                        </span>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        {urls.map((url, idx) => (
+                            <input
+                                key={idx}
+                                type="url"
+                                value={url}
+                                placeholder="https://www.strava.com/activities/12345"
+                                className="input input-bordered w-full rounded-2xl border-base-300 bg-base-100 text-sm"
+                                inputMode="url"
+                                onChange={(event) => {
+                                    const nextUrls = [...urls];
+                                    nextUrls[idx] = event.target.value;
+                                    setUrls(nextUrls);
+                                }}
+                                disabled={loading}
+                            />
+                        ))}
+                    </div>
+
+                    {urls.length < MAX_VISIT_LINKS ? (
+                        <button
+                            type="button"
+                            className="btn btn-outline btn-primary btn-sm self-start"
+                            onClick={() => {
+                                setUrls([...urls, ""]);
+                            }}
                             disabled={loading}
                         >
-                            Zavřít
+                            Přidat další odkaz
                         </button>
-                    </div>
-                    <button
-                        type="button"
-                        className="btn btn-primary w-full sm:min-w-44 sm:w-auto"
-                        onClick={update}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <span className="loading loading-spinner loading-sm"></span>
-                        ) : (
-                            "Uložit návštěvu"
-                        )}
-                    </button>
+                    ) : null}
                 </div>
             </div>
-            <form method="dialog" className="modal-backdrop">
-                <button type="submit" aria-label="Zavřít modal návštěvy">
-                    Zavřít
-                </button>
-            </form>
-        </dialog>
+        </TowerModal>
     );
 };

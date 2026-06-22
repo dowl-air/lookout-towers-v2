@@ -1,6 +1,16 @@
 import { Tower } from "@/types/Tower";
+import { cn } from "@/utils/cn";
 import { editableParameters } from "@/utils/editableParameters";
-import { formatParameterValue } from "@/utils/formatValue";
+import { formatParameterValue, isUnknownParameterValue } from "@/utils/formatValue";
+
+const getDateInputValue = (value: any) => {
+    if (!value) return "";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return date.toISOString().slice(0, 10);
+};
 
 const Step2 = ({
     newValue,
@@ -14,26 +24,35 @@ const Step2 = ({
     parameter: keyof Tower | "default";
 }) => {
     const { label, type, typeOptions } = editableParameters.find((p) => p.name === parameter) || {};
+    const currentValue = tower[parameter as keyof Tower];
+    const arrayValue = Array.isArray(newValue) ? newValue : [];
+    const dateValue = getDateInputValue(newValue);
 
     return (
-        <>
-            <h3 className="flex w-full justify-center text-lg font-bold">{label}</h3>
-            <div className="flex w-full justify-center gap-1 flex-wrap">
-                <p>Aktuální hodnota: </p>
-                <div className="font-bold">
-                    {formatParameterValue(tower[parameter as keyof Tower], type, typeOptions)}
+        <div className="space-y-5">
+            <div>
+                <h3 className="text-lg font-bold">{label}</h3>
+                <div className="mt-3 rounded-lg border border-base-300/70 bg-base-100 px-4 py-3">
+                    <div className="text-sm text-base-content/60">Aktuální hodnota</div>
+                    <div
+                        className={cn(
+                            "mt-1 wrap-anywhere font-semibold text-base-content",
+                            isUnknownParameterValue(currentValue, type) && "text-error"
+                        )}
+                    >
+                        {formatParameterValue(currentValue, type, typeOptions)}
+                    </div>
                 </div>
             </div>
-            <div className="flex justify-center w-full">
-                <label className="form-control w-full max-w-xs">
-                    <div className="label">
-                        <span className="label-text">Zadejte novou hodnotu</span>
-                    </div>
+
+            <div className="form-control w-full">
+                <span className="label-text mb-2 block">Nová hodnota</span>
+                <div>
                     {type === "text" && (
                         <input
                             type="text"
                             value={newValue || ""}
-                            className="input input-bordered input-primary w-full max-w-xs mx-auto"
+                            className="input input-bordered w-full rounded-lg bg-base-100"
                             onChange={(e) => setNewValue(e.target.value)}
                         />
                     )}
@@ -41,22 +60,22 @@ const Step2 = ({
                         <input
                             type="number"
                             value={newValue || ""}
-                            className="input input-primary input-bordered w-full max-w-xs mx-auto"
+                            className="input input-bordered w-full rounded-lg bg-base-100"
                             onChange={(e) => setNewValue(e.target.value)}
                         />
                     )}
                     {type === "date" && (
                         <input
                             type="date"
-                            value={newValue}
-                            className="input input-primary input-bordered w-full max-w-xs mx-auto"
+                            value={dateValue}
+                            className="input input-bordered w-full rounded-lg bg-base-100"
                             onChange={(e) => setNewValue(e.target.value)}
                         />
                     )}
                     {type === "select" && (
                         <select
                             value={newValue}
-                            className="select select-primary select-bordered w-full max-w-xs mx-auto"
+                            className="select select-bordered w-full rounded-lg bg-base-100"
                             onChange={(e) => setNewValue(e.target.value)}
                         >
                             {parameter === "type"
@@ -73,23 +92,23 @@ const Step2 = ({
                         </select>
                     )}
                     {type === "array" && (
-                        <div className="flex w-full flex-wrap gap-2">
+                        <div className="grid gap-2 rounded-lg border border-base-300/70 bg-base-100 p-4 sm:grid-cols-2">
                             {typeOptions?.map((option) => (
                                 <div key={option} className="form-control">
                                     <label className="label cursor-pointer flex-nowrap gap-1">
                                         <input
                                             type="checkbox"
-                                            checked={newValue.includes(option)}
+                                            checked={arrayValue.includes(option)}
                                             onChange={(e) => {
                                                 if (e.target.checked) {
                                                     setNewValue(
-                                                        [...newValue, option].filter((val) =>
+                                                        [...arrayValue, option].filter((val) =>
                                                             typeOptions?.includes(val)
                                                         )
                                                     );
                                                 } else {
                                                     setNewValue(
-                                                        newValue
+                                                        arrayValue
                                                             .filter((val) => val !== option)
                                                             .filter((val) =>
                                                                 typeOptions?.includes(val)
@@ -105,9 +124,9 @@ const Step2 = ({
                             ))}
                         </div>
                     )}
-                </label>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 export default Step2;

@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import AddSource from "@/components/tower/tiles/sources/AddSource";
 import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
 import { Tower } from "@/types/Tower";
 import { extractDomain, extractDomainAndPath } from "@/utils/extractDomain";
@@ -15,7 +14,6 @@ const Sources = ({ tower }: { tower: Tower }) => {
                     <h2 className="card-title text-base sm:text-lg md:text-xl text-nowrap">
                         Odkazy a zdroje
                     </h2>
-                    <AddSource tower={tower} />
                 </div>
                 <div className="flex flex-col gap-2.5 overflow-y-auto mt-4">
                     {hasSomeSources ? (

@@ -24,8 +24,13 @@ const ContactDialog = ({ user }: { user: User }) => {
                     <h3 className="font-bold text-lg mb-5">Napište mi!</h3>
                     <input type="hidden" name="email" value={user.email} />
                     <input type="hidden" name="name" value={user.name} />
-                    <textarea ref={textAreaRef} name="message" className="textarea textarea-bordered w-full" placeholder="Vaše zpráva"></textarea>
-                    <div className="modal-action">
+                    <textarea
+                        ref={textAreaRef}
+                        name="message"
+                        className="textarea textarea-bordered w-full"
+                        placeholder="Vaše zpráva"
+                    ></textarea>
+                    <div className="modal-action flex flex-wrap items-center justify-end gap-2">
                         <ContactDialogButton />
                     </div>
                 </form>

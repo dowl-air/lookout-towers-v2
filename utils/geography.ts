@@ -7,6 +7,16 @@ import PROVINCES_DE from "@/constants/provinces/DE";
 import PROVINCES_HU from "@/constants/provinces/HU";
 import PROVINCES_PL from "@/constants/provinces/PL";
 import PROVINCES_SK from "@/constants/provinces/SK";
+import { Tower } from "@/types/Tower";
+
+const COUNTRY_DISPLAY_NAMES: Record<CountryCode, string> = {
+    AT: "Rakousko",
+    CZ: "Česko",
+    DE: "Německo",
+    HU: "Maďarsko",
+    PL: "Polsko",
+    SK: "Slovensko",
+};
 
 export const getCountryByCode = (countryCode: CountryCode) => {
     return COUNTRIES.find((country) => country.code === countryCode);
@@ -14,6 +24,27 @@ export const getCountryByCode = (countryCode: CountryCode) => {
 
 export const getCountryByName = (countryName: string) => {
     return COUNTRIES.find((country) => country.name === countryName);
+};
+
+export const getCountryByValue = (countryValue?: string | null) => {
+    if (!countryValue) return undefined;
+
+    if (isValidCountryCode(countryValue)) return getCountryByCode(countryValue);
+
+    return COUNTRIES.find(
+        (country) =>
+            country.name === countryValue ||
+            COUNTRY_DISPLAY_NAMES[country.code] === countryValue ||
+            country.code === countryValue
+    );
+};
+
+export const formatCountryName = (countryValue?: string | null): string => {
+    const country = getCountryByValue(countryValue);
+
+    if (!country) return countryValue || "neznámá země";
+
+    return COUNTRY_DISPLAY_NAMES[country.code];
 };
 
 export const isValidCountryCode = (countryCode: string): countryCode is CountryCode => {
@@ -28,6 +59,47 @@ export const getProvinceByCode = (countryCode: CountryCode, provinceCode: string
 export const getProvinceByName = (countryCode: CountryCode, provinceName: string) => {
     const provinces = getAllCountryProvinces(countryCode);
     return provinces.find((province) => province.name === provinceName);
+};
+
+export const getProvinceByValue = (countryCode: CountryCode, provinceValue?: string | null) => {
+    if (!provinceValue) return undefined;
+
+    const provinces = getAllCountryProvinces(countryCode);
+
+    return provinces.find(
+        (province) =>
+            province.code === provinceValue ||
+            province.name === provinceValue ||
+            province.shortName === provinceValue
+    );
+};
+
+export const formatProvinceName = (
+    countryValue?: string | null,
+    provinceValue?: string | null
+): string => {
+    const country = getCountryByValue(countryValue);
+
+    if (!country) return provinceValue || "neznámý kraj";
+
+    return getProvinceByValue(country.code, provinceValue)?.name || provinceValue || "neznámý kraj";
+};
+
+export const formatCountyName = (countyValue?: string | null): string => {
+    return countyValue || "neznámý okres";
+};
+
+export const formatTowerPlaceLabels = (
+    tower: Pick<Tower, "country" | "county" | "province">
+): { placeLabel: string; regionLabel: string } => {
+    const countyLabel = tower.county ? formatCountyName(tower.county) : null;
+    const provinceLabel = tower.province ? formatProvinceName(tower.country, tower.province) : null;
+    const countryLabel = formatCountryName(tower.country);
+
+    return {
+        placeLabel: countyLabel || provinceLabel || countryLabel,
+        regionLabel: provinceLabel || countryLabel,
+    };
 };
 
 export const isValidProvinceCode = (countryCode: CountryCode, provinceCode: string): boolean => {
@@ -63,7 +135,10 @@ export const getAllCountiesFromCountry = (countryCode: CountryCode): string[] =>
         .filter(Boolean);
 };
 
-export const getAllCountiesFromCountryProvince = (countryCode: CountryCode, provinceCode: string): string[] => {
+export const getAllCountiesFromCountryProvince = (
+    countryCode: CountryCode,
+    provinceCode: string
+): string[] => {
     const provinces = getAllCountryProvinces(countryCode);
     const province = provinces.find((p) => p.code === provinceCode);
     return province ? province.counties : [];
@@ -91,12 +166,15 @@ export const findInfoByGPS = async (gps: {
 }): Promise<null | { name: string; countryCode: string; provinceCode: string; county: string }> => {
     const { lat, lng } = gps;
 
-    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=local`, {
-        headers: {
-            "User-Agent": "RozhlednovySvet/1.0 (https://www.rozhlednovysvet.cz)",
-            Accept: "application/json",
-        },
-    });
+    const resp = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=local`,
+        {
+            headers: {
+                "User-Agent": "RozhlednovySvet/1.0 (https://www.rozhlednovysvet.cz)",
+                Accept: "application/json",
+            },
+        }
+    );
 
     if (!resp.ok) {
         return null;
@@ -117,7 +195,12 @@ export const findInfoByGPS = async (gps: {
         county: "",
     };
 
-    if (data.type === "tower" || data.type === "building" || data.type === "point_of_interest" || data.type === "viewpoint") {
+    if (
+        data.type === "tower" ||
+        data.type === "building" ||
+        data.type === "point_of_interest" ||
+        data.type === "viewpoint"
+    ) {
         result.name = data.name;
     }
 
@@ -137,7 +220,13 @@ export const findInfoByGPS = async (gps: {
 
     const county = data.address?.county || data.address?.city || data.address?.town || "";
     if (county && result.provinceCode) {
-        result.county = closest(normalizeName(county), getAllCountiesFromCountryProvince(result.countryCode as CountryCode, result.provinceCode));
+        result.county = closest(
+            normalizeName(county),
+            getAllCountiesFromCountryProvince(
+                result.countryCode as CountryCode,
+                result.provinceCode
+            )
+        );
     }
 
     return result;
