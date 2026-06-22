@@ -7,7 +7,7 @@ async function Buttons({ tower }: { tower: Tower }) {
     const revalidatePaths = ["/", `/${tower.type}/${tower.nameID}`];
 
     return (
-        <div className="flex w-full max-w-full flex-wrap items-center gap-2 overflow-hidden lg:mb-3!">
+        <div className="relative z-30 flex w-full max-w-full flex-wrap items-center gap-2 lg:mb-3!">
             <div className="min-w-0 flex-1 sm:flex-none">
                 <TowerVisitAction
                     tower={tower}

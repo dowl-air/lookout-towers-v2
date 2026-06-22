@@ -76,7 +76,7 @@ function ShareButton({ tower, className }: ShareButtonProps) {
             </button>
             <div
                 tabIndex={0}
-                className="dropdown-content z-20 mb-2 w-64 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm"
+                className="dropdown-content z-50 mb-2 w-64 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm"
             >
                 <div className="flex items-center gap-2">
                     {shareLinks.map(({ label, href, icon }) => (
