@@ -3,23 +3,10 @@
 import { getTowerRatingAndCount } from "@/data/tower/towers";
 import { Tower } from "@/types/Tower";
 import { normalizeTypesenseTowerObject } from "@/utils/normalizeTowerObject";
-
-const Typesense = require("typesense");
+import { typesenseClient } from "@/utils/typesense";
 
 const DEFAULT_QUERY_BY = "name,aliases";
 const FALLBACK_QUERY_BY = "name";
-
-const client = new Typesense.Client({
-    nodes: [
-        {
-            host: process.env.TYPESENSE_HOST,
-            port: 443,
-            protocol: "https",
-        },
-    ],
-    apiKey: process.env.TYPESENSE_KEY,
-    connectionTimeoutSeconds: 2,
-});
 
 export const searchTowers = async ({
     q,
@@ -54,7 +41,7 @@ export const searchTowers = async ({
     let res;
 
     try {
-        res = await client.collections("towers").documents().search(searchParams);
+        res = await typesenseClient.collections("towers").documents().search(searchParams);
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         const canFallbackToNameOnly = query_by === DEFAULT_QUERY_BY && message.includes("aliases");
@@ -63,7 +50,7 @@ export const searchTowers = async ({
             throw error;
         }
 
-        res = await client
+        res = await typesenseClient
             .collections("towers")
             .documents()
             .search({

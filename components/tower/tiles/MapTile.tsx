@@ -6,7 +6,7 @@ import CopyGpsButton from "@/components/tower/tiles/CopyGpsButton";
 import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
 import { Tower } from "@/types/Tower";
 
-const MapTile = ({ tower }: { tower: Tower }) => {
+const MapTile = ({ tower, nearbyTowers = [] }: { nearbyTowers?: Tower[]; tower: Tower }) => {
     const { latitude, longitude } = tower.gps;
     const coordinates = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
@@ -34,7 +34,7 @@ const MapTile = ({ tower }: { tower: Tower }) => {
                         title={tower.name}
                     />
                 </MapBase> */}
-                <TowerMap tower={tower} />
+                <TowerMap tower={tower} nearbyTowers={nearbyTowers} />
             </div>
 
             <div className="card-body flex flex-col justify-center gap-4 px-6 py-5">

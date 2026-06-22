@@ -3,7 +3,12 @@
 import type { Marker } from "leaflet";
 import { useCallback, useRef, useEffect } from "react";
 
-import { getDefaultIcon, getFavouriteIcon, getVisitedIcon } from "@/components/shared/map/icons";
+import {
+    getDefaultIcon,
+    getFavouriteIcon,
+    getNearbyIcon,
+    getVisitedIcon,
+} from "@/components/shared/map/icons";
 import MapTowerCard from "@/components/shared/map/MapTowerCard";
 import { TowerMapDTO } from "@/data/tower/towers-map";
 import { useLeafletMap } from "@/hooks/useLeafletMap";
@@ -15,6 +20,15 @@ export interface MapMarker {
     lng: number;
     label?: string;
 }
+
+type MarkerIconVariant = "default" | "favourite" | "nearby" | "visited";
+
+type MarkerOptions = {
+    iconVariant?: MarkerIconVariant;
+    label?: string;
+    labelClassName?: string;
+    opacity?: number;
+};
 
 /**
  * Hook for managing user-added markers on the map
@@ -40,6 +54,37 @@ export function useMapMarkers() {
         return leafletRef.current;
     }, []);
 
+    const getMarkerIcon = useCallback((L: typeof import("leaflet"), variant: MarkerIconVariant) => {
+        switch (variant) {
+            case "visited":
+                return getVisitedIcon(L);
+            case "favourite":
+                return getFavouriteIcon(L);
+            case "nearby":
+                return getNearbyIcon(L);
+            case "default":
+            default:
+                return getDefaultIcon(L);
+        }
+    }, []);
+
+    const bindPermanentLabel = useCallback(
+        (
+            L: typeof import("leaflet"),
+            leafletMarker: Marker,
+            label: string,
+            labelClassName = "tower-map-label"
+        ) => {
+            leafletMarker.bindTooltip(label, {
+                className: labelClassName,
+                direction: "right",
+                offset: L.point(14, -18),
+                permanent: true,
+            });
+        },
+        []
+    );
+
     /**
      * Generate unique marker ID
      */
@@ -51,37 +96,52 @@ export function useMapMarkers() {
      * Add a marker at the specified location
      */
     const addMarker = useCallback(
-        async (lat: number, lng: number) => {
+        async (lat: number, lng: number, options: MarkerOptions = {}) => {
             if (!map) return null;
 
             const id = generateId();
             const L = await loadLeaflet();
+            const iconVariant = options.iconVariant || "default";
 
             // Create Leaflet marker
             const leafletMarker = L.marker([lat, lng], {
-                icon: getDefaultIcon(L),
+                icon: getMarkerIcon(L, iconVariant),
+                opacity: options.opacity ?? 1,
             }).addTo(map);
+
+            if (options.label) {
+                bindPermanentLabel(L, leafletMarker, options.label, options.labelClassName);
+            }
 
             // Store reference
             leafletMarkersRef.current.set(id, leafletMarker);
 
             return id;
         },
-        [map, generateId]
+        [bindPermanentLabel, generateId, getMarkerIcon, loadLeaflet, map]
     );
 
     const addTowerMarkerWithPopup = useCallback(
-        async (tower: TowerMapDTO) => {
+        async (
+            tower: TowerMapDTO,
+            options: {
+                iconVariant?: MarkerIconVariant;
+                label?: string;
+                labelClassName?: string;
+                showPermanentLabel?: boolean;
+            } = {}
+        ) => {
             if (!map) return null;
 
             const id = generateId();
             const L = await loadLeaflet();
 
             // Determine icon based on tower status
-            const getIcon = () => {
-                if (tower.isVisited) return getVisitedIcon(L);
-                if (tower.isFavourite) return getFavouriteIcon(L);
-                return getDefaultIcon(L);
+            const getIconVariant = (): MarkerIconVariant => {
+                if (options.iconVariant) return options.iconVariant;
+                if (tower.isVisited) return "visited";
+                if (tower.isFavourite) return "favourite";
+                return "default";
             };
 
             const getOpacity = () => {
@@ -92,9 +152,18 @@ export function useMapMarkers() {
             };
             // Create Leaflet marker
             const leafletMarker = L.marker([tower.gps.latitude, tower.gps.longitude], {
-                icon: getIcon(),
+                icon: getMarkerIcon(L, getIconVariant()),
                 opacity: getOpacity(),
             }).addTo(map);
+
+            if (options.showPermanentLabel) {
+                bindPermanentLabel(
+                    L,
+                    leafletMarker,
+                    options.label || tower.name,
+                    options.labelClassName
+                );
+            }
 
             const popupDiv = document.createElement("div");
             const popup = L.popup({
@@ -139,7 +208,7 @@ export function useMapMarkers() {
 
             return id;
         },
-        [map, generateId]
+        [bindPermanentLabel, generateId, getMarkerIcon, loadLeaflet, map]
     );
 
     /**

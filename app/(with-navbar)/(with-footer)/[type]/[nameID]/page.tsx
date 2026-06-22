@@ -45,8 +45,10 @@ import Buttons from "@/components/tower/top/Buttons";
 import Carousel from "@/components/tower/top/Carousel";
 import Legend from "@/components/tower/top/Legend";
 import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
+import NearbyTowers from "@/components/tower/top/NearbyTowers";
 import { MapProvider } from "@/context/MapContext";
 import { listTowerPhotos } from "@/data/photo/tower-photos";
+import { getNearestTowers } from "@/data/tower/nearest-towers";
 import { getUrlsTowerGallery } from "@/data/tower/tower-gallery";
 import {
     getTowerObjectByNameID,
@@ -150,10 +152,11 @@ async function TowerPage({ params }: { params }) {
     const { nameID } = await params;
     const tower = await getTowerObjectByNameID(nameID);
     if (!tower) notFound();
-    const [towerImages, towerUserImages, { count, avg }, { count: visitsCount }] =
+    const [towerImages, towerUserImages, nearbyTowers, { count, avg }, { count: visitsCount }] =
         await Promise.all([
             getUrlsTowerGallery(tower.id),
             listTowerPhotos(tower.id),
+            getNearestTowers(tower.id, tower.gps.latitude, tower.gps.longitude),
             getTowerRatingAndCount(tower.id),
             getTowerVisitsCount(tower.id),
         ]);
@@ -283,8 +286,9 @@ async function TowerPage({ params }: { params }) {
                             {tower.history && <HistoryText text={tower.history} />}
                             <RatingFormProvider tower={tower} />
                             <MapProvider>
-                                <MapTile tower={tower} />
+                                <MapTile tower={tower} nearbyTowers={nearbyTowers} />
                             </MapProvider>
+                            <NearbyTowers sourceTower={tower} towers={nearbyTowers} />
                             <Sources tower={tower} />
                             <ChangesHistory tower={tower} />
                             <SuggestCorrectionCta />

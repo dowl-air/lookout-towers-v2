@@ -117,6 +117,27 @@
     box-shadow: none !important;
 }
 
+.leaflet-tooltip.tower-map-label {
+    background: color-mix(in oklab, var(--color-base-100) 92%, transparent) !important;
+    border: 1px solid color-mix(in oklab, var(--color-base-300) 70%, transparent) !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.08) !important;
+    color: var(--color-base-content) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    padding: 0.35rem 0.65rem !important;
+}
+
+.leaflet-tooltip.tower-map-label::before {
+    display: none !important;
+}
+
+.leaflet-tooltip.tower-map-label-primary {
+    background: color-mix(in oklab, var(--color-primary) 92%, white) !important;
+    border-color: color-mix(in oklab, var(--color-primary) 70%, black) !important;
+    color: var(--color-primary-content) !important;
+}
+
 .content {
     max-width: 1280px;
     margin: 0 auto;
