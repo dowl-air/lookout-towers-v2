@@ -16,7 +16,12 @@ import { useNewTowerContext } from "@/context/NewTower";
 import { Tower } from "@/types/Tower";
 import { TowerTag } from "@/types/TowerTags";
 import { cn } from "@/utils/cn";
-import { findInfoByGPS, getAllCountiesFromCountryProvince, getAllCountryProvinces } from "@/utils/geography";
+import {
+    findInfoByGPS,
+    formatCountryName,
+    getAllCountiesFromCountryProvince,
+    getAllCountryProvinces,
+} from "@/utils/geography";
 
 const MapPicker = dynamic(() => import("@/components/add-tower/MapPicker"), { ssr: false });
 
@@ -83,11 +88,21 @@ const AddTowerPage = () => {
             alert("Nahrajte alespoň jednu fotografii.");
             return;
         }
-        if (tower.gps.latitude < -90 || tower.gps.latitude > 90 || tower.gps.longitude < -180 || tower.gps.longitude > 180) {
+        if (
+            tower.gps.latitude < -90 ||
+            tower.gps.latitude > 90 ||
+            tower.gps.longitude < -180 ||
+            tower.gps.longitude > 180
+        ) {
             alert("Zadejte prosím platné GPS souřadnice.");
             return;
         }
-        if (tower.height < 0 || tower.viewHeight < 0 || tower.observationDecksCount < 0 || tower.stairs < 0) {
+        if (
+            tower.height < 0 ||
+            tower.viewHeight < 0 ||
+            tower.observationDecksCount < 0 ||
+            tower.stairs < 0
+        ) {
             alert("Zadejte prosím kladné hodnoty pro výšku, počet plošin a schodů.");
             return;
         }
@@ -108,7 +123,9 @@ const AddTowerPage = () => {
 
         console.log("New tower ID:", newID);
 
-        const uploadPromises = photos.map((photo, index) => uploadPhoto(photo, newID, true, index === mainIndex));
+        const uploadPromises = photos.map((photo, index) =>
+            uploadPhoto(photo, newID, true, index === mainIndex)
+        );
         const publicURLs = await Promise.all(uploadPromises);
 
         console.log("Uploaded photos:", publicURLs);
@@ -126,24 +143,35 @@ const AddTowerPage = () => {
     return (
         <div className="w-full max-w-7xl mx-auto mt-5 lg:mt-10 px-5 min-h-dvh">
             <article className="prose prose-sm lg:prose-base max-w-full">
-                <h1 className="mb-2 md:mb-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl">Přidat novou rozhlednu</h1>
+                <h1 className="mb-2 md:mb-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl">
+                    Přidat novou rozhlednu
+                </h1>
                 <p>
-                    Můžete navrhnout přidání nové rozhledny do naší databáze. Čím více informací nám poskytnete, tím lépe. Pomůžete nám i ostatním
-                    milovníkům rozhleden zlepšit naši databázi.
-                    <br /> Doporučujeme se předem přesvědčit, zda se rozhledna již nenachází v naší databázi. V takovém případě nebude nová rozhledna
-                    přidána.
+                    Můžete navrhnout přidání nové rozhledny do naší databáze. Čím více informací nám
+                    poskytnete, tím lépe. Pomůžete nám i ostatním milovníkům rozhleden zlepšit naši
+                    databázi.
+                    <br /> Doporučujeme se předem přesvědčit, zda se rozhledna již nenachází v naší
+                    databázi. V takovém případě nebude nová rozhledna přidána.
                 </p>
             </article>
 
             <h2 className="text-lg mt-6">Základní údaje</h2>
 
             <label
-                className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                    "input-primary": tower.name,
-                })}
+                className={cn(
+                    "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                    {
+                        "input-primary": tower.name,
+                    }
+                )}
             >
                 Název rozhledny *
-                <input type="text" className="grow font-bold" value={tower.name ?? ""} onChange={(e) => updateTower({ name: e.target.value })} />
+                <input
+                    type="text"
+                    className="grow font-bold"
+                    value={tower.name ?? ""}
+                    onChange={(e) => updateTower({ name: e.target.value })}
+                />
             </label>
 
             <select
@@ -176,7 +204,7 @@ const AddTowerPage = () => {
                     </option>
                     {COUNTRIES.map((country) => (
                         <option key={country.code} value={country.code}>
-                            {country.emoji} {country.name}
+                            {country.emoji} {formatCountryName(country.code)}
                         </option>
                     ))}
                 </select>
@@ -213,7 +241,10 @@ const AddTowerPage = () => {
                     </option>
                     {tower.country &&
                         tower.province &&
-                        getAllCountiesFromCountryProvince(tower.country as CountryCode, tower.province).map((county) => (
+                        getAllCountiesFromCountryProvince(
+                            tower.country as CountryCode,
+                            tower.province
+                        ).map((county) => (
                             <option key={county} value={county}>
                                 {county}
                             </option>
@@ -228,16 +259,38 @@ const AddTowerPage = () => {
                     <button className="btn btn-primary w-60" onClick={parsePositionFromClipboard}>
                         Vložit GPS ze schránky
                     </button>
-                    {clipboardError && <div className="text-error text-sm mt-1">{clipboardError}</div>}
+                    {clipboardError && (
+                        <div className="text-error text-sm mt-1">{clipboardError}</div>
+                    )}
                 </div>
-                <label className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full", {})}>
+                <label
+                    className={cn(
+                        "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full",
+                        {}
+                    )}
+                >
                     Latitude *
-                    <input className="w-full" type="text" defaultValue={tower.gps?.latitude.toFixed(8) ?? ""} disabled />
+                    <input
+                        className="w-full"
+                        type="text"
+                        defaultValue={tower.gps?.latitude.toFixed(8) ?? ""}
+                        disabled
+                    />
                 </label>
 
-                <label className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full", {})}>
+                <label
+                    className={cn(
+                        "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base w-full",
+                        {}
+                    )}
+                >
                     Longitude *
-                    <input className="w-full" type="text" defaultValue={tower.gps?.longitude.toFixed(8) ?? ""} disabled />
+                    <input
+                        className="w-full"
+                        type="text"
+                        defaultValue={tower.gps?.longitude.toFixed(8) ?? ""}
+                        disabled
+                    />
                 </label>
 
                 <div>
@@ -249,7 +302,10 @@ const AddTowerPage = () => {
             </div>
 
             <div className="rounded-xl overflow-hidden mt-4">
-                <MapPicker pickedPosition={tower.gps ?? null} setPickedPosition={(gps) => updateTower({ gps: gps })} />
+                <MapPicker
+                    pickedPosition={tower.gps ?? null}
+                    setPickedPosition={(gps) => updateTower({ gps: gps })}
+                />
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">
@@ -258,9 +314,12 @@ const AddTowerPage = () => {
                         <div className="card-title">Parametry</div>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-2 w-full", {
-                                "input-primary font-bold": tower.height > -1,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-2 w-full",
+                                {
+                                    "input-primary font-bold": tower.height > -1,
+                                }
+                            )}
                         >
                             Výška stavby (m):
                             <input
@@ -272,9 +331,12 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                                "input-primary font-bold": tower.viewHeight > -1,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                                {
+                                    "input-primary font-bold": tower.viewHeight > -1,
+                                }
+                            )}
                         >
                             Výška výhledu (m):
                             <input
@@ -286,23 +348,31 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                                "input-primary font-bold": tower.observationDecksCount > -1,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                                {
+                                    "input-primary font-bold": tower.observationDecksCount > -1,
+                                }
+                            )}
                         >
                             Počet vyhlídkových plošin:
                             <input
                                 className="w-full"
                                 type="number"
                                 value={tower.observationDecksCount ?? ""}
-                                onChange={(e) => updateTower({ observationDecksCount: +e.target.value || 0 })}
+                                onChange={(e) =>
+                                    updateTower({ observationDecksCount: +e.target.value || 0 })
+                                }
                             />
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                                "input-primary font-bold": tower.elevation > -500,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                                {
+                                    "input-primary font-bold": tower.elevation > -500,
+                                }
+                            )}
                         >
                             Nadmořská výška (m):
                             <input
@@ -314,9 +384,12 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                                "input-primary font-bold": tower.stairs > -1,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                                {
+                                    "input-primary font-bold": tower.stairs > -1,
+                                }
+                            )}
                         >
                             Počet schodů:
                             <input
@@ -328,23 +401,33 @@ const AddTowerPage = () => {
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                                "input-primary font-bold": tower.opened,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                                {
+                                    "input-primary font-bold": tower.opened,
+                                }
+                            )}
                         >
                             Datum zpřístupnění:
                             <input
                                 className="w-full"
                                 type="date"
-                                value={tower.opened ? new Date(tower.opened).toISOString().split("T")[0] : ""}
+                                value={
+                                    tower.opened
+                                        ? new Date(tower.opened).toISOString().split("T")[0]
+                                        : ""
+                                }
                                 onChange={(e) => updateTower({ opened: new Date(e.target.value) })}
                             />
                         </label>
 
                         <label
-                            className={cn("input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full", {
-                                "input-primary font-bold": tower.owner,
-                            })}
+                            className={cn(
+                                "input input-bordered flex items-center gap-2 whitespace-nowrap text-sm sm:text-base mt-4 w-full",
+                                {
+                                    "input-primary font-bold": tower.owner,
+                                }
+                            )}
                         >
                             Vlastník rozhledny:
                             <input
@@ -359,16 +442,23 @@ const AddTowerPage = () => {
                             <div className="card-title mt-4">Materiál</div>
                             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
                                 {MATERIALS.map((m) => (
-                                    <label className="label cursor-pointer justify-start gap-1" key={m}>
+                                    <label
+                                        className="label cursor-pointer justify-start gap-1"
+                                        key={m}
+                                    >
                                         <input
                                             type="checkbox"
                                             className="checkbox"
-                                            checked={tower.material ? tower.material.includes(m) : false}
+                                            checked={
+                                                tower.material ? tower.material.includes(m) : false
+                                            }
                                             onChange={(e) =>
                                                 updateTower({
                                                     material: e.target.checked
                                                         ? [...(tower.material ?? []), m]
-                                                        : tower.material?.filter((mat) => mat !== m),
+                                                        : tower.material?.filter(
+                                                              (mat) => mat !== m
+                                                          ),
                                                 })
                                             }
                                         />
@@ -385,7 +475,12 @@ const AddTowerPage = () => {
 
                         <div className="mt-2">
                             <div className="grid grid-cols-2 gap-2">
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasTelescope} updateTower={updateTower} text="Dalekohled k dispozici" />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasTelescope}
+                                    updateTower={updateTower}
+                                    text="Dalekohled k dispozici"
+                                />
                                 <TagCheckbox
                                     tower={tower}
                                     towerTag={TowerTag.HasObservationBoards}
@@ -402,7 +497,12 @@ const AddTowerPage = () => {
 
                             <div className="divider">Dostupnost</div>
                             <div className="grid grid-cols-2 gap-2">
-                                <TagCheckbox tower={tower} towerTag={TowerTag.NeedToBorrowKey} updateTower={updateTower} text="Nutné zapůjčit klíč" />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.NeedToBorrowKey}
+                                    updateTower={updateTower}
+                                    text="Nutné zapůjčit klíč"
+                                />
                                 <TagCheckbox
                                     tower={tower}
                                     towerTag={TowerTag.NeedToBookVisit}
@@ -415,7 +515,12 @@ const AddTowerPage = () => {
                                     updateTower={updateTower}
                                     text="Vhodné i pro cyklisty"
                                 />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasParking} updateTower={updateTower} text="Parkoviště u rozhledny" />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasParking}
+                                    updateTower={updateTower}
+                                    text="Parkoviště u rozhledny"
+                                />
                                 <TagCheckbox
                                     tower={tower}
                                     towerTag={TowerTag.WheelchairAccessible}
@@ -427,12 +532,42 @@ const AddTowerPage = () => {
                             <div className="divider">Zázemí</div>
 
                             <div className="grid grid-cols-2 gap-2">
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasToilet} updateTower={updateTower} text="Toaleta" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasSnacks} updateTower={updateTower} text="Drobné občerstvení" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasRestaurant} updateTower={updateTower} text="Restaurace" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasWifi} updateTower={updateTower} text="Wifi" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.CanPayByCard} updateTower={updateTower} text="Možnost platit kartou" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasShelter} updateTower={updateTower} text="Přístřešek" />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasToilet}
+                                    updateTower={updateTower}
+                                    text="Toaleta"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasSnacks}
+                                    updateTower={updateTower}
+                                    text="Drobné občerstvení"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasRestaurant}
+                                    updateTower={updateTower}
+                                    text="Restaurace"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasWifi}
+                                    updateTower={updateTower}
+                                    text="Wifi"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.CanPayByCard}
+                                    updateTower={updateTower}
+                                    text="Možnost platit kartou"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasShelter}
+                                    updateTower={updateTower}
+                                    text="Přístřešek"
+                                />
                                 <TagCheckbox
                                     tower={tower}
                                     towerTag={TowerTag.HasBikeRepairStation}
@@ -450,10 +585,30 @@ const AddTowerPage = () => {
                             <div className="divider">Bezpečnost</div>
 
                             <div className="grid grid-cols-2 gap-2">
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasSlipperySurface} updateTower={updateTower} text="Kluzké povrchy" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasSteepStairs} updateTower={updateTower} text="Příkré schody" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasSmallRailings} updateTower={updateTower} text="Nízké zábradlí" />
-                                <TagCheckbox tower={tower} towerTag={TowerTag.HasLadder} updateTower={updateTower} text="Výstup po žebříku" />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasSlipperySurface}
+                                    updateTower={updateTower}
+                                    text="Kluzké povrchy"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasSteepStairs}
+                                    updateTower={updateTower}
+                                    text="Příkré schody"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasSmallRailings}
+                                    updateTower={updateTower}
+                                    text="Nízké zábradlí"
+                                />
+                                <TagCheckbox
+                                    tower={tower}
+                                    towerTag={TowerTag.HasLadder}
+                                    updateTower={updateTower}
+                                    text="Výstup po žebříku"
+                                />
                             </div>
                         </div>
                     </div>
@@ -464,11 +619,18 @@ const AddTowerPage = () => {
                     <div className="card-body">
                         <div className="card-title">Fotky</div>
                         <p className="mt-2">
-                            Fotky můžete nahrát z počítače, nebo je vložit pomocí odkazu z webu. Následně pomocí kliknutí označte hlavní fotografii,
-                            ve které by rozhledna měla být vidět ideálně celá a měla by být umístěna uprostřed fotografie.
+                            Fotky můžete nahrát z počítače, nebo je vložit pomocí odkazu z webu.
+                            Následně pomocí kliknutí označte hlavní fotografii, ve které by
+                            rozhledna měla být vidět ideálně celá a měla by být umístěna uprostřed
+                            fotografie.
                         </p>
                         <p className="mb-2">Je potřeba nahrát alespoň jednu fotografii.</p>
-                        <PhotosUpload photos={photos} setPhotos={setPhotos} setMainIndex={setMainIndex} mainIndex={mainIndex} />
+                        <PhotosUpload
+                            photos={photos}
+                            setPhotos={setPhotos}
+                            setMainIndex={setMainIndex}
+                            mainIndex={mainIndex}
+                        />
                     </div>
                 </div>
             </div>

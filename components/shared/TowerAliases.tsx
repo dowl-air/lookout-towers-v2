@@ -21,7 +21,7 @@ const TowerAliases = ({ aliases, className }: TowerAliasesProps) => {
             )}
             title={visibleAliases.join(", ")}
         >
-            {visibleAliases.join(", ")}
+            ({visibleAliases.join(", ")})
         </p>
     );
 };

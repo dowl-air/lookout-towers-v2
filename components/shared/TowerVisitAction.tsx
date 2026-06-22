@@ -1,3 +1,5 @@
+import { Footprints } from "lucide-react";
+
 import { loginRedirect } from "@/actions/login.redirect";
 import { VisitButton, VisitButtonVariant } from "@/components/tower/top/buttons/VisitButton";
 import { Tower } from "@/types/Tower";
@@ -39,6 +41,7 @@ async function TowerVisitAction({
                               )
                     }
                 >
+                    <Footprints className="size-4" />
                     {idleLabel}
                 </button>
             </form>

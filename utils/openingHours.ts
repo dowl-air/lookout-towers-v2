@@ -97,7 +97,7 @@ export const getOpeningHoursRanges = (openingHours: OpeningHours): OpeningHoursR
     return isRangeComplete(range) ? [range] : [];
 };
 
-export const normalizeOpeningHours = (openingHours: OpeningHours): OpeningHours => {
+export const normalizeOpeningHours = (openingHours?: OpeningHours | null): OpeningHours => {
     if (!openingHours) return { type: OpeningHoursType.Unknown };
 
     if (!isOpeningHoursTypeWithRanges(openingHours.type)) return openingHours;
@@ -120,6 +120,33 @@ export const getOpeningHoursTypeFromRanges = (ranges: OpeningHoursRange[]): Open
     });
 
     return coveredMonths.size === 12 ? OpeningHoursType.EveryMonth : OpeningHoursType.SomeMonths;
+};
+
+export const getOpeningHoursStatusClassName = (openingHours?: OpeningHours | null): string => {
+    const normalizedOpeningHours = normalizeOpeningHours(openingHours);
+
+    switch (normalizedOpeningHours.type) {
+        case OpeningHoursType.NonStop:
+            return "text-success";
+        case OpeningHoursType.EveryMonth:
+        case OpeningHoursType.SomeMonths:
+        case OpeningHoursType.Occasionally:
+            return "text-base-content";
+        case OpeningHoursType.WillOpen:
+            return "text-warning";
+        case OpeningHoursType.Forbidden:
+            if (
+                normalizedOpeningHours.forbiddenType === OpeningHoursForbiddenType.Reconstruction ||
+                normalizedOpeningHours.forbiddenType === OpeningHoursForbiddenType.Temporary
+            ) {
+                return "text-warning";
+            }
+
+            return "text-error";
+        case OpeningHoursType.Unknown:
+        default:
+            return "text-base-content/60";
+    }
 };
 
 export const isValidOpeningHoursUrl = (url: string): boolean => {

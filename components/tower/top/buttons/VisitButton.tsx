@@ -1,5 +1,6 @@
 "use client";
 
+import { Footprints } from "lucide-react";
 import { startTransition, useActionState, useState } from "react";
 
 import { getVisit } from "@/actions/visits/visits.action";
@@ -38,29 +39,35 @@ export const VisitButton = ({
         });
     };
 
+    const actionLabel = visit ? "Upravit návštěvu" : idleLabel;
+    const visibleLabel = visit
+        ? `Navštíveno ${formatDate({ date: visit.date, long: false })}`
+        : idleLabel;
+
     const buttonClassName =
         variant === "compact"
             ? cn(
                   "btn btn-sm sm:btn-md h-10 min-h-10 sm:h-12 sm:min-h-12 whitespace-nowrap",
-                  visit ? "btn-success" : "btn-outline",
+                  visit ? "btn-primary" : "btn-outline",
                   className
               )
             : cn(
                   "btn btn-sm sm:btn-md md:min-w-64 whitespace-nowrap max-w-xs text-sm md:w-full min-[710px]:text-base",
-                  visit
-                      ? "btn-success hover:[&>span]:hidden hover:btn-warning hover:before:content-['Upravit_návštěvu']"
-                      : "btn-primary",
+                  "btn-primary",
                   className
               );
 
     return (
         <>
-            <button type="button" className={buttonClassName} onClick={() => setIsModalOpen(true)}>
-                <span>
-                    {visit
-                        ? `Navštíveno ${formatDate({ date: visit.date, long: false })}`
-                        : idleLabel}
-                </span>
+            <button
+                type="button"
+                aria-label={actionLabel}
+                title={actionLabel}
+                className={buttonClassName}
+                onClick={() => setIsModalOpen(true)}
+            >
+                <Footprints className="size-4" />
+                <span>{visibleLabel}</span>
             </button>
 
             {isModalOpen ? (

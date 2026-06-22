@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 
 import { editRating, removeRating } from "@/actions/ratings/ratings.action";
+import TowerModal from "@/components/shared/dialog/TowerModal";
 import ThemedRating from "@/components/shared/ThemedRating";
 import { getTowerType4 } from "@/constants/towerType";
 
@@ -26,34 +27,56 @@ const RatingModal = ({ tower, initRating }) => {
     };
 
     return (
-        <dialog ref={modalRef} id="tower-rating-modal" className="modal modal-bottom sm:modal-middle">
-            <form method="dialog" className="modal-box">
-                <h3 className="font-bold text-lg text-base-content">
-                    Hodnocení {getTowerType4(tower.type)} {tower.name}
-                </h3>
-                <ThemedRating readonly={false} value={rating} size={40} className="mt-3" setValue={setRating} />
-                <div className={`ml-1 ${rating > 0 ? "" : ""}`}>{`Vaše hodnocení: ${rating}`}</div>
+        <TowerModal
+            dialogRef={modalRef}
+            id="tower-rating-modal"
+            title={`Hodnocení ${getTowerType4(tower.type)} ${tower.name}`}
+            description="Přidejte stručné hodnocení, které pomůže ostatním naplánovat návštěvu."
+            showCloseAction={false}
+            leadingActions={
+                initRating
+                    ? [
+                          {
+                              label: "Smazat hodnocení",
+                              onClick: deleteRating,
+                              className: "btn-outline btn-error",
+                          },
+                      ]
+                    : []
+            }
+            actions={[
+                {
+                    label: "Uložit hodnocení",
+                    onClick: updateRating,
+                    className: "btn-primary",
+                    disabled: rating <= 0,
+                },
+            ]}
+        >
+            <div className="space-y-5">
+                <div className="rounded-lg border border-base-300/70 bg-base-200/35 p-4 text-center">
+                    <ThemedRating
+                        readonly={false}
+                        value={rating}
+                        size={42}
+                        className="justify-center"
+                        setValue={setRating}
+                    />
+                    <div className="mt-2 text-sm text-base-content/70">{`Vaše hodnocení: ${rating}`}</div>
+                </div>
                 <textarea
-                    className="textarea text-base w-full mt-4 min-h-[100px]"
+                    className="textarea min-h-36 w-full rounded-lg border-base-300 bg-base-100 text-base"
                     placeholder="Co se vám líbilo? Co by se dalo zlepšit? Co vás překvapilo?"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     maxLength={500}
                 ></textarea>
-                <div className="modal-action">
-                    {initRating && (
-                        <button className="btn btn-error justify-self-start" onClick={deleteRating}>
-                            Smazat hodnocení
-                        </button>
-                    )}
-                    <button className="btn btn-error">Zavřít</button>
-
-                    <button className="btn btn-primary" onClick={updateRating}>
-                        Uložit
-                    </button>
+                <div className="flex justify-between text-xs text-base-content/55">
+                    <span>Volitelné slovní hodnocení.</span>
+                    <span>{text.length}/500</span>
                 </div>
-            </form>
-        </dialog>
+            </div>
+        </TowerModal>
     );
 };
 

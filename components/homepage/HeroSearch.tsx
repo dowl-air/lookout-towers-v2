@@ -8,6 +8,7 @@ import { searchTowers } from "@/actions/towers/tower.search";
 import TowerAliases from "@/components/shared/TowerAliases";
 import { getTowerTypeName } from "@/constants/towerType";
 import { Tower } from "@/types/Tower";
+import { formatCountyName, formatProvinceName } from "@/utils/geography";
 
 const useDebouncedValue = (inputValue, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(inputValue);
@@ -128,7 +129,7 @@ function HeroSearch() {
                                             </g>
                                         </g>
                                     </svg>
-                                    <p className="truncate">{`${elm.county}, ${elm.province}`}</p>
+                                    <p className="truncate">{`${formatCountyName(elm.county)}, ${formatProvinceName(elm.country, elm.province)}`}</p>
                                 </div>
                             </div>
                         </Link>

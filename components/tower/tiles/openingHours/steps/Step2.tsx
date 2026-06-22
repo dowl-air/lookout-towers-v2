@@ -103,9 +103,12 @@ const Step2 = ({
         <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-4">
                 {ranges.map((range, idx) => (
-                    <section key={idx} className="rounded-lg border border-base-300 p-3">
+                    <section
+                        key={idx}
+                        className="rounded-lg border border-base-300/70 bg-base-200/35 p-4"
+                    >
                         <div className="mb-3 flex items-center justify-between gap-3">
-                            <h3 className="font-bold">Období {idx + 1}</h3>
+                            <h3 className="font-semibold">Období {idx + 1}</h3>
                             {ranges.length > 1 ? (
                                 <button
                                     type="button"
@@ -119,7 +122,7 @@ const Step2 = ({
 
                         <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
                             <select
-                                className="select select-primary w-full min-w-0 text-base-content"
+                                className="select select-bordered w-full min-w-0 bg-base-100 text-base-content"
                                 value={range.monthFrom}
                                 onChange={(event) =>
                                     updateRange(idx, { monthFrom: +event.target.value })
@@ -135,7 +138,7 @@ const Step2 = ({
                             <span className="text-sm text-base-content/70">až</span>
 
                             <select
-                                className="select select-primary w-full min-w-0 text-base-content"
+                                className="select select-bordered w-full min-w-0 bg-base-100 text-base-content"
                                 value={range.monthTo}
                                 onChange={(event) =>
                                     updateRange(idx, { monthTo: +event.target.value })
@@ -170,7 +173,7 @@ const Step2 = ({
 
                         <div className="mt-4 flex flex-wrap items-center gap-2">
                             <select
-                                className="select select-primary text-base-content w-28"
+                                className="select select-bordered w-28 bg-base-100 text-base-content"
                                 value={range.dayFrom}
                                 onChange={(event) =>
                                     updateRange(idx, { dayFrom: +event.target.value })
@@ -186,7 +189,7 @@ const Step2 = ({
                             <span className="text-sm text-base-content/70">-</span>
 
                             <select
-                                className="select select-primary text-base-content w-28"
+                                className="select select-bordered w-28 bg-base-100 text-base-content"
                                 value={range.dayTo}
                                 onChange={(event) =>
                                     updateRange(idx, { dayTo: +event.target.value })
@@ -213,7 +216,7 @@ const Step2 = ({
                         {range.lunchBreak ? (
                             <div className="flex flex-wrap items-center gap-2">
                                 <select
-                                    className="select select-primary w-28 text-base-content"
+                                    className="select select-bordered w-28 bg-base-100 text-base-content"
                                     value={range.lunchFrom ?? -1}
                                     onChange={(event) =>
                                         updateRange(idx, { lunchFrom: +event.target.value })
@@ -232,7 +235,7 @@ const Step2 = ({
                                 <span className="text-sm text-base-content/70">-</span>
 
                                 <select
-                                    className="select select-primary w-28 text-base-content"
+                                    className="select select-bordered w-28 bg-base-100 text-base-content"
                                     value={range.lunchTo ?? -1}
                                     onChange={(event) =>
                                         updateRange(idx, { lunchTo: +event.target.value })
@@ -255,7 +258,7 @@ const Step2 = ({
 
             <button
                 type="button"
-                className={cn("btn btn-primary btn-outline", { "btn-disabled": !canAddRange })}
+                className={cn("btn btn-outline btn-primary", { "btn-disabled": !canAddRange })}
                 disabled={!canAddRange}
                 onClick={addRange}
             >
@@ -271,7 +274,7 @@ const Step2 = ({
                 </div>
                 <input
                     type="url"
-                    className="input input-primary w-full"
+                    className="input input-bordered w-full rounded-lg bg-base-100"
                     placeholder="https://..."
                     maxLength={500}
                     value={detailUrl}
@@ -289,7 +292,7 @@ const Step2 = ({
                     </span>
                 </div>
                 <textarea
-                    className="textarea textarea-primary w-full"
+                    className="textarea textarea-bordered min-h-28 w-full rounded-lg bg-base-100"
                     placeholder="Doplňující informace k otevírací době"
                     maxLength={500}
                     value={detailText}
