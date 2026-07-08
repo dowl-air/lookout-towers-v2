@@ -5,6 +5,7 @@ import Link from "next/link";
 import NavbarUserDesktop from "@/components/navbar/NavbarUserDesktop";
 import NavbarUserMobile from "@/components/navbar/NavbarUserMobile";
 import ThemeChanger from "@/components/navbar/ThemeChanger";
+import TowerSearch from "@/components/shared/TowerSearch";
 
 function Navbar() {
     return (
@@ -37,10 +38,10 @@ function Navbar() {
                 </div>
 
                 <nav aria-label="Primary" className="navbar-center hidden md:flex">
-                    <ul className="menu menu-horizontal gap-1 rounded-full border border-base-300/70 bg-base-100/70 px-2 py-1 shadow-sm">
+                    <ul className="flex items-center gap-1 rounded-full border border-base-300/70 bg-base-100/70 px-2 py-1 shadow-sm">
                         <li>
                             <Link
-                                className="rounded-full active:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+                                className="flex h-8 items-center rounded-full px-3 text-sm transition-colors hover:bg-base-200/80 active:bg-base-200/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
                                 href="/rozhledny"
                             >
                                 Rozhledny
@@ -48,7 +49,7 @@ function Navbar() {
                         </li>
                         <li>
                             <Link
-                                className="rounded-full active:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+                                className="flex h-8 items-center rounded-full px-3 text-sm transition-colors hover:bg-base-200/80 active:bg-base-200/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
                                 href="/mapa"
                             >
                                 Mapa
@@ -56,11 +57,14 @@ function Navbar() {
                         </li>
                         <li>
                             <Link
-                                className="rounded-full active:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+                                className="flex h-8 items-center rounded-full px-3 text-sm transition-colors hover:bg-base-200/80 active:bg-base-200/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
                                 href="/komunita"
                             >
                                 Komunita
                             </Link>
+                        </li>
+                        <li className="relative flex h-8 items-center">
+                            <TowerSearch id="navbar-search" variant="navbar" />
                         </li>
                     </ul>
                 </nav>
