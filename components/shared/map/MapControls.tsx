@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Minus, Maximize2, Minimize2 } from "lucide-react";
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useRef } from "react";
 
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useMapControls } from "@/hooks/useMapControls";
@@ -13,10 +13,15 @@ import { useMapControls } from "@/hooks/useMapControls";
  * Uses project's useMapControls hook for map interactions
  * Memoized to prevent unnecessary re-renders
  */
-export const MapControls = memo(function MapControls() {
+type MapControlsProps = {
+    autoLocate?: boolean;
+};
+
+export const MapControls = memo(function MapControls({ autoLocate = false }: MapControlsProps) {
     const { map, zoomIn, zoomOut, toggleFullscreen, resetView } = useMapControls();
     const { locateUser, isLocating, isAvailable } = useGeolocation();
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const hasAutoLocated = useRef(false);
 
     // Listen for fullscreen changes
     useEffect(() => {
@@ -30,12 +35,19 @@ export const MapControls = memo(function MapControls() {
         };
     }, []);
 
+    useEffect(() => {
+        if (!autoLocate || !isAvailable || hasAutoLocated.current) return;
+
+        hasAutoLocated.current = true;
+        locateUser();
+    }, [autoLocate, isAvailable, locateUser]);
+
     return (
         <div className="absolute bottom-24 sm:bottom-8 right-4 flex flex-col items-center gap-2 z-1000">
             {/* Location Button */}
             <button
                 onClick={locateUser}
-                disabled={!isAvailable || isLocating}
+                disabled={!isAvailable}
                 className={`flex h-9 w-9 items-center justify-center rounded-full bg-slate-700 shadow-lg hover:bg-slate-600 ${
                     isLocating ? "animate-pulse" : ""
                 } disabled:opacity-50 disabled:cursor-not-allowed`}

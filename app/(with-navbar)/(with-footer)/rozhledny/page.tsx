@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { searchTowers } from "@/actions/towers/tower.search";
+import LocationPermissionPrompt from "@/components/shared/LocationPermissionPrompt";
 import Filter from "@/components/towers/Filter";
 import Pagination from "@/components/towers/Pagination";
 import Results from "@/components/towers/Results";
@@ -57,6 +58,7 @@ async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> })
             >
                 <Filter searchParams={searchParams || {}} />
             </Suspense>
+            <LocationPermissionPrompt className="mt-5" />
             <Suspense fallback={null}>
                 <Pagination
                     totalPages={totalPages}

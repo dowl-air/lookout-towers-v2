@@ -59,7 +59,7 @@ export function MapMain({ towers }: { towers: TowerMapDTO[] }) {
                 onProviderChange={setProviderId}
             />
 
-            <MapControls />
+            <MapControls autoLocate />
         </div>
     );
 }

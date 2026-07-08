@@ -18,6 +18,7 @@ import SearchSection from "@/components/homepage/SearchSection";
 import Stats from "@/components/homepage/Stats";
 import StatsSkeleton from "@/components/homepage/StatsSkeleton";
 import TowerOfTheDay from "@/components/homepage/TowerOfTheDay";
+import LocationPermissionPrompt from "@/components/shared/LocationPermissionPrompt";
 import { getRandomTowers, getTowerRatingAndCount } from "@/data/tower/towers";
 
 export const metadata: Metadata = {
@@ -78,6 +79,7 @@ async function HomePage() {
                 <Suspense fallback={<ImageSliderSkeleton />}>
                     <ImageSliderNoSsr towers={towers} ratings={ratings} />
                 </Suspense>
+                <LocationPermissionPrompt className="mx-auto mt-10 w-full max-w-[1070px] px-4" />
                 <section className="mx-auto mt-16 flex w-full max-w-[1070px] flex-col px-4">
                     <div className="mb-5 flex flex-col gap-2 text-center md:text-left">
                         <h2 className="text-3xl font-bold md:text-4xl">Komunita v číslech</h2>

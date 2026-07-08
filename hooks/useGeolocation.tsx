@@ -40,6 +40,14 @@ export function useGeolocation() {
     const locationMarkerRef = useRef<Marker | null>(null);
     const locationFoundHandlerRef = useRef<((e: LocationEvent) => void) | null>(null);
     const locationErrorHandlerRef = useRef<((e: ErrorEvent) => void) | null>(null);
+    const locationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const clearLocationTimeout = useCallback(() => {
+        if (locationTimeoutRef.current) {
+            clearTimeout(locationTimeoutRef.current);
+            locationTimeoutRef.current = null;
+        }
+    }, []);
 
     // Cleanup function for location markers
     const clearLocationMarkers = useCallback(() => {
@@ -67,6 +75,12 @@ export function useGeolocation() {
         }
     }, [map]);
 
+    const finishLocating = useCallback(() => {
+        setIsLocating(false);
+        clearLocationTimeout();
+        cleanupEventHandlers();
+    }, [cleanupEventHandlers, clearLocationTimeout]);
+
     const locateUser = useCallback(() => {
         if (!map) {
             console.warn("Map instance not available");
@@ -74,15 +88,20 @@ export function useGeolocation() {
         }
 
         // Clean up previous handlers and markers
+        map.stopLocate();
         cleanupEventHandlers();
+        clearLocationTimeout();
         clearLocationMarkers();
 
         setIsLocating(true);
+        locationTimeoutRef.current = setTimeout(() => {
+            map.stopLocate();
+            finishLocating();
+        }, 12000);
 
         // Create handlers with stored references
         const handleLocationFound = async (e: LocationEvent) => {
-            setIsLocating(false);
-            cleanupEventHandlers();
+            finishLocating();
 
             try {
                 // Dynamically import Leaflet to add markers
@@ -116,8 +135,7 @@ export function useGeolocation() {
         };
 
         const handleLocationError = (e: ErrorEvent) => {
-            setIsLocating(false);
-            cleanupEventHandlers();
+            finishLocating();
             console.error("Location error:", e.message);
         };
 
@@ -130,16 +148,18 @@ export function useGeolocation() {
         map.once("locationerror", handleLocationError);
 
         // Request user's location
-        map.locate({ setView: true, maxZoom: 8 });
-    }, [map, cleanupEventHandlers, clearLocationMarkers]);
+        map.locate({ setView: true, maxZoom: 8, timeout: 10000 });
+    }, [map, cleanupEventHandlers, clearLocationMarkers, clearLocationTimeout, finishLocating]);
 
     // Cleanup on unmount
     useEffect(() => {
         return () => {
+            map?.stopLocate();
+            clearLocationTimeout();
             cleanupEventHandlers();
             clearLocationMarkers();
         };
-    }, [cleanupEventHandlers, clearLocationMarkers]);
+    }, [map, cleanupEventHandlers, clearLocationMarkers, clearLocationTimeout]);
 
     return {
         locateUser,
