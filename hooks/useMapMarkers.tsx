@@ -30,6 +30,14 @@ type MarkerOptions = {
     opacity?: number;
 };
 
+type PopupRoot = import("react-dom/client").Root;
+
+const schedulePopupRootUnmount = (root: PopupRoot) => {
+    setTimeout(() => {
+        root.unmount();
+    }, 0);
+};
+
 /**
  * Hook for managing user-added markers on the map
  *
@@ -44,7 +52,8 @@ type MarkerOptions = {
 export function useMapMarkers() {
     const map = useLeafletMap();
     const leafletMarkersRef = useRef<Map<string, Marker>>(new Map());
-    const popupRootsRef = useRef<Map<string, import("react-dom/client").Root>>(new Map());
+    const popupRootsRef = useRef<Map<string, PopupRoot>>(new Map());
+    const openPopupIdsRef = useRef<Set<string>>(new Set());
     const leafletRef = useRef<typeof import("leaflet") | null>(null);
 
     const loadLeaflet = useCallback(async () => {
@@ -177,30 +186,46 @@ export function useMapMarkers() {
                     return;
                 }
 
+                openPopupIdsRef.current.add(id);
+
                 const root = (await import("react-dom/client")).createRoot(popupDiv);
+
+                if (!openPopupIdsRef.current.has(id)) {
+                    schedulePopupRootUnmount(root);
+                    return;
+                }
+
                 root.render(<MapTowerCard tower={tower} />);
                 popupRootsRef.current.set(id, root);
 
                 // The popup opens before React mounts the card, so Leaflet computes
                 // the anchor from an empty box. Re-run popup layout after mount.
                 requestAnimationFrame(() => {
+                    if (!openPopupIdsRef.current.has(id)) {
+                        return;
+                    }
+
                     popup.update();
 
                     requestAnimationFrame(() => {
+                        if (!openPopupIdsRef.current.has(id)) {
+                            return;
+                        }
+
                         popup.update();
                     });
                 });
             });
 
             leafletMarker.on("popupclose", () => {
+                openPopupIdsRef.current.delete(id);
+
                 const root = popupRootsRef.current.get(id);
 
                 if (root) {
-                    root.unmount();
                     popupRootsRef.current.delete(id);
+                    schedulePopupRootUnmount(root);
                 }
-
-                popupDiv.replaceChildren();
             });
 
             // Store reference
@@ -224,9 +249,11 @@ export function useMapMarkers() {
 
             const root = popupRootsRef.current.get(id);
 
+            openPopupIdsRef.current.delete(id);
+
             if (root) {
-                root.unmount();
                 popupRootsRef.current.delete(id);
+                schedulePopupRootUnmount(root);
             }
 
             leafletMarkersRef.current.delete(id);
@@ -244,7 +271,8 @@ export function useMapMarkers() {
             }
         });
 
-        popupRootsRef.current.forEach((root) => root.unmount());
+        openPopupIdsRef.current.clear();
+        popupRootsRef.current.forEach(schedulePopupRootUnmount);
         popupRootsRef.current.clear();
         leafletMarkersRef.current.clear();
     }, [map]);
@@ -268,7 +296,8 @@ export function useMapMarkers() {
         const markersMap = leafletMarkersRef.current;
 
         return () => {
-            popupRootsRef.current.forEach((root) => root.unmount());
+            openPopupIdsRef.current.clear();
+            popupRootsRef.current.forEach(schedulePopupRootUnmount);
             popupRootsRef.current.clear();
             markersMap.forEach((leafletMarker) => {
                 if (map?.hasLayer(leafletMarker)) {
