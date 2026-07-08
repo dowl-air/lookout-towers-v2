@@ -26,6 +26,11 @@ import { getCzechTowersForProgress, TowerCollectionDTO } from "@/data/tower/towe
 import { getAllUserVisits } from "@/data/user/user-visits";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
 import { cn } from "@/utils/cn";
+import {
+    getAccessibleTowerProgress,
+    getTowerProgressPercent,
+    getTowerProgressText,
+} from "@/utils/towerProgress";
 
 export const metadata: Metadata = {
     title: "Můj pokrok",
@@ -87,17 +92,6 @@ const TOWER_TYPE_STYLES = {
             "border-orange-500/70 bg-orange-500/15 text-orange-700 in-data-[theme=abyss]:text-orange-300",
         icon: Landmark,
     },
-};
-
-const isExcludedFromCollection = (tower: TowerCollectionDTO): boolean => {
-    if (tower.openingHours?.type !== OpeningHoursType.Forbidden) {
-        return false;
-    }
-
-    return ![
-        OpeningHoursForbiddenType.Reconstruction,
-        OpeningHoursForbiddenType.Temporary,
-    ].includes(tower.openingHours.forbiddenType);
 };
 
 const getOpenedTimestamp = (tower: TowerCollectionDTO): number => {
@@ -173,22 +167,6 @@ const getAvailabilityMarker = (tower: TowerCollectionDTO) => {
     }
 
     return null;
-};
-
-const getProgressText = (visitedCount: number, totalCount: number): string => {
-    if (totalCount === 0) {
-        return "0 %";
-    }
-
-    return `${Math.round((visitedCount / totalCount) * 100)} %`;
-};
-
-const getProgressPercent = (visitedCount: number, totalCount: number): number => {
-    if (totalCount === 0) {
-        return 0;
-    }
-
-    return Math.round((visitedCount / totalCount) * 100);
 };
 
 function TowerProgressIcon({
@@ -350,20 +328,24 @@ function ProgressContent({
     towers: TowerCollectionDTO[];
     visitedTowerIds: Set<string>;
 }) {
-    const visibleTowers = towers.filter((tower) => !isExcludedFromCollection(tower));
-    const visitedVisibleCount = visibleTowers.filter((tower) =>
-        visitedTowerIds.has(tower.id)
-    ).length;
-    const progressPercent = getProgressPercent(visitedVisibleCount, visibleTowers.length);
-    const progressText = getProgressText(visitedVisibleCount, visibleTowers.length);
+    const {
+        accessibleTowers,
+        progressPercent,
+        progressText,
+        totalAccessibleCount,
+        visitedAccessibleCount,
+    } = getAccessibleTowerProgress(towers, visitedTowerIds);
     const provinceSections = PROVINCES_CZ.map((province) => {
-        const provinceTowers = visibleTowers
+        const provinceTowers = accessibleTowers
             .filter((tower) => isTowerInProvince(tower, province))
             .sort(sortByOpened);
         const provinceVisitedCount = provinceTowers.filter((tower) =>
             visitedTowerIds.has(tower.id)
         ).length;
-        const progressPercent = getProgressPercent(provinceVisitedCount, provinceTowers.length);
+        const progressPercent = getTowerProgressPercent(
+            provinceVisitedCount,
+            provinceTowers.length
+        );
 
         return {
             progressPercent,
@@ -402,21 +384,21 @@ function ProgressContent({
                 </div>
                 <div className="stat w-44">
                     <div className="stat-title">Navštíveno</div>
-                    <div className="stat-value">{visitedVisibleCount}</div>
-                    <div className="stat-desc">z {visibleTowers.length}</div>
+                    <div className="stat-value">{visitedAccessibleCount}</div>
+                    <div className="stat-desc">z {totalAccessibleCount}</div>
                 </div>
                 <div className="stat min-w-44">
                     <div className="stat-title">Zobrazeno</div>
-                    <div className="stat-value">{visibleTowers.length}</div>
+                    <div className="stat-value">{totalAccessibleCount}</div>
                     <div className="stat-desc">objektů v ČR</div>
                 </div>
             </section>
 
             <div
                 aria-label="Celkový průběh"
-                aria-valuemax={visibleTowers.length}
+                aria-valuemax={totalAccessibleCount}
                 aria-valuemin={0}
-                aria-valuenow={visitedVisibleCount}
+                aria-valuenow={visitedAccessibleCount}
                 className="h-3 w-full overflow-hidden rounded-full bg-base-300"
                 role="progressbar"
             >
@@ -443,7 +425,10 @@ function ProgressContent({
                                     </p>
                                 </div>
                                 <div className="text-sm font-semibold text-base-content/70">
-                                    {getProgressText(provinceVisitedCount, provinceTowers.length)}
+                                    {getTowerProgressText(
+                                        provinceVisitedCount,
+                                        provinceTowers.length
+                                    )}
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-2">

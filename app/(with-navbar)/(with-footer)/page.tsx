@@ -12,6 +12,8 @@ import {
 } from "@/app/(with-navbar)/(with-footer)/homepageSeo";
 import AboutMe from "@/components/homepage/AboutMe";
 import Hero from "@/components/homepage/Hero";
+import HomeDashboard from "@/components/homepage/HomeDashboard";
+import HomeDashboardSkeleton from "@/components/homepage/HomeDashboardSkeleton";
 import ImageSliderNoSsr from "@/components/homepage/ImageSliderNoSsr";
 import ImageSliderSkeleton from "@/components/homepage/ImageSliderSkeleton";
 import SearchSection from "@/components/homepage/SearchSection";
@@ -68,6 +70,9 @@ async function HomePage() {
             <main className="flex flex-col justify-center">
                 <Hero />
                 <SearchSection />
+                <Suspense fallback={<HomeDashboardSkeleton />}>
+                    <HomeDashboard />
+                </Suspense>
                 <section className="mx-auto mt-12 flex w-full max-w-[1070px] flex-col px-4">
                     <div className="mb-5 flex flex-col gap-2 text-center md:text-left">
                         <h2 className="text-3xl font-bold md:text-4xl">Náhodný výběr</h2>
