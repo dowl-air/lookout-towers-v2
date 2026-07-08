@@ -17,24 +17,54 @@ export const metadata: Metadata = {
 
 const PER_PAGE = 20;
 
+const parsePage = (page?: number | string): number => {
+    const parsedPage = Number(page || 1);
+    return Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+};
+
+const parseLocation = (location?: string): { lat: number; lng: number } | null => {
+    if (!location) return null;
+
+    const [latitude, longitude] = location.split(",").map(Number);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+
+    return { lat: latitude, lng: longitude };
+};
+
+const getSort = (sort: string, location: { lat: number; lng: number } | null): string => {
+    switch (sort) {
+        case "distance":
+            return location ? `gps(${location.lat}, ${location.lng}):asc` : "name:asc";
+        case "name_desc":
+            return "name:desc";
+        case "height_desc":
+            return "height:desc";
+        case "view_height_desc":
+            return "viewHeight:desc";
+        case "stairs_desc":
+            return "stairs:desc";
+        case "elevation_desc":
+            return "elevation:desc";
+        case "opened_desc":
+            return "opened:desc";
+        case "opened_asc":
+            return "opened:asc";
+        default:
+            return "name:asc";
+    }
+};
+
 async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> }) {
     await connection();
 
     const searchParams = await props.searchParams;
     const query = searchParams?.query || "";
-    const page = searchParams?.page || 1;
+    const page = parsePage(searchParams?.page);
     const sort = searchParams?.sort || "";
-
-    let location = null;
-    if (searchParams?.location) {
-        const [latitude, longitude] = searchParams.location.split(",");
-        location = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
-    }
+    const location = parseLocation(searchParams?.location);
 
     const filter = new TowersFilter(searchParams);
-
-    let sort_by = "name:asc";
-    if (sort === "distance" && location) sort_by = `gps(${location.lat}, ${location.lng}):asc`;
+    const sort_by = getSort(sort, location);
 
     const { towers, found } = await searchTowers({
         q: query,
@@ -62,7 +92,7 @@ async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> })
             <Suspense fallback={null}>
                 <Pagination
                     totalPages={totalPages}
-                    currentPage={Number(page)}
+                    currentPage={page}
                     pathname="/rozhledny"
                     searchParams={searchParams || {}}
                 />
@@ -74,7 +104,7 @@ async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> })
                 <Suspense fallback={null}>
                     <Pagination
                         totalPages={totalPages}
-                        currentPage={Number(page)}
+                        currentPage={page}
                         pathname="/rozhledny"
                         searchParams={searchParams || {}}
                     />

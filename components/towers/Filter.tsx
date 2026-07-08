@@ -1,262 +1,727 @@
 "use client";
 
+import {
+    ArrowDownAZ,
+    ChevronDown,
+    ChevronUp,
+    LocateFixed,
+    Search,
+    SlidersHorizontal,
+    X,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
-import FilterDialog from "@/components/towers/FilterDialog";
-import { CountryCode } from "@/constants/countries";
+import COUNTRIES, { CountryCode } from "@/constants/countries";
+import { MATERIALS } from "@/constants/materials";
 import PROVINCES_CZ from "@/constants/provinces/CZ";
+import { towerTypes } from "@/constants/towerType";
 import useLocation from "@/hooks/useLocation";
+import { AdmissionType } from "@/types/Admission";
+import { OpeningHoursType } from "@/types/OpeningHours";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
+import { TowerTag } from "@/types/TowerTags";
 import { cn } from "@/utils/cn";
 import {
     getAllCountiesFromCountry,
     getAllCountiesFromCountryProvince,
     getAllCountryProvinces,
     getProvinceByCounty,
+    isValidCountryCode,
 } from "@/utils/geography";
+
+type FilterOption = {
+    label: string;
+    value: string;
+};
+
+const OPENING_OPTIONS: FilterOption[] = [
+    { label: "Volně přístupné", value: String(OpeningHoursType.NonStop) },
+    { label: "Celoročně", value: String(OpeningHoursType.EveryMonth) },
+    { label: "Sezónně", value: String(OpeningHoursType.SomeMonths) },
+    { label: "Příležitostně", value: String(OpeningHoursType.Occasionally) },
+    { label: "Uzavřeno", value: String(OpeningHoursType.Forbidden) },
+];
+
+const ADMISSION_OPTIONS: FilterOption[] = [
+    { label: "Zdarma", value: AdmissionType.FREE },
+    { label: "Dobrovolné", value: AdmissionType.DONATION },
+    { label: "Placené", value: AdmissionType.PAID },
+];
+
+const TAG_OPTIONS: FilterOption[] = [
+    { label: "Parkování", value: TowerTag.HasParking },
+    { label: "Cyklisté", value: TowerTag.SuitableForCyclists },
+    { label: "Restaurace", value: TowerTag.HasRestaurant },
+    { label: "Občerstvení", value: TowerTag.HasSnacks },
+    { label: "WC", value: TowerTag.HasToilet },
+    { label: "Dalekohled", value: TowerTag.HasTelescope },
+];
+
+const SORT_OPTIONS: FilterOption[] = [
+    { label: "Název A-Z", value: "name" },
+    { label: "Název Z-A", value: "name_desc" },
+    { label: "Nejblíže", value: "distance" },
+    { label: "Nejvyšší rozhledna", value: "height_desc" },
+    { label: "Nejvyšší plošina", value: "view_height_desc" },
+    { label: "Nejvíce schodů", value: "stairs_desc" },
+    { label: "Nejvyšší nadmořská výška", value: "elevation_desc" },
+    { label: "Nejnovější otevřené", value: "opened_desc" },
+    { label: "Nejstarší", value: "opened_asc" },
+];
+
+const HEIGHT_OPTIONS: FilterOption[] = [
+    { label: "0-20 m", value: "0:20" },
+    { label: "20-40 m", value: "20:40" },
+    { label: "40-60 m", value: "40:60" },
+    { label: "60+ m", value: "60:" },
+];
+
+const QUICK_ADMISSION_FILTERS = [AdmissionType.FREE];
+const QUICK_OPENING_FILTERS = [String(OpeningHoursType.NonStop)];
+const QUICK_TAG_FILTERS = [TowerTag.HasParking, TowerTag.SuitableForCyclists];
+
+const toParamArray = (value?: string | string[]): string[] => {
+    if (!value) return [];
+    return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
+};
+
+const getParamValue = (value?: number | string | string[]): string => {
+    if (Array.isArray(value)) return value[0] || "";
+    return value ? String(value) : "";
+};
+
+const appendValues = (params: URLSearchParams, key: string, values: string[]) => {
+    values.forEach((value) => {
+        if (value) params.append(key, value);
+    });
+};
+
+const toggleValue = (values: string[], value: string): string[] => {
+    return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
+};
+
+const getInitialCountry = (searchParams: TowersSearchParams): CountryCode | "ALL" => {
+    if (isValidCountryCode(searchParams.country || "")) return searchParams.country as CountryCode;
+    if (searchParams.province || searchParams.county) return "CZ";
+    return "ALL";
+};
+
+const getHeightOptionValue = (minHeight: string, maxHeight: string): string => {
+    if (!minHeight && !maxHeight) return "";
+    return `${minHeight}:${maxHeight}`;
+};
+
+const hasOnlyQuickValues = (values: string[], quickValues: string[]): boolean => {
+    return values.every((value) => quickValues.includes(value));
+};
+
+const hasAdvancedOnlyFilters = (searchParams: TowersSearchParams): boolean => {
+    if (
+        searchParams.country ||
+        searchParams.province ||
+        searchParams.county ||
+        searchParams.distance ||
+        searchParams.type ||
+        searchParams.material ||
+        searchParams.minHeight ||
+        searchParams.maxHeight
+    ) {
+        return true;
+    }
+
+    const admissionFilters = toParamArray(searchParams.admission);
+    if (
+        admissionFilters.length > 0 &&
+        !hasOnlyQuickValues(admissionFilters, QUICK_ADMISSION_FILTERS)
+    ) {
+        return true;
+    }
+
+    const openingFilters = toParamArray(searchParams.opening);
+    if (openingFilters.length > 0 && !hasOnlyQuickValues(openingFilters, QUICK_OPENING_FILTERS)) {
+        return true;
+    }
+
+    const tagFilters = toParamArray(searchParams.tag);
+    if (tagFilters.length > 0 && !hasOnlyQuickValues(tagFilters, QUICK_TAG_FILTERS)) {
+        return true;
+    }
+
+    return false;
+};
+
+const EMPTY_FILTER_STATE = {
+    country: "ALL" as const,
+    county: "ALL",
+    distance: "",
+    heightRange: "",
+    locationValue: "",
+    province: "ALL",
+    query: "",
+    sort: "name",
+};
+
+const ChipCheckbox = ({
+    checked,
+    disabled = false,
+    label,
+    onChange,
+}: {
+    checked: boolean;
+    disabled?: boolean;
+    label: string;
+    onChange: () => Promise<void> | void;
+}) => (
+    <button
+        type="button"
+        disabled={disabled}
+        className={cn("btn btn-xs sm:btn-sm rounded-full", {
+            "btn-primary": checked,
+            "btn-outline": !checked,
+        })}
+        onClick={onChange}
+    >
+        {label}
+    </button>
+);
+
+const CheckboxGroup = ({
+    columns = false,
+    options,
+    values,
+    onChange,
+}: {
+    columns?: boolean;
+    options: FilterOption[];
+    values: string[];
+    onChange: (values: string[]) => void;
+}) => (
+    <div className={cn("grid gap-2", columns ? "sm:grid-cols-2" : "")}>
+        {options.map((option) => (
+            <label key={option.value} className="label cursor-pointer justify-start gap-2 py-1">
+                <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm"
+                    checked={values.includes(option.value)}
+                    onChange={() => onChange(toggleValue(values, option.value))}
+                />
+                <span className="label-text">{option.label}</span>
+            </label>
+        ))}
+    </div>
+);
 
 const Filter = ({ searchParams }: { searchParams: TowersSearchParams }) => {
     const { replace } = useRouter();
     const pathname = usePathname();
-    const { location } = useLocation();
-    const dialogRef = useRef<HTMLDialogElement>(null);
+    const { isLocating, location, permissionState, requestLocation } = useLocation();
 
-    const getParams = () => {
-        const params = new URLSearchParams();
+    const [query, setQuery] = useState(getParamValue(searchParams.query));
+    const [country, setCountry] = useState<CountryCode | "ALL">(() =>
+        getInitialCountry(searchParams)
+    );
+    const [province, setProvince] = useState(searchParams.province ?? "ALL");
+    const [county, setCounty] = useState(searchParams.county ?? "ALL");
+    const [sort, setSort] = useState(searchParams.sort ?? "name");
+    const [locationValue, setLocationValue] = useState(searchParams.location ?? "");
+    const [distance, setDistance] = useState(searchParams.distance ?? "");
+    const [selectedTypes, setSelectedTypes] = useState(toParamArray(searchParams.type));
+    const [selectedOpenings, setSelectedOpenings] = useState(toParamArray(searchParams.opening));
+    const [selectedAdmissions, setSelectedAdmissions] = useState(
+        toParamArray(searchParams.admission)
+    );
+    const [selectedMaterials, setSelectedMaterials] = useState(toParamArray(searchParams.material));
+    const [selectedTags, setSelectedTags] = useState(toParamArray(searchParams.tag));
+    const [heightRange, setHeightRange] = useState(
+        getHeightOptionValue(searchParams.minHeight ?? "", searchParams.maxHeight ?? "")
+    );
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(() =>
+        hasAdvancedOnlyFilters(searchParams)
+    );
 
-        Object.entries(searchParams).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                value.forEach((item) => params.append(key, item));
-                return;
-            }
+    useEffect(() => {
+        setQuery(getParamValue(searchParams.query));
+        setCountry(getInitialCountry(searchParams));
+        setProvince(searchParams.province ?? "ALL");
+        setCounty(searchParams.county ?? "ALL");
+        setSort(searchParams.sort ?? "name");
+        setLocationValue(searchParams.location ?? "");
+        setDistance(searchParams.distance ?? "");
+        setSelectedTypes(toParamArray(searchParams.type));
+        setSelectedOpenings(toParamArray(searchParams.opening));
+        setSelectedAdmissions(toParamArray(searchParams.admission));
+        setSelectedMaterials(toParamArray(searchParams.material));
+        setSelectedTags(toParamArray(searchParams.tag));
+        setHeightRange(
+            getHeightOptionValue(searchParams.minHeight ?? "", searchParams.maxHeight ?? "")
+        );
+        setShowAdvancedFilters(hasAdvancedOnlyFilters(searchParams));
+    }, [searchParams]);
 
-            if (value !== undefined && value !== null && value !== "") {
-                params.set(key, String(value));
-            }
-        });
+    const countryForLists: CountryCode = country === "ALL" ? "CZ" : country;
+    const selectableProvinces = useMemo(() => {
+        if (country === "ALL") return [];
+        return getAllCountryProvinces(countryForLists);
+    }, [country, countryForLists]);
 
-        return params;
+    const selectableCounties = useMemo(() => {
+        if (country === "ALL") return [];
+        if (province === PROVINCES_CZ[0].code) return [];
+        if (province !== "ALL") return getAllCountiesFromCountryProvince(countryForLists, province);
+        return getAllCountiesFromCountry(countryForLists);
+    }, [country, countryForLists, province]);
+
+    const currentLocationValue =
+        locationValue || (location ? `${location.latitude},${location.longitude}` : "");
+    const isLocationUnavailable = permissionState === "denied" || permissionState === "unsupported";
+    const canSortByDistance = Boolean(currentLocationValue);
+    const isDistanceActive = Boolean(distance && currentLocationValue);
+
+    const handleCountry = (countryCode: CountryCode | "ALL") => {
+        setCountry(countryCode);
+        setProvince("ALL");
+        setCounty("ALL");
     };
-
-    const defaultCountry = (searchParams.country as CountryCode) ?? "CZ";
-    const defaultProvince = searchParams.province ?? "ALL";
-    const defaultCounty = searchParams.county ?? "ALL";
-    const defaultSearchTerm = searchParams.query ?? "";
-    const defaultSort = searchParams.sort ?? "name";
-
-    //TODO refactor to support multiple countries
-
-    let selectableCounties = getAllCountiesFromCountry(defaultCountry);
-    if (defaultProvince === PROVINCES_CZ[0].code) {
-        // Prague doesnt have counties
-        selectableCounties = [];
-    } else if (defaultProvince !== "ALL") {
-        // Filter counties by selected province
-        selectableCounties = getAllCountiesFromCountryProvince(defaultCountry, defaultProvince);
-    }
-
-    const handleSearch = useDebouncedCallback((term: string) => {
-        const params = getParams();
-        if (term) {
-            params.set("query", term);
-            params.delete("page");
-        } else {
-            params.delete("query");
-        }
-        replace(`${pathname}?${params.toString()}`);
-    }, 400);
 
     const handleProvince = (provinceCode: string) => {
-        const params = getParams();
-        if (provinceCode !== "ALL") {
-            params.set("province", provinceCode);
-            params.delete("page");
-            params.delete("county");
-            params.set("country", defaultCountry);
-        } else {
-            params.delete("province");
-            params.delete("county");
-        }
-        replace(`${pathname}?${params.toString()}`);
+        setProvince(provinceCode);
+        setCounty("ALL");
     };
 
-    const handleSort = (sort: string) => {
-        document.getElementById("buttons-block").focus();
-        const params = getParams();
+    const handleCounty = (nextCounty: string) => {
+        setCounty(nextCounty);
+
+        if (nextCounty === "ALL" || country === "ALL") return;
+
+        const matchingProvince = getProvinceByCounty(countryForLists, nextCounty);
+        if (matchingProvince) setProvince(matchingProvince.code);
+    };
+
+    const ensureLocation = async (): Promise<string | null> => {
+        if (currentLocationValue) return currentLocationValue;
+        if (isLocationUnavailable) return null;
+
+        const nextLocation = await requestLocation().catch(() => null);
+        if (!nextLocation) return null;
+
+        const nextLocationValue = `${nextLocation.latitude},${nextLocation.longitude}`;
+        setLocationValue(nextLocationValue);
+
+        return nextLocationValue;
+    };
+
+    const handleCurrentLocation = async () => {
+        const nextLocationValue = await ensureLocation();
+        if (!nextLocationValue) return;
+
+        setDistance((currentDistance) => currentDistance || "20");
+    };
+
+    const handleDistance = async (nextDistance: string) => {
+        if (!nextDistance) {
+            setDistance("");
+            return;
+        }
+
+        const nextLocationValue = await ensureLocation();
+        if (!nextLocationValue) {
+            setDistance("");
+            return;
+        }
+
+        setDistance(nextDistance);
+    };
+
+    const handleSort = async (nextSort: string) => {
+        if (nextSort !== "distance") {
+            setSort(nextSort);
+            return;
+        }
+
+        const nextLocationValue = await ensureLocation();
+        setSort(nextLocationValue ? "distance" : "name");
+    };
+
+    const handleNearestChip = async () => {
         if (sort === "distance") {
-            params.set("location", `${location.latitude},${location.longitude}`);
-            params.set("sort", sort);
-        } else {
-            params.delete("location");
-            params.delete("sort");
+            setSort("name");
+            return;
         }
-        replace(`${pathname}?${params.toString()}`);
+
+        const nextLocationValue = await ensureLocation();
+        if (nextLocationValue) setSort("distance");
     };
 
-    const handleCounty = (county: string) => {
-        const params = getParams();
-        if (county !== "ALL") {
-            params.set("county", county);
-            params.set("province", getProvinceByCounty(defaultCountry, county).code);
-            params.delete("page");
-            params.set("country", defaultCountry);
-        } else {
-            params.delete("county");
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const params = new URLSearchParams();
+        if (query.trim()) params.set("query", query.trim());
+        if (country !== "ALL") params.set("country", country);
+        if (province !== "ALL") params.set("province", province);
+        if (county !== "ALL") params.set("county", county);
+        if (sort !== "name" && (sort !== "distance" || canSortByDistance)) params.set("sort", sort);
+        if ((distance || sort === "distance") && currentLocationValue) {
+            params.set("location", currentLocationValue);
         }
-        replace(`${pathname}?${params.toString()}`);
+        if (distance && currentLocationValue) params.set("distance", distance);
+
+        appendValues(params, "type", selectedTypes);
+        appendValues(params, "opening", selectedOpenings);
+        appendValues(params, "admission", selectedAdmissions);
+        appendValues(params, "material", selectedMaterials);
+        appendValues(params, "tag", selectedTags);
+
+        const [minHeight, maxHeight] = heightRange.split(":");
+        if (minHeight) params.set("minHeight", minHeight);
+        if (maxHeight) params.set("maxHeight", maxHeight);
+
+        const queryString = params.toString();
+        replace(queryString ? `${pathname}?${queryString}` : pathname);
     };
 
-    const openModal = () => {
-        if (dialogRef.current) {
-            dialogRef.current.showModal();
-        }
-    };
-
-    const closeModal = () => {
-        if (dialogRef.current) {
-            dialogRef.current.close();
-        }
+    const handleReset = () => {
+        setQuery(EMPTY_FILTER_STATE.query);
+        setCountry(EMPTY_FILTER_STATE.country);
+        setProvince(EMPTY_FILTER_STATE.province);
+        setCounty(EMPTY_FILTER_STATE.county);
+        setSort(EMPTY_FILTER_STATE.sort);
+        setLocationValue(EMPTY_FILTER_STATE.locationValue);
+        setDistance(EMPTY_FILTER_STATE.distance);
+        setSelectedTypes([]);
+        setSelectedOpenings([]);
+        setSelectedAdmissions([]);
+        setSelectedMaterials([]);
+        setSelectedTags([]);
+        setHeightRange(EMPTY_FILTER_STATE.heightRange);
+        setShowAdvancedFilters(false);
+        replace(pathname);
     };
 
     return (
-        <div className="card card-compact md:card-normal w-full shadow-xl">
-            <div className="card-body">
-                <div className="flex flex-nowrap gap-3 items-start justify-between">
-                    <div className="flex gap-3 flex-wrap justify-center">
-                        <label className="">
-                            <div className="label">
-                                <span className="label-text">Podrobné hledání</span>
-                            </div>
-                            <div className="input input-bordered grow flex items-center gap-2">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 16 16"
-                                    fill="currentColor"
-                                    className="h-4 w-4 opacity-70"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                                <input
-                                    type="text"
-                                    className="text-primary"
-                                    defaultValue={defaultSearchTerm}
-                                    placeholder="Vyhledat rozhlednu"
-                                    onChange={(e) => handleSearch(e.target.value)}
-                                />
-                            </div>
-                        </label>
-
-                        <div className="flex gap-3 flex-nowrap" id="buttons-block">
-                            <button className="btn self-end btn-sm sm:btn-md" onClick={openModal}>
-                                <svg
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                                </svg>
-                                Filtrování
-                            </button>
-
-                            <div className="dropdown self-end">
-                                <div
-                                    tabIndex={0}
-                                    role="button"
-                                    className="btn btn-sm sm:btn-md flex-nowrap"
-                                >
-                                    <svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <path d="m3 16 4 4 4-4" />
-                                        <path d="M7 20V4" />
-                                        <path d="M11 4h10" />
-                                        <path d="M11 8h7" />
-                                        <path d="M11 12h4" />
-                                    </svg>
-                                    <span className="whitespace-nowrap">
-                                        Dle {defaultSort === "distance" ? "vzdálenosti" : "názvu"}
-                                    </span>
-                                </div>
-                                <div
-                                    tabIndex={0}
-                                    className="menu dropdown-content bg-base-100 rounded-box z-1 w-44 p-2 shadow-sm"
-                                >
-                                    <li onClick={() => handleSort("name")}>
-                                        <a>Podle názvu</a>
-                                    </li>
-                                    {location !== null ? (
-                                        <li onClick={() => handleSort("distance")}>
-                                            <a>Podle vzdálenosti</a>
-                                        </li>
-                                    ) : null}
-                                </div>
-                            </div>
+        <form className="card card-compact md:card-normal w-full shadow-xl" onSubmit={handleSubmit}>
+            <div className="card-body gap-5">
+                <div className="grid gap-3 lg:grid-cols-[minmax(16rem,1.4fr)_minmax(12rem,0.8fr)_auto] lg:items-end">
+                    <label>
+                        <div className="label">
+                            <span className="label-text">Podrobné hledání</span>
                         </div>
+                        <div className="input input-bordered flex items-center gap-2">
+                            <Search className="h-4 w-4 opacity-70" aria-hidden="true" />
+                            <input
+                                type="text"
+                                className="min-w-0 grow"
+                                value={query}
+                                placeholder="Vyhledat rozhlednu"
+                                onChange={(event) => setQuery(event.target.value)}
+                            />
+                        </div>
+                    </label>
 
-                        <FilterDialog ref={dialogRef} closeDialog={closeModal} />
-                    </div>
-
-                    <div className="hidden gap-3 min-[1111px]:flex">
-                        <label>
-                            <div className="label">
-                                <span className="label-text">Kraj</span>
-                            </div>
+                    <label>
+                        <div className="label">
+                            <span className="label-text">Řazení</span>
+                        </div>
+                        <div className="select select-bordered flex items-center gap-2">
+                            <ArrowDownAZ className="h-4 w-4 opacity-70" aria-hidden="true" />
                             <select
-                                className={cn("select select-bordered w-full", {
-                                    "text-primary": defaultProvince !== "ALL",
-                                })}
-                                value={defaultProvince}
-                                onChange={(e) => handleProvince(e.target.value)}
+                                className="min-w-0 grow"
+                                value={sort}
+                                onChange={(event) => handleSort(event.target.value)}
                             >
-                                <option value="ALL">Všechny kraje</option>
-                                {getAllCountryProvinces(defaultCountry).map((item, idx) => (
-                                    <option key={idx} value={item.code}>
-                                        {item.name}
+                                {SORT_OPTIONS.map((option) => (
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                        disabled={
+                                            option.value === "distance" && isLocationUnavailable
+                                        }
+                                    >
+                                        {option.label}
                                     </option>
                                 ))}
                             </select>
-                        </label>
-                        <label>
-                            <div className="label">
-                                <span className="label-text">Okres</span>
-                            </div>
-                            <select
-                                className={cn("select select-bordered w-full", {
-                                    "text-primary": defaultCounty !== "ALL",
-                                })}
-                                value={defaultCounty}
-                                onChange={(e) => handleCounty(e.target.value)}
-                            >
-                                <option value="ALL">Všechny okresy</option>
-                                {selectableCounties.map((item, idx) => (
-                                    <option key={idx} value={item}>
-                                        {item}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
+                        </div>
+                    </label>
+
+                    <div className="flex flex-wrap gap-2 lg:justify-end">
+                        <button className="btn btn-primary" type="submit">
+                            <Search className="h-4 w-4" aria-hidden="true" />
+                            Vyhledat
+                        </button>
+                        <button className="btn btn-ghost" type="button" onClick={handleReset}>
+                            <X className="h-4 w-4" aria-hidden="true" />
+                            Vyčistit
+                        </button>
                     </div>
                 </div>
+
+                <div className="flex flex-wrap gap-2">
+                    <ChipCheckbox
+                        checked={sort === "distance"}
+                        disabled={isLocationUnavailable || isLocating}
+                        label="Nejblíž"
+                        onChange={handleNearestChip}
+                    />
+                    <ChipCheckbox
+                        checked={selectedAdmissions.includes(AdmissionType.FREE)}
+                        label="Zdarma"
+                        onChange={() =>
+                            setSelectedAdmissions(
+                                toggleValue(selectedAdmissions, AdmissionType.FREE)
+                            )
+                        }
+                    />
+                    <ChipCheckbox
+                        checked={selectedTags.includes(TowerTag.SuitableForCyclists)}
+                        label="Cyklisté"
+                        onChange={() =>
+                            setSelectedTags(toggleValue(selectedTags, TowerTag.SuitableForCyclists))
+                        }
+                    />
+                    <ChipCheckbox
+                        checked={selectedTags.includes(TowerTag.HasParking)}
+                        label="Parkování"
+                        onChange={() =>
+                            setSelectedTags(toggleValue(selectedTags, TowerTag.HasParking))
+                        }
+                    />
+                    <ChipCheckbox
+                        checked={selectedOpenings.includes(String(OpeningHoursType.NonStop))}
+                        label="Volně přístupné"
+                        onChange={() =>
+                            setSelectedOpenings(
+                                toggleValue(selectedOpenings, String(OpeningHoursType.NonStop))
+                            )
+                        }
+                    />
+                </div>
+
+                <div>
+                    <button
+                        className="btn btn-outline btn-sm"
+                        type="button"
+                        aria-expanded={showAdvancedFilters}
+                        onClick={() => setShowAdvancedFilters((isShown) => !isShown)}
+                    >
+                        <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+                        Rozšířené filtry
+                        {showAdvancedFilters ? (
+                            <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                        ) : (
+                            <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                        )}
+                    </button>
+                </div>
+
+                {showAdvancedFilters ? (
+                    <div className="grid gap-5">
+                        <div className="grid gap-4 lg:grid-cols-4">
+                            <label>
+                                <div className="label">
+                                    <span className="label-text">Stát</span>
+                                </div>
+                                <select
+                                    className={cn("select select-bordered w-full", {
+                                        "text-primary": country !== "ALL",
+                                    })}
+                                    value={country}
+                                    onChange={(event) =>
+                                        handleCountry(event.target.value as CountryCode | "ALL")
+                                    }
+                                >
+                                    <option value="ALL">Všechny země</option>
+                                    {COUNTRIES.map((item) => (
+                                        <option key={item.code} value={item.code}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+
+                            <label>
+                                <div className="label">
+                                    <span className="label-text">Kraj</span>
+                                </div>
+                                <select
+                                    className={cn("select select-bordered w-full", {
+                                        "text-primary": province !== "ALL",
+                                    })}
+                                    disabled={country === "ALL"}
+                                    value={province}
+                                    onChange={(event) => handleProvince(event.target.value)}
+                                >
+                                    <option value="ALL">Všechny kraje</option>
+                                    {selectableProvinces.map((item) => (
+                                        <option key={item.code} value={item.code}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+
+                            <label>
+                                <div className="label">
+                                    <span className="label-text">Okres</span>
+                                </div>
+                                <select
+                                    className={cn("select select-bordered w-full", {
+                                        "text-primary": county !== "ALL",
+                                    })}
+                                    disabled={country === "ALL"}
+                                    value={county}
+                                    onChange={(event) => handleCounty(event.target.value)}
+                                >
+                                    <option value="ALL">Všechny okresy</option>
+                                    {selectableCounties.map((item) => (
+                                        <option key={item} value={item}>
+                                            {item}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+
+                            <label>
+                                <div className="label">
+                                    <span className="label-text">Okruh od polohy</span>
+                                </div>
+                                <div className="join w-full">
+                                    <select
+                                        className={cn("select select-bordered join-item w-full", {
+                                            "text-primary": isDistanceActive,
+                                        })}
+                                        disabled={isLocationUnavailable || isLocating}
+                                        value={distance}
+                                        onChange={(event) => handleDistance(event.target.value)}
+                                    >
+                                        <option value="">Bez okruhu</option>
+                                        <option value="5">5 km</option>
+                                        <option value="10">10 km</option>
+                                        <option value="20">20 km</option>
+                                        <option value="50">50 km</option>
+                                        <option value="100">100 km</option>
+                                    </select>
+                                    <button
+                                        className="btn join-item"
+                                        type="button"
+                                        disabled={isLocationUnavailable || isLocating}
+                                        onClick={handleCurrentLocation}
+                                    >
+                                        <LocateFixed className="h-4 w-4" aria-hidden="true" />
+                                    </button>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div className="grid gap-5 lg:grid-cols-4">
+                            <fieldset>
+                                <legend className="label-text mb-2 font-semibold">Typ</legend>
+                                <CheckboxGroup
+                                    options={towerTypes
+                                        .filter((towerType) => towerType.value !== "zajimavost")
+                                        .map((towerType) => ({
+                                            label: towerType.name,
+                                            value: towerType.value,
+                                        }))}
+                                    values={selectedTypes}
+                                    onChange={setSelectedTypes}
+                                />
+                            </fieldset>
+
+                            <fieldset>
+                                <legend className="label-text mb-2 font-semibold">
+                                    Otevřenost
+                                </legend>
+                                <CheckboxGroup
+                                    options={OPENING_OPTIONS}
+                                    values={selectedOpenings}
+                                    onChange={setSelectedOpenings}
+                                />
+                            </fieldset>
+
+                            <fieldset className="grid gap-4 content-start">
+                                <div>
+                                    <legend className="label-text mb-2 font-semibold">
+                                        Vstupné
+                                    </legend>
+                                    <CheckboxGroup
+                                        options={ADMISSION_OPTIONS}
+                                        values={selectedAdmissions}
+                                        onChange={setSelectedAdmissions}
+                                    />
+                                </div>
+
+                                <label>
+                                    <div className="label px-0">
+                                        <span className="label-text font-semibold">
+                                            Výška rozhledny
+                                        </span>
+                                    </div>
+                                    <select
+                                        className={cn("select select-bordered w-full", {
+                                            "text-primary": heightRange,
+                                        })}
+                                        value={heightRange}
+                                        onChange={(event) => setHeightRange(event.target.value)}
+                                    >
+                                        <option value="">Libovolná</option>
+                                        {HEIGHT_OPTIONS.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            </fieldset>
+
+                            <fieldset className="grid gap-4 content-start">
+                                <div>
+                                    <legend className="label-text mb-2 font-semibold">
+                                        Materiál
+                                    </legend>
+                                    <CheckboxGroup
+                                        options={MATERIALS.map((material) => ({
+                                            label: material,
+                                            value: material,
+                                        }))}
+                                        values={selectedMaterials}
+                                        onChange={setSelectedMaterials}
+                                    />
+                                </div>
+
+                                <div>
+                                    <legend className="label-text mb-2 font-semibold">
+                                        Vybavení
+                                    </legend>
+                                    <CheckboxGroup
+                                        columns
+                                        options={TAG_OPTIONS}
+                                        values={selectedTags}
+                                        onChange={setSelectedTags}
+                                    />
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div className="flex gap-2 sm:hidden">
+                            <button className="btn btn-primary flex-1" type="submit">
+                                <Search className="h-4 w-4" aria-hidden="true" />
+                                Vyhledat
+                            </button>
+                            <button
+                                className="btn btn-ghost flex-1"
+                                type="button"
+                                onClick={handleReset}
+                            >
+                                <X className="h-4 w-4" aria-hidden="true" />
+                                Vyčistit
+                            </button>
+                        </div>
+                    </div>
+                ) : null}
             </div>
-        </div>
+        </form>
     );
 };
 

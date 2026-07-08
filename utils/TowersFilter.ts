@@ -3,6 +3,31 @@ import { OpeningHoursForbiddenType } from "@/types/OpeningHours";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
 import { getProvinceByCode, isValidCountryCode } from "@/utils/geography";
 
+const asArray = (value?: string | string[]): string[] => {
+    if (!value) return [];
+    return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
+};
+
+const parseNumber = (value?: string): number | null => {
+    if (!value) return null;
+
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+};
+
+const formatStringValue = (value: string): string => `\`${value.replace(/`/g, "\\`")}\``;
+
+const formatStringList = (values: string[]): string => values.map(formatStringValue).join(",");
+
+const parseLocation = (location?: string): { latitude: number; longitude: number } | null => {
+    if (!location) return null;
+
+    const [latitude, longitude] = location.split(",").map(Number);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+
+    return { latitude, longitude };
+};
+
 export class TowersFilter {
     private filters: string[] = [];
 
@@ -21,12 +46,46 @@ export class TowersFilter {
             }
 
             if (provinceCode && countryCode === "CZ") {
-                this.addFilter(`province:=${getProvinceByCode(countryCode, provinceCode).name}`);
+                const province = getProvinceByCode(countryCode, provinceCode);
+                if (province) this.addFilter(`province:=${formatStringValue(province.name)}`);
             } else if (provinceCode && countryCode) {
-                this.addFilter(`province:=${getProvinceByCode(countryCode, provinceCode).code}`);
+                const province = getProvinceByCode(countryCode, provinceCode);
+                if (province) this.addFilter(`province:=${formatStringValue(province.code)}`);
             }
 
-            if (county && provinceCode && countryCode) this.addFilter(`county:=${county}`);
+            if (county && provinceCode && countryCode) {
+                this.addFilter(`county:=${formatStringValue(county)}`);
+            }
+        }
+
+        const towerTypes = asArray(searchParams?.type);
+        if (towerTypes.length > 0) this.addFilter(`type:=[${formatStringList(towerTypes)}]`);
+
+        const openingTypes = asArray(searchParams?.opening).map(Number).filter(Number.isFinite);
+        if (openingTypes.length > 0)
+            this.addFilter(`openingHours.type:=[${openingTypes.join(",")}]`);
+
+        const admissionTypes = asArray(searchParams?.admission);
+        if (admissionTypes.length > 0) {
+            this.addFilter(`admission.type:=[${formatStringList(admissionTypes)}]`);
+        }
+
+        const materials = asArray(searchParams?.material);
+        if (materials.length > 0) this.addFilter(`material:=[${formatStringList(materials)}]`);
+
+        const tags = asArray(searchParams?.tag);
+        if (tags.length > 0) this.addFilter(`tags:=[${formatStringList(tags)}]`);
+
+        const minHeight = parseNumber(searchParams?.minHeight);
+        if (minHeight !== null) this.addFilter(`height:>=${minHeight}`);
+
+        const maxHeight = parseNumber(searchParams?.maxHeight);
+        if (maxHeight !== null) this.addFilter(`height:<=${maxHeight}`);
+
+        const distance = parseNumber(searchParams?.distance);
+        const location = parseLocation(searchParams?.location);
+        if (distance !== null && location) {
+            this.addFilter(`gps:(${location.latitude}, ${location.longitude}, ${distance} km)`);
         }
 
         switch (showFilter) {
