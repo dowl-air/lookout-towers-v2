@@ -8,7 +8,6 @@ import {
     LogIn,
     MapPinned,
     Route,
-    Sparkles,
     Star,
     Trophy,
     UserPlus,
@@ -18,12 +17,9 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { ReactNode } from "react";
 
+import HomeDashboardRecommendations from "@/components/homepage/HomeDashboardRecommendations";
 import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
-import {
-    getHomeDashboardData,
-    HomeDashboardData,
-    HomeDashboardRecommendation,
-} from "@/data/homepage/home-dashboard";
+import { getHomeDashboardData, HomeDashboardData } from "@/data/homepage/home-dashboard";
 import { Tower } from "@/types/Tower";
 import { formatDate } from "@/utils/date";
 
@@ -177,6 +173,30 @@ function LastVisitWidget({
     const href = tower ? getTowerHref(tower) : "/navstivene";
     const ratingHref = tower ? `${href}#tower-rating-form` : href;
     const photoUrl = lastVisit.photoUrl || tower?.mainPhotoUrl || null;
+    const action = !lastVisit.hasRating
+        ? {
+              buttonClassName: "btn-warning",
+              buttonLabel: "Přidat hodnocení",
+              href: ratingHref,
+              Icon: Star,
+              label: "Ohodnoťte svou poslední návštěvu",
+          }
+        : !lastVisit.hasPhoto
+          ? {
+                buttonClassName: "btn-primary",
+                buttonLabel: "Přidat fotografii",
+                href,
+                Icon: Camera,
+                label: "Přidat k návštěvě fotografii",
+            }
+          : {
+                buttonClassName: null,
+                buttonLabel: null,
+                href: null,
+                Icon: CheckCircle2,
+                label: "Výborně! Vaše návštěva je kompletní.",
+            };
+    const ActionIcon = action.Icon;
 
     return (
         <article className="grid gap-4 rounded-lg border border-base-300 bg-base-100 p-4 sm:grid-cols-[160px_1fr]">
@@ -207,15 +227,28 @@ function LastVisitWidget({
                     </p>
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div className="flex min-w-0 items-center gap-2 text-sm font-semibold leading-5 text-base-content/75">
+                        <ActionIcon
+                            aria-hidden="true"
+                            size={16}
+                            className="size-4 shrink-0 self-center text-primary"
+                        />
+                        <span className="leading-5">{action.label}</span>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    {action.href && action.buttonLabel ? (
+                        <Link
+                            href={action.href}
+                            className={`btn btn-sm w-full sm:w-auto ${action.buttonClassName}`}
+                        >
+                            <ActionIcon aria-hidden="true" size={16} />
+                            {action.buttonLabel}
+                        </Link>
+                    ) : null}
                     {tower ? (
                         <Link href={href} className="btn btn-sm btn-outline hidden sm:inline-flex">
                             Detail rozhledny
-                        </Link>
-                    ) : null}
-                    {!lastVisit.hasRating ? (
-                        <Link href={ratingHref} className="btn btn-sm btn-warning w-full sm:w-auto">
-                            <Star aria-hidden="true" size={16} />
-                            Přidat hodnocení
                         </Link>
                     ) : null}
                 </div>
@@ -293,64 +326,6 @@ function ProgressWidget({
     );
 }
 
-function RecommendationsWidget({
-    recommendations,
-}: {
-    recommendations: HomeDashboardRecommendation[];
-}) {
-    if (recommendations.length === 0) {
-        return null;
-    }
-
-    return (
-        <article className="rounded-lg border border-base-300 bg-base-100 p-4">
-            <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
-                    <p className="text-sm font-semibold text-primary">Doporučení</p>
-                    <h3 className="mt-1 text-2xl font-bold">Kam dál?</h3>
-                </div>
-                <Sparkles aria-hidden="true" className="mt-1 text-primary" size={22} />
-            </div>
-            <div className="grid gap-3 md:grid-cols-3">
-                {recommendations.map((recommendation, index) => (
-                    <Link
-                        key={recommendation.id}
-                        href={recommendation.href}
-                        className={`group overflow-hidden rounded-lg border border-base-300 bg-base-200/45 transition hover:border-primary/50 hover:bg-base-200 ${
-                            index > 1 ? "hidden md:block" : "block"
-                        }`}
-                    >
-                        <div className="relative flex aspect-video items-center justify-center bg-base-300 text-base-content/45">
-                            {recommendation.photoUrl ? (
-                                <Image
-                                    src={recommendation.photoUrl}
-                                    alt={recommendation.title}
-                                    fill
-                                    sizes="(min-width: 768px) 280px, 100vw"
-                                    className="object-cover transition duration-300 group-hover:scale-105"
-                                />
-                            ) : (
-                                <MapPinned aria-hidden="true" size={30} />
-                            )}
-                        </div>
-                        <div className="p-3">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                                {recommendation.label}
-                            </p>
-                            <h4 className="mt-1 line-clamp-2 text-base font-bold leading-tight">
-                                {recommendation.title}
-                            </h4>
-                            <p className="mt-2 line-clamp-2 text-sm text-base-content/65">
-                                {recommendation.description}
-                            </p>
-                        </div>
-                    </Link>
-                ))}
-            </div>
-        </article>
-    );
-}
-
 function createAuthenticatedDashboardWidgets(
     data: Extract<HomeDashboardData, { isAuthenticated: true }>
 ): DashboardWidget[] {
@@ -367,7 +342,12 @@ function createAuthenticatedDashboardWidgets(
         },
         data.recommendations.length > 0
             ? {
-                  content: <RecommendationsWidget recommendations={data.recommendations} />,
+                  content: (
+                      <HomeDashboardRecommendations
+                          recommendations={data.recommendations}
+                          visitedTowerIds={data.visitedTowerIds}
+                      />
+                  ),
                   id: "recommendations",
               }
             : null,
@@ -387,27 +367,26 @@ function AuthenticatedDashboard({
         return <EmptyVisitsDashboard userName={userName} />;
     }
 
-    const nextAction = data.lastVisit.hasRating
-        ? "Vyberte další místo k návštěvě."
-        : "Doplňte hodnocení poslední rozhledny.";
     const widgets = createAuthenticatedDashboardWidgets(data);
 
     return (
         <DashboardShell>
             <div className="border-b border-base-300 bg-base-200/55 p-5 sm:p-7">
                 <p className="text-sm font-semibold uppercase tracking-wide text-primary">
-                    Vítejte zpět{userName ? `, ${userName}` : ""}
+                    Osobní přehled
                 </p>
                 <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <h2 className="text-3xl font-bold md:text-4xl">{nextAction}</h2>
+                        <h2 className="text-3xl font-bold md:text-4xl">
+                            Vítejte zpět{userName ? `, ${userName}` : ""}!
+                        </h2>
                         <p className="mt-2 max-w-2xl text-base text-base-content/70">
-                            Navazujte tam, kde jste skončili, a proměňte další výlet v užitečný
-                            záznam pro sebe i ostatní.
+                            Kam vyrazíte tentokrát? Proměňte svůj další výlet v užitečný záznam pro
+                            sebe i ostatní.
                         </p>
                     </div>
                     <Link href="/rozhledny" className="btn btn-outline w-full md:w-auto">
-                        Najít další výlet
+                        Objevit rozhledny
                     </Link>
                 </div>
             </div>

@@ -1,21 +1,33 @@
 import "server-only";
 
+import { getDistance } from "geolib";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
 import { checkUser } from "@/data/auth";
 import { getPhoto } from "@/data/photo/photo";
+import { getNearestTowers } from "@/data/tower/nearest-towers";
 import { getRandomTowers, getTowerByID } from "@/data/tower/towers";
 import { getCzechTowersForProgress } from "@/data/tower/towers-collection";
 import { getUserById } from "@/data/user/user";
 import { Tower } from "@/types/Tower";
+import { TowerTag } from "@/types/TowerTags";
 import { User } from "@/types/User";
 import { Visit } from "@/types/Visit";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
+import { formatDistance } from "@/utils/geo";
 import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 import { getAccessibleTowerProgress } from "@/utils/towerProgress";
 import { getUserLevel } from "@/utils/userLevels";
+
+export type HomeDashboardRecommendationReason =
+    | "cycling-friendly"
+    | "favourite-match"
+    | "last-visit-nearby"
+    | "near-user"
+    | "newly-opened"
+    | "random";
 
 export type HomeDashboardRecommendation = {
     description: string;
@@ -23,6 +35,7 @@ export type HomeDashboardRecommendation = {
     id: string;
     label: string;
     photoUrl: string | null;
+    reason: HomeDashboardRecommendationReason;
     title: string;
 };
 
@@ -34,6 +47,7 @@ export type HomeDashboardData =
           isAuthenticated: true;
           lastVisit: {
               date: string;
+              hasPhoto: boolean;
               hasRating: boolean;
               photoUrl: string | null;
               tower: Tower | null;
@@ -54,7 +68,10 @@ export type HomeDashboardData =
           };
           recommendations: HomeDashboardRecommendation[];
           user: User | null;
+          visitedTowerIds: string[];
       };
+
+const RECOMMENDATIONS_PER_TYPE_LIMIT = 4;
 
 const normalizeVisit = (data: FirebaseFirestore.DocumentData | undefined): Visit | null => {
     if (!data) {
@@ -96,6 +113,16 @@ const getUserVisitedTowerIds = async (userId: string): Promise<string[]> => {
     return snap.docs.map((doc) => doc.data().tower_id).filter(Boolean);
 };
 
+const getUserFavouriteTowerIds = async (userId: string): Promise<string[]> => {
+    const snap = await db
+        .collection("favourites")
+        .where("user_id", "==", userId)
+        .select("tower_id")
+        .get();
+
+    return snap.docs.map((doc) => doc.data().tower_id).filter(Boolean);
+};
+
 const getLastVisitPhotoUrl = async (visit: Visit): Promise<string | null> => {
     const [photoId] = visit.photoIds || [];
     if (!photoId) {
@@ -111,25 +138,174 @@ const hasUserRatingForTower = async (userId: string, towerId: string): Promise<b
     return snap.exists;
 };
 
-const toRecommendation = (tower: Tower): HomeDashboardRecommendation => ({
-    description: tower.locationText || "Tip z katalogu pro další výlet.",
+const getOpenedTimestamp = (tower: Tower): number => {
+    if (!tower.opened) {
+        return 0;
+    }
+
+    const timestamp = new Date(tower.opened).getTime();
+    return Number.isNaN(timestamp) ? 0 : timestamp;
+};
+
+const getRecentlyOpenedTowers = async (): Promise<Tower[]> => {
+    const snap = await db.collection("towers").orderBy("opened", "desc").limit(12).get();
+    return snap.docs.map((doc) => serializeFirestoreValue(doc.data()) as Tower);
+};
+
+const getCyclingFriendlyTowers = async (): Promise<Tower[]> => {
+    const snap = await db
+        .collection("towers")
+        .where("tags", "array-contains", TowerTag.SuitableForCyclists)
+        .limit(12)
+        .get();
+
+    return snap.docs.map((doc) => serializeFirestoreValue(doc.data()) as Tower);
+};
+
+const isAlreadyOpened = (tower: Tower): boolean => {
+    const openedTimestamp = getOpenedTimestamp(tower);
+    return openedTimestamp > 0 && openedTimestamp <= Date.now();
+};
+
+const getTowerDistanceLabel = (fromTower: Tower, toTower: Tower): string | null => {
+    if (!fromTower.gps || !toTower.gps) {
+        return null;
+    }
+
+    const distance = getDistance(fromTower.gps, toTower.gps);
+    return `${formatDistance(distance)} od poslední navštívené`;
+};
+
+const toRecommendation = ({
+    description,
+    label,
+    reason,
+    tower,
+}: {
+    description?: string;
+    label: string;
+    reason: HomeDashboardRecommendationReason;
+    tower: Tower;
+}): HomeDashboardRecommendation => ({
+    description: description || tower.locationText || "Tip z katalogu pro další výlet.",
     href: `/${tower.type || "rozhledna"}/${tower.nameID}`,
     id: tower.id,
-    label: "Tip na další výpravu",
+    label,
     photoUrl: tower.mainPhotoUrl || null,
+    reason,
     title: tower.name,
 });
 
 const getRecommendations = async (
+    favouriteTowerIds: string[],
+    lastVisitTower: Tower | null,
     visitedTowerIds: string[]
 ): Promise<HomeDashboardRecommendation[]> => {
     const visitedIds = new Set(visitedTowerIds);
-    const randomTowers = await getRandomTowers(8);
+    const usedIds = new Set<string>();
+    const recommendationCandidates: HomeDashboardRecommendation[] = [];
 
-    return randomTowers
+    const addRecommendation = (recommendation: HomeDashboardRecommendation | null) => {
+        if (
+            !recommendation ||
+            visitedIds.has(recommendation.id) ||
+            usedIds.has(recommendation.id)
+        ) {
+            return;
+        }
+
+        usedIds.add(recommendation.id);
+        recommendationCandidates.push(recommendation);
+    };
+
+    if (lastVisitTower?.gps) {
+        const nearbyTowers = await getNearestTowers(
+            lastVisitTower.id,
+            lastVisitTower.gps.latitude,
+            lastVisitTower.gps.longitude
+        );
+
+        nearbyTowers
+            .filter((tower) => !visitedIds.has(tower.id))
+            .slice(0, RECOMMENDATIONS_PER_TYPE_LIMIT)
+            .map((tower) =>
+                toRecommendation({
+                    description:
+                        getTowerDistanceLabel(lastVisitTower, tower) ||
+                        "Kousek od poslední navštívené rozhledny.",
+                    label: "Kousek od poslední navštívené",
+                    reason: "last-visit-nearby",
+                    tower,
+                })
+            )
+            .forEach(addRecommendation);
+    }
+
+    const favouriteTowers = await Promise.all(
+        favouriteTowerIds
+            .filter((towerId) => !visitedIds.has(towerId))
+            .slice(0, RECOMMENDATIONS_PER_TYPE_LIMIT)
+            .map((towerId) => getTowerByID(towerId))
+    );
+
+    favouriteTowers
+        .filter(Boolean)
+        .map((tower) =>
+            toRecommendation({
+                description: tower.locationText || "Máte ji uloženou mezi oblíbenými.",
+                label: "Z oblíbených",
+                reason: "favourite-match",
+                tower,
+            })
+        )
+        .forEach(addRecommendation);
+
+    (await getCyclingFriendlyTowers())
         .filter((tower) => !visitedIds.has(tower.id))
-        .slice(0, 3)
-        .map((tower) => toRecommendation(tower));
+        .slice(0, RECOMMENDATIONS_PER_TYPE_LIMIT)
+        .map((tower) =>
+            toRecommendation({
+                description:
+                    "Má označení vhodné pro cyklisty, takže se hodí jako cíl výletu na kole.",
+                label: "Vhodné na kolo",
+                reason: "cycling-friendly",
+                tower,
+            })
+        )
+        .forEach(addRecommendation);
+
+    (await getRecentlyOpenedTowers())
+        .filter((tower) => isAlreadyOpened(tower) && !visitedIds.has(tower.id))
+        .sort(
+            (firstTower, secondTower) =>
+                getOpenedTimestamp(secondTower) - getOpenedTimestamp(firstTower)
+        )
+        .slice(0, RECOMMENDATIONS_PER_TYPE_LIMIT)
+        .map((tower) =>
+            toRecommendation({
+                description: "Jedna z nejnověji zpřístupněných rozhleden v katalogu.",
+                label: "Nově otevřeno",
+                reason: "newly-opened",
+                tower,
+            })
+        )
+        .forEach(addRecommendation);
+
+    const randomTowers = await getRandomTowers(16);
+    randomTowers
+        .filter((tower) => !visitedIds.has(tower.id))
+        .slice(0, RECOMMENDATIONS_PER_TYPE_LIMIT)
+        .forEach((tower) => {
+            addRecommendation(
+                toRecommendation({
+                    label: "Tip na další výpravu",
+                    reason: "random",
+                    tower,
+                })
+            );
+        });
+
+    return recommendationCandidates;
 };
 
 export const getHomeDashboardData = cache(async (): Promise<HomeDashboardData> => {
@@ -151,15 +327,16 @@ export const getHomeDashboardData = cache(async (): Promise<HomeDashboardData> =
     cacheTag(getCacheTagSpecific(CacheTag.UserFavourites, userId));
     cacheTag(CacheTag.Towers);
 
-    const [user, visitedTowerIds, ratingsCount, favouritesCount, progressTowers, lastVisit] =
+    const [user, visitedTowerIds, favouriteTowerIds, ratingsCount, progressTowers, lastVisit] =
         await Promise.all([
             getUserById(userId),
             getUserVisitedTowerIds(userId),
+            getUserFavouriteTowerIds(userId),
             getCollectionCount("ratings", userId),
-            getCollectionCount("favourites", userId),
             getCzechTowersForProgress(),
             getLastUserVisit(userId),
         ]);
+    const favouritesCount = favouriteTowerIds.length;
     const progress = getAccessibleTowerProgress(progressTowers, new Set(visitedTowerIds));
     const userLevel = getUserLevel(progress.visitedAccessibleCount);
 
@@ -183,23 +360,25 @@ export const getHomeDashboardData = cache(async (): Promise<HomeDashboardData> =
             },
             recommendations: [],
             user,
+            visitedTowerIds,
         };
     }
 
     cacheTag(getCacheTagUserSpecific(CacheTag.UserTowerVisit, userId, lastVisit.tower_id));
     cacheTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, userId, lastVisit.tower_id));
 
-    const [tower, hasRating, photoUrl, recommendations] = await Promise.all([
+    const [tower, hasRating, photoUrl] = await Promise.all([
         getTowerByID(lastVisit.tower_id),
         hasUserRatingForTower(userId, lastVisit.tower_id),
         getLastVisitPhotoUrl(lastVisit),
-        getRecommendations(visitedTowerIds),
     ]);
+    const recommendations = await getRecommendations(favouriteTowerIds, tower, visitedTowerIds);
 
     return {
         isAuthenticated: true,
         lastVisit: {
             date: lastVisit.date,
+            hasPhoto: Boolean(lastVisit.photoIds?.length),
             hasRating,
             photoUrl,
             tower,
@@ -220,5 +399,6 @@ export const getHomeDashboardData = cache(async (): Promise<HomeDashboardData> =
         },
         recommendations,
         user,
+        visitedTowerIds,
     };
 });
