@@ -28,7 +28,7 @@ const ComunityPage = async () => {
                     </thead>
                     <tbody>
                         {members.map((member) => {
-                            const { name, color, level } = getUserLevel(member.visits);
+                            const { name, color, textColor } = getUserLevel(member.visits);
                             return (
                                 <tr key={member.id}>
                                     <td>
@@ -62,7 +62,7 @@ const ComunityPage = async () => {
                                                 className="badge whitespace-nowrap"
                                                 style={{
                                                     backgroundColor: color,
-                                                    color: level > 3 ? "white" : "black",
+                                                    color: textColor,
                                                 }}
                                             >
                                                 {name}

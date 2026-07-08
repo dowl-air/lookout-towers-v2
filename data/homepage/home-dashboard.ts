@@ -15,6 +15,7 @@ import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/
 import { db } from "@/utils/firebase-admin";
 import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
 import { getAccessibleTowerProgress } from "@/utils/towerProgress";
+import { getUserLevel } from "@/utils/userLevels";
 
 export type HomeDashboardRecommendation = {
     description: string;
@@ -38,9 +39,16 @@ export type HomeDashboardData =
               tower: Tower | null;
           } | null;
           progress: {
+              currentLevelColor: string;
+              currentLevelName: string;
+              currentLevelTextColor: string;
+              levelProgressPercent: number;
+              nextLevelName: string | null;
+              nextLevelVisits: number;
               progressPercent: number;
               favouritesCount: number;
               ratingsCount: number;
+              remainingVisitsToNextLevel: number;
               totalAccessibleTowersCount: number;
               visitsCount: number;
           };
@@ -153,15 +161,23 @@ export const getHomeDashboardData = cache(async (): Promise<HomeDashboardData> =
             getLastUserVisit(userId),
         ]);
     const progress = getAccessibleTowerProgress(progressTowers, new Set(visitedTowerIds));
+    const userLevel = getUserLevel(progress.visitedAccessibleCount);
 
     if (!lastVisit) {
         return {
             isAuthenticated: true,
             lastVisit: null,
             progress: {
+                currentLevelColor: userLevel.color,
+                currentLevelName: userLevel.name,
+                currentLevelTextColor: userLevel.textColor,
                 favouritesCount,
+                levelProgressPercent: userLevel.progressPercent,
+                nextLevelName: userLevel.nextLevel?.name ?? null,
+                nextLevelVisits: userLevel.nextLevelVisits,
                 progressPercent: progress.progressPercent,
                 ratingsCount,
+                remainingVisitsToNextLevel: userLevel.remainingVisits,
                 totalAccessibleTowersCount: progress.totalAccessibleCount,
                 visitsCount: progress.visitedAccessibleCount,
             },
@@ -189,9 +205,16 @@ export const getHomeDashboardData = cache(async (): Promise<HomeDashboardData> =
             tower,
         },
         progress: {
+            currentLevelColor: userLevel.color,
+            currentLevelName: userLevel.name,
+            currentLevelTextColor: userLevel.textColor,
             favouritesCount,
+            levelProgressPercent: userLevel.progressPercent,
+            nextLevelName: userLevel.nextLevel?.name ?? null,
+            nextLevelVisits: userLevel.nextLevelVisits,
             progressPercent: progress.progressPercent,
             ratingsCount,
+            remainingVisitsToNextLevel: userLevel.remainingVisits,
             totalAccessibleTowersCount: progress.totalAccessibleCount,
             visitsCount: progress.visitedAccessibleCount,
         },

@@ -20,6 +20,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
+import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
 import PROVINCES_CZ from "@/constants/provinces/CZ";
 import { getTowerTypeName, TowerTypeEnum } from "@/constants/towerType";
 import { getCzechTowersForProgress, TowerCollectionDTO } from "@/data/tower/towers-collection";
@@ -31,6 +32,7 @@ import {
     getTowerProgressPercent,
     getTowerProgressText,
 } from "@/utils/towerProgress";
+import { getUserLevel } from "@/utils/userLevels";
 
 export const metadata: Metadata = {
     title: "Můj pokrok",
@@ -92,6 +94,20 @@ const TOWER_TYPE_STYLES = {
             "border-orange-500/70 bg-orange-500/15 text-orange-700 in-data-[theme=abyss]:text-orange-300",
         icon: Landmark,
     },
+};
+
+const numberFormatter = new Intl.NumberFormat("cs-CZ");
+
+const formatTowerCount = (count: number): string => {
+    if (count === 1) {
+        return "1 rozhledna";
+    }
+
+    if (count >= 2 && count <= 4) {
+        return `${numberFormatter.format(count)} rozhledny`;
+    }
+
+    return `${numberFormatter.format(count)} rozhleden`;
 };
 
 const getOpenedTimestamp = (tower: TowerCollectionDTO): number => {
@@ -321,6 +337,59 @@ function ProgressLegend() {
     );
 }
 
+function UserLevelProgress({ visitsCount }: { visitsCount: number }) {
+    const userLevel = getUserLevel(visitsCount);
+
+    return (
+        <section className="rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div>
+                    <p className="text-sm font-semibold uppercase text-base-content/60">
+                        Uživatelská úroveň
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-3">
+                        <UserLevelBadgeButton
+                            color={userLevel.color}
+                            name={userLevel.name}
+                            textColor={userLevel.textColor}
+                        />
+                        {userLevel.nextLevel ? (
+                            <span className="text-sm font-semibold text-base-content/70">
+                                Další úroveň: {userLevel.nextLevel.name}
+                            </span>
+                        ) : null}
+                    </div>
+                    <p className="mt-3 text-sm text-base-content/70">
+                        {userLevel.nextLevel
+                            ? `Zbývá už jen ${formatTowerCount(userLevel.remainingVisits)}.`
+                            : "Máte nejvyšší úroveň."}
+                    </p>
+                </div>
+                <div className="text-left md:text-right">
+                    <div className="text-3xl font-bold leading-none">
+                        {numberFormatter.format(userLevel.visits)} /{" "}
+                        {numberFormatter.format(userLevel.nextLevelVisits)}
+                    </div>
+                    <div className="mt-1 text-sm text-base-content/60">návštěv k titulu</div>
+                </div>
+            </div>
+            <div
+                aria-label="Pokrok k další uživatelské úrovni"
+                aria-valuemax={userLevel.nextLevelVisits}
+                aria-valuemin={0}
+                aria-valuenow={userLevel.visits}
+                className="mt-4 h-3 w-full overflow-hidden rounded-full bg-base-300"
+                role="progressbar"
+            >
+                <div
+                    className="h-full rounded-full bg-primary transition-all"
+                    style={{ width: `${userLevel.progressPercent}%` }}
+                />
+            </div>
+        </section>
+    );
+}
+
 function ProgressContent({
     towers,
     visitedTowerIds,
@@ -407,6 +476,8 @@ function ProgressContent({
                     style={{ width: `${progressPercent}%` }}
                 />
             </div>
+
+            <UserLevelProgress visitsCount={visitedAccessibleCount} />
 
             <div className="grid gap-5">
                 {provinceSections.map(({ province, provinceTowers, provinceVisitedCount }) => {

@@ -18,6 +18,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { ReactNode } from "react";
 
+import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
 import {
     getHomeDashboardData,
     HomeDashboardData,
@@ -51,6 +52,18 @@ const getUserFirstName = (name: string | undefined): string => {
 };
 
 const getTowerHref = (tower: Tower): string => `/${tower.type || "rozhledna"}/${tower.nameID}`;
+
+const formatTowerVisitCount = (count: number): string => {
+    if (count === 1) {
+        return "1 rozhlednu";
+    }
+
+    if (count >= 2 && count <= 4) {
+        return `${numberFormatter.format(count)} rozhledny`;
+    }
+
+    return `${numberFormatter.format(count)} rozhleden`;
+};
 
 function DashboardShell({ children }: { children: ReactNode }) {
     return (
@@ -217,22 +230,36 @@ function ProgressWidget({
     progress: Extract<HomeDashboardData, { isAuthenticated: true }>["progress"];
 }) {
     const percent = progress.progressPercent;
+    const levelPercent = progress.levelProgressPercent;
     const stats = [
         { label: "Navštívené rozhledny", value: progress.visitsCount, icon: MapPinned },
         { label: "Přidaná hodnocení", value: progress.ratingsCount, icon: Star },
         { label: "Oblíbené rozhledny", value: progress.favouritesCount, icon: Bookmark },
         { label: "Z přístupných objektů", value: `${percent} %`, icon: Trophy },
     ];
+    const nextLevelText = progress.nextLevelName
+        ? `Navštivte ještě ${formatTowerVisitCount(progress.remainingVisitsToNextLevel)} a bude z vás ${progress.nextLevelName}!`
+        : "Máte nejvyšší úroveň.";
 
     return (
         <article className="rounded-lg border border-base-300 bg-base-100 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
+                <div className="min-w-0">
                     <p className="text-sm font-semibold text-primary">Přehled pokroku</p>
-                    <h3 className="mt-1 text-2xl font-bold">
-                        {numberFormatter.format(progress.visitsCount)} /{" "}
-                        {numberFormatter.format(progress.totalAccessibleTowersCount)}
-                    </h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+                        <span className="text-2xl font-bold leading-tight">
+                            {numberFormatter.format(progress.visitsCount)} /{" "}
+                            {numberFormatter.format(progress.nextLevelVisits)}
+                        </span>
+                        <UserLevelBadgeButton
+                            color={progress.currentLevelColor}
+                            name={progress.currentLevelName}
+                            textColor={progress.currentLevelTextColor}
+                        />
+                        <span className="min-w-0 text-sm font-semibold text-base-content/70">
+                            {nextLevelText}
+                        </span>
+                    </div>
                 </div>
                 <Link href="/pokrok" className="btn btn-sm btn-outline w-full sm:w-auto">
                     Zobrazit stránku pokroku
@@ -240,9 +267,9 @@ function ProgressWidget({
             </div>
             <progress
                 className="progress progress-primary mt-4 h-3 w-full"
-                value={percent}
+                value={levelPercent}
                 max={100}
-                aria-label="Pokrok v návštěvách rozhleden"
+                aria-label="Pokrok k další uživatelské úrovni"
             />
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map(({ icon: Icon, label, value }, index) => (

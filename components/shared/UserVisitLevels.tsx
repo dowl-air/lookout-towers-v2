@@ -1,8 +1,8 @@
 import { POINTS_TRESHOLDS, getUserLevel } from "@/utils/userLevels";
 
-const UserVisitLevels = () => {
+const UserVisitLevels = ({ dialogId = "user_levels" }: { dialogId?: string }) => {
     return (
-        <dialog id="user_levels" className="modal modal-bottom sm:modal-middle">
+        <dialog id={dialogId} className="modal modal-bottom sm:modal-middle">
             <div className="modal-box">
                 <h3 className="font-bold text-lg text-base-content">Uživatelské úrovně</h3>
                 <p className="py-4 text-base-content">
@@ -18,10 +18,10 @@ const UserVisitLevels = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {POINTS_TRESHOLDS.map((points, idx) => {
-                            const { name, color, level } = getUserLevel(points);
+                        {POINTS_TRESHOLDS.map((points) => {
+                            const { name, color, textColor } = getUserLevel(points);
                             return (
-                                <tr key={idx}>
+                                <tr key={points}>
                                     <td className="text-base-content text-right font-bold">
                                         {points}
                                     </td>
@@ -30,7 +30,7 @@ const UserVisitLevels = () => {
                                             className="badge text-nowrap"
                                             style={{
                                                 backgroundColor: color,
-                                                color: level > 3 ? "white" : "black",
+                                                color: textColor,
                                             }}
                                         >
                                             {name}

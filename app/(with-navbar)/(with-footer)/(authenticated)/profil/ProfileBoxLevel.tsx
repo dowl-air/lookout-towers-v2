@@ -1,22 +1,11 @@
 "use client";
 
-import UserVisitLevels from "@/components/shared/UserVisitLevels";
+import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
 import { getUserLevel } from "@/utils/userLevels";
 
 const ProfileBoxLevel = ({ score }: { score: number }) => {
-    const { name, color, level } = getUserLevel(score);
-    return (
-        <>
-            <div
-                className="badge badge-lg cursor-pointer scale-105 hover:scale-110"
-                style={{ backgroundColor: color, color: level > 3 ? "white" : "black" }}
-                onClick={() => (document.getElementById("user_levels") as HTMLDialogElement).showModal()}
-            >
-                {name}
-            </div>
-            <UserVisitLevels />
-        </>
-    );
+    const { name, color, textColor } = getUserLevel(score);
+    return <UserLevelBadgeButton color={color} name={name} textColor={textColor} />;
 };
 
 export default ProfileBoxLevel;
