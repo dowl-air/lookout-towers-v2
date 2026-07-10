@@ -144,6 +144,8 @@ Before writing new Firestore queries, look for an existing function in `data/` o
 - `npm run dev`
 - `npm run ai-test`
 - `npm run generate-towers-texts`
+- `npm run scrape:add-tower -- <Mapy.cz URL>`
+- `npm run scrape:add-tower:test`
 - `npm run build`
 - `npm run lint`
 - `npm run typecheck`
