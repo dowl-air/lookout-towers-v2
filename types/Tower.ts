@@ -72,7 +72,7 @@ export type Tower = {
     tags?: TowerTag[];
     texts?: TowerTexts;
     type: TowerTypeEnum;
-    urls?: [string];
+    urls?: string[];
     viewText?: string; //todo merge to description
     viewHeight?: number;
     visits?: number; //todo
