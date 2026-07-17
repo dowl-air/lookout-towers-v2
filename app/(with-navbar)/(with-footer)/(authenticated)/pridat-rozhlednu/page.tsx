@@ -1,37 +1,107 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { revalidateTowerByIDOrNameID } from "@/actions/cache/purge.tower.action";
 import { uploadPhoto } from "@/actions/photos/upload.action";
 import { addTower } from "@/actions/towers/tower.add";
 import { changeTowerMainPhoto } from "@/actions/towers/tower.change";
+import {
+    getReadyScrapedTowersAction,
+    markScrapedTowerImported,
+} from "@/actions/towers/towers.scraped.action";
 import PhotosUpload from "@/components/add-tower/PhotosUpload";
 import TagCheckbox from "@/components/add-tower/TagCheckbox";
 import COUNTRIES, { CountryCode } from "@/constants/countries";
 import { MATERIALS } from "@/constants/materials";
 import { TowerTypeEnum, towerTypes } from "@/constants/towerType";
 import { useNewTowerContext } from "@/context/NewTower";
-import { Tower } from "@/types/Tower";
+import { AdmissionType } from "@/types/Admission";
+import { ScrapedTower, Tower } from "@/types/Tower";
 import { TowerTag } from "@/types/TowerTags";
 import { cn } from "@/utils/cn";
+import { toDateInputValue } from "@/utils/date";
 import {
     findInfoByGPS,
     formatCountryName,
     getAllCountiesFromCountryProvince,
     getAllCountryProvinces,
 } from "@/utils/geography";
+import { mapScrapedTowerToForm } from "@/utils/scrapedTower";
+import { getTowerValidationError } from "@/utils/towerValidation";
 
 const MapPicker = dynamic(() => import("@/components/add-tower/MapPicker"), { ssr: false });
 
 const AddTowerPage = () => {
-    const { tower, updateTower, reset } = useNewTowerContext();
+    const { tower, updateTower, replaceTower, reset } = useNewTowerContext();
     const [photos, setPhotos] = useState<(File | string)[]>([]);
     const [mainIndex, setMainIndex] = useState<number>(0);
+    const [scrapedTowers, setScrapedTowers] = useState<ScrapedTower[]>([]);
+    const [scrapedTowerId, setScrapedTowerId] = useState("");
+    const [scrapedTowersError, setScrapedTowersError] = useState("");
+    const [openingHoursText, setOpeningHoursText] = useState("");
+    const [tariffesText, setTariffesText] = useState("{}");
+    const [structuredDataError, setStructuredDataError] = useState("");
+    const contact = tower.contact ?? { email: "", officialWebsite: "", phone: "" };
 
     const [clipboardError, setClipboardError] = useState<string>("");
     const [gpsError, setGpsError] = useState<string>("");
+
+    useEffect(() => {
+        getReadyScrapedTowersAction()
+            .then(setScrapedTowers)
+            .catch(() => setScrapedTowersError("Nepodařilo se načíst nascrapované rozhledny."));
+    }, []);
+
+    const handleScrapedTowerSelect = (id: string) => {
+        setScrapedTowerId(id);
+        const scrapedTower = scrapedTowers.find((item) => item.id === id);
+
+        setPhotos([]);
+        setMainIndex(0);
+        setOpeningHoursText("");
+        setTariffesText("{}");
+        setStructuredDataError("");
+
+        if (!scrapedTower) {
+            reset();
+            return;
+        }
+
+        replaceTower(mapScrapedTowerToForm(scrapedTower));
+        setPhotos(scrapedTower.photos);
+        setMainIndex(Math.max(scrapedTower.photos.indexOf(scrapedTower.mainPhotoUrl ?? ""), 0));
+        setOpeningHoursText(JSON.stringify(scrapedTower.openingHours ?? {}, null, 2));
+        setTariffesText(JSON.stringify(scrapedTower.admission?.tariffes ?? {}, null, 2));
+    };
+
+    const updateOpeningHours = (value: string) => {
+        setOpeningHoursText(value);
+
+        try {
+            updateTower({ openingHours: JSON.parse(value) });
+            setStructuredDataError("");
+        } catch {
+            setStructuredDataError("Otevírací dobu je nutné zadat jako platný JSON objekt.");
+        }
+    };
+
+    const updateAdmissionTariffes = (value: string) => {
+        setTariffesText(value);
+
+        try {
+            updateTower({
+                admission: {
+                    tariffes: JSON.parse(value),
+                    type: tower.admission?.type ?? AdmissionType.UNKNOWN,
+                },
+            });
+            setStructuredDataError("");
+        } catch {
+            setStructuredDataError("Ceník vstupného je nutné zadat jako platný JSON objekt.");
+        }
+    };
 
     const handleFindInfoByGPS = async () => {
         if (!tower.gps) {
@@ -80,42 +150,13 @@ const AddTowerPage = () => {
     };
 
     const handleSubmit = async () => {
-        if (!tower.name || !tower.type || !tower.country || !tower.gps) {
-            alert("Vyplňte prosím všechna povinná pole.");
+        if (structuredDataError) {
+            alert(structuredDataError);
             return;
         }
-        if (photos.length === 0) {
-            alert("Nahrajte alespoň jednu fotografii.");
-            return;
-        }
-        if (
-            tower.gps.latitude < -90 ||
-            tower.gps.latitude > 90 ||
-            tower.gps.longitude < -180 ||
-            tower.gps.longitude > 180
-        ) {
-            alert("Zadejte prosím platné GPS souřadnice.");
-            return;
-        }
-        if (
-            tower.height < 0 ||
-            tower.viewHeight < 0 ||
-            tower.observationDecksCount < 0 ||
-            tower.stairs < 0
-        ) {
-            alert("Zadejte prosím kladné hodnoty pro výšku, počet plošin a schodů.");
-            return;
-        }
-        if (tower.elevation < -500) {
-            alert("Zadejte prosím platnou nadmořskou výšku.");
-            return;
-        }
-        if (tower.material && tower.material.length === 0) {
-            alert("Vyberte alespoň jeden materiál.");
-            return;
-        }
-        if (tower.opened && new Date(tower.opened).getTime() > Date.now()) {
-            alert("Zadejte prosím platné datum zpřístupnění.");
+        const validationError = getTowerValidationError(tower, photos.length);
+        if (validationError) {
+            alert(validationError);
             return;
         }
 
@@ -133,6 +174,10 @@ const AddTowerPage = () => {
         await changeTowerMainPhoto(newID, publicURLs[mainIndex]);
 
         await revalidateTowerByIDOrNameID(newID);
+
+        if (scrapedTowerId) {
+            await markScrapedTowerImported(scrapedTowerId, newID);
+        }
 
         alert("Rozhledna byla úspěšně přidána.");
         // Optionally, redirect or reset the form
@@ -154,6 +199,32 @@ const AddTowerPage = () => {
                     databázi. V takovém případě nebude nová rozhledna přidána.
                 </p>
             </article>
+
+            <div className="card card-compact sm:card-normal card-bordered shadow-md mt-6">
+                <div className="card-body">
+                    <div className="card-title">Nascrapovaná rozhledna</div>
+                    <p>
+                        Výběr předvyplní formulář včetně fotografií. Všechny hodnoty lze před
+                        odesláním upravit.
+                    </p>
+                    <select
+                        className="select select-bordered w-full"
+                        value={scrapedTowerId}
+                        onChange={(event) => handleScrapedTowerSelect(event.target.value)}
+                    >
+                        <option value="">Vybrat nascrapovanou rozhlednu</option>
+                        {scrapedTowers.map((scrapedTower) => (
+                            <option key={scrapedTower.id} value={scrapedTower.id}>
+                                {scrapedTower.name || scrapedTower.id}
+                                {scrapedTower.county ? ` (${scrapedTower.county})` : ""}
+                            </option>
+                        ))}
+                    </select>
+                    {scrapedTowersError && (
+                        <p className="text-error text-sm">{scrapedTowersError}</p>
+                    )}
+                </div>
+            </div>
 
             <h2 className="text-lg mt-6">Základní údaje</h2>
 
@@ -412,12 +483,14 @@ const AddTowerPage = () => {
                             <input
                                 className="w-full"
                                 type="date"
-                                value={
-                                    tower.opened
-                                        ? new Date(tower.opened).toISOString().split("T")[0]
-                                        : ""
+                                value={toDateInputValue(tower.opened)}
+                                onChange={(event) =>
+                                    updateTower({
+                                        opened: event.target.value
+                                            ? new Date(event.target.value)
+                                            : undefined,
+                                    })
                                 }
-                                onChange={(e) => updateTower({ opened: new Date(e.target.value) })}
                             />
                         </label>
 
@@ -472,6 +545,127 @@ const AddTowerPage = () => {
                 <div className="card card-compact sm:card-normal card-bordered shadow-md mt-4 w-full">
                     <div className="card-body">
                         <div className="card-title">Podrobnosti</div>
+
+                        <label className="form-control mt-2">
+                            <span className="label-text">Popis</span>
+                            <textarea
+                                className="textarea textarea-bordered min-h-28"
+                                value={tower.description ?? ""}
+                                onChange={(event) =>
+                                    updateTower({ description: event.target.value })
+                                }
+                            />
+                        </label>
+
+                        <label className="form-control mt-4">
+                            <span className="label-text">Alternativní názvy (jeden na řádek)</span>
+                            <textarea
+                                className="textarea textarea-bordered"
+                                value={(tower.aliases ?? []).join("\n")}
+                                onChange={(event) =>
+                                    updateTower({
+                                        aliases: event.target.value
+                                            .split("\n")
+                                            .map((alias) => alias.trim())
+                                            .filter(Boolean),
+                                    })
+                                }
+                            />
+                        </label>
+
+                        <div className="divider">Kontakt</div>
+                        <input
+                            className="input input-bordered w-full"
+                            type="email"
+                            placeholder="E-mail"
+                            value={contact.email}
+                            onChange={(event) =>
+                                updateTower({
+                                    contact: { ...contact, email: event.target.value },
+                                })
+                            }
+                        />
+                        <input
+                            className="input input-bordered w-full mt-2"
+                            type="tel"
+                            placeholder="Telefon"
+                            value={contact.phone}
+                            onChange={(event) =>
+                                updateTower({
+                                    contact: { ...contact, phone: event.target.value },
+                                })
+                            }
+                        />
+                        <input
+                            className="input input-bordered w-full mt-2"
+                            type="url"
+                            placeholder="Oficiální web"
+                            value={contact.officialWebsite}
+                            onChange={(event) =>
+                                updateTower({
+                                    contact: {
+                                        ...contact,
+                                        officialWebsite: event.target.value,
+                                    },
+                                })
+                            }
+                        />
+
+                        <label className="form-control mt-4">
+                            <span className="label-text">Odkazy (jeden na řádek)</span>
+                            <textarea
+                                className="textarea textarea-bordered"
+                                value={(tower.urls ?? []).join("\n")}
+                                onChange={(event) =>
+                                    updateTower({
+                                        urls: event.target.value
+                                            .split("\n")
+                                            .map((url) => url.trim())
+                                            .filter(Boolean),
+                                    })
+                                }
+                            />
+                        </label>
+
+                        <div className="divider">Vstupné a otevírací doba</div>
+                        <select
+                            className="select select-bordered w-full"
+                            value={tower.admission?.type ?? AdmissionType.UNKNOWN}
+                            onChange={(event) =>
+                                updateTower({
+                                    admission: {
+                                        tariffes: tower.admission?.tariffes ?? {},
+                                        type: event.target.value as AdmissionType,
+                                    },
+                                })
+                            }
+                        >
+                            <option value={AdmissionType.UNKNOWN}>Neznámé</option>
+                            <option value={AdmissionType.FREE}>Zdarma</option>
+                            <option value={AdmissionType.PAID}>Placené</option>
+                            <option value={AdmissionType.DONATION}>Dobrovolné</option>
+                        </select>
+                        <label className="form-control mt-2">
+                            <span className="label-text">Ceník vstupného (JSON)</span>
+                            <textarea
+                                className="textarea textarea-bordered font-mono text-xs min-h-24"
+                                value={tariffesText}
+                                onChange={(event) => updateAdmissionTariffes(event.target.value)}
+                            />
+                        </label>
+                        <label className="form-control mt-4">
+                            <span className="label-text">
+                                Otevírací doba (JSON model OpeningHours)
+                            </span>
+                            <textarea
+                                className="textarea textarea-bordered font-mono text-xs min-h-36"
+                                value={openingHoursText}
+                                onChange={(event) => updateOpeningHours(event.target.value)}
+                            />
+                        </label>
+                        {structuredDataError && (
+                            <p className="text-error text-sm">{structuredDataError}</p>
+                        )}
 
                         <div className="mt-2">
                             <div className="grid grid-cols-2 gap-2">

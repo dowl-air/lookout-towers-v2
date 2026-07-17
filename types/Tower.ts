@@ -37,6 +37,12 @@ type TowerTexts = {
     seoDescription?: string;
 };
 
+export type TowerContact = {
+    email: string;
+    officialWebsite: string;
+    phone: string;
+};
+
 export type Tower = {
     access?: string; // todo merge to description
     admission?: Admission;
@@ -44,6 +50,8 @@ export type Tower = {
     country: string | CountryCode;
     county?: string;
     created: string | Date;
+    contact?: TowerContact;
+    description?: string;
     elevation: number;
     gps:
         | GeoPoint
@@ -72,8 +80,14 @@ export type Tower = {
     tags?: TowerTag[];
     texts?: TowerTexts;
     type: TowerTypeEnum;
-    urls?: [string];
+    urls?: string[];
     viewText?: string; //todo merge to description
     viewHeight?: number;
     visits?: number; //todo
+};
+
+export type ScrapedTower = Partial<Tower> & {
+    id: string;
+    photos: string[];
+    status: "imported" | "ready";
 };

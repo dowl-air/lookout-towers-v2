@@ -205,13 +205,19 @@ const getRangeValidationError = (range: OpeningHoursRange, idx: number): string 
     return null;
 };
 
-const haveOverlappingMonths = (ranges: OpeningHoursRange[]): boolean => {
-    const usedMonths = new Set<number>();
+const haveOverlappingSchedules = (ranges: OpeningHoursRange[]): boolean => {
+    for (let firstIndex = 0; firstIndex < ranges.length; firstIndex += 1) {
+        for (let secondIndex = firstIndex + 1; secondIndex < ranges.length; secondIndex += 1) {
+            const firstRange = ranges[firstIndex];
+            const secondRange = ranges[secondIndex];
+            const hasOverlappingMonths =
+                firstRange.monthFrom <= secondRange.monthTo &&
+                secondRange.monthFrom <= firstRange.monthTo;
+            const hasOverlappingDays = firstRange.days.some((day) =>
+                secondRange.days.includes(day)
+            );
 
-    for (const range of ranges) {
-        for (let month = range.monthFrom; month <= range.monthTo; month += 1) {
-            if (usedMonths.has(month)) return true;
-            usedMonths.add(month);
+            if (hasOverlappingMonths && hasOverlappingDays) return true;
         }
     }
 
@@ -234,7 +240,8 @@ export const getOpeningHoursValidationError = (openingHours: OpeningHours): stri
         if (error) return error;
     }
 
-    if (haveOverlappingMonths(ranges)) return "Jednotlivá období se nesmí překrývat.";
+    if (haveOverlappingSchedules(ranges))
+        return "Jednotlivá období se nesmí překrývat ve stejných dnech.";
 
     return null;
 };

@@ -59,10 +59,43 @@ Open `http://localhost:3000`.
 - `npm run dev` — start the development server
 - `npm run ai-test` — run the OpenRouter hello-world script from `scripts/hello-ai.ts`
 - `npm run generate-towers-texts` — generate `heroDescription` and `seoDescription` drafts for towers with OpenRouter
+- `npm run scrape:add-tower -- <Mapy.cz URL>` — scrape a Mapy.cz place detail into a JSON document
+- `npm run scrape:add-tower:test` — run focused parser tests for the Mapy.cz scraper
 - `npm run build` — create a production build
 - `npm start` — run the production build
 - `npm run lint` — run ESLint
 - `npm run typecheck` — run TypeScript without emitting files
+
+## Mapy.cz tower scraper
+
+The `scrape:add-tower` script opens a Mapy.com place detail and writes the result as a Tower-shaped JSON document. Add `--write` to store it in the Firestore `towers_scraped` collection; without that flag, it does not write to Firestore. The scraped document uses `created` and `modified` timestamps, stores the original Mapy.com metadata in `mapycz`, and keeps temporary gallery URLs in `photos` for later import. It does not create a final document in `towers`.
+
+The exported `name` removes a leading Czech type label such as `Rozhledna`, `Výhledna`, `Pozorovatelna`, `Věž`, or `Vyhlídková věž`; occurrences later in the name are preserved. `nameID` uses the existing project format and is checked against the `towers` Firestore collection: a collision first adds the county suffix and then a numeric suffix. Unmapped Mapy.com key-value attributes are not stored; the script reports each as a warning on standard error. It collects up to eight random unique gallery images as full-size URLs in `photos`; if the gallery contains fewer images, it keeps all of them. `mainPhotoUrl` is randomly selected from this collected photo set. When both identifiers are available, `urls` also includes the canonical Mapy.com detail URL containing only `source` and `id`.
+
+On `/pridat-rozhlednu`, authenticated users can select a ready document from `towers_scraped`. Its data and photo URLs prefill the existing form; after a successful final import, the scraped document is marked as imported.
+
+Known `content-keyval` attributes are mapped to fields compatible with `Tower`: `výška` to `height`, `nadmořská výška` to `elevation`, and `počet schodů` to `stairs`. Any unknown or invalid value remains a `keyValues` label/value pair for later mapping.
+
+`materiál` maps to the values in `MATERIALS` using Czech word roots, for example `ocel` to `kov`, `dřev` to `dřevo`, `beton` to `beton`, and `zdiv` to `zdivo`. Any source material that cannot be identified remains in `keyValues`.
+
+`provozovatel` maps to `owner`. `content-admission` maps `zpoplatněný` to paid admission and `volný` to free admission. `nepřístupný` maps to permanently closed opening hours (`Forbidden` with `Banned`). A year-round `nonstop` schedule maps to `NonStop` opening hours and free admission.
+
+The Mapy.com type is normalized to the project's `TowerTypeEnum`: `Rozhledna` maps to `rozhledna` and `Pozorovatelna zvěře` maps to `pozorovatelna`. `Věž budovy s vyhlídkou` defaults to `mestska_vez`; its name and description may refine it to `vodarenska_vez`, `hradni_vez`, `zamecka_vez`, `kostelni_vez`, or `mestska_vez` for a town hall. The place description is exported as `description`.
+
+Contact data is exported as `contact.email`, `contact.phone`, and `contact.officialWebsite`. When present, the official website is the first item in `urls`.
+
+When GPS coordinates are available, the scraper performs a Nominatim reverse-geocoding request and maps the verified result to the project's `country` code, `province` code, and `county` value. A failed or unsupported lookup does not fail the scrape and omits those fields.
+
+Opening-hour tables are mapped into the existing `OpeningHours` shape. For Mapy.com dropdowns, every listed season is paired with the following season table by its position; closed seasons are omitted. Different opening intervals within one season become separate ranges with their corresponding weekdays. A note explicitly stating `po dohodě` or `příležitostně` maps to `Occasionally`. Split shifts, exceptions, or unparseable seasons are safely omitted. The scraper stores an opening-hours note in `openingHours.detailText` only when no usable range remains.
+
+Chrome must be available on the host. Selenium Manager resolves a compatible ChromeDriver when the script starts. The scraper reads Firebase service-account variables from `.env.local` to verify `nameID` uniqueness. Pass the place URL as a positional argument or with `--url`:
+
+```bash
+npm run scrape:add-tower -- "https://mapy.cz/..."
+npm run scrape:add-tower -- --write "https://mapy.cz/..."
+```
+
+JSON is written to standard output and operational logs are written to standard error, so callers can safely pipe the JSON to another process. Use `--output path/to/tower.json` to write the document to a file, and `--wait 15` to change the page-content timeout in seconds.
 
 ## Project structure
 

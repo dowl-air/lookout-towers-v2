@@ -154,11 +154,84 @@ function normalizeName(name) {
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .replace(/wojew[oó]dztwo|woj|powiat|county|gmina/g, "")
+        .replace(/wojew[oó]dztwo|woj|powiat|county|district|okres|gmina/g, "")
         .replace(/[^a-ząćęłńóśźż0-9\s-]/gi, "")
         .replace(/\s+/g, " ")
         .trim();
 }
+
+type NominatimResponse = {
+    address?: {
+        city?: string;
+        country_code?: string;
+        county?: string;
+        district?: string;
+        municipality?: string;
+        region?: string;
+        state?: string;
+        town?: string;
+    };
+    name?: string;
+    type?: string;
+};
+
+export const mapNominatimAddress = (
+    data: NominatimResponse
+): null | { name: string; countryCode: string; provinceCode: string; county: string } => {
+    if (!data?.address) return null;
+
+    const result = {
+        name: "",
+        countryCode: "",
+        provinceCode: "",
+        county: "",
+    };
+
+    if (
+        data.type === "tower" ||
+        data.type === "building" ||
+        data.type === "point_of_interest" ||
+        data.type === "viewpoint"
+    ) {
+        result.name = data.name || "";
+    }
+
+    const countryCode = data.address.country_code?.toUpperCase();
+    if (!countryCode || !isValidCountryCode(countryCode)) return result;
+
+    result.countryCode = countryCode;
+    const provinces = getAllCountryProvinces(countryCode);
+    const provinceName = data.address.state || data.address.region || "";
+    const normalizedProvinceNames = provinces.map((province) => normalizeName(province.name));
+    const matchedProvinceName = provinceName
+        ? closest(normalizeName(provinceName), normalizedProvinceNames)
+        : "";
+    const province = provinces.find(
+        (candidate) => normalizeName(candidate.name) === matchedProvinceName
+    );
+
+    if (!province) return result;
+
+    result.provinceCode = province.code;
+    const countyName =
+        data.address.county ||
+        data.address.district ||
+        data.address.city ||
+        data.address.town ||
+        data.address.municipality ||
+        "";
+    const normalizedCountyNames = province.counties.map(normalizeName);
+    const matchedCountyName = countyName
+        ? closest(normalizeName(countyName), normalizedCountyNames)
+        : "";
+    const county = province.counties.find(
+        (candidate) => normalizeName(candidate) === matchedCountyName
+    );
+
+    result.county = county || "";
+
+    return result;
+};
 
 export const findInfoByGPS = async (gps: {
     lat: number;
@@ -180,54 +253,7 @@ export const findInfoByGPS = async (gps: {
         return null;
     }
 
-    const data = await resp.json();
+    const data = (await resp.json()) as NominatimResponse;
 
-    console.log("Nominatim response:", data);
-
-    if (!data || !data.address) {
-        return null;
-    }
-
-    const result = {
-        name: "",
-        countryCode: "",
-        provinceCode: "",
-        county: "",
-    };
-
-    if (
-        data.type === "tower" ||
-        data.type === "building" ||
-        data.type === "point_of_interest" ||
-        data.type === "viewpoint"
-    ) {
-        result.name = data.name;
-    }
-
-    const countryCode = data.address?.country_code?.toUpperCase();
-    if (countryCode) {
-        result.countryCode = countryCode;
-    }
-
-    let province = data.address?.state || "";
-    if (province && result.countryCode) {
-        const match = closest(
-            normalizeName(province),
-            getAllCountryProvinces(countryCode).map((p) => p.name)
-        );
-        result.provinceCode = getProvinceByName(countryCode, match)?.code || "";
-    }
-
-    const county = data.address?.county || data.address?.city || data.address?.town || "";
-    if (county && result.provinceCode) {
-        result.county = closest(
-            normalizeName(county),
-            getAllCountiesFromCountryProvince(
-                result.countryCode as CountryCode,
-                result.provinceCode
-            )
-        );
-    }
-
-    return result;
+    return mapNominatimAddress(data);
 };
