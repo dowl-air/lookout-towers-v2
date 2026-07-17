@@ -17,8 +17,10 @@ import {
     type OpeningHours,
     type OpeningHoursRange,
 } from "@/types/OpeningHours";
+import type { Tower, TowerContact } from "@/types/Tower";
 import { DAYS_CZECH, MONTHS_CZECH_4 } from "@/utils/constants";
 import { findInfoByGPS, isValidCountryCode } from "@/utils/geography";
+import { createNameID, resolveUniqueNameID } from "@/utils/nameID";
 
 const DEFAULT_WAIT_TIME_SECONDS = 10;
 const DETAIL_SETTLE_TIME_MS = 2_000;
@@ -39,6 +41,7 @@ type CliOptions = {
     outputPath?: string;
     url: string;
     waitTimeSeconds: number;
+    write: boolean;
 };
 
 export type ScrapedKeyValue = {
@@ -51,11 +54,7 @@ export type ScrapedGps = {
     longitude: number;
 };
 
-export type ScrapedContact = {
-    email: string;
-    officialWebsite: string;
-    phone: string;
-};
+export type ScrapedContact = TowerContact;
 
 export type ScrapedGeography = {
     country?: CountryCode;
@@ -87,13 +86,10 @@ export type MapyComDetails = {
     source: string | null;
 };
 
-export type ScrapedTowerDocument = ParsedDetail &
-    ScrapedGeography & {
-        mainPhotoUrl: string;
-        mapycom: MapyComDetails;
-        nameID: string | null;
-        scrapedAt: string;
-    };
+export type ScrapedTowerDocument = Omit<Partial<Tower>, "gps"> & {
+    gps: ScrapedGps | null;
+    photos: string[];
+};
 
 function log(message: string) {
     console.error(`[scrape_add_tower] ${message}`);
@@ -121,39 +117,7 @@ export function normalizeTowerName(name: string | null) {
     return normalizedName || name;
 }
 
-export function createNameID(name: string) {
-    return name
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLocaleLowerCase("cs-CZ")
-        .replace(/ /g, "_");
-}
-
-type NameIDExists = (nameID: string) => Promise<boolean>;
-
-export async function resolveUniqueNameID(
-    name: string,
-    county: string | undefined,
-    nameIDExists: NameIDExists
-) {
-    const baseNameID = createNameID(name);
-    const candidates = [baseNameID];
-    const countyNameID = county ? createNameID(county) : "";
-
-    if (countyNameID) {
-        candidates.push(`${baseNameID}_${countyNameID}`);
-    }
-
-    for (const candidate of candidates) {
-        if (!(await nameIDExists(candidate))) return candidate;
-    }
-
-    for (let suffix = 2; ; suffix += 1) {
-        const candidate = `${baseNameID}_${suffix}`;
-
-        if (!(await nameIDExists(candidate))) return candidate;
-    }
-}
+export { createNameID, resolveUniqueNameID };
 
 function getScraperFirestore() {
     try {
@@ -189,6 +153,32 @@ async function nameIDExistsInFirebase(nameID: string) {
         .get();
 
     return !snapshot.empty;
+}
+
+export function createScrapedTowerId(result: ScrapedTowerDocument) {
+    if (result.mapycz?.source && result.mapycz.id) {
+        return `${result.mapycz.source}_${result.mapycz.id}`;
+    }
+
+    return result.nameID || undefined;
+}
+
+async function persistScrapedTower(result: ScrapedTowerDocument) {
+    const firestore = getScraperFirestore();
+    const documentId = createScrapedTowerId(result);
+    const reference = documentId
+        ? firestore.collection("towers_scraped").doc(documentId)
+        : firestore.collection("towers_scraped").doc();
+    const existing = await reference.get();
+    const status = existing.data()?.status === "imported" ? "imported" : "ready";
+
+    await reference.set({
+        ...result,
+        id: reference.id,
+        status,
+    });
+
+    log(`Saved scraped tower to towers_scraped/${reference.id}.`);
 }
 
 function normalizeCzechText(value: string) {
@@ -667,6 +657,51 @@ export function createMapyComUrl(mapycom: Pick<MapyComDetails, "id" | "source">)
     return `https://mapy.com/cs/turisticka?${searchParams.toString()}`;
 }
 
+export function createScrapedTowerDocument(
+    parsedDetail: ParsedDetail,
+    geography: ScrapedGeography,
+    mapycom: MapyComDetails,
+    nameID: string | null,
+    urls: string[],
+    photos: string[],
+    createdAt = new Date().toISOString()
+): ScrapedTowerDocument {
+    const mapycz =
+        mapycom.id && mapycom.source
+            ? {
+                  href: createMapyComUrl(mapycom) ?? "",
+                  id: mapycom.id,
+                  lastMapped: createdAt,
+                  name: mapycom.name ?? parsedDetail.name ?? "",
+                  source: mapycom.source,
+                  type: parsedDetail.type ?? "",
+              }
+            : undefined;
+
+    return {
+        admission: parsedDetail.admission,
+        contact: parsedDetail.contact,
+        ...(parsedDetail.description ? { description: parsedDetail.description } : {}),
+        elevation: parsedDetail.elevation ?? 0,
+        gps: parsedDetail.gps,
+        height: parsedDetail.height ?? 0,
+        mainPhotoUrl: selectMainPhoto(photos),
+        ...(mapycz ? { mapycz } : {}),
+        material: parsedDetail.material ?? [],
+        name: parsedDetail.name ?? "",
+        nameID: nameID ?? "",
+        openingHours: parsedDetail.openingHours,
+        ...(parsedDetail.owner ? { owner: parsedDetail.owner } : {}),
+        photos,
+        stairs: parsedDetail.stairs ?? 0,
+        ...(parsedDetail.type ? { type: parsedDetail.type } : {}),
+        urls,
+        ...geography,
+        created: createdAt,
+        modified: createdAt,
+    };
+}
+
 function parsePositiveNumber(value: string, optionName: string) {
     const parsed = Number(value);
 
@@ -682,6 +717,7 @@ export function parseCliOptions(args = process.argv.slice(2)): CliOptions {
     let url: string | undefined;
     let waitTimeSeconds = DEFAULT_WAIT_TIME_SECONDS;
     let positionalOnly = false;
+    let write = false;
 
     for (let index = 0; index < args.length; index += 1) {
         const arg = args[index];
@@ -689,6 +725,11 @@ export function parseCliOptions(args = process.argv.slice(2)): CliOptions {
 
         if (arg === "--") {
             positionalOnly = true;
+            continue;
+        }
+
+        if (!positionalOnly && arg === "--write") {
+            write = true;
             continue;
         }
 
@@ -720,7 +761,7 @@ export function parseCliOptions(args = process.argv.slice(2)): CliOptions {
 
     if (!url) {
         throw new Error(
-            "Missing Mapy.cz URL. Usage: pnpm scrape:add-tower <url> [--output path] [--wait seconds]"
+            "Missing Mapy.cz URL. Usage: pnpm scrape:add-tower <url> [--output path] [--wait seconds] [--write]"
         );
     }
 
@@ -730,7 +771,7 @@ export function parseCliOptions(args = process.argv.slice(2)): CliOptions {
         throw new Error("The provided URL is invalid.");
     }
 
-    return { outputPath, url, waitTimeSeconds };
+    return { outputPath, url, waitTimeSeconds, write };
 }
 
 function createChromeDriver() {
@@ -873,12 +914,8 @@ export async function scrapeDetailPage(
         );
         log(`Mapped opening-hours type: ${OpeningHoursType[parsedDetail.openingHours.type]}.`);
 
-        if (parsedDetail.keyValues.length === 0) {
-            log("Found no key-value attributes.");
-        } else {
-            for (const keyValue of parsedDetail.keyValues) {
-                log(`Found attribute: ${keyValue.label} = ${keyValue.value}`);
-            }
+        for (const keyValue of parsedDetail.keyValues) {
+            log(`Warning: found unused key-value: ${keyValue.label} - ${keyValue.value}`);
         }
 
         if (urls.length === 0) {
@@ -896,18 +933,7 @@ export async function scrapeDetailPage(
         } catch (error) {
             log(`Photo gallery scraping failed: ${formatError(error)}.`);
         }
-        const mainPhotoUrl = selectMainPhoto(photos);
-
-        return {
-            ...parsedDetail,
-            ...geography,
-            mainPhotoUrl,
-            mapycom,
-            nameID,
-            photos,
-            scrapedAt: new Date().toISOString(),
-            urls,
-        };
+        return createScrapedTowerDocument(parsedDetail, geography, mapycom, nameID, urls, photos);
     } finally {
         log("Closing Chrome driver.");
         await driver.quit();
@@ -931,6 +957,11 @@ async function main() {
     const options = parseCliOptions();
     const result = await scrapeDetailPage(options.url, options.waitTimeSeconds);
 
+    if (options.write) {
+        await persistScrapedTower(result);
+    } else {
+        log("Skipping Firestore persistence; use --write to save the scraped tower.");
+    }
     await writeResult(result, options.outputPath);
 }
 

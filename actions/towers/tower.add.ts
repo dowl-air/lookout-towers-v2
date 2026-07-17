@@ -9,20 +9,19 @@ import { OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
 import { CacheTag } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
+import { resolveUniqueNameID } from "@/utils/nameID";
+import { getTowerValidationError } from "@/utils/towerValidation";
 
 export const addTower = async (tower: Tower) => {
     const user = await checkAuth();
     if (!user) throw new Error("Unauthorized");
 
-    let nameID = tower.name
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLocaleLowerCase("cs-CZ")
-        .replace(/ /g, "_");
-    const testNameID = await getTowerObjectByNameID(nameID);
-    if (testNameID) {
-        nameID = `${nameID}_${Math.floor(Math.random() * 1000)}`;
-    }
+    const validationError = getTowerValidationError(tower);
+    if (validationError) throw new Error(validationError);
+
+    const nameID = await resolveUniqueNameID(tower.name, tower.county, async (candidate) =>
+        Boolean(await getTowerObjectByNameID(candidate))
+    );
 
     if (!tower.openingHours) {
         tower.openingHours = {

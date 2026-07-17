@@ -2,6 +2,8 @@ export const enum CacheTag {
     // todo? all tower objects - revalidate when a new tower is added or removed or edited
     Towers = "Towers",
 
+    ScrapedTowers = "ScrapedTowers",
+
     TowersMap = "TowersMap",
 
     // this cache is revalidated every 2 hours automatically

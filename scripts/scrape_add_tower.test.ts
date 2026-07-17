@@ -4,11 +4,16 @@ import test from "node:test";
 import { TowerTypeEnum } from "@/constants/towerType";
 import { AdmissionType } from "@/types/Admission";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
+import { toDateInputValue } from "@/utils/date";
 import { mapNominatimAddress } from "@/utils/geography";
+import { mapScrapedTowerToForm } from "@/utils/scrapedTower";
+import { getTowerValidationError } from "@/utils/towerValidation";
 
 import {
     createMapyComUrl,
     createNameID,
+    createScrapedTowerId,
+    createScrapedTowerDocument,
     extractMapyCzDetails,
     parseCliOptions,
     parseDetailHtml,
@@ -158,6 +163,98 @@ test("resolveUniqueNameID resolves collisions with county and numeric suffixes",
         "rimska_vez_2"
     );
     assert.equal(await resolveUniqueNameID("Nová věž", "Přerov", async () => false), "nova_vez");
+});
+
+test("createScrapedTowerDocument omits internal key-values and uses Tower fields", () => {
+    const result = createScrapedTowerDocument(
+        {
+            admission: { tariffes: {}, type: AdmissionType.FREE },
+            contact: {
+                email: "info@example.cz",
+                officialWebsite: "https://example.cz",
+                phone: "123",
+            },
+            gps: { latitude: 49.1, longitude: 17.1 },
+            keyValues: [{ label: "architekt", value: "Jan Novák" }],
+            name: "Římská věž",
+            openingHours: { type: OpeningHoursType.NonStop },
+            photos: [],
+            type: TowerTypeEnum.ROZHLEDNA,
+            urls: ["https://example.cz"],
+        },
+        { country: "CZ", county: "Přerov", province: "OL" },
+        { id: "2582164", name: "Rozhledna Římská věž", source: "base" },
+        "rimska_vez",
+        ["https://example.cz"],
+        ["https://example.cz/photo.jpeg"],
+        "2026-07-17T00:00:00.000Z"
+    );
+
+    assert.equal(result.nameID, "rimska_vez");
+    assert.equal(result.mainPhotoUrl, "https://example.cz/photo.jpeg");
+    assert.equal(result.mapycz?.name, "Rozhledna Římská věž");
+    assert.equal("keyValues" in result, false);
+    assert.equal("scrapedAt" in result, false);
+});
+
+test("createScrapedTowerId uses Mapy source and ID", () => {
+    assert.equal(
+        createScrapedTowerId({
+            gps: null,
+            mapycz: {
+                href: "https://mapy.com/cs/turisticka?source=base&id=2582164",
+                id: "2582164",
+                lastMapped: "2026-07-17T00:00:00.000Z",
+                name: "Rozhledna Římská věž",
+                source: "base",
+                type: "rozhledna",
+            },
+            nameID: "rimska_vez",
+            photos: [],
+        }),
+        "base_2582164"
+    );
+});
+
+test("mapScrapedTowerToForm retains Tower fields and excludes scraped metadata", () => {
+    const tower = mapScrapedTowerToForm({
+        contact: { email: "info@example.cz", officialWebsite: "", phone: "123" },
+        created: "2026-07-17T00:00:00.000Z",
+        description: "Popis",
+        id: "base_2582164",
+        name: "Římská věž",
+        nameID: "rimska_vez",
+        photos: ["https://example.cz/photo.jpeg"],
+        status: "ready",
+    });
+
+    assert.deepEqual(tower, {
+        contact: { email: "info@example.cz", officialWebsite: "", phone: "123" },
+        description: "Popis",
+        name: "Římská věž",
+    });
+});
+
+test("getTowerValidationError validates URLs in imported Tower data", () => {
+    const tower = {
+        country: "CZ",
+        gps: { latitude: 49.1, longitude: 17.1 },
+        name: "Římská věž",
+        type: TowerTypeEnum.ROZHLEDNA,
+        urls: ["invalid-url"],
+    };
+
+    assert.equal(
+        getTowerValidationError(tower, 1),
+        "Každý odkaz musí být platná HTTP nebo HTTPS URL."
+    );
+    assert.equal(getTowerValidationError({ ...tower, urls: ["https://example.cz"] }, 1), null);
+});
+
+test("toDateInputValue returns an empty value for invalid or missing dates", () => {
+    assert.equal(toDateInputValue("2026-07-17T12:00:00.000Z"), "2026-07-17");
+    assert.equal(toDateInputValue(new Date("invalid")), "");
+    assert.equal(toDateInputValue(undefined), "");
 });
 
 test("parseDetailHtml removes only a leading tower type from the name", () => {
@@ -436,6 +533,18 @@ test("parseCliOptions accepts the pnpm argument separator before a URL", () => {
             outputPath: undefined,
             url: "https://mapy.com/cs/turisticka?id=2582164&source=base",
             waitTimeSeconds: 10,
+            write: false,
         }
+    );
+});
+
+test("parseCliOptions enables Firestore persistence only with --write", () => {
+    assert.equal(
+        parseCliOptions(["https://mapy.com/cs/turisticka?source=base&id=2582164"]).write,
+        false
+    );
+    assert.equal(
+        parseCliOptions(["--write", "https://mapy.com/cs/turisticka?source=base&id=2582164"]).write,
+        true
     );
 });

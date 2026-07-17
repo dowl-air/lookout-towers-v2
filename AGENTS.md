@@ -161,6 +161,7 @@ Before writing new Firestore queries, look for an existing function in `data/` o
 - `proxy.ts` is used for route protection; changing protected routes usually requires updating the matcher.
 - `next.config.ts` enables caching and server actions, so seemingly simple data changes can require both serialization and cache-tag updates.
 - Some server actions write through `@/utils/firebase` rather than `@/utils/firebase-admin`; keep new code consistent with the surrounding module unless there is a clear reason to refactor.
+- The Mapy scraper stores intermediate Tower-shaped documents in `towers_scraped` only when invoked with `--write`. The `/pridat-rozhlednu` workflow imports ready records into `towers` and marks their source record as imported only after final creation and photo upload.
 
 ## Safe change checklist
 

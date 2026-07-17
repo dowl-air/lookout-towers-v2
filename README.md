@@ -68,7 +68,11 @@ Open `http://localhost:3000`.
 
 ## Mapy.cz tower scraper
 
-The `scrape:add-tower` script opens a Mapy.com place detail in Chrome and writes a JSON document with the place name, type, GPS coordinates as `gps.latitude` and `gps.longitude`, external URLs as `urls`, mapped opening hours, and a `mapycom` object containing the source, place ID, and original Mapy.com name. The exported `name` removes a leading Czech type label such as `Rozhledna`, `Výhledna`, `Pozorovatelna`, `Věž`, or `Vyhlídková věž`; occurrences later in the name are preserved. `nameID` uses the existing project format and is checked against the `towers` Firestore collection: a collision first adds the county suffix and then a numeric suffix. It collects up to eight random unique gallery images as full-size URLs in `photos`; if the gallery contains fewer images, it keeps all of them. `mainPhotoUrl` is randomly selected from this collected photo set. When both identifiers are available, `urls` also includes the canonical Mapy.com detail URL containing only `source` and `id`. It does not write to Firestore.
+The `scrape:add-tower` script opens a Mapy.com place detail and writes the result as a Tower-shaped JSON document. Add `--write` to store it in the Firestore `towers_scraped` collection; without that flag, it does not write to Firestore. The scraped document uses `created` and `modified` timestamps, stores the original Mapy.com metadata in `mapycz`, and keeps temporary gallery URLs in `photos` for later import. It does not create a final document in `towers`.
+
+The exported `name` removes a leading Czech type label such as `Rozhledna`, `Výhledna`, `Pozorovatelna`, `Věž`, or `Vyhlídková věž`; occurrences later in the name are preserved. `nameID` uses the existing project format and is checked against the `towers` Firestore collection: a collision first adds the county suffix and then a numeric suffix. Unmapped Mapy.com key-value attributes are not stored; the script reports each as a warning on standard error. It collects up to eight random unique gallery images as full-size URLs in `photos`; if the gallery contains fewer images, it keeps all of them. `mainPhotoUrl` is randomly selected from this collected photo set. When both identifiers are available, `urls` also includes the canonical Mapy.com detail URL containing only `source` and `id`.
+
+On `/pridat-rozhlednu`, authenticated users can select a ready document from `towers_scraped`. Its data and photo URLs prefill the existing form; after a successful final import, the scraped document is marked as imported.
 
 Known `content-keyval` attributes are mapped to fields compatible with `Tower`: `výška` to `height`, `nadmořská výška` to `elevation`, and `počet schodů` to `stairs`. Any unknown or invalid value remains a `keyValues` label/value pair for later mapping.
 
@@ -88,6 +92,7 @@ Chrome must be available on the host. Selenium Manager resolves a compatible Chr
 
 ```bash
 npm run scrape:add-tower -- "https://mapy.cz/..."
+npm run scrape:add-tower -- --write "https://mapy.cz/..."
 ```
 
 JSON is written to standard output and operational logs are written to standard error, so callers can safely pipe the JSON to another process. Use `--output path/to/tower.json` to write the document to a file, and `--wait 15` to change the page-content timeout in seconds.
