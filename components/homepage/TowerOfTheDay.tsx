@@ -218,7 +218,7 @@ const TowerOfTheDay = async () => {
                                 <div className="rounded-2xl bg-base-200 px-4 py-3">
                                     <dt className="text-base-content/55">Otevřeno</dt>
                                     <dd className="mt-1 font-semibold text-base-content">
-                                        {new Date(tower.opened).getFullYear()}
+                                        {openedYear ?? "neznámé"}
                                     </dd>
                                 </div>
                             </dl>

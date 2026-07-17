@@ -35,7 +35,7 @@ export const normalizeTowerObject = (tower: any): Tower => {
 };
 
 export const normalizeTypesenseTowerObject = (tower: any): Tower => {
-    const opened = new Date(tower.opened * 1000).toISOString();
+    const opened = tower.opened ? new Date(tower.opened * 1000).toISOString() : undefined;
     const modified = new Date(tower.modified * 1000).toISOString();
     const created = new Date(tower.created * 1000).toISOString();
     const gps: { latitude: number; longitude: number } = {
@@ -44,7 +44,7 @@ export const normalizeTypesenseTowerObject = (tower: any): Tower => {
     };
     return {
         ...tower,
-        opened,
+        ...(opened ? { opened } : {}),
         modified,
         created,
         gps,

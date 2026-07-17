@@ -17,7 +17,7 @@ export type TowerCollectionDTO = {
     id: string;
     name: string;
     nameID: string;
-    opened: string | Date;
+    opened?: string | Date;
     openingHours: OpeningHours;
     province?: string;
     type: TowerTypeEnum;

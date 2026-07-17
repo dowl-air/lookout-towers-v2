@@ -6,6 +6,7 @@ import { AdmissionType } from "@/types/Admission";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
 import { toDateInputValue } from "@/utils/date";
 import { mapNominatimAddress } from "@/utils/geography";
+import { normalizeTypesenseTowerObject } from "@/utils/normalizeTowerObject";
 import { mapScrapedTowerToForm } from "@/utils/scrapedTower";
 import { getTowerValidationError } from "@/utils/towerValidation";
 
@@ -255,6 +256,17 @@ test("toDateInputValue returns an empty value for invalid or missing dates", () 
     assert.equal(toDateInputValue("2026-07-17T12:00:00.000Z"), "2026-07-17");
     assert.equal(toDateInputValue(new Date("invalid")), "");
     assert.equal(toDateInputValue(undefined), "");
+});
+
+test("normalizeTypesenseTowerObject preserves an absent opened date", () => {
+    const tower = normalizeTypesenseTowerObject({
+        created: 0,
+        gps: [49.1, 17.1],
+        modified: 0,
+        openingHours: {},
+    });
+
+    assert.equal(tower.opened, undefined);
 });
 
 test("parseDetailHtml removes only a leading tower type from the name", () => {

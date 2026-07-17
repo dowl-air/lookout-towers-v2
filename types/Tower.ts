@@ -72,7 +72,7 @@ export type Tower = {
     name: string;
     nameID: string;
     observationDecksCount?: number;
-    opened: string | Date;
+    opened?: string | Date;
     openingHours: OpeningHours;
     owner?: string;
     province?: string;

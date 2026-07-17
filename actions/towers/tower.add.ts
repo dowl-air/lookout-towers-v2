@@ -41,7 +41,6 @@ export const addTower = async (tower: Tower) => {
         random: Math.random(),
     };
 
-    if (!tower.opened) updateObject["opened"] = serverTimestamp();
     if (!tower.stairs) updateObject["stairs"] = 0;
     if (!tower.elevation) updateObject["elevation"] = 0;
     if (!tower.height) updateObject["height"] = 0;
