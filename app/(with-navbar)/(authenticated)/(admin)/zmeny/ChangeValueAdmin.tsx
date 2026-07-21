@@ -1,6 +1,47 @@
+import { TOWER_TAG_DETAILS } from "@/constants/towerTags";
 import { EditableParameterType } from "@/types/EditableParameter";
+import { Tower } from "@/types/Tower";
+import { TowerTag } from "@/types/TowerTags";
 
-const ChangeValueAdmin = ({ type, value }: { type: EditableParameterType; value: any }) => {
+const ChangeValueAdmin = ({
+    field,
+    type,
+    value,
+}: {
+    field: keyof Tower;
+    type: EditableParameterType;
+    value: any;
+}) => {
+    if (field === "contact") {
+        const contactItems = [
+            ["Telefon", value?.phone],
+            ["E-mail", value?.email],
+            ["Oficiální web", value?.officialWebsite],
+        ].filter(([, itemValue]) => itemValue);
+
+        return contactItems.length ? (
+            <div className="flex flex-col">
+                {contactItems.map(([label, itemValue]) => (
+                    <span key={label}>{`${label}: ${itemValue}`}</span>
+                ))}
+            </div>
+        ) : (
+            <span>Kontakt není vyplněn</span>
+        );
+    }
+
+    if (field === "tags") {
+        return Array.isArray(value) && value.length ? (
+            <div className="flex flex-col">
+                {value.map((tag: TowerTag) => (
+                    <span key={tag}>{TOWER_TAG_DETAILS[tag]?.label ?? tag}</span>
+                ))}
+            </div>
+        ) : (
+            <span>Žádné tagy</span>
+        );
+    }
+
     if (type === "text") {
         return <span>{value}</span>;
     } else if (type === "select") {

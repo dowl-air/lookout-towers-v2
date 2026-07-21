@@ -45,6 +45,32 @@ export const formatOpeningHour = (hour: number): string => {
     return `${hours}:${minutes.toString().padStart(2, "0")}`;
 };
 
+export const formatOpeningHoursDays = (days: number[]): string => {
+    const selectedDays = [...new Set(days)].filter(isValidWeekday).sort((dayA, dayB) => dayA - dayB);
+
+    if (selectedDays.length === 7) return "Každý den";
+
+    const dayGroups = selectedDays.reduce<number[][]>((groups, day) => {
+        const currentGroup = groups.at(-1);
+
+        if (currentGroup && day === currentGroup.at(-1)! + 1) {
+            currentGroup.push(day);
+        } else {
+            groups.push([day]);
+        }
+
+        return groups;
+    }, []);
+
+    return dayGroups
+        .map((dayGroup) => {
+            const labels = dayGroup.map((day) => DAYS_CZECH[day].slice(0, 2));
+
+            return labels.length > 2 ? `${labels[0]} - ${labels.at(-1)}` : labels.join(" ");
+        })
+        .join(", ");
+};
+
 export const createDefaultOpeningHoursRange = (): OpeningHoursRange => ({
     monthFrom: FIRST_MONTH,
     monthTo: LAST_MONTH,

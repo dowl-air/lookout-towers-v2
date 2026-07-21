@@ -27,6 +27,7 @@ const DETAIL_SETTLE_TIME_MS = 2_000;
 const GALLERY_SCROLL_SETTLE_TIME_MS = 500;
 const GALLERY_SCROLLS = 3;
 const MAX_PHOTOS = 8;
+const PRODUCTION_APP_URL = "https://rozhlednovysvet.cz";
 const CLOSED_HOURS_VALUES = new Set(["zavřeno", "uzavřeno"]);
 const MATERIAL_ROOTS: { material: (typeof MATERIALS)[number]; roots: string[] }[] = [
     { material: "dřevo", roots: ["drev"] },
@@ -163,6 +164,21 @@ export function createScrapedTowerId(result: ScrapedTowerDocument) {
     return result.nameID || undefined;
 }
 
+export function createScrapedTowersPurgeUrl(appUrl = PRODUCTION_APP_URL) {
+    return new URL("/api/cache/purge/scraped-towers", appUrl).toString();
+}
+
+async function purgeScrapedTowersCache() {
+    const appUrl = process.env.SCRAPER_APP_URL ?? PRODUCTION_APP_URL;
+    const response = await fetch(createScrapedTowersPurgeUrl(appUrl), { method: "POST" });
+
+    if (!response.ok) {
+        throw new Error(`Scraped towers cache purge failed with HTTP ${response.status}.`);
+    }
+
+    log("Purged ScrapedTowers cache tag.");
+}
+
 async function persistScrapedTower(result: ScrapedTowerDocument) {
     const firestore = getScraperFirestore();
     const documentId = createScrapedTowerId(result);
@@ -179,6 +195,7 @@ async function persistScrapedTower(result: ScrapedTowerDocument) {
     });
 
     log(`Saved scraped tower to towers_scraped/${reference.id}.`);
+    await purgeScrapedTowersCache();
 }
 
 function normalizeCzechText(value: string) {

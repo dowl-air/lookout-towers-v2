@@ -27,6 +27,10 @@ const ChangesAdmin = async () => {
                         parameter = { name: "urls", label: "Odkazy", type: "array" };
                     if (change.field === "admission")
                         parameter = { name: "admission", label: "Vstupné", type: "object" };
+                    if (change.field === "contact")
+                        parameter = { name: "contact", label: "Kontakt", type: "object" };
+                    if (change.field === "tags")
+                        parameter = { name: "tags", label: "Přístup a vybavení", type: "array" };
                     return (
                         <div className="card bg-base-100 shadow-xl" key={change.id}>
                             <div className="card-body">
@@ -47,6 +51,7 @@ const ChangesAdmin = async () => {
                                     <div className="flex flex-col">
                                         <div className="text-error overflow-auto max-w-3xl">
                                             <ChangeValueAdmin
+                                                field={change.field}
                                                 type={parameter.type}
                                                 value={change.old_value}
                                             />
@@ -54,6 +59,7 @@ const ChangesAdmin = async () => {
                                         <hr className="my-2" />
                                         <div className="text-success max-w-3xl">
                                             <ChangeValueAdmin
+                                                field={change.field}
                                                 type={parameter.type}
                                                 value={change.new_value}
                                             />

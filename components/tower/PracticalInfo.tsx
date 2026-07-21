@@ -1,8 +1,22 @@
-import { CalendarDays, Clock3, ExternalLink, Landmark, Layers, MapPin, Ticket } from "lucide-react";
+import {
+    CalendarDays,
+    Clock3,
+    ExternalLink,
+    Globe2,
+    Landmark,
+    Layers,
+    Mail,
+    Phone,
+    Route,
+    Ticket,
+    Wrench,
+} from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import SuggestEditButton from "@/components/tower/edit/SuggestEditButton";
 import { getAdmissionTariffTypeLabel, getAdmissionTypeDescription } from "@/constants/admission";
+import { TOWER_TAG_DETAILS, type TowerTagCategory } from "@/constants/towerTags";
 import { getTowerTypeName } from "@/constants/towerType";
 import { AdmissionType } from "@/types/Admission";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
@@ -14,6 +28,7 @@ import { formatDate } from "@/utils/date";
 import { formatCountryName, formatCountyName, formatProvinceName } from "@/utils/geography";
 import {
     formatOpeningHour,
+    formatOpeningHoursDays,
     getOpeningHoursStatusClassName,
     getOpeningHoursRanges,
     normalizeOpeningHours,
@@ -49,13 +64,21 @@ const statusText = (tower: Tower) => {
     }
 };
 
+const openingHoursDetailsLabel = (tower: Tower) => {
+    const openingHours = normalizeOpeningHours(tower.openingHours);
+
+    return openingHours.type === OpeningHoursType.Forbidden
+        ? "Další informace"
+        : "Oficiální otevírací doba";
+};
+
 const openingHoursRows = (tower: Tower) => {
     const openingHours = normalizeOpeningHours(tower.openingHours);
     const ranges = getOpeningHoursRanges(openingHours);
 
     if (!ranges.length) return [];
 
-    return ranges.slice(0, 3).map((range) => {
+    return ranges.map((range) => {
         const months =
             range.monthFrom === 0 && range.monthTo === 11
                 ? "Celoročně"
@@ -65,9 +88,33 @@ const openingHoursRows = (tower: Tower) => {
 
         return {
             label: months ?? "Období",
-            value: `${formatOpeningHour(range.dayFrom)} - ${formatOpeningHour(range.dayTo)} h`,
+            monthFrom: range.monthFrom,
+            monthTo: range.monthTo,
+            value: (
+                <span className="flex flex-wrap items-center justify-end gap-2">
+                    <span className="badge badge-outline badge-sm whitespace-nowrap font-medium">
+                        {formatOpeningHoursDays(range.days)}
+                    </span>
+                    <span className="whitespace-nowrap font-bold text-primary">
+                        {formatOpeningHour(range.dayFrom)} - {formatOpeningHour(range.dayTo)} h
+                    </span>
+                </span>
+            ),
         };
     });
+};
+
+const sortOpeningHoursRows = <T extends { monthFrom: number; monthTo: number }>(rows: T[]) => {
+    if (!rows.length) return [];
+
+    const currentMonth = new Date().getMonth();
+    const currentRowIndex = rows.findIndex(
+        (row) => row.monthFrom <= currentMonth && currentMonth <= row.monthTo
+    );
+    const nextRowIndex = rows.findIndex((row) => row.monthFrom > currentMonth);
+    const primaryRowIndex = currentRowIndex >= 0 ? currentRowIndex : Math.max(nextRowIndex, 0);
+
+    return [rows[primaryRowIndex], ...rows.filter((_row, index) => index !== primaryRowIndex)];
 };
 
 const admissionText = (tower: Tower) => {
@@ -97,13 +144,56 @@ const admissionRows = (tower: Tower) => {
         .slice(0, 4)
         .map(([key, tariff]) => ({
             label: getAdmissionTariffTypeLabel(key),
-            value: `${tariff.price} ${getCurrency(tower.country).symbol}`,
+            value: (
+                <span className="font-bold text-primary">
+                    {tariff.price} {getCurrency(tower.country).symbol}
+                </span>
+            ),
         }));
 };
 
-const InfoLine = ({ label, value }: { label: string; value: string | number }) => (
+const getTowerTagsByCategory = (tower: Tower, category: TowerTagCategory) =>
+    (tower.tags ?? [])
+        .map((tag) => ({ tag, ...TOWER_TAG_DETAILS[tag] }))
+        .filter((tag) => tag.category === category)
+        .sort((tagA, tagB) => Number(Boolean(tagB.isSafety)) - Number(Boolean(tagA.isSafety)));
+
+const TowerTags = ({ tower, category }: { category: TowerTagCategory; tower: Tower }) => {
+    const tags = getTowerTagsByCategory(tower, category);
+
+    if (!tags.length) {
+        return (
+            <p className="text-sm leading-relaxed text-base-content/60">
+                {category === "access"
+                    ? "Informace o přístupu zatím nejsou doplněny."
+                    : "Vybavení zatím není doplněno."}
+            </p>
+        );
+    }
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {tags.map(({ Icon, isSafety, label, tag }) => (
+                <span
+                    key={tag}
+                    className={cn(
+                        "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium",
+                        isSafety
+                            ? "border-error/45 bg-error/10 font-semibold text-error"
+                            : "border-base-300/70 bg-base-200/45 text-base-content"
+                    )}
+                >
+                    <Icon className={cn("size-4 shrink-0", isSafety ? "text-error" : "text-primary")} />
+                    {label}
+                </span>
+            ))}
+        </div>
+    );
+};
+
+const InfoLine = ({ label, value }: { label: string; value: ReactNode }) => (
     <div className="flex items-baseline justify-between gap-4 border-b border-base-300/60 py-2 last:border-b-0">
-        <dt className="text-sm text-base-content/60">{label}</dt>
+        <dt className="text-sm font-medium text-base-content/75">{label}</dt>
         <dd className="text-right text-sm font-semibold text-base-content">{value}</dd>
     </div>
 );
@@ -132,6 +222,12 @@ const SummaryInfoLine = ({
 
 const PracticalInfo = ({ tower }: { tower: Tower }) => {
     const status = statusText(tower);
+    const detailsLabel = openingHoursDetailsLabel(tower);
+    const rows = openingHoursRows(tower);
+    const orderedRows = sortOpeningHoursRows(rows);
+    const [primaryOpeningHoursRow, ...otherOpeningHoursRows] = orderedRows;
+    const accessTags = getTowerTagsByCategory(tower, "access");
+    const equipmentTags = getTowerTagsByCategory(tower, "equipment");
 
     return (
         <section className="w-full" aria-labelledby="practical-info-heading">
@@ -154,7 +250,7 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                                 <Clock3 className="size-5" />
                             </span>
                             <h3 className="self-center text-lg font-semibold">Otevírací doba</h3>
-                            <div className="col-span-2 space-y-3 md:col-span-1">
+                            <div className="col-span-2 space-y-3 md:col-span-1 md:col-start-3 md:row-start-1">
                                 <p
                                     className={cn(
                                         "text-base font-semibold",
@@ -163,15 +259,12 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                                 >
                                     {status}
                                 </p>
-                                {openingHoursRows(tower).length ? (
+                                {primaryOpeningHoursRow ? (
                                     <dl className="rounded-lg bg-base-200/45 px-4 py-2">
-                                        {openingHoursRows(tower).map((row) => (
-                                            <InfoLine
-                                                key={`${row.label}-${row.value}`}
-                                                label={row.label}
-                                                value={row.value}
-                                            />
-                                        ))}
+                                        <InfoLine
+                                            label={primaryOpeningHoursRow.label}
+                                            value={primaryOpeningHoursRow.value}
+                                        />
                                     </dl>
                                 ) : null}
                                 {tower.openingHours?.detailUrl ? (
@@ -180,12 +273,46 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                                         target="_blank"
                                         className="link inline-flex items-center gap-1 text-sm"
                                     >
-                                        Oficiální otevírací doba
+                                        {detailsLabel}
                                         <ExternalLink className="size-3.5" />
                                     </Link>
                                 ) : null}
                             </div>
+                            {otherOpeningHoursRows.length ? (
+                                <details className="col-span-2 rounded-lg bg-base-200/45 px-4 py-2 md:col-span-1 md:col-start-3 md:row-start-2">
+                                    <summary className="cursor-pointer text-sm font-semibold text-base-content/75 marker:text-base-content/60">
+                                        Další období ({otherOpeningHoursRows.length})
+                                    </summary>
+                                    <dl className="mt-2">
+                                        {otherOpeningHoursRows.map((row) => (
+                                            <InfoLine
+                                                key={`${row.label}-${row.value}`}
+                                                label={row.label}
+                                                value={row.value}
+                                            />
+                                        ))}
+                                    </dl>
+                                </details>
+                            ) : null}
                         </div>
+
+                        {accessTags.length ? (
+                            <div className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 gap-y-3 p-5 md:grid-cols-[2.75rem_10rem_minmax(0,1fr)] md:items-center">
+                                <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                    <Route className="size-5" />
+                                </span>
+                                <h3 className="self-center text-lg font-semibold">Přístup</h3>
+                                <div className="col-span-2 space-y-3 md:col-span-1">
+                                    <TowerTags category="access" tower={tower} />
+                                    <a
+                                        href="#mapa"
+                                        className="inline-flex cursor-pointer text-sm leading-relaxed text-base-content/75 transition hover:text-base-content hover:underline"
+                                    >
+                                        Souřadnice a navigaci najdete v mapové sekci níže.
+                                    </a>
+                                </div>
+                            </div>
+                        ) : null}
 
                         <div className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 gap-y-3 p-5 md:grid-cols-[2.75rem_10rem_minmax(0,1fr)] md:items-center">
                             <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -217,16 +344,61 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
 
                         <div className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 gap-y-3 p-5 md:grid-cols-[2.75rem_10rem_minmax(0,1fr)] md:items-center">
                             <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                <MapPin className="size-5" />
+                                <Phone className="size-5" />
                             </span>
-                            <h3 className="self-center text-lg font-semibold">Doprava</h3>
-                            <a
-                                href="#mapa"
-                                className="col-span-2 cursor-pointer text-sm leading-relaxed text-base-content/75 transition hover:text-base-content hover:underline md:col-span-1"
-                            >
-                                Souřadnice a navigaci najdete v mapové sekci níže.
-                            </a>
+                            <h3 className="self-center text-lg font-semibold">Kontakt</h3>
+                            <div className="col-span-2 flex flex-wrap gap-2 md:col-span-1">
+                                {tower.contact?.phone ? (
+                                    <a
+                                        href={`tel:${tower.contact.phone}`}
+                                        className="inline-flex items-center gap-2 rounded-lg border border-base-300/70 bg-base-200/45 px-3 py-2 text-sm font-medium transition hover:border-primary/50 hover:bg-primary/10"
+                                    >
+                                        <Phone className="size-4 text-primary" />
+                                        {tower.contact.phone}
+                                    </a>
+                                ) : null}
+                                {tower.contact?.email ? (
+                                    <a
+                                        href={`mailto:${tower.contact.email}`}
+                                        className="inline-flex items-center gap-2 rounded-lg border border-base-300/70 bg-base-200/45 px-3 py-2 text-sm font-medium transition hover:border-primary/50 hover:bg-primary/10"
+                                    >
+                                        <Mail className="size-4 text-primary" />
+                                        {tower.contact.email}
+                                    </a>
+                                ) : null}
+                                {tower.contact?.officialWebsite ? (
+                                    <a
+                                        href={tower.contact.officialWebsite}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-2 rounded-lg border border-base-300/70 bg-base-200/45 px-3 py-2 text-sm font-medium transition hover:border-primary/50 hover:bg-primary/10"
+                                    >
+                                        <Globe2 className="size-4 text-primary" />
+                                        Oficiální web
+                                        <ExternalLink className="size-3.5" />
+                                    </a>
+                                ) : null}
+                                {!tower.contact?.phone &&
+                                !tower.contact?.email &&
+                                !tower.contact?.officialWebsite ? (
+                                    <p className="text-sm leading-relaxed text-base-content/60">
+                                        Kontakt zatím není vyplněn.
+                                    </p>
+                                ) : null}
+                            </div>
                         </div>
+
+                        {equipmentTags.length ? (
+                            <div className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 gap-y-3 p-5 md:grid-cols-[2.75rem_10rem_minmax(0,1fr)] md:items-center">
+                                <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                    <Wrench className="size-5" />
+                                </span>
+                                <h3 className="self-center text-lg font-semibold">Vybavení</h3>
+                                <div className="col-span-2 md:col-span-1">
+                                    <TowerTags category="equipment" tower={tower} />
+                                </div>
+                            </div>
+                        ) : null}
                     </div>
                 </div>
 

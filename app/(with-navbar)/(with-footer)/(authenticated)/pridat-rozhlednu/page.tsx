@@ -43,6 +43,9 @@ const AddTowerPage = () => {
     const [openingHoursText, setOpeningHoursText] = useState("");
     const [tariffesText, setTariffesText] = useState("{}");
     const [structuredDataError, setStructuredDataError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
+    const [uploadedPhotosCount, setUploadedPhotosCount] = useState(0);
     const contact = tower.contact ?? { email: "", officialWebsite: "", phone: "" };
 
     const [clipboardError, setClipboardError] = useState<string>("");
@@ -150,6 +153,8 @@ const AddTowerPage = () => {
     };
 
     const handleSubmit = async () => {
+        if (isSubmitting) return;
+
         if (structuredDataError) {
             alert(structuredDataError);
             return;
@@ -160,29 +165,43 @@ const AddTowerPage = () => {
             return;
         }
 
-        const newID = await addTower(tower as Tower);
+        setIsSubmitting(true);
+        setIsUploadingPhotos(false);
+        setUploadedPhotosCount(0);
 
-        console.log("New tower ID:", newID);
+        try {
+            const newID = await addTower(tower as Tower);
 
-        const uploadPromises = photos.map((photo, index) =>
-            uploadPhoto(photo, newID, true, index === mainIndex)
-        );
-        const publicURLs = await Promise.all(uploadPromises);
+            console.log("New tower ID:", newID);
+            setIsUploadingPhotos(true);
 
-        console.log("Uploaded photos:", publicURLs);
+            const uploadPromises = photos.map(async (photo, index) => {
+                const publicURL = await uploadPhoto(photo, newID, true, index === mainIndex);
+                setUploadedPhotosCount((count) => count + 1);
+                return publicURL;
+            });
+            const publicURLs = await Promise.all(uploadPromises);
 
-        await changeTowerMainPhoto(newID, publicURLs[mainIndex]);
+            console.log("Uploaded photos:", publicURLs);
 
-        await revalidateTowerByIDOrNameID(newID);
+            await changeTowerMainPhoto(newID, publicURLs[mainIndex]);
 
-        if (scrapedTowerId) {
-            await markScrapedTowerImported(scrapedTowerId, newID);
+            await revalidateTowerByIDOrNameID(newID);
+
+            if (scrapedTowerId) {
+                await markScrapedTowerImported(scrapedTowerId, newID);
+            }
+
+            alert("Rozhledna byla úspěšně přidána.");
+            reset();
+            setPhotos([]);
+        } catch (error) {
+            console.error("Unable to add tower:", error);
+            alert("Rozhlednu se nepodařilo přidat. Zkuste to prosím znovu.");
+        } finally {
+            setIsSubmitting(false);
+            setIsUploadingPhotos(false);
         }
-
-        alert("Rozhledna byla úspěšně přidána.");
-        // Optionally, redirect or reset the form
-        reset();
-        setPhotos([]);
     };
 
     return (
@@ -829,8 +848,17 @@ const AddTowerPage = () => {
                 </div>
             </div>
             <div className="flex flex-col md:flex-row gap-4 mt-4 mb-6 justify-end">
-                <button className="btn btn-primary w-full sm:w-60" onClick={handleSubmit}>
-                    Odeslat návrh
+                <button
+                    className="btn btn-primary w-full sm:w-60"
+                    disabled={isSubmitting}
+                    onClick={handleSubmit}
+                >
+                    {isSubmitting && <span className="loading loading-spinner loading-sm" />}
+                    {isSubmitting
+                        ? isUploadingPhotos
+                            ? `Nahrávání fotek ${uploadedPhotosCount}/${photos.length}`
+                            : "Přidávání rozhledny"
+                        : "Přidat rozhlednu"}
                 </button>
             </div>
         </div>

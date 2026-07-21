@@ -11,6 +11,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             status: 400,
             headers: { "Content-Type": "application/json" },
         });
+
+    if (tower_id === "scraped-towers") {
+        revalidateTag(CacheTag.ScrapedTowers, { expire: 0 });
+
+        return new Response(JSON.stringify({ result: CacheTag.ScrapedTowers }), {
+            status: 201,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+
     let tower = await getTowerByID(tower_id);
     if (!tower) {
         tower = await getTowerObjectByNameID(tower_id);

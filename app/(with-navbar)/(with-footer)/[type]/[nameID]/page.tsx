@@ -1,32 +1,10 @@
 import {
-    Accessibility,
-    Bike,
-    Bus,
-    CalendarCheck,
-    Coffee,
-    CreditCard,
-    Droplets,
     Footprints,
-    KeyRound,
-    ListEnd,
     ListOrdered,
     Mountain,
-    ParkingCircle,
-    PanelTop,
-    PlugZap,
     Ruler,
-    ShieldAlert,
-    Signpost,
     Star,
-    Telescope,
-    Toilet,
-    TriangleAlert,
-    Umbrella,
     Unlock,
-    Utensils,
-    Wifi,
-    Wrench,
-    type LucideIcon,
 } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -46,6 +24,7 @@ import Carousel from "@/components/tower/top/Carousel";
 import Legend from "@/components/tower/top/Legend";
 import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
 import NearbyTowers from "@/components/tower/top/NearbyTowers";
+import { TOWER_TAG_DETAILS } from "@/constants/towerTags";
 import { MapProvider } from "@/context/MapContext";
 import { listTowerPhotos } from "@/data/photo/tower-photos";
 import { getNearestTowers } from "@/data/tower/nearest-towers";
@@ -57,36 +36,11 @@ import {
 } from "@/data/tower/towers";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
-import { TowerTag } from "@/types/TowerTags";
 import { formatCountyName, formatProvinceName } from "@/utils/geography";
 import { normalizeOpeningHours } from "@/utils/openingHours";
 
 const HERO_TAG_CLASS =
     "inline-flex items-center gap-1.5 rounded-md border border-base-300/70 bg-base-100/75 px-2.5 py-1 shadow-sm whitespace-nowrap";
-
-const TOWER_TAG_DETAILS: Record<TowerTag, { label: string; Icon: LucideIcon }> = {
-    [TowerTag.HasTelescope]: { label: "Dalekohled", Icon: Telescope },
-    [TowerTag.HasObservationBoards]: { label: "Výhledové tabule", Icon: PanelTop },
-    [TowerTag.IsNearTouristGuide]: { label: "Rozcestník", Icon: Signpost },
-    [TowerTag.HasParking]: { label: "Parkoviště", Icon: ParkingCircle },
-    [TowerTag.IsNearPublicTransport]: { label: "Veřejná doprava", Icon: Bus },
-    [TowerTag.NeedToBorrowKey]: { label: "Zapůjčit klíč", Icon: KeyRound },
-    [TowerTag.NeedToBookVisit]: { label: "Domluvit návštěvu", Icon: CalendarCheck },
-    [TowerTag.SuitableForCyclists]: { label: "Pro cyklisty", Icon: Bike },
-    [TowerTag.WheelchairAccessible]: { label: "Bezbariérový přístup", Icon: Accessibility },
-    [TowerTag.HasToilet]: { label: "Toaleta", Icon: Toilet },
-    [TowerTag.HasRestaurant]: { label: "Restaurace", Icon: Utensils },
-    [TowerTag.HasSnacks]: { label: "Občerstvení", Icon: Coffee },
-    [TowerTag.HasWifi]: { label: "Wifi", Icon: Wifi },
-    [TowerTag.CanPayByCard]: { label: "Platba kartou", Icon: CreditCard },
-    [TowerTag.HasShelter]: { label: "Přístřešek", Icon: Umbrella },
-    [TowerTag.HasBikeRepairStation]: { label: "Oprava kola", Icon: Wrench },
-    [TowerTag.HasElectricCharger]: { label: "Nabíječka", Icon: PlugZap },
-    [TowerTag.HasSteepStairs]: { label: "Příkré schody", Icon: TriangleAlert },
-    [TowerTag.HasSmallRailings]: { label: "Nízké zábradlí", Icon: ShieldAlert },
-    [TowerTag.HasSlipperySurface]: { label: "Kluzký povrch", Icon: Droplets },
-    [TowerTag.HasLadder]: { label: "Výstup po žebříku", Icon: ListEnd },
-};
 
 const getTowerHeroTags = (tower: Tower) =>
     (tower.tags ?? [])

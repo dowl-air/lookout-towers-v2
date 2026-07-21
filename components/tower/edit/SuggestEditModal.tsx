@@ -9,6 +9,7 @@ import OpeningHoursStep2 from "@/components/tower/tiles/openingHours/steps/Step2
 import ParameterStep1 from "@/components/tower/tiles/parameters/edit/Step1";
 import ParameterStep2 from "@/components/tower/tiles/parameters/edit/Step2";
 import { ADMISSION_TARIFF_TYPES, ADMISSION_TYPES } from "@/constants/admission";
+import { TOWER_TAG_DETAILS } from "@/constants/towerTags";
 import { AdmissionType } from "@/types/Admission";
 import {
     OpeningHours,
@@ -16,7 +17,8 @@ import {
     OpeningHoursRange,
     OpeningHoursType,
 } from "@/types/OpeningHours";
-import { Tower } from "@/types/Tower";
+import { Tower, TowerContact } from "@/types/Tower";
+import { TowerTag } from "@/types/TowerTags";
 import { getCurrency } from "@/utils/currency";
 import { editableParameters } from "@/utils/editableParameters";
 import {
@@ -26,6 +28,7 @@ import {
     getOpeningHoursValidationError,
     normalizeOpeningHours,
 } from "@/utils/openingHours";
+import { getTowerContactValidationError } from "@/utils/towerValidation";
 import {
     findUrlWithSameDomain,
     getNormalizedHttpUrl,
@@ -33,7 +36,14 @@ import {
     hasUrl,
 } from "@/utils/url";
 
-type EditSection = "overview" | "parameters" | "openingHours" | "admission" | "sources";
+type EditSection =
+    | "overview"
+    | "parameters"
+    | "openingHours"
+    | "accessAndEquipment"
+    | "admission"
+    | "contact"
+    | "sources";
 type OpeningStep = "type" | "ranges";
 
 type SuggestEditModalProps = {
@@ -57,6 +67,16 @@ const sectionCards: { id: EditSection; title: string; text: string }[] = [
         text: "Typ vstupného a základní tarify ve měně dané země.",
     },
     {
+        id: "accessAndEquipment",
+        title: "Přístup a vybavení",
+        text: "Doprava, přístupnost, bezpečnostní upozornění a dostupné vybavení.",
+    },
+    {
+        id: "contact",
+        title: "Kontakt",
+        text: "Telefon, e-mail a oficiální web provozovatele nebo místa.",
+    },
+    {
         id: "sources",
         title: "Odkazy a zdroje",
         text: "Oficiální web, databáze rozhleden nebo jiný veřejný zdroj.",
@@ -64,6 +84,48 @@ const sectionCards: { id: EditSection; title: string; text: string }[] = [
 ];
 
 const publicAdmissionTypes = ADMISSION_TYPES.filter(({ value }) => value !== AdmissionType.UNKNOWN);
+const tagEditorGroups: { tags: TowerTag[]; title?: string }[] = [
+    {
+        tags: [
+            TowerTag.HasTelescope,
+            TowerTag.HasObservationBoards,
+            TowerTag.IsNearTouristGuide,
+        ],
+    },
+    {
+        title: "Dostupnost",
+        tags: [
+            TowerTag.NeedToBorrowKey,
+            TowerTag.NeedToBookVisit,
+            TowerTag.SuitableForCyclists,
+            TowerTag.HasParking,
+            TowerTag.IsNearPublicTransport,
+            TowerTag.WheelchairAccessible,
+        ],
+    },
+    {
+        title: "Zázemí",
+        tags: [
+            TowerTag.HasToilet,
+            TowerTag.HasSnacks,
+            TowerTag.HasRestaurant,
+            TowerTag.HasWifi,
+            TowerTag.CanPayByCard,
+            TowerTag.HasShelter,
+            TowerTag.HasBikeRepairStation,
+            TowerTag.HasElectricCharger,
+        ],
+    },
+    {
+        title: "Bezpečnost",
+        tags: [
+            TowerTag.HasSlipperySurface,
+            TowerTag.HasSteepStairs,
+            TowerTag.HasSmallRailings,
+            TowerTag.HasLadder,
+        ],
+    },
+];
 
 const getInitialAdmissionType = (tower: Tower) => {
     const currentType = tower.admission?.type;
@@ -73,6 +135,25 @@ const getInitialAdmissionType = (tower: Tower) => {
 const hasOpeningHourRanges = (openingHours: OpeningHours) =>
     openingHours.type === OpeningHoursType.EveryMonth ||
     openingHours.type === OpeningHoursType.SomeMonths;
+
+const normalizeContact = (contact?: TowerContact): TowerContact => ({
+    email: contact?.email.trim() ?? "",
+    officialWebsite: contact?.officialWebsite.trim() ?? "",
+    phone: contact?.phone.trim() ?? "",
+});
+
+const areContactsEqual = (first?: TowerContact, second?: TowerContact) =>
+    JSON.stringify(normalizeContact(first)) === JSON.stringify(normalizeContact(second));
+
+const areTagsEqual = (first?: TowerTag[], second?: TowerTag[]) => {
+    const firstTags = [...new Set(first ?? [])].sort();
+    const secondTags = [...new Set(second ?? [])].sort();
+
+    return (
+        firstTags.length === secondTags.length &&
+        firstTags.every((tag, index) => tag === secondTags[index])
+    );
+};
 
 const getEditableParameter = (parameter: keyof Tower | "default") =>
     editableParameters.find((item) => item.name === parameter);
@@ -142,6 +223,9 @@ const SuggestEditModal = ({ tower }: SuggestEditModalProps) => {
     );
     const [tariffes, setTariffes] = useState(tower.admission?.tariffes ?? {});
 
+    const [contact, setContact] = useState<TowerContact>(normalizeContact(tower.contact));
+    const [tags, setTags] = useState<TowerTag[]>(tower.tags ?? []);
+
     const [sourceUrl, setSourceUrl] = useState("");
 
     const resetFeedback = () => {
@@ -165,6 +249,8 @@ const SuggestEditModal = ({ tower }: SuggestEditModalProps) => {
         setOpeningStep("type");
         setAdmissionType(getInitialAdmissionType(tower));
         setTariffes(tower.admission?.tariffes ?? {});
+        setContact(normalizeContact(tower.contact));
+        setTags(tower.tags ?? []);
         setSourceUrl("");
     };
 
@@ -363,6 +449,62 @@ const SuggestEditModal = ({ tower }: SuggestEditModalProps) => {
         setLoading(false);
     };
 
+    const submitContact = async () => {
+        const newContact = normalizeContact(contact);
+        const validationError = getTowerContactValidationError(newContact);
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+        if (areContactsEqual(tower.contact, newContact)) {
+            setError("Kontaktní údaje se musí lišit od stávajících.");
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        try {
+            await createChange({
+                tower_id: tower.id,
+                field: "contact",
+                type: "object",
+                old_value: normalizeContact(tower.contact),
+                new_value: newContact,
+            });
+            setMessage("Návrh úpravy kontaktu byl odeslán ke schválení.");
+            setContact(normalizeContact(tower.contact));
+            setSection("overview");
+        } catch (submitError: any) {
+            setError(submitError?.message ?? "Návrh se nepodařilo odeslat.");
+        }
+        setLoading(false);
+    };
+
+    const submitTags = async () => {
+        if (areTagsEqual(tower.tags, tags)) {
+            setError("Vybrané tagy se musí lišit od stávajících.");
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        try {
+            await createChange({
+                tower_id: tower.id,
+                field: "tags",
+                type: "array",
+                old_value: tower.tags ?? [],
+                new_value: tags,
+            });
+            setMessage("Návrh úpravy přístupu a vybavení byl odeslán ke schválení.");
+            setTags(tower.tags ?? []);
+            setSection("overview");
+        } catch (submitError: any) {
+            setError(submitError?.message ?? "Návrh se nepodařilo odeslat.");
+        }
+        setLoading(false);
+    };
+
     const getSourceValidationError = () => {
         const normalizedUrl = getNormalizedHttpUrl(sourceUrl);
         const currentUrls = tower.urls ?? [];
@@ -544,6 +686,96 @@ const SuggestEditModal = ({ tower }: SuggestEditModalProps) => {
         </div>
     );
 
+    const renderContact = () => (
+        <div className="grid gap-4">
+            <label className="form-control">
+                <span className="label-text mb-1">Telefon</span>
+                <input
+                    type="tel"
+                    className="input input-bordered w-full"
+                    placeholder="+420 123 456 789"
+                    value={contact.phone}
+                    onChange={(event) => {
+                        setContact((oldContact) => ({ ...oldContact, phone: event.target.value }));
+                        setError(null);
+                    }}
+                />
+            </label>
+            <label className="form-control">
+                <span className="label-text mb-1">E-mail</span>
+                <input
+                    type="email"
+                    className="input input-bordered w-full"
+                    placeholder="info@example.cz"
+                    value={contact.email}
+                    onChange={(event) => {
+                        setContact((oldContact) => ({ ...oldContact, email: event.target.value }));
+                        setError(null);
+                    }}
+                />
+            </label>
+            <label className="form-control">
+                <span className="label-text mb-1">Oficiální web</span>
+                <input
+                    type="url"
+                    className="input input-bordered w-full"
+                    placeholder="https://example.cz"
+                    value={contact.officialWebsite}
+                    onChange={(event) => {
+                        setContact((oldContact) => ({
+                            ...oldContact,
+                            officialWebsite: event.target.value,
+                        }));
+                        setError(null);
+                    }}
+                />
+            </label>
+        </div>
+    );
+
+    const renderAccessAndEquipment = () => (
+        <div className="space-y-5">
+            {tagEditorGroups.map(({ tags: groupTags, title }) => {
+                return (
+                    <section
+                        key={title ?? "basic"}
+                        className="rounded-lg border border-base-300/70 bg-base-200/30 p-4"
+                    >
+                        {title ? <h3 className="font-semibold">{title}</h3> : null}
+                        <div className={title ? "mt-3 grid gap-2 sm:grid-cols-2" : "grid gap-2 sm:grid-cols-2"}>
+                            {groupTags.map((tag) => {
+                                const { Icon, label } = TOWER_TAG_DETAILS[tag];
+
+                                return (
+                                    <label
+                                        key={tag}
+                                        className="label cursor-pointer justify-start gap-3 rounded-lg px-2 py-2 hover:bg-base-100"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            className="checkbox checkbox-primary"
+                                            checked={tags.includes(tag)}
+                                            onChange={(event) => {
+                                                setTags((oldTags) =>
+                                                    event.target.checked
+                                                        ? [...oldTags, tag]
+                                                        : oldTags.filter((oldTag) => oldTag !== tag)
+                                                );
+                                                setError(null);
+                                            }}
+                                        />
+                                        <Icon className="size-4 shrink-0 text-primary" />
+                                        <span className="label-text">{label}</span>
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    </section>
+                );
+            })}
+        </div>
+    );
+
     const renderSources = () => {
         const currentUrls = tower.urls ?? [];
         const sameDomainUrl = findUrlWithSameDomain(currentUrls, sourceUrl);
@@ -647,6 +879,24 @@ const SuggestEditModal = ({ tower }: SuggestEditModalProps) => {
             };
         }
 
+        if (section === "contact") {
+            return {
+                label: loading ? <span className="loading loading-spinner loading-sm" /> : "Odeslat návrh",
+                onClick: submitContact,
+                className: "btn-primary",
+                disabled: loading || areContactsEqual(tower.contact, contact),
+            };
+        }
+
+        if (section === "accessAndEquipment") {
+            return {
+                label: loading ? <span className="loading loading-spinner loading-sm" /> : "Odeslat návrh",
+                onClick: submitTags,
+                className: "btn-primary",
+                disabled: loading || areTagsEqual(tower.tags, tags),
+            };
+        }
+
         if (section === "sources") {
             return {
                 label: loading ? (
@@ -708,6 +958,8 @@ const SuggestEditModal = ({ tower }: SuggestEditModalProps) => {
                 {section === "parameters" ? renderParameters() : null}
                 {section === "openingHours" ? renderOpeningHours() : null}
                 {section === "admission" ? renderAdmission() : null}
+                {section === "contact" ? renderContact() : null}
+                {section === "accessAndEquipment" ? renderAccessAndEquipment() : null}
                 {section === "sources" ? renderSources() : null}
             </div>
         </TowerModal>

@@ -18,7 +18,7 @@ const SuggestCorrectionCta = () => (
                 </h2>
                 <p className="mx-auto max-w-xl text-sm leading-relaxed text-base-content/65 sm:text-base">
                     Pomozte udržet údaje aktuální. Navrhněte opravu názvu, parametrů, otevírací
-                    doby, vstupného nebo zdrojů.
+                    doby, přístupu, vybavení, vstupného, kontaktu nebo zdrojů.
                 </p>
             </div>
             <SuggestEditButton label="Navrhnout opravu" className="btn-primary" />

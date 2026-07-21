@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { TowerMap } from "@/components/shared/map/TowerMap";
 import CopyGpsButton from "@/components/tower/tiles/CopyGpsButton";
+import MapDistance from "@/components/tower/tiles/MapDistance";
 import { CONCURRENCE_LOGOS } from "@/constants/concurrenceLogos";
 import { Tower } from "@/types/Tower";
 
@@ -41,80 +42,59 @@ const MapTile = ({ tower, nearbyTowers = [] }: { nearbyTowers?: Tower[]; tower: 
                 <h4 className="card-title text-base sm:text-lg md:text-xl text-nowrap my-2">
                     Poloha
                 </h4>
+                <MapDistance latitude={latitude} longitude={longitude} />
 
-                <div className="mb-3 space-y-3 rounded-lg border border-base-300/70 bg-base-200/35 p-3">
-                    <div className="flex min-w-0 items-center gap-2 text-sm font-semibold text-base-content/70">
+                <div className="mb-3 space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-base-content/70">
                         <MapPin className="size-4 text-primary" />
                         <span>GPS</span>
-                        <span className="min-w-0 whitespace-nowrap font-mono text-sm font-bold text-base-content">
-                            {coordinates}
-                        </span>
                     </div>
-                    <CopyGpsButton coordinates={coordinates} className="w-full justify-center" />
+                    <div className="font-mono text-sm font-bold text-base-content">{coordinates}</div>
+                    <CopyGpsButton coordinates={coordinates} className="justify-center" />
                 </div>
 
-                <a
-                    href={directionUrls.mapyCz}
-                    className="btn btn-outline btn-sm w-full justify-start whitespace-nowrap sm:btn-md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <div className="avatar">
-                        <div className="w-6 rounded-full">
-                            <Image
-                                src={CONCURRENCE_LOGOS["mapy.com"]}
-                                alt=""
-                                className="object-contain!"
-                                loading="lazy"
-                                width={24}
-                                height={24}
-                            />
-                        </div>
+                <div>
+                    <div className="mb-2 text-sm font-semibold text-base-content/70">Navigovat</div>
+                    <div className="flex gap-2">
+                        {[
+                            {
+                                alt: "Navigovat pomocí Mapy.com",
+                                href: directionUrls.mapyCz,
+                                logo: CONCURRENCE_LOGOS["mapy.com"],
+                            },
+                            {
+                                alt: "Navigovat pomocí Google Maps",
+                                href: directionUrls.googleMaps,
+                                logo: CONCURRENCE_LOGOS["maps.google.com"],
+                            },
+                            {
+                                alt: "Navigovat pomocí Waze",
+                                href: directionUrls.waze,
+                                logo: CONCURRENCE_LOGOS["waze.com"],
+                            },
+                        ].map(({ alt, href, logo }) => (
+                            <a
+                                key={href}
+                                href={href}
+                                aria-label={alt}
+                                title={alt}
+                                className="btn btn-outline btn-square btn-sm sm:btn-md"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Image
+                                    src={logo}
+                                    alt=""
+                                    aria-hidden="true"
+                                    className="size-6 shrink-0 object-contain!"
+                                    loading="lazy"
+                                    width={24}
+                                    height={24}
+                                />
+                            </a>
+                        ))}
                     </div>
-                    Navigovat pomocí Mapy.com
-                </a>
-
-                <a
-                    href={directionUrls.googleMaps}
-                    className="btn btn-outline btn-sm w-full justify-start whitespace-nowrap sm:btn-md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <div className="avatar">
-                        <div className="w-6 rounded-full">
-                            <Image
-                                src={CONCURRENCE_LOGOS["maps.google.com"]}
-                                alt=""
-                                className="object-contain!"
-                                loading="lazy"
-                                width={24}
-                                height={24}
-                            />
-                        </div>
-                    </div>
-                    Navigovat pomocí Google Maps
-                </a>
-
-                <a
-                    href={directionUrls.waze}
-                    className="btn btn-outline btn-sm w-full justify-start whitespace-nowrap sm:btn-md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <div className="avatar">
-                        <div className="w-6 rounded-full">
-                            <Image
-                                src={CONCURRENCE_LOGOS["waze.com"]}
-                                alt=""
-                                className="object-cover!"
-                                loading="lazy"
-                                width={24}
-                                height={24}
-                            />
-                        </div>
-                    </div>
-                    Navigovat pomocí Waze
-                </a>
+                </div>
             </div>
         </div>
     );

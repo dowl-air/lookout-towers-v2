@@ -10,6 +10,17 @@ const isValidUrl = (value: string) => {
     }
 };
 
+export const getTowerContactValidationError = (contact: Tower["contact"]): string | null => {
+    if (contact?.officialWebsite && !isValidUrl(contact.officialWebsite)) {
+        return "Oficiální web musí být platná HTTP nebo HTTPS URL.";
+    }
+    if (contact?.email && !/^\S+@\S+\.\S+$/.test(contact.email)) {
+        return "E-mailová adresa nemá platný formát.";
+    }
+
+    return null;
+};
+
 export const getTowerValidationError = (tower: Partial<Tower>, photosCount?: number) => {
     if (!tower.name?.trim() || !tower.type || !tower.country || !tower.gps) {
         return "Vyplňte prosím všechna povinná pole.";
@@ -48,12 +59,8 @@ export const getTowerValidationError = (tower: Partial<Tower>, photosCount?: num
     if (tower.urls?.some((url) => !isValidUrl(url))) {
         return "Každý odkaz musí být platná HTTP nebo HTTPS URL.";
     }
-    if (tower.contact?.officialWebsite && !isValidUrl(tower.contact.officialWebsite)) {
-        return "Oficiální web musí být platná HTTP nebo HTTPS URL.";
-    }
-    if (tower.contact?.email && !/^\S+@\S+\.\S+$/.test(tower.contact.email)) {
-        return "E-mailová adresa nemá platný formát.";
-    }
+    const contactValidationError = getTowerContactValidationError(tower.contact);
+    if (contactValidationError) return contactValidationError;
     if (tower.admission) {
         const invalidTariff = Object.values(tower.admission.tariffes).some(
             (tariff) => !Number.isFinite(tariff?.price) || tariff.price < 0

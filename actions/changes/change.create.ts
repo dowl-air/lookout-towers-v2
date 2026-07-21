@@ -7,10 +7,12 @@ import { checkAuth } from "@/actions/checkAuth";
 import { sendMail } from "@/actions/mail";
 import { Change, ChangeState } from "@/types/Change";
 import { MailSubject } from "@/types/MailSubject";
+import { TowerTag } from "@/types/TowerTags";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 import { createSubject } from "@/utils/mail";
 import { getOpeningHoursValidationError, normalizeOpeningHours } from "@/utils/openingHours";
+import { getTowerContactValidationError } from "@/utils/towerValidation";
 import { getNormalizedHttpUrl, hasUrl } from "@/utils/url";
 
 export const createChange = async (
@@ -24,6 +26,33 @@ export const createChange = async (
             normalizeOpeningHours(change.new_value)
         );
         if (validationError) throw new Error(validationError);
+    }
+
+    if (change.field === "contact") {
+        const contact = change.new_value;
+        if (
+            !contact ||
+            typeof contact !== "object" ||
+            ["email", "officialWebsite", "phone"].some((field) => typeof contact[field] !== "string")
+        ) {
+            throw new Error("Kontaktní údaje mají neplatný formát.");
+        }
+
+        const validationError = getTowerContactValidationError(contact);
+        if (validationError) throw new Error(validationError);
+    }
+
+    if (change.field === "tags") {
+        const tags = change.new_value;
+        const validTags = new Set(Object.values(TowerTag));
+
+        if (
+            !Array.isArray(tags) ||
+            new Set(tags).size !== tags.length ||
+            tags.some((tag) => typeof tag !== "string" || !validTags.has(tag as TowerTag))
+        ) {
+            throw new Error("Vybrané tagy mají neplatný formát.");
+        }
     }
 
     if (change.field === "urls") {

@@ -13,6 +13,7 @@ import { getTowerValidationError } from "@/utils/towerValidation";
 import {
     createMapyComUrl,
     createNameID,
+    createScrapedTowersPurgeUrl,
     createScrapedTowerId,
     createScrapedTowerDocument,
     extractMapyCzDetails,
@@ -558,5 +559,12 @@ test("parseCliOptions enables Firestore persistence only with --write", () => {
     assert.equal(
         parseCliOptions(["--write", "https://mapy.com/cs/turisticka?source=base&id=2582164"]).write,
         true
+    );
+});
+
+test("createScrapedTowersPurgeUrl targets the scraped towers cache endpoint", () => {
+    assert.equal(
+        createScrapedTowersPurgeUrl(),
+        "https://rozhlednovysvet.cz/api/cache/purge/scraped-towers"
     );
 });
