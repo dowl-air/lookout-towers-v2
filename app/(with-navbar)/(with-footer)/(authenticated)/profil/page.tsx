@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { connection } from "next/server";
-import { Suspense } from "react";
 
 import ProfileBox from "@/app/(with-navbar)/(with-footer)/(authenticated)/profil/ProfileBox";
 import { ProfileMap } from "@/components/shared/map/ProfileMap";
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
     title: "Profil",
 };
 
-async function ProfileContent() {
+async function ProfilePage() {
     await connection();
 
     const [favouritesIds, visits, ratings] = await Promise.all([
@@ -73,18 +72,6 @@ async function ProfileContent() {
                 </div>
             </div>
         </div>
-    );
-}
-
-function ProfilePage() {
-    return (
-        <Suspense
-            fallback={
-                <div className="flex flex-col items-center gap-3 mt-3 max-w-[calc(min(99vw,80rem))] m-auto" />
-            }
-        >
-            <ProfileContent />
-        </Suspense>
     );
 }
 

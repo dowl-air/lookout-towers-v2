@@ -126,18 +126,12 @@ async function Stats() {
                             Místa
                         </div>
                         <div className="stat-value text-center text-2xl">{towersNumber}</div>
-                        <div className="stat-desc text-center text-primary-content/80">
-                            {towersDescription}
-                        </div>
                     </div>
                     <div className="stat">
                         <div className="stat-title text-primary-content text-center text-sm">
                             Komunita
                         </div>
                         <div className="stat-value text-center text-2xl">{usersNumber}</div>
-                        <div className="stat-desc text-center text-primary-content/80">
-                            {usersDescription}
-                        </div>
                     </div>
                 </div>
                 <div className="flex">
@@ -146,18 +140,12 @@ async function Stats() {
                             Úpravy
                         </div>
                         <div className="stat-value text-center text-2xl">{changesNumber}</div>
-                        <div className="stat-desc text-center text-primary-content/80">
-                            {changesDescription}
-                        </div>
                     </div>
                     <div className="stat">
                         <div className="stat-title text-primary-content text-center text-sm">
                             Hodnocení
                         </div>
                         <div className="stat-value text-center text-2xl">{ratingsNumber}</div>
-                        <div className="stat-desc text-center text-primary-content/80">
-                            {ratingsDescription}
-                        </div>
                     </div>
                 </div>
                 <div className="flex">
@@ -167,9 +155,6 @@ async function Stats() {
                         </div>
                         <div className="stat-value text-center text-2xl">
                             {formatDate({ date: towersDate })}
-                        </div>
-                        <div className="stat-desc text-center text-primary-content/80">
-                            Poslední změna v katalogu
                         </div>
                     </div>
                 </div>

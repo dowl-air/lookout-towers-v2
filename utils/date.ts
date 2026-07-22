@@ -22,6 +22,15 @@ export const formatDateYear = ({ date }: { date: Date | string | number }) => {
     });
 };
 
+export const formatMonthYear = ({ date }: { date: Date | string | number }) => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString("cs", {
+        timeZone: "Europe/Prague",
+        month: "long",
+        year: "numeric",
+    });
+};
+
 export const toDateInputValue = (date: Date | string | number | undefined) => {
     if (!date) return "";
 

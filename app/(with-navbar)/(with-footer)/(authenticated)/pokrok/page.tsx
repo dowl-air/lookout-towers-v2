@@ -18,7 +18,6 @@ import {
 import { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
-import { Suspense } from "react";
 
 import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
 import PROVINCES_CZ from "@/constants/provinces/CZ";
@@ -521,21 +520,13 @@ function ProgressContent({
     );
 }
 
-async function ProgressPageContent() {
+async function ProgressPage() {
     await connection();
 
     const [towers, visits] = await Promise.all([getCzechTowersForProgress(), getAllUserVisits()]);
     const visitedTowerIds = new Set(visits.map((visit) => visit.tower_id));
 
     return <ProgressContent towers={towers} visitedTowerIds={visitedTowerIds} />;
-}
-
-function ProgressPage() {
-    return (
-        <Suspense fallback={<div className="mx-auto w-full max-w-7xl px-3 py-8 xl:px-0" />}>
-            <ProgressPageContent />
-        </Suspense>
-    );
 }
 
 export default ProgressPage;

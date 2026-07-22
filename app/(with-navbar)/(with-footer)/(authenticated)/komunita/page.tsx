@@ -4,7 +4,7 @@ import Link from "next/link";
 import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
 import UserProfileAvatar from "@/components/UserProfileAvatar";
 import { getAllMembers } from "@/data/user/users-community";
-import { formatDate } from "@/utils/date";
+import { formatMonthYear } from "@/utils/date";
 import { getUserLevel } from "@/utils/userLevels";
 
 const ComunityPage = async () => {
@@ -81,7 +81,7 @@ const ComunityPage = async () => {
                                                         {member.lastVisited.tower.name}
                                                     </div>
                                                     <div className="text-sm opacity-50">
-                                                        {formatDate({
+                                                        {formatMonthYear({
                                                             date: member.lastVisited.date,
                                                         })}
                                                     </div>

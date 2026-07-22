@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 import { TowersSearchParams } from "@/types/TowersSearchParams";
 
@@ -13,6 +17,9 @@ const Pagination = ({
     pathname: string;
     searchParams: TowersSearchParams;
 }) => {
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+
     const getParams = () => {
         const params = new URLSearchParams();
 
@@ -40,22 +47,45 @@ const Pagination = ({
         return `${pathname}?${params.toString()}`;
     };
 
+    const handleNavigation = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        if (isPending) {
+            event.preventDefault();
+            return;
+        }
+
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+
+        event.preventDefault();
+        startTransition(() => {
+            router.push(href);
+        });
+    };
+
+    const previousPageUrl = createPageURL(currentPage === 1 ? 1 : currentPage - 1);
+    const nextPageUrl = createPageURL(currentPage === totalPages ? totalPages : currentPage + 1);
+
     return (
         <div className="join my-4 lg:my-8 w-full justify-center">
             <Link
-                href={createPageURL(currentPage === 1 ? 1 : currentPage - 1)}
+                href={previousPageUrl}
+                aria-disabled={isPending}
                 className="join-item btn btn-sm sm:btn-md"
+                onClick={(event) => handleNavigation(event, previousPageUrl)}
             >
-                «
+                {isPending ? <span className="loading loading-spinner loading-sm" /> : "«"}
             </Link>
-            <button className="join-item btn btn-sm sm:btn-md">
-                Strana {currentPage}/{totalPages}
+            <button className="join-item btn btn-sm sm:btn-md" disabled={isPending}>
+                {isPending ? "Načítám..." : `Strana ${currentPage}/${totalPages}`}
             </button>
             <Link
-                href={createPageURL(currentPage === totalPages ? totalPages : currentPage + 1)}
+                href={nextPageUrl}
+                aria-disabled={isPending}
                 className="join-item btn btn-sm sm:btn-md"
+                onClick={(event) => handleNavigation(event, nextPageUrl)}
             >
-                »
+                {isPending ? <span className="loading loading-spinner loading-sm" /> : "»"}
             </Link>
         </div>
     );
