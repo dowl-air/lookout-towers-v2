@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
+import UserProfileAvatar from "@/components/UserProfileAvatar";
 import { getAllMembers } from "@/data/user/users-community";
 import { formatDate } from "@/utils/date";
 import { getUserLevel } from "@/utils/userLevels";
@@ -28,25 +30,16 @@ const ComunityPage = async () => {
                     </thead>
                     <tbody>
                         {members.map((member) => {
-                            const { name, color, textColor } = getUserLevel(member.visits);
                             return (
                                 <tr key={member.id}>
                                     <td>
                                         <div className="flex items-center gap-3">
-                                            <div className="avatar">
-                                                <div className="mask mask-squircle w-12 h-12">
-                                                    <Image
-                                                        src={member.image}
-                                                        alt={member.name}
-                                                        width={48}
-                                                        height={48}
-                                                        unoptimized
-                                                    />
-                                                </div>
-                                            </div>
+                                            <UserProfileAvatar
+                                                name={member.name}
+                                                image={member.image}
+                                            />
                                             <div>
                                                 <div className="font-bold">{member.name}</div>
-                                                <div className="text-sm opacity-50">Česko</div>
                                             </div>
                                         </div>
                                     </td>
@@ -58,15 +51,11 @@ const ComunityPage = async () => {
                                                     Autor
                                                 </div>
                                             )}
-                                            <div
-                                                className="badge whitespace-nowrap"
-                                                style={{
-                                                    backgroundColor: color,
-                                                    color: textColor,
-                                                }}
-                                            >
-                                                {name}
-                                            </div>
+                                            <UserLevelBadgeButton
+                                                className="whitespace-nowrap"
+                                                size="default"
+                                                {...getUserLevel(member.visits)}
+                                            />
                                         </div>
                                     </td>
 
@@ -84,6 +73,7 @@ const ComunityPage = async () => {
                                                         alt={member.lastVisited.tower.name}
                                                         width={48}
                                                         height={48}
+                                                        className="w-12 h-12 object-cover"
                                                     />
                                                 </div>
                                                 <div>

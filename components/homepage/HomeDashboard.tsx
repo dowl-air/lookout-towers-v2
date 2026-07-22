@@ -382,11 +382,11 @@ function AuthenticatedDashboard({
                         </h2>
                         <p className="mt-2 max-w-2xl text-base text-base-content/70">
                             Kam vyrazíte tentokrát? Proměňte svůj další výlet v užitečný záznam pro
-                            sebe i ostatní.
+                            sebe a dodejte hodnocení pro ostatní.
                         </p>
                     </div>
-                    <Link href="/rozhledny" className="btn btn-outline w-full md:w-auto">
-                        Objevit rozhledny
+                    <Link href="/navstivene" className="btn btn-outline w-full sm:w-auto">
+                        Navštívené rozhledny
                     </Link>
                 </div>
             </div>

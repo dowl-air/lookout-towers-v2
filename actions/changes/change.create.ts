@@ -9,6 +9,7 @@ import { Change, ChangeState } from "@/types/Change";
 import { MailSubject } from "@/types/MailSubject";
 import { TowerTag } from "@/types/TowerTags";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
+import { SITE_URL } from "@/utils/constants";
 import { db } from "@/utils/firebase";
 import { createSubject } from "@/utils/mail";
 import { getOpeningHoursValidationError, normalizeOpeningHours } from "@/utils/openingHours";
@@ -33,7 +34,9 @@ export const createChange = async (
         if (
             !contact ||
             typeof contact !== "object" ||
-            ["email", "officialWebsite", "phone"].some((field) => typeof contact[field] !== "string")
+            ["email", "officialWebsite", "phone"].some(
+                (field) => typeof contact[field] !== "string"
+            )
         ) {
             throw new Error("Kontaktní údaje mají neplatný formát.");
         }
@@ -91,7 +94,7 @@ export const createChange = async (
                 <strong>Uživatel:</strong> ${user.name} (${user.email})<br>
                 <strong>Čas vytvoření:</strong> ${new Date().toLocaleString("cs-CZ")}<br><br>
 
-                <a href="https://rozhlednovysvet.cz/zmeny/">Zobrazit změny</a><br>
+                <a href="${SITE_URL}/zmeny/">Zobrazit změny</a><br>
             </p>
         `,
     });

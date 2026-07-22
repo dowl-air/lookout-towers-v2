@@ -1,14 +1,6 @@
-import {
-    Footprints,
-    ListOrdered,
-    Mountain,
-    Ruler,
-    Star,
-    Unlock,
-} from "lucide-react";
+import { Footprints, ListOrdered, Mountain, Ruler, Star, Unlock } from "lucide-react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { TouristAttraction, WithContext } from "schema-dts";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import TowerAliases from "@/components/shared/TowerAliases";
 import SuggestCorrectionCta from "@/components/tower/edit/SuggestCorrectionCta";
@@ -36,8 +28,12 @@ import {
 } from "@/data/tower/towers";
 import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
+import { SITE_URL } from "@/utils/constants";
 import { formatCountyName, formatProvinceName } from "@/utils/geography";
 import { normalizeOpeningHours } from "@/utils/openingHours";
+import { getTowerJsonLd } from "@/utils/structuredData";
+import { getTowerHeroDescription, getTowerSeoDescription } from "@/utils/towerDescriptions";
+import { getCanonicalTowerPath, isCanonicalTowerType } from "@/utils/towerRoute";
 
 const HERO_TAG_CLASS =
     "inline-flex items-center gap-1.5 rounded-md border border-base-300/70 bg-base-100/75 px-2.5 py-1 shadow-sm whitespace-nowrap";
@@ -97,15 +93,13 @@ const formatHeroAccess = (tower: Tower) => {
     }
 };
 
-const getTowerHeroDescription = (tower: Tower) => tower.texts?.heroDescription?.trim() || null;
-
-const getTowerSeoDescription = (tower: Tower) =>
-    tower.texts?.seoDescription?.trim() || tower.history;
-
-async function TowerPage({ params }: { params }) {
-    const { nameID } = await params;
+async function TowerPage({ params }: { params: Promise<{ type: string; nameID: string }> }) {
+    const { type, nameID } = await params;
     const tower = await getTowerObjectByNameID(nameID);
     if (!tower) notFound();
+    if (!isCanonicalTowerType(type, tower)) {
+        permanentRedirect(getCanonicalTowerPath(tower));
+    }
     const [towerImages, towerUserImages, nearbyTowers, { count, avg }, { count: visitsCount }] =
         await Promise.all([
             getUrlsTowerGallery(tower.id),
@@ -119,35 +113,16 @@ async function TowerPage({ params }: { params }) {
     const towerHeroTags = getTowerHeroTags(tower);
     const countyLabel = formatCountyName(tower.county);
     const provinceLabel = formatProvinceName(tower.country, tower.province);
-
-    // TODO? use LandmarksOrHistoricalBuildings when tower is historic monument
-    // TODO add openinghours as openingHours schema
-    // TODO add admission schema when admission is defined
-    const jsonLd: WithContext<TouristAttraction> = {
-        "@context": "https://schema.org",
-        "@type": "TouristAttraction",
-        "@id": `https://rozhlednovysvet.cz/${tower.type}/${tower.nameID}#schema`,
-        url: `https://rozhlednovysvet.cz/${tower.type}/${tower.nameID}`,
-        name: tower.name,
+    const towerUrl = `${SITE_URL}${getCanonicalTowerPath(tower)}`;
+    const jsonLd = getTowerJsonLd({
+        tower,
+        url: towerUrl,
         description: seoDescription,
-        image: towerImages,
-        address: {
-            "@type": "PostalAddress",
-            addressLocality: countyLabel,
-            addressRegion: provinceLabel,
-        },
-        geo: {
-            "@type": "GeoCoordinates",
-            latitude: tower.gps.latitude,
-            longitude: tower.gps.longitude,
-        },
-        touristType: ["Sightseeing", "Hiking", "Photography"],
-        sameAs: [
-            tower.mapycz?.href,
-            tower.gmaps?.url,
-            tower.urls?.find((url) => url.includes("wikipedia")),
-        ].filter(Boolean),
-    };
+        images: towerImages,
+        rating: { average: avg, count },
+        countyLabel,
+        provinceLabel,
+    });
 
     return (
         <>
@@ -262,7 +237,11 @@ async function TowerPage({ params }: { params }) {
 
 export default TowerPage;
 
-export async function generateMetadata({ params }: { params }): Promise<Metadata> {
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ type: string; nameID: string }>;
+}): Promise<Metadata> {
     const { nameID } = await params;
     const tower = await getTowerObjectByNameID(nameID);
 
@@ -274,7 +253,7 @@ export async function generateMetadata({ params }: { params }): Promise<Metadata
             openGraph: {
                 title: "Rozhledna nebyla nalezena",
                 description: "Rozhledna nebyla nalezena",
-                url: `https://rozhlednovysvet.cz/rozhledny`,
+                url: `${SITE_URL}/rozhledny`,
                 siteName: "Rozhlednový svět",
                 type: "website",
             },
@@ -288,10 +267,14 @@ export async function generateMetadata({ params }: { params }): Promise<Metadata
     const seoDescription = getTowerSeoDescription(tower);
     const countyLabel = formatCountyName(tower.county);
     const provinceLabel = formatProvinceName(tower.country, tower.province);
+    const canonicalPath = getCanonicalTowerPath(tower);
 
     return {
         title: tower.name,
         description: seoDescription,
+        alternates: {
+            canonical: `${SITE_URL}${canonicalPath}`,
+        },
         keywords: [
             "rozhledna",
             "pozorovatelna",
@@ -310,7 +293,7 @@ export async function generateMetadata({ params }: { params }): Promise<Metadata
                 },
             ],
             description: seoDescription,
-            url: `https://rozhlednovysvet.cz/${tower.type}/${tower.nameID}`,
+            url: `${SITE_URL}/${tower.type}/${tower.nameID}`,
             siteName: "Rozhlednový svět",
             type: "website",
         },

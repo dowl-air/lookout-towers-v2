@@ -18,7 +18,7 @@ import {
     type OpeningHoursRange,
 } from "@/types/OpeningHours";
 import type { Tower, TowerContact } from "@/types/Tower";
-import { DAYS_CZECH, MONTHS_CZECH_4 } from "@/utils/constants";
+import { DAYS_CZECH, MONTHS_CZECH_4, SITE_URL } from "@/utils/constants";
 import { findInfoByGPS, isValidCountryCode } from "@/utils/geography";
 import { createNameID, resolveUniqueNameID } from "@/utils/nameID";
 
@@ -27,7 +27,7 @@ const DETAIL_SETTLE_TIME_MS = 2_000;
 const GALLERY_SCROLL_SETTLE_TIME_MS = 500;
 const GALLERY_SCROLLS = 3;
 const MAX_PHOTOS = 8;
-const PRODUCTION_APP_URL = "https://rozhlednovysvet.cz";
+const PRODUCTION_APP_URL = SITE_URL;
 const CLOSED_HOURS_VALUES = new Set(["zavřeno", "uzavřeno"]);
 const MATERIAL_ROOTS: { material: (typeof MATERIALS)[number]; roots: string[] }[] = [
     { material: "dřevo", roots: ["drev"] },

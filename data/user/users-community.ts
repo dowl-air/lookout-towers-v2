@@ -53,7 +53,7 @@ export const getAllMembers: () => Promise<User[]> = cache(async () => {
 
     const usersSnap = await db.collection("users").get();
 
-    return Promise.all(
+    const members = await Promise.all(
         usersSnap.docs.map(async (doc) => {
             const userData = serializeFirestoreValue(doc.data()) as Record<string, unknown>;
 
@@ -75,5 +75,11 @@ export const getAllMembers: () => Promise<User[]> = cache(async () => {
                 ...lastVisited,
             } satisfies User;
         })
+    );
+
+    return members.sort(
+        (firstMember, secondMember) =>
+            secondMember.visits - firstMember.visits ||
+            firstMember.name.localeCompare(secondMember.name, "cs")
     );
 });

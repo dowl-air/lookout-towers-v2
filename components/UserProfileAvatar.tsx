@@ -27,10 +27,12 @@ function UserProfileAvatar({
             ) : (
                 <div className="avatar avatar-placeholder cursor-pointer">
                     <div
-                        className="bg-neutral text-neutral-content rounded-full"
+                        className="bg-base-200 text-base-content rounded-full"
                         style={{ width: `${size}px`, height: `${size}px` }}
                     >
-                        {name ? name.substring(0, 2) : "TY"}
+                        <span className="text-xl font-medium">
+                            {name ? name.substring(0, 2) : "TY"}
+                        </span>
                     </div>
                 </div>
             )}

@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 import { LeafletMap } from "@/components/shared/map/LeafletMap";
 import { LeafletTileLayer } from "@/components/shared/map/LeafletTileLayer";
 import { MapControls } from "@/components/shared/map/MapControls";
+import { MapIntroduction } from "@/components/shared/map/MapIntroduction";
 import { MapTileSwitcher } from "@/components/shared/map/MapTileSwitcher";
 import { TowerMapDTO } from "@/data/tower/towers-map";
 import { useMapMarkers } from "@/hooks/useMapMarkers";
@@ -53,6 +54,8 @@ export function MapMain({ towers }: { towers: TowerMapDTO[] }) {
                     maxZoom={tileLayerProps.maxZoom}
                 />
             </LeafletMap>
+
+            <MapIntroduction />
 
             <MapTileSwitcher
                 selectedProviderId={currentProviderId}

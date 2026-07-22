@@ -2,13 +2,15 @@ import { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 
+import { SITE_URL } from "@/utils/constants";
+
 import "./globals.css";
 
 const LIGHT_THEME_COLOR = "#f3f3f3";
 const DARK_THEME_COLOR = "#333333";
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://rozhlednovysvet.cz/"),
+    metadataBase: new URL(SITE_URL),
     title: {
         template: "%s | Rozhlednový svět",
         default: "Rozhlednový svět",
@@ -44,7 +46,7 @@ export const metadata: Metadata = {
         type: "website",
         images: [
             {
-                url: "https://rozhlednovysvet.cz/img/logo.png",
+                url: `${SITE_URL}/img/logo.png`,
                 width: 518,
                 height: 517,
                 alt: "Rozhlednový svět - logo",
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
         ],
         locale: "cs_CZ",
         siteName: "Rozhlednový svět",
-        url: "https://rozhlednovysvet.cz/",
+        url: SITE_URL,
     },
 };
 

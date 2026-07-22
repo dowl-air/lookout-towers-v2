@@ -565,6 +565,6 @@ test("parseCliOptions enables Firestore persistence only with --write", () => {
 test("createScrapedTowersPurgeUrl targets the scraped towers cache endpoint", () => {
     assert.equal(
         createScrapedTowersPurgeUrl(),
-        "https://rozhlednovysvet.cz/api/cache/purge/scraped-towers"
+        "https://www.rozhlednovysvet.cz/api/cache/purge/scraped-towers"
     );
 });

@@ -57,9 +57,13 @@ function TowerSearch({ id, variant = "hero" }: TowerSearchProps) {
     }, [debouncedQuery]);
 
     useEffect(() => {
-        if (isExpanded && isNavbarVariant) {
-            inputRef.current?.focus();
+        if (!isExpanded || !isNavbarVariant) {
+            return;
         }
+
+        const focusTimeout = window.setTimeout(() => inputRef.current?.focus(), 100);
+
+        return () => window.clearTimeout(focusTimeout);
     }, [isExpanded, isNavbarVariant]);
 
     const collapseSearch = () => {
@@ -77,6 +81,12 @@ function TowerSearch({ id, variant = "hero" }: TowerSearchProps) {
             setIsExpanded(true);
         } else {
             inputRef.current?.focus();
+        }
+    };
+
+    const handleSearchButtonPointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+        if (!isExpanded) {
+            event.preventDefault();
         }
     };
 
@@ -109,6 +119,7 @@ function TowerSearch({ id, variant = "hero" }: TowerSearchProps) {
                             aria-label={isExpanded ? "Vyhledat rozhlednu" : "Otevřít vyhledávání"}
                             className="flex h-8 w-13 shrink-0 cursor-pointer items-center justify-center rounded-full bg-base-200/80 text-base-content transition-colors hover:bg-base-300/70 focus:bg-base-300/70 active:bg-base-300/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
                             onClick={handleSearchButtonClick}
+                            onPointerDown={handleSearchButtonPointerDown}
                         >
                             <Search size={19} />
                         </button>
@@ -121,18 +132,19 @@ function TowerSearch({ id, variant = "hero" }: TowerSearchProps) {
                             )}
                         >
                             <Search size={18} className="ml-3 shrink-0 text-base-content/45" />
-                            <input
-                                ref={inputRef}
-                                id={id}
-                                name="query"
-                                type="text"
-                                autoComplete="off"
-                                disabled={!isExpanded}
-                                className="input h-10 min-h-10 min-w-0 flex-1 border-0 bg-transparent px-3 text-sm text-base-content shadow-none outline-hidden placeholder:text-base-content/45 focus:outline-hidden focus-visible:outline-hidden"
-                                placeholder="Najít rozhlednu..."
-                                value={query}
-                                onChange={(event) => setQuery(event.target.value)}
-                            />
+                            {isExpanded && (
+                                <input
+                                    ref={inputRef}
+                                    id={id}
+                                    name="query"
+                                    type="text"
+                                    autoComplete="off"
+                                    className="input h-10 min-h-10 min-w-0 flex-1 border-0 bg-transparent px-3 text-sm text-base-content shadow-none outline-hidden placeholder:text-base-content/45 focus:outline-hidden focus-visible:outline-hidden"
+                                    placeholder="Najít rozhlednu..."
+                                    value={query}
+                                    onChange={(event) => setQuery(event.target.value)}
+                                />
+                            )}
                             <button
                                 type="button"
                                 aria-label="Zavřít vyhledávání"

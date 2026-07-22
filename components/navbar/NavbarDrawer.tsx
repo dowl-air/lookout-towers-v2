@@ -1,5 +1,6 @@
-import { House, LayoutList, Map, Users, X } from "lucide-react";
+import { House, LayoutList, Map, X } from "lucide-react";
 
+import CommunityLink from "@/components/navbar/links/CommunityLink";
 import LoginLink from "@/components/navbar/links/LoginLink";
 import LogoutLink from "@/components/navbar/links/LogoutLink";
 import ProfileLink from "@/components/navbar/links/ProfileLink";
@@ -45,12 +46,7 @@ const NavbarDrawer = ({ children }: { children: React.ReactNode }) => {
                                 Mapa
                             </NavbarSideLink>
                         </li>
-                        <li>
-                            <NavbarSideLink href="/komunita">
-                                <Users />
-                                Komunita
-                            </NavbarSideLink>
-                        </li>
+                        <CommunityLink variant="mobile" />
 
                         <VisitedTowersLink />
                         <ProgressLink />

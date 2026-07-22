@@ -92,7 +92,7 @@ When GPS coordinates are available, the scraper performs a Nominatim reverse-geo
 
 Opening-hour tables are mapped into the existing `OpeningHours` shape. For Mapy.com dropdowns, every listed season is paired with the following season table by its position; closed seasons are omitted. Different opening intervals within one season become separate ranges with their corresponding weekdays. A note explicitly stating `po dohodě` or `příležitostně` maps to `Occasionally`. Split shifts, exceptions, or unparseable seasons are safely omitted. The scraper stores an opening-hours note in `openingHours.detailText` only when no usable range remains.
 
-Chrome must be available on the host. Selenium Manager resolves a compatible ChromeDriver when the script starts. The scraper reads Firebase service-account variables from `.env.local` to verify `nameID` uniqueness. With `--write`, it also purges the `ScrapedTowers` Next.js cache tag through `SCRAPER_APP_URL` (default: `https://rozhlednovysvet.cz`). Set `SCRAPER_APP_URL` only when targeting a local or staging app. Pass the place URL as a positional argument or with `--url`:
+Chrome must be available on the host. Selenium Manager resolves a compatible ChromeDriver when the script starts. The scraper reads Firebase service-account variables from `.env.local` to verify `nameID` uniqueness. With `--write`, it also purges the `ScrapedTowers` Next.js cache tag through `SCRAPER_APP_URL` (default: `https://www.rozhlednovysvet.cz`). Set `SCRAPER_APP_URL` only when targeting a local or staging app. Pass the place URL as a positional argument or with `--url`:
 
 ```bash
 npm run scrape:add-tower -- "https://mapy.cz/..."

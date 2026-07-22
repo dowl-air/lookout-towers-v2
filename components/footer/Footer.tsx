@@ -4,6 +4,18 @@ import { Suspense } from "react";
 
 import FooterCopyright from "@/components/footer/FooterCopyright";
 import UserVisitLevels from "@/components/shared/UserVisitLevels";
+import { checkUser } from "@/data/auth";
+
+const FooterCommunityLink = async () => {
+    const { isAuth } = await checkUser();
+    if (!isAuth) return null;
+
+    return (
+        <Link className="link-hover link w-fit" href="/komunita">
+            Komunita
+        </Link>
+    );
+};
 
 function Footer() {
     return (
@@ -46,9 +58,9 @@ function Footer() {
                             <Link className="link-hover link w-fit" href="/mapa">
                                 Prozkoumat mapu
                             </Link>
-                            <Link className="link-hover link w-fit" href="/komunita">
-                                Komunita
-                            </Link>
+                            <Suspense fallback={null}>
+                                <FooterCommunityLink />
+                            </Suspense>
                         </nav>
                     </div>
 

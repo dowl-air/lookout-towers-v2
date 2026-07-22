@@ -9,10 +9,17 @@ type UserLevelBadgeButtonProps = {
     className?: string;
     color: string;
     name: string;
+    size?: "default" | "large";
     textColor: string;
 };
 
-const UserLevelBadgeButton = ({ className, color, name, textColor }: UserLevelBadgeButtonProps) => {
+const UserLevelBadgeButton = ({
+    className,
+    color,
+    name,
+    size = "large",
+    textColor,
+}: UserLevelBadgeButtonProps) => {
     const generatedId = useId();
     const dialogId = `user-levels-${generatedId.replace(/:/g, "")}`;
 
@@ -26,7 +33,8 @@ const UserLevelBadgeButton = ({ className, color, name, textColor }: UserLevelBa
             <button
                 aria-haspopup="dialog"
                 className={cn(
-                    "badge badge-lg cursor-pointer border-0 transition hover:scale-105 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100",
+                    "badge cursor-pointer border-0 transition hover:scale-105 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100",
+                    size === "large" && "badge-lg",
                     className
                 )}
                 onClick={openModal}

@@ -1,3 +1,4 @@
+import { ListChecks, LogOut, Trophy, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -43,10 +44,22 @@ const ProfileIconButton = async () => {
                     className="menu dropdown-content p-2 shadow-sm bg-base-100 rounded-box w-52 mt-4"
                 >
                     <li>
-                        <Link href={"/navstivene"}>Navštívené rozhledny</Link>
+                        <Link href={"/navstivene"}>
+                            <ListChecks size={16} />
+                            Navštívené rozhledny
+                        </Link>
                     </li>
                     <li>
-                        <Link href={"/profil"}>Můj profil</Link>
+                        <Link href={"/pokrok"}>
+                            <Trophy size={16} />
+                            Můj pokrok
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href={"/profil"}>
+                            <UserRound size={16} />
+                            Můj profil
+                        </Link>
                     </li>
                     <li>
                         <form
@@ -57,7 +70,11 @@ const ProfileIconButton = async () => {
                             }}
                             className="block"
                         >
-                            <button type="submit" className="w-full cursor-pointer text-left">
+                            <button
+                                type="submit"
+                                className="flex w-full cursor-pointer items-center gap-2 text-left"
+                            >
+                                <LogOut size={16} />
                                 Odhlásit se
                             </button>
                         </form>

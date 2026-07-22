@@ -1,9 +1,11 @@
+import { SITE_URL } from "@/utils/constants";
+
 export const HOMEPAGE_TITLE = "Rozhledny, věže a vyhlídky po Česku";
 
 export const HOMEPAGE_DESCRIPTION =
     "Objevujte rozhledny, věže a vyhlídky po celém Česku. Procházejte mapu, plánujte výlety a ukládejte si místa, která stojí za návštěvu.";
 
-export const HOMEPAGE_CANONICAL_URL = "https://rozhlednovysvet.cz/";
+export const HOMEPAGE_CANONICAL_URL = `${SITE_URL}/`;
 
 export const HOMEPAGE_SHARE_IMAGE_ALT = "Rozhlednový svět - rozhledny, věže a vyhlídky po Česku";
 
@@ -25,7 +27,7 @@ export const homepageJsonLd = {
                 "@type": "SearchAction",
                 target: {
                     "@type": "EntryPoint",
-                    urlTemplate: "https://rozhlednovysvet.cz/rozhledny?query={search_term_string}",
+                    urlTemplate: `${SITE_URL}/rozhledny?query={search_term_string}`,
                 },
                 "query-input": "required name=search_term_string",
             },
@@ -38,7 +40,7 @@ export const homepageJsonLd = {
             description: HOMEPAGE_DESCRIPTION,
             logo: {
                 "@type": "ImageObject",
-                url: "https://rozhlednovysvet.cz/img/logo.png",
+                url: `${SITE_URL}/img/logo.png`,
             },
             sameAs: ["https://www.instagram.com/rozhlednovysvet/"],
         },

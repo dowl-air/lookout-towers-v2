@@ -5,4 +5,4 @@ Disallow: /profil/
 User-agent: CCBot
 Disallow: /
 
-Sitemap: https://rozhlednovysvet.cz/sitemap.xml
+Sitemap: https://www.rozhlednovysvet.cz/sitemap.xml

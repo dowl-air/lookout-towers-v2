@@ -2,6 +2,7 @@ import { TextAlignStart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import CommunityLink from "@/components/navbar/links/CommunityLink";
 import NavbarUserDesktop from "@/components/navbar/NavbarUserDesktop";
 import NavbarUserMobile from "@/components/navbar/NavbarUserMobile";
 import ThemeChanger from "@/components/navbar/ThemeChanger";
@@ -55,14 +56,7 @@ function Navbar() {
                                 Mapa
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                className="flex h-8 items-center rounded-full px-3 text-sm transition-colors hover:bg-base-200/80 active:bg-base-200/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
-                                href="/komunita"
-                            >
-                                Komunita
-                            </Link>
-                        </li>
+                        <CommunityLink variant="desktop" />
                         <li className="relative flex h-8 items-center">
                             <TowerSearch id="navbar-search" variant="navbar" />
                         </li>
