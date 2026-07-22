@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { checkAuth } from "@/actions/checkAuth";
+import ProfileEditForm from "@/components/profile/ProfileEditForm";
 
 import ProfileBoxLevel from "./ProfileBoxLevel";
 
@@ -19,13 +20,19 @@ async function ProfileBox({
 }) {
     const user = await checkAuth();
     return (
-        <div className="card bg-base-100 shadow-xl flex-col justify-between p-3 h-full">
+        <aside className="card h-full bg-base-100 p-3 shadow-xl">
             <div className="flex flex-col gap-2 items-center p-3">
                 <>
                     {user.image ? (
                         <div className="avatar">
                             <div className="w-20 rounded-full">
-                                <Image src={user.image} width={112} height={112} alt={"profile picture"} referrerPolicy="no-referrer" />
+                                <Image
+                                    src={user.image}
+                                    width={112}
+                                    height={112}
+                                    alt={"profile picture"}
+                                    referrerPolicy="no-referrer"
+                                />
                             </div>
                         </div>
                     ) : (
@@ -36,12 +43,21 @@ async function ProfileBox({
                         </div>
                     )}
                 </>
-                <h2 className="prose prose-2xl mb-2 font-semibold">{user.name ? user.name : "TY"}</h2>
+                <div className="flex items-center gap-1">
+                    <h2 className="prose prose-2xl font-semibold">
+                        {user.name ? user.name : "TY"}
+                    </h2>
+                    <ProfileEditForm
+                        key={`${user.name}-${user.image}`}
+                        name={user.name ?? ""}
+                        image={user.image}
+                    />
+                </div>
                 <ProfileBoxLevel score={score} />
             </div>
             <div className="flex flex-col justify-around text-primary font-bold p-3">
-                <div className="stats stats-vertical shadow-sm">
-                    <div className="stat w-60">
+                <div className="stats stats-vertical w-full overflow-hidden shadow-sm">
+                    <div className="stat min-w-0">
                         <div className="stat-figure text-primary">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -63,9 +79,14 @@ async function ProfileBox({
                         <div className="stat-value text-primary max-h-10">{visits}</div>
                     </div>
 
-                    <div className="stat w-60">
+                    <div className="stat min-w-0">
                         <div className="stat-figure text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                className="inline-block w-8 h-8 stroke-current"
+                            >
                                 <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -78,7 +99,7 @@ async function ProfileBox({
                         <div className="stat-value text-primary max-h-10">{favs}</div>
                     </div>
 
-                    <div className="stat w-60">
+                    <div className="stat min-w-0">
                         <div className="stat-figure text-primary">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +119,7 @@ async function ProfileBox({
                         <div className="stat-title">Úpravy</div>
                         <div className="stat-value text-primary max-h-10">{changes}</div>
                     </div>
-                    <div className="stat w-60">
+                    <div className="stat min-w-0">
                         <div className="stat-figure text-primary">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +140,7 @@ async function ProfileBox({
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
     );
 }
 

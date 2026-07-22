@@ -5,7 +5,7 @@ Lookout Towers is a Czech community website for lookout towers, observatories, a
 ## Highlights
 
 - Public pages for homepage, map, tower detail, listing, and search.
-- Authenticated user flows for visits, favourites, ratings, personal progress, and profile history.
+- Authenticated user flows for visits, favourites, ratings, personal progress, profile history, and profile editing.
 - Community and moderation-oriented features, including tower submissions and change tracking.
 - Firestore-backed data model with server-side caching and tag-based invalidation.
 
@@ -53,6 +53,10 @@ npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+## Profile settings
+
+Authenticated users can edit their display name and profile photo on `/profil`. Display names must contain 1 to 50 characters after trimming surrounding whitespace. Profile photos must be JPG, PNG, or WebP files no larger than 5 MB.
 
 ## Available scripts
 

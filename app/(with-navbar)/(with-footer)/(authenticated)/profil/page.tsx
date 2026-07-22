@@ -51,8 +51,14 @@ async function ProfileContent() {
     }));
 
     return (
-        <div className="flex flex-col items-center gap-3 mt-3 max-w-[calc(min(99vw,80rem))] m-auto">
-            <div className="flex w-full items-center sm:items-start justify-center flex-col sm:flex-row sm:h-[687px] gap-3">
+        <div className="mx-auto my-8 flex max-w-[calc(min(99dvw,80rem))] flex-col gap-5 px-3 xl:px-0">
+            <article className="prose max-w-max px-3">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl">Můj profil</h1>
+                <p className="text-sm sm:text-base">
+                    Přehled vašich návštěv, oblíbených míst a hodnocení.
+                </p>
+            </article>
+            <div className="grid w-full gap-5 lg:grid-cols-[17rem_minmax(0,1fr)]">
                 <ProfileBox
                     score={visits.length}
                     changes={0}
@@ -60,7 +66,7 @@ async function ProfileContent() {
                     ratings={ratings.length}
                     visits={visits.length}
                 />
-                <div className="flex h-[250px] w-[97vw] grow sm:h-full">
+                <div className="h-[360px] min-w-0 sm:h-[560px] lg:h-[687px]">
                     <MapProvider>
                         <ProfileMap towers={__towersDTO} />
                     </MapProvider>

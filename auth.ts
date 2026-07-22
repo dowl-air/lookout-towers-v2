@@ -29,7 +29,7 @@ export const providerMap = providers.map((provider) => {
     }
 });
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
     trustHost: true,
     providers,
     adapter: FirestoreAdapter(authFirestore),
