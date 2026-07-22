@@ -20,6 +20,7 @@ function UserProfileAvatar({
                             height={size}
                             alt={`profile picture of ${name}`}
                             referrerPolicy="no-referrer"
+                            unoptimized
                         />
                     </div>
                 </div>

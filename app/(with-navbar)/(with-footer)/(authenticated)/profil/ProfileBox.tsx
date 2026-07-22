@@ -32,6 +32,7 @@ async function ProfileBox({
                                     height={112}
                                     alt={"profile picture"}
                                     referrerPolicy="no-referrer"
+                                    unoptimized
                                 />
                             </div>
                         </div>

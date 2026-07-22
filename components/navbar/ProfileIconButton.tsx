@@ -21,6 +21,7 @@ const ProfileIconButton = async () => {
                                     height={40}
                                     alt={"profile picture"}
                                     referrerPolicy="no-referrer"
+                                    unoptimized
                                 />
                             </div>
                         </div>

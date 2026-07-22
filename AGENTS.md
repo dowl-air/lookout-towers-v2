@@ -63,6 +63,12 @@ Examples:
 - Authenticated/admin route guarding is handled in `proxy.ts`.
 - Admin logic is currently ID-based (`iMKZNJV5PE4XQjnKmZut`).
 
+### User deletion policy
+
+Only the ID-based administrator may delete user accounts. Account deletion must never delete the administrator's own account and must be authorized in `proxy.ts`, the server-rendered admin page, and the corresponding Server Action.
+
+When deleting an account, remove the user document, Auth.js accounts and sessions, the user avatar, and personal `visits`, `favourites`, and `ratings` records. Keep `changes` records and tower photos in `photos` (including their Storage files), even when they were created by the deleted user. UI that resolves a user for retained history must render a neutral fallback such as "Deleted user" when the user document no longer exists. Any new user-owned data collection must be explicitly classified as deleted with the account or retained as a documented exception.
+
 Protected routes currently include:
 
 - `/navstivene`
@@ -72,6 +78,7 @@ Protected routes currently include:
 - `/profil`
 - `/purge-cache`
 - `/zmeny`
+- `/admin`
 
 ## Critical repository rules
 

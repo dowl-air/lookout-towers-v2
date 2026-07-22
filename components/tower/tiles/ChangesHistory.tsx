@@ -19,7 +19,20 @@ const ChangesHistory = async ({ tower }: { tower: Tower }) => {
                 <div className="overflow-x-auto flex flex-col gap-1 max-h-96 overflow-y-auto">
                     {towerChanges.map((change, idx) => {
                         const user = users.find((user) => user.id === change.user_id);
-                        return <ChangeLine key={change.id} change={change} idx={idx} user={user} />;
+                        return (
+                            <ChangeLine
+                                key={change.id}
+                                change={change}
+                                idx={idx}
+                                user={
+                                    user ?? {
+                                        id: change.user_id,
+                                        name: "Smazaný uživatel",
+                                        email: "",
+                                    }
+                                }
+                            />
+                        );
                     })}
                 </div>
             </div>

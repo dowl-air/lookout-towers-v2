@@ -16,6 +16,10 @@ export async function proxy(req: Request) {
     if (req.url.includes("zmeny") && !isAdmin) {
         return NextResponse.redirect(new URL("/403", req.url));
     }
+
+    if (req.url.includes("admin") && !isAdmin) {
+        return NextResponse.redirect(new URL("/403", req.url));
+    }
 }
 
 export const config = {
@@ -27,5 +31,6 @@ export const config = {
         "/profil/:path*",
         "/purge-cache/:path*",
         "/zmeny/:path*",
+        "/admin/:path*",
     ],
 };
