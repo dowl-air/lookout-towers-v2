@@ -3,16 +3,13 @@
 import type { Marker } from "leaflet";
 import { useCallback, useRef, useEffect } from "react";
 
-import {
-    getDefaultIcon,
-    getFavouriteIcon,
-    getNearbyIcon,
-    getVisitedIcon,
-} from "@/components/shared/map/icons";
+import { getTowerMapIcon } from "@/components/shared/map/icons";
 import MapTowerCard from "@/components/shared/map/MapTowerCard";
+import { TowerTypeEnum } from "@/constants/towerType";
 import { TowerMapDTO } from "@/data/tower/towers-map";
 import { useLeafletMap } from "@/hooks/useLeafletMap";
-import { OpeningHoursType } from "@/types/OpeningHours";
+import { OpeningHoursForbiddenType, OpeningHoursType } from "@/types/OpeningHours";
+import { getMapTowerPersonalStatuses } from "@/utils/mapTowerFilters";
 
 export interface MapMarker {
     id: string;
@@ -21,13 +18,12 @@ export interface MapMarker {
     label?: string;
 }
 
-type MarkerIconVariant = "default" | "favourite" | "nearby" | "visited";
-
 type MarkerOptions = {
-    iconVariant?: MarkerIconVariant;
     label?: string;
     labelClassName?: string;
     opacity?: number;
+    isGone?: boolean;
+    towerType: TowerTypeEnum;
 };
 
 type PopupRoot = import("react-dom/client").Root;
@@ -63,20 +59,6 @@ export function useMapMarkers() {
         return leafletRef.current;
     }, []);
 
-    const getMarkerIcon = useCallback((L: typeof import("leaflet"), variant: MarkerIconVariant) => {
-        switch (variant) {
-            case "visited":
-                return getVisitedIcon(L);
-            case "favourite":
-                return getFavouriteIcon(L);
-            case "nearby":
-                return getNearbyIcon(L);
-            case "default":
-            default:
-                return getDefaultIcon(L);
-        }
-    }, []);
-
     const bindPermanentLabel = useCallback(
         (
             L: typeof import("leaflet"),
@@ -105,16 +87,15 @@ export function useMapMarkers() {
      * Add a marker at the specified location
      */
     const addMarker = useCallback(
-        async (lat: number, lng: number, options: MarkerOptions = {}) => {
+        async (lat: number, lng: number, options: MarkerOptions) => {
             if (!map) return null;
 
             const id = generateId();
             const L = await loadLeaflet();
-            const iconVariant = options.iconVariant || "default";
 
             // Create Leaflet marker
             const leafletMarker = L.marker([lat, lng], {
-                icon: getMarkerIcon(L, iconVariant),
+                icon: getTowerMapIcon(L, options.towerType, options.isGone ?? false),
                 opacity: options.opacity ?? 1,
             }).addTo(map);
 
@@ -127,17 +108,17 @@ export function useMapMarkers() {
 
             return id;
         },
-        [bindPermanentLabel, generateId, getMarkerIcon, loadLeaflet, map]
+        [bindPermanentLabel, generateId, loadLeaflet, map]
     );
 
     const addTowerMarkerWithPopup = useCallback(
         async (
             tower: TowerMapDTO,
             options: {
-                iconVariant?: MarkerIconVariant;
                 label?: string;
                 labelClassName?: string;
                 showPermanentLabel?: boolean;
+                showPersonalStatuses?: boolean;
             } = {}
         ) => {
             if (!map) return null;
@@ -145,23 +126,24 @@ export function useMapMarkers() {
             const id = generateId();
             const L = await loadLeaflet();
 
-            // Determine icon based on tower status
-            const getIconVariant = (): MarkerIconVariant => {
-                if (options.iconVariant) return options.iconVariant;
-                if (tower.isVisited) return "visited";
-                if (tower.isFavourite) return "favourite";
-                return "default";
-            };
-
             const getOpacity = () => {
                 return tower.openingHours.type === OpeningHoursType.Forbidden ||
                     tower.openingHours.type === OpeningHoursType.Occasionally
                     ? 0.5
                     : 1;
             };
+            const isGone =
+                tower.openingHours.type === OpeningHoursType.Forbidden &&
+                tower.openingHours.forbiddenType === OpeningHoursForbiddenType.Gone;
+
             // Create Leaflet marker
             const leafletMarker = L.marker([tower.gps.latitude, tower.gps.longitude], {
-                icon: getMarkerIcon(L, getIconVariant()),
+                icon: getTowerMapIcon(
+                    L,
+                    tower.type,
+                    isGone,
+                    options.showPersonalStatuses ? getMapTowerPersonalStatuses(tower) : undefined
+                ),
                 opacity: getOpacity(),
             }).addTo(map);
 
@@ -177,7 +159,7 @@ export function useMapMarkers() {
             const popupDiv = document.createElement("div");
             const popup = L.popup({
                 className: "tower-card-popup",
-                offset: L.point(0, -18),
+                offset: L.point(0, 0),
             }).setContent(popupDiv);
             leafletMarker.bindPopup(popup);
 
@@ -233,7 +215,7 @@ export function useMapMarkers() {
 
             return id;
         },
-        [bindPermanentLabel, generateId, getMarkerIcon, loadLeaflet, map]
+        [bindPermanentLabel, generateId, loadLeaflet, map]
     );
 
     /**

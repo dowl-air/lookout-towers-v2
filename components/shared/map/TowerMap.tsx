@@ -8,6 +8,7 @@ import { useLeafletMap } from "@/hooks/useLeafletMap";
 import { useMapMarkers } from "@/hooks/useMapMarkers";
 import { useMapTileProvider } from "@/hooks/useTileProvider";
 import { Tower } from "@/types/Tower";
+import { isGoneTower } from "@/utils/mapTowerFilters";
 
 /**
  * TowerMap - Map component with theme-aware tile provider
@@ -42,17 +43,20 @@ export function TowerMap({ tower, nearbyTowers = [] }: { nearbyTowers?: Tower[];
         const points: [number, number][] = [[latitude, longitude]];
 
         void addMarker(latitude, longitude, {
+            isGone: isGoneTower(tower),
             label: tower.name,
             labelClassName: "tower-map-label tower-map-label-primary",
+            towerType: tower.type,
         });
 
         for (const nearbyTower of nearbyTowers) {
             points.push([nearbyTower.gps.latitude, nearbyTower.gps.longitude]);
 
             void addMarker(nearbyTower.gps.latitude, nearbyTower.gps.longitude, {
-                iconVariant: "nearby",
+                isGone: isGoneTower(nearbyTower),
                 label: nearbyTower.name,
                 labelClassName: "tower-map-label",
+                towerType: nearbyTower.type,
             });
         }
 

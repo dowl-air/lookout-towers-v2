@@ -22,7 +22,7 @@ export type TowerMapDTO = Pick<
     | "county"
     | "province"
     | "country"
-> & { isVisited: boolean; isFavourite: boolean };
+> & { isVisited: boolean; isFavourite: boolean; isRated: boolean };
 
 export const getAllTowersForMap = cache(async () => {
     "use cache";
@@ -49,7 +49,15 @@ export const getAllTowersForMap = cache(async () => {
 
     const towers: TowerMapDTO[] = [];
     snap.forEach((doc) => {
-        towers.push(serializeFirestoreValue(doc.data()) as TowerMapDTO);
+        towers.push({
+            ...(serializeFirestoreValue(doc.data()) as Omit<
+                TowerMapDTO,
+                "isFavourite" | "isRated" | "isVisited"
+            >),
+            isFavourite: false,
+            isRated: false,
+            isVisited: false,
+        });
     });
     return towers;
 });

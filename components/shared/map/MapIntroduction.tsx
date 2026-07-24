@@ -1,10 +1,28 @@
 "use client";
 
-import { ChevronDown, ChevronUp, MapPinned } from "lucide-react";
+import { CheckCircle, ChevronDown, ChevronUp, CircleOff, Heart, MapPinned } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-export function MapIntroduction() {
+type MapIntroductionProps = {
+    includeGone: boolean;
+    isAuthenticated: boolean;
+    onlyFavourites: boolean;
+    onlyVisited: boolean;
+    onIncludeGoneChange: (checked: boolean) => void;
+    onOnlyFavouritesChange: (checked: boolean) => void;
+    onOnlyVisitedChange: (checked: boolean) => void;
+};
+
+export function MapIntroduction({
+    includeGone,
+    isAuthenticated,
+    onlyFavourites,
+    onlyVisited,
+    onIncludeGoneChange,
+    onOnlyFavouritesChange,
+    onOnlyVisitedChange,
+}: MapIntroductionProps) {
     const [isOpen, setIsOpen] = useState(true);
 
     return (
@@ -41,6 +59,56 @@ export function MapIntroduction() {
                             Prozkoumejte místa s výhledem přehledně na mapě. Vyberte značku a
                             najděte další cíl pro váš výlet.
                         </p>
+                        <fieldset className="mt-3 space-y-2 border-t border-base-300/80 pt-3 text-base-content">
+                            <legend className="sr-only">Filtry mapy</legend>
+                            {isAuthenticated ? (
+                                <>
+                                    <label className="flex cursor-pointer items-center gap-2">
+                                        <input
+                                            checked={onlyVisited}
+                                            className="checkbox checkbox-primary checkbox-sm"
+                                            onChange={(event) =>
+                                                onOnlyVisitedChange(event.target.checked)
+                                            }
+                                            type="checkbox"
+                                        />
+                                        <CheckCircle
+                                            aria-hidden="true"
+                                            className="size-4 shrink-0 text-success"
+                                        />
+                                        <span>Zobrazit pouze navštívené objekty</span>
+                                    </label>
+                                    <label className="flex cursor-pointer items-center gap-2">
+                                        <input
+                                            checked={onlyFavourites}
+                                            className="checkbox checkbox-primary checkbox-sm"
+                                            onChange={(event) =>
+                                                onOnlyFavouritesChange(event.target.checked)
+                                            }
+                                            type="checkbox"
+                                        />
+                                        <Heart
+                                            aria-hidden="true"
+                                            className="size-4 shrink-0 text-error"
+                                        />
+                                        <span>Zobrazit pouze oblíbené objekty</span>
+                                    </label>
+                                </>
+                            ) : null}
+                            <label className="flex cursor-pointer items-center gap-2">
+                                <input
+                                    checked={includeGone}
+                                    className="checkbox checkbox-primary checkbox-sm"
+                                    onChange={(event) => onIncludeGoneChange(event.target.checked)}
+                                    type="checkbox"
+                                />
+                                <CircleOff
+                                    aria-hidden="true"
+                                    className="size-4 shrink-0 text-base-content/65"
+                                />
+                                <span>Zahrnout zaniklé a trvale uzavřené</span>
+                            </label>
+                        </fieldset>
                         <Link
                             href="/rozhledny"
                             className="link link-primary mt-2 inline-flex font-semibold"

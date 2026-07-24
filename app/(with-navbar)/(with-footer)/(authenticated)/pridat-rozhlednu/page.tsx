@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import { revalidateTowerByIDOrNameID } from "@/actions/cache/purge.tower.action";
@@ -30,8 +29,6 @@ import {
 } from "@/utils/geography";
 import { mapScrapedTowerToForm } from "@/utils/scrapedTower";
 import { getTowerValidationError } from "@/utils/towerValidation";
-
-const MapPicker = dynamic(() => import("@/components/add-tower/MapPicker"), { ssr: false });
 
 const AddTowerPage = () => {
     const { tower, updateTower, replaceTower, reset } = useNewTowerContext();
@@ -392,13 +389,6 @@ const AddTowerPage = () => {
                     </button>
                     {gpsError && <div className="text-error text-sm mt-1">{gpsError}</div>}
                 </div>
-            </div>
-
-            <div className="rounded-xl overflow-hidden mt-4">
-                <MapPicker
-                    pickedPosition={tower.gps ?? null}
-                    setPickedPosition={(gps) => updateTower({ gps: gps })}
-                />
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">

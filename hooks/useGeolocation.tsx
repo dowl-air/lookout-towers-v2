@@ -148,7 +148,7 @@ export function useGeolocation() {
         map.once("locationerror", handleLocationError);
 
         // Request user's location
-        map.locate({ setView: true, maxZoom: 8, timeout: 10000 });
+        map.locate({ setView: true, maxZoom: 12, timeout: 10000 });
     }, [map, cleanupEventHandlers, clearLocationMarkers, clearLocationTimeout, finishLocating]);
 
     // Cleanup on unmount

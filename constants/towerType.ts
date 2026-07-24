@@ -8,8 +8,6 @@ export enum TowerTypeEnum {
     KOSTELNI_VEZ = "kostelni_vez",
     VODARENSKA_VEZ = "vodarenska_vez",
     VOJENSKA_VEZ = "vojenska_vez",
-    PRIRODNI_VYHLIDKA = "prirodni_vyhlidka",
-    ZAJIMAVOST = "zajimavost",
 }
 
 export const towerTypes: { name: string; value: TowerTypeEnum; name_4: string }[] = [
@@ -22,8 +20,6 @@ export const towerTypes: { name: string; value: TowerTypeEnum; name_4: string }[
     { name: "kostelní věž", value: TowerTypeEnum.KOSTELNI_VEZ, name_4: "kostelní věže" },
     { name: "vodárenská věž", value: TowerTypeEnum.VODARENSKA_VEZ, name_4: "vodárenské věže" },
     { name: "vojenská věž", value: TowerTypeEnum.VOJENSKA_VEZ, name_4: "vojenské věže" },
-    { name: "přírodní vyhlídka", value: TowerTypeEnum.PRIRODNI_VYHLIDKA, name_4: "přírodní vyhlídky" },
-    { name: "zajímavost", value: TowerTypeEnum.ZAJIMAVOST, name_4: "zajímavosti" },
 ];
 
 export const getTowerTypeName = (type: TowerTypeEnum): string => {

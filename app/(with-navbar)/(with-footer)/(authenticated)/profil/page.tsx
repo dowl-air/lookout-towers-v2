@@ -48,6 +48,7 @@ async function ProfilePage() {
         openingHours: tower.openingHours,
         mainPhotoUrl: tower.mainPhotoUrl,
         isFavourite: favouritesIds.includes(tower.id),
+        isRated: ratings.some((rating) => rating.tower_id === tower.id),
         isVisited: visits.some((visit) => visit.tower_id === tower.id),
     }));
 

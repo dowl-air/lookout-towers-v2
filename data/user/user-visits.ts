@@ -108,6 +108,29 @@ export const getAllUserVisits = cache(async (): Promise<Visit[]> => {
     return hydrateVisitPhotos(visits);
 });
 
+export const getAllUserVisitedTowerIds = cache(async (): Promise<string[]> => {
+    "use cache: private";
+    cacheLife("hours");
+
+    const { userId } = await checkUser();
+    if (!userId) {
+        return [];
+    }
+
+    cacheTag(CacheTag.UserVisits);
+    cacheTag(getCacheTagSpecific(CacheTag.UserVisits, userId));
+
+    const snap = await db
+        .collection("visits")
+        .where("user_id", "==", userId)
+        .select("tower_id")
+        .get();
+
+    return snap.docs
+        .map((doc) => doc.data().tower_id)
+        .filter((towerId): towerId is string => typeof towerId === "string");
+});
+
 export const getUserVisitsPage = cache(
     async ({ after, before }: { after?: string; before?: string }): Promise<UserVisitPage> => {
         "use cache: private";

@@ -618,12 +618,10 @@ const Filter = ({ searchParams }: { searchParams: TowersSearchParams }) => {
                             <fieldset>
                                 <legend className="label-text mb-2 font-semibold">Typ</legend>
                                 <CheckboxGroup
-                                    options={towerTypes
-                                        .filter((towerType) => towerType.value !== "zajimavost")
-                                        .map((towerType) => ({
-                                            label: towerType.name,
-                                            value: towerType.value,
-                                        }))}
+                                    options={towerTypes.map((towerType) => ({
+                                        label: towerType.name,
+                                        value: towerType.value,
+                                    }))}
                                     values={selectedTypes}
                                     onChange={setSelectedTypes}
                                 />

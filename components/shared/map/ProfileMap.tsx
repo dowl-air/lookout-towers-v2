@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, Heart, Star } from "lucide-react";
 import { useEffect, useMemo } from "react";
 
 import { LeafletMap } from "@/components/shared/map/LeafletMap";
@@ -44,7 +45,7 @@ export function ProfileMap({ towers }: { towers: TowerMapDTO[] }) {
         clearMarkers();
 
         for (const tower of towers) {
-            addTowerMarkerWithPopup(tower);
+            addTowerMarkerWithPopup(tower, { showPersonalStatuses: true });
         }
 
         if (map) {
@@ -66,6 +67,21 @@ export function ProfileMap({ towers }: { towers: TowerMapDTO[] }) {
                 selectedProviderId={currentProviderId}
                 onProviderChange={setProviderId}
             />
+
+            <div className="absolute left-4 top-4 z-1000 flex items-center gap-3 rounded-md border border-base-300/80 bg-base-100/95 px-3 py-2 text-xs font-medium text-base-content shadow-sm backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1">
+                    <Check aria-hidden="true" className="size-3.5 text-success" />
+                    Navštíveno
+                </span>
+                <span className="inline-flex items-center gap-1">
+                    <Heart aria-hidden="true" className="size-3.5 text-amber-600" />
+                    Oblíbené
+                </span>
+                <span className="inline-flex items-center gap-1">
+                    <Star aria-hidden="true" className="size-3.5 text-purple-700" />
+                    Hodnoceno
+                </span>
+            </div>
 
             <MapControls />
         </div>

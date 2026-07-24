@@ -10,7 +10,6 @@ import {
     Eye,
     Landmark,
     Lock,
-    Mountain,
     Shield,
     TowerControl,
     Waves,
@@ -82,16 +81,6 @@ const TOWER_TYPE_STYLES = {
         className:
             "border-stone-500/70 bg-stone-500/15 text-stone-700 in-data-[theme=abyss]:text-stone-300",
         icon: Shield,
-    },
-    [TowerTypeEnum.PRIRODNI_VYHLIDKA]: {
-        className:
-            "border-lime-500/70 bg-lime-500/15 text-lime-700 in-data-[theme=abyss]:text-lime-300",
-        icon: Mountain,
-    },
-    [TowerTypeEnum.ZAJIMAVOST]: {
-        className:
-            "border-orange-500/70 bg-orange-500/15 text-orange-700 in-data-[theme=abyss]:text-orange-300",
-        icon: Landmark,
     },
 };
 

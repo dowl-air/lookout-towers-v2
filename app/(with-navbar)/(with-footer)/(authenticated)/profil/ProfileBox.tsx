@@ -1,4 +1,6 @@
+import { ListChecks, Trophy } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { checkAuth } from "@/actions/checkAuth";
 import ProfileEditForm from "@/components/profile/ProfileEditForm";
@@ -139,6 +141,16 @@ async function ProfileBox({
                         <div className="stat-title">Hodnocení</div>
                         <div className="stat-value text-primary max-h-10">{ratings}</div>
                     </div>
+                </div>
+                <div className="mt-5 grid gap-2">
+                    <Link href="/navstivene" className="btn btn-outline btn-sm w-full">
+                        <ListChecks aria-hidden="true" className="size-4" />
+                        Navštívené rozhledny
+                    </Link>
+                    <Link href="/pokrok" className="btn btn-primary btn-sm w-full">
+                        <Trophy aria-hidden="true" className="size-4" />
+                        Můj pokrok
+                    </Link>
                 </div>
             </div>
         </aside>
