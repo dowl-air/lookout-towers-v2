@@ -279,10 +279,11 @@ function formatTowerFacts(tower: Tower) {
             opened: tower.opened,
             owner: tower.owner,
             tags: tower.tags,
-            originalDescription: {
+            sourceText: {
                 history: tower.history,
                 access: tower.access,
                 locationText: tower.locationText,
+                mapyczDescription: tower.mapycz?.description,
                 viewText: tower.viewText,
             },
         },

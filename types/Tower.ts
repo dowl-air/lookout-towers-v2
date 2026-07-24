@@ -51,7 +51,6 @@ export type Tower = {
     county?: string;
     created: string | Date;
     contact?: TowerContact;
-    description?: string;
     elevation: number;
     gps:
         | GeoPoint

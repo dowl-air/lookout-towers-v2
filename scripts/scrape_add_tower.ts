@@ -686,6 +686,7 @@ export function createScrapedTowerDocument(
     const mapycz =
         mapycom.id && mapycom.source
             ? {
+                  ...(parsedDetail.description ? { description: parsedDetail.description } : {}),
                   href: createMapyComUrl(mapycom) ?? "",
                   id: mapycom.id,
                   lastMapped: createdAt,
@@ -698,7 +699,6 @@ export function createScrapedTowerDocument(
     return {
         admission: parsedDetail.admission,
         contact: parsedDetail.contact,
-        ...(parsedDetail.description ? { description: parsedDetail.description } : {}),
         elevation: parsedDetail.elevation ?? 0,
         gps: parsedDetail.gps,
         height: parsedDetail.height ?? 0,
@@ -710,7 +710,7 @@ export function createScrapedTowerDocument(
         openingHours: parsedDetail.openingHours,
         ...(parsedDetail.owner ? { owner: parsedDetail.owner } : {}),
         photos,
-        stairs: parsedDetail.stairs ?? 0,
+        ...(parsedDetail.stairs === undefined ? {} : { stairs: parsedDetail.stairs }),
         ...(parsedDetail.type ? { type: parsedDetail.type } : {}),
         urls,
         ...geography,
@@ -888,7 +888,7 @@ export async function scrapeDetailPage(
 
         log(`Found name: ${parsedDetail.name ?? "not found"}`);
         log(`Found type: ${parsedDetail.type ?? "not found"}`);
-        log(`Found description: ${parsedDetail.description ?? "not found"}`);
+        log(`Found Mapy.com description: ${parsedDetail.description ?? "not found"}`);
         log(`Found Mapy.com ID: ${mapycom.id ?? "not found"}`);
         log(`Found Mapy.com source: ${mapycom.source ?? "not found"}`);
         const mapycomUrl = createMapyComUrl(mapycom);

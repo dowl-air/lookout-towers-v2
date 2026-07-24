@@ -569,17 +569,6 @@ const AddTowerPage = () => {
                         <div className="card-title">Podrobnosti</div>
 
                         <label className="form-control mt-2">
-                            <span className="label-text">Popis</span>
-                            <textarea
-                                className="textarea textarea-bordered min-h-28"
-                                value={tower.description ?? ""}
-                                onChange={(event) =>
-                                    updateTower({ description: event.target.value })
-                                }
-                            />
-                        </label>
-
-                        <label className="form-control mt-4">
                             <span className="label-text">Alternativní názvy (jeden na řádek)</span>
                             <textarea
                                 className="textarea textarea-bordered"

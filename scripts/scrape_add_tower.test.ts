@@ -26,6 +26,35 @@ import {
     selectRandomPhotos,
 } from "./scrape_add_tower";
 
+test("createScrapedTowerDocument omits missing stairs and preserves an explicit zero", () => {
+    const parsedDetail = parseDetailHtml('<section id="detail"><h1>Rozhledna Test</h1></section>');
+    const geography = { country: "CZ" as const };
+    const mapycom = { id: null, name: null, source: null };
+    const createdAt = "2026-07-24T00:00:00.000Z";
+
+    const resultWithoutStairs = createScrapedTowerDocument(
+        parsedDetail,
+        geography,
+        mapycom,
+        "test",
+        [],
+        [],
+        createdAt
+    );
+    const resultWithZeroStairs = createScrapedTowerDocument(
+        { ...parsedDetail, stairs: 0 },
+        geography,
+        mapycom,
+        "test",
+        [],
+        [],
+        createdAt
+    );
+
+    assert.equal("stairs" in resultWithoutStairs, false);
+    assert.equal(resultWithZeroStairs.stairs, 0);
+});
+
 test("parseDetailHtml extracts Tower URLs and skips Mapy links", () => {
     const result = parseDetailHtml(`
         <section id="detail">
@@ -178,6 +207,7 @@ test("createScrapedTowerDocument omits internal key-values and uses Tower fields
             },
             gps: { latitude: 49.1, longitude: 17.1 },
             keyValues: [{ label: "architekt", value: "Jan Novák" }],
+            description: "Popis z Mapy.com",
             name: "Římská věž",
             openingHours: { type: OpeningHoursType.NonStop },
             photos: [],
@@ -195,6 +225,8 @@ test("createScrapedTowerDocument omits internal key-values and uses Tower fields
     assert.equal(result.nameID, "rimska_vez");
     assert.equal(result.mainPhotoUrl, "https://example.cz/photo.jpeg");
     assert.equal(result.mapycz?.name, "Rozhledna Římská věž");
+    assert.equal(result.mapycz?.description, "Popis z Mapy.com");
+    assert.equal("description" in result, false);
     assert.equal("keyValues" in result, false);
     assert.equal("scrapedAt" in result, false);
 });
@@ -222,8 +254,16 @@ test("mapScrapedTowerToForm retains Tower fields and excludes scraped metadata",
     const tower = mapScrapedTowerToForm({
         contact: { email: "info@example.cz", officialWebsite: "", phone: "123" },
         created: "2026-07-17T00:00:00.000Z",
-        description: "Popis",
         id: "base_2582164",
+        mapycz: {
+            description: "Popis z Mapy.com",
+            href: "https://mapy.com/cs/turisticka?source=base&id=2582164",
+            id: "2582164",
+            lastMapped: "2026-07-17T00:00:00.000Z",
+            name: "Římská věž",
+            source: "base",
+            type: "rozhledna",
+        },
         name: "Římská věž",
         nameID: "rimska_vez",
         photos: ["https://example.cz/photo.jpeg"],
@@ -232,7 +272,15 @@ test("mapScrapedTowerToForm retains Tower fields and excludes scraped metadata",
 
     assert.deepEqual(tower, {
         contact: { email: "info@example.cz", officialWebsite: "", phone: "123" },
-        description: "Popis",
+        mapycz: {
+            description: "Popis z Mapy.com",
+            href: "https://mapy.com/cs/turisticka?source=base&id=2582164",
+            id: "2582164",
+            lastMapped: "2026-07-17T00:00:00.000Z",
+            name: "Římská věž",
+            source: "base",
+            type: "rozhledna",
+        },
         name: "Římská věž",
     });
 });
