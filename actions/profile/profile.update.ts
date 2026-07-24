@@ -6,6 +6,7 @@ import { refresh, revalidatePath, updateTag } from "next/cache";
 
 import { checkAuth } from "@/actions/checkAuth";
 import { unstable_update } from "@/auth";
+import { trackAnalyticsEvent } from "@/utils/analytics.server";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db, storage } from "@/utils/firebase";
 
@@ -71,6 +72,11 @@ export const updateProfile = async (
     updateTag(getCacheTagSpecific(CacheTag.User, user.id));
     revalidatePath("/profil");
     refresh();
+    await trackAnalyticsEvent("Profile updated", {
+        changedFieldCount:
+            Number(normalizedName !== user.name) +
+            Number(avatar instanceof File && avatar.size > 0),
+    });
 
     return { success: true };
 };

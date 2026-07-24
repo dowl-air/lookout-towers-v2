@@ -7,6 +7,7 @@ import { checkAuth } from "@/actions/checkAuth";
 import { removePhoto } from "@/actions/photos/remove.action";
 import { getVisit as getVisitData } from "@/data/user/user-visits";
 import { Visit } from "@/types/Visit";
+import { trackAnalyticsEvent } from "@/utils/analytics.server";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 
@@ -45,6 +46,10 @@ export const setVisit = async (
     updateTag(getCacheTagUserSpecific(CacheTag.UserTowerVisit, user.id, towerID));
     revalidateAffectedPaths(options?.revalidatePaths);
     refresh();
+    await trackAnalyticsEvent("Visit recorded", {
+        hasVisitDate: Boolean(visit.date),
+        source: "tower-detail",
+    });
     return true;
 };
 

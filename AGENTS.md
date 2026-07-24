@@ -63,6 +63,13 @@ Examples:
 - Authenticated/admin route guarding is handled in `proxy.ts`.
 - Admin logic is currently ID-based (`iMKZNJV5PE4XQjnKmZut`).
 
+### Analytics
+
+- Vercel Web Analytics is integrated with `@vercel/analytics`; it must be enabled in the Vercel project dashboard.
+- Track confirmed mutations with `trackAnalyticsEvent` from `@/utils/analytics.server` after a successful write. Analytics delivery must not cause the user action to fail.
+- Do not track cached server-rendered page views from server code: use the small client-side page-view tracker when a real browser page view is required.
+- Outbound links that require reliable measurement should use `/api/analytics/outbound`, which records the event server-side and redirects only to a server-derived, validated destination.
+
 ### User deletion policy
 
 Only the ID-based administrator may delete user accounts. Account deletion must never delete the administrator's own account and must be authorized in `proxy.ts`, the server-rendered admin page, and the corresponding Server Action.

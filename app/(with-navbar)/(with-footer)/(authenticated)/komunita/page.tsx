@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import PageViewTracker from "@/components/shared/analytics/PageViewTracker";
 import UserLevelBadgeButton from "@/components/shared/UserLevelBadgeButton";
 import UserProfileAvatar from "@/components/UserProfileAvatar";
 import { getAllMembers } from "@/data/user/users-community";
@@ -12,6 +13,7 @@ const ComunityPage = async () => {
 
     return (
         <div className="content">
+            <PageViewTracker eventName="Community page viewed" />
             <article className="prose mt-20">
                 <h2 className="my-3 pl-2">Statistiky uživatelů</h2>
             </article>

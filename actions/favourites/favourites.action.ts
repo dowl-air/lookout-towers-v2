@@ -4,6 +4,7 @@ import { deleteDoc, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { refresh, revalidatePath, updateTag } from "next/cache";
 
 import { checkAuth } from "@/actions/checkAuth";
+import { trackAnalyticsEvent } from "@/utils/analytics.server";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 
@@ -33,6 +34,7 @@ export const addToFavourites = async (towerID: string, options?: MutationOptions
     updateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
     revalidateAffectedPaths(options?.revalidatePaths);
     refresh();
+    await trackAnalyticsEvent("Favourite changed", { action: "added", source: "tower-detail" });
     return true;
 };
 
@@ -44,5 +46,6 @@ export const removeFromFavourites = async (towerID: string, options?: MutationOp
     updateTag(getCacheTagSpecific(CacheTag.UserFavourites, user.id));
     revalidateAffectedPaths(options?.revalidatePaths);
     refresh();
+    await trackAnalyticsEvent("Favourite changed", { action: "removed", source: "tower-detail" });
     return false;
 };

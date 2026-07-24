@@ -5,6 +5,7 @@ import type { Provider } from "next-auth/providers";
 import Google from "next-auth/providers/google";
 
 import { sendMail } from "@/actions/mail";
+import { trackAnalyticsEvent } from "@/utils/analytics.server";
 import { authFirestore } from "@/utils/authFirestore";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import Seznam from "@/utils/seznam.provider";
@@ -46,6 +47,11 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
         },
         async updateUser(message) {
             updateTag(getCacheTagSpecific(CacheTag.User, message.user.id));
+        },
+        async signIn(message) {
+            await trackAnalyticsEvent("Sign in completed", {
+                provider: message.account?.provider ?? "unknown",
+            });
         },
     },
 });

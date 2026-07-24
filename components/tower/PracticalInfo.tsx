@@ -183,7 +183,9 @@ const TowerTags = ({ tower, category }: { category: TowerTagCategory; tower: Tow
                             : "border-base-300/70 bg-base-200/45 text-base-content"
                     )}
                 >
-                    <Icon className={cn("size-4 shrink-0", isSafety ? "text-error" : "text-primary")} />
+                    <Icon
+                        className={cn("size-4 shrink-0", isSafety ? "text-error" : "text-primary")}
+                    />
                     {label}
                 </span>
             ))}
@@ -368,7 +370,7 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                                 ) : null}
                                 {tower.contact?.officialWebsite ? (
                                     <a
-                                        href={tower.contact.officialWebsite}
+                                        href={`/api/analytics/outbound?type=official-website&towerId=${tower.id}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="inline-flex items-center gap-2 rounded-lg border border-base-300/70 bg-base-200/45 px-3 py-2 text-sm font-medium transition hover:border-primary/50 hover:bg-primary/10"

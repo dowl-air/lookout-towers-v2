@@ -2,6 +2,7 @@ import { Footprints, ListOrdered, Mountain, Ruler, Star, Unlock } from "lucide-r
 import { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 
+import PageViewTracker from "@/components/shared/analytics/PageViewTracker";
 import TowerAliases from "@/components/shared/TowerAliases";
 import SuggestCorrectionCta from "@/components/tower/edit/SuggestCorrectionCta";
 import SuggestEditModal from "@/components/tower/edit/SuggestEditModal";
@@ -129,6 +130,7 @@ async function TowerPage({ params }: { params: Promise<{ type: string; nameID: s
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
             />
+            <PageViewTracker eventName="Tower viewed" towerType={tower.type} />
             <div className="w-full px-4">
                 <div className="mx-auto grid w-full max-w-[1720px] gap-4 2xl:grid-cols-[minmax(8rem,1fr)_minmax(0,80rem)_minmax(8rem,1fr)]">
                     <aside

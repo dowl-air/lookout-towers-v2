@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 
 import { checkAuth } from "@/actions/checkAuth";
 import { Rating } from "@/types/Rating";
+import { trackAnalyticsEvent } from "@/utils/analytics.server";
 import { CacheTag, getCacheTagSpecific, getCacheTagUserSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase";
 
@@ -26,6 +27,11 @@ export const editRating = async (towerID: string, rating: number, text: string) 
     updateTag(getCacheTagSpecific(CacheTag.TowerRatings, towerID));
     updateTag(getCacheTagSpecific(CacheTag.UserRatings, user.id));
     updateTag(getCacheTagUserSpecific(CacheTag.UserTowerRating, user.id, towerID));
+
+    await trackAnalyticsEvent("Rating submitted", {
+        hasComment: Boolean(text.trim()),
+        ratingValue: rating,
+    });
 };
 
 export const removeRating = async (towerID: string) => {

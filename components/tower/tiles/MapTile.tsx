@@ -11,16 +11,8 @@ const MapTile = ({ tower, nearbyTowers = [] }: { nearbyTowers?: Tower[]; tower: 
     const { latitude, longitude } = tower.gps;
     const coordinates = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
-    // Generate direction URLs for different map services
-    const getDirectionUrls = () => {
-        return {
-            googleMaps: `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`,
-            mapyCz: `https://mapy.com/fnc/v1/route?mapset=outdoor&end=${longitude},${latitude}`,
-            waze: `https://waze.com/ul?ll=${latitude}%2C${longitude}&navigate=yes`,
-        };
-    };
-
-    const directionUrls = getDirectionUrls();
+    const outboundUrl = (provider: "google-maps" | "mapy" | "waze") =>
+        `/api/analytics/outbound?type=directions&towerId=${tower.id}&provider=${provider}`;
 
     return (
         <div
@@ -49,7 +41,9 @@ const MapTile = ({ tower, nearbyTowers = [] }: { nearbyTowers?: Tower[]; tower: 
                         <MapPin className="size-4 text-primary" />
                         <span>GPS</span>
                     </div>
-                    <div className="font-mono text-sm font-bold text-base-content">{coordinates}</div>
+                    <div className="font-mono text-sm font-bold text-base-content">
+                        {coordinates}
+                    </div>
                     <CopyGpsButton coordinates={coordinates} className="justify-center" />
                 </div>
 
@@ -59,17 +53,17 @@ const MapTile = ({ tower, nearbyTowers = [] }: { nearbyTowers?: Tower[]; tower: 
                         {[
                             {
                                 alt: "Navigovat pomocí Mapy.com",
-                                href: directionUrls.mapyCz,
+                                href: outboundUrl("mapy"),
                                 logo: CONCURRENCE_LOGOS["mapy.com"],
                             },
                             {
                                 alt: "Navigovat pomocí Google Maps",
-                                href: directionUrls.googleMaps,
+                                href: outboundUrl("google-maps"),
                                 logo: CONCURRENCE_LOGOS["maps.google.com"],
                             },
                             {
                                 alt: "Navigovat pomocí Waze",
-                                href: directionUrls.waze,
+                                href: outboundUrl("waze"),
                                 logo: CONCURRENCE_LOGOS["waze.com"],
                             },
                         ].map(({ alt, href, logo }) => (

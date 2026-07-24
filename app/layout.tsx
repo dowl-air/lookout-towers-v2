@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
@@ -98,6 +99,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         {children}
                     </ThemeProvider>
                 </SessionProvider>
+                <Analytics />
                 {shouldLoadCloudflareAnalytics ? (
                     <script
                         defer
