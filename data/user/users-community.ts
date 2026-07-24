@@ -6,20 +6,18 @@ import { CacheTag } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
 import { normalizeTowerObject } from "@/utils/normalizeTowerObject";
 import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
+import { getUserCollectionCount } from "@/utils/userCollectionCount";
 
 const getVisitCount = async (userId: string) => {
-    const snap = await db.collection("visits").where("user_id", "==", userId).count().get();
-    return snap.data().count;
+    return getUserCollectionCount(db.collection("visits"), userId);
 };
 
 const getRatingCount = async (userId: string) => {
-    const snap = await db.collection("ratings").where("user_id", "==", userId).count().get();
-    return snap.data().count;
+    return getUserCollectionCount(db.collection("ratings"), userId);
 };
 
 const getChangeCount = async (userId: string) => {
-    const snap = await db.collection("changes").where("user_id", "==", userId).count().get();
-    return snap.data().count;
+    return getUserCollectionCount(db.collection("changes"), userId);
 };
 
 const getLastVisit = async (userId: string) => {

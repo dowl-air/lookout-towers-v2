@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import ProfileBox from "@/app/(with-navbar)/(with-footer)/(authenticated)/profil/ProfileBox";
 import { ProfileMap } from "@/components/shared/map/ProfileMap";
 import { MapProvider } from "@/context/MapContext";
+import { getUserChangesCount } from "@/data/change/changes";
 import { getAllUserRatings } from "@/data/rating/ratings";
 import { getTowersByIDs } from "@/data/tower/towers";
 import { TowerMapDTO } from "@/data/tower/towers-map";
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
 async function ProfilePage() {
     await connection();
 
-    const [favouritesIds, visits, ratings] = await Promise.all([
+    const [favouritesIds, visits, ratings, changes] = await Promise.all([
         getAllUserFavouritesIds(),
         getAllUserVisits(),
         getAllUserRatings(),
+        getUserChangesCount(),
     ]);
 
     const uniqueTowerIds = Array.from(
@@ -60,7 +62,7 @@ async function ProfilePage() {
             <div className="grid w-full gap-5 lg:grid-cols-[17rem_minmax(0,1fr)]">
                 <ProfileBox
                     score={visits.length}
-                    changes={0}
+                    changes={changes}
                     favs={favouritesIds.length}
                     ratings={ratings.length}
                     visits={visits.length}

@@ -3,10 +3,12 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 
+import { checkUser } from "@/data/auth";
 import { Change } from "@/types/Change";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
 import { db } from "@/utils/firebase-admin";
 import { serializeFirestoreValue } from "@/utils/serializeFirestoreValue";
+import { getUserCollectionCount } from "@/utils/userCollectionCount";
 
 const normalizeChange = (changeId: string, data: any): Change => {
     const serialized = serializeFirestoreValue(data) as Record<string, unknown>;
@@ -98,3 +100,18 @@ export const getChangesByUser = cache(
         return snap.docs.map((doc) => normalizeChange(doc.id, doc.data()));
     }
 );
+
+export const getUserChangesCount = cache(async (): Promise<number> => {
+    "use cache: private";
+    cacheLife("hours");
+
+    const { userId } = await checkUser();
+    if (!userId) {
+        return 0;
+    }
+
+    cacheTag(CacheTag.ChangesUser);
+    cacheTag(getCacheTagSpecific(CacheTag.ChangesUser, userId));
+
+    return getUserCollectionCount(db.collection("changes"), userId);
+});
