@@ -169,6 +169,9 @@ Before writing new Firestore queries, look for an existing function in `data/` o
 - `next.config.ts` enables caching and server actions, so seemingly simple data changes can require both serialization and cache-tag updates.
 - Some server actions write through `@/utils/firebase` rather than `@/utils/firebase-admin`; keep new code consistent with the surrounding module unless there is a clear reason to refactor.
 - The Mapy scraper stores intermediate Tower-shaped documents in `towers_scraped` only when invoked with `--write`. The `/pridat-rozhlednu` workflow imports ready records into `towers` and marks their source record as imported only after final creation and photo upload.
+- Only the administrator may add towers or update a tower's `mainPhotoUrl`.
+- URL-based photo import is administrator-only and is used exclusively by the `/pridat-rozhlednu` workflow. Do not expose it to regular users because it creates an SSRF boundary.
+- Serialize every JSON-LD value rendered with `dangerouslySetInnerHTML` through `serializeJsonLd` from `@/utils/structuredData`.
 
 ## Safe change checklist
 

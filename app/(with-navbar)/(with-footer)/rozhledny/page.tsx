@@ -11,7 +11,7 @@ import Results from "@/components/towers/Results";
 import ResultsSkeleton from "@/components/towers/ResultsSkeleton";
 import { TowersSearchParams } from "@/types/TowersSearchParams";
 import { SITE_URL } from "@/utils/constants";
-import { getCollectionPageJsonLd } from "@/utils/structuredData";
+import { getCollectionPageJsonLd, serializeJsonLd } from "@/utils/structuredData";
 import { TowersFilter } from "@/utils/TowersFilter";
 import { shouldNoIndexTowersCatalog } from "@/utils/towersSeo";
 
@@ -138,7 +138,7 @@ async function TowersPage(props: { searchParams?: Promise<TowersSearchParams> })
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(catalogJsonLd) }}
+                dangerouslySetInnerHTML={{ __html: serializeJsonLd(catalogJsonLd) }}
             />
             <div className="w-full max-w-7xl mx-auto mt-5 lg:mt-10 px-5">
                 <article className="prose prose-sm lg:prose-base max-w-full">

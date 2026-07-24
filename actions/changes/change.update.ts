@@ -3,6 +3,7 @@
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { updateTag } from "next/cache";
 
+import { checkAdmin } from "@/actions/checkAdmin";
 import { checkAuth } from "@/actions/checkAuth";
 import { changeTower } from "@/actions/towers/tower.change";
 import { ChangeState } from "@/types/Change";
@@ -12,7 +13,7 @@ import { db } from "@/utils/firebase";
 
 export const updateChange = async (changeID: string, state: ChangeState, tower: Tower) => {
     const user = await checkAuth();
-    if (!user) throw new Error("Unauthorized");
+    if (!user || !(await checkAdmin())) throw new Error("Unauthorized");
     await updateDoc(doc(db, "changes", changeID), {
         state,
         modified: serverTimestamp(),

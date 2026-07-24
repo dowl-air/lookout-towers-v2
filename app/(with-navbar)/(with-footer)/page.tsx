@@ -22,6 +22,7 @@ import StatsSkeleton from "@/components/homepage/StatsSkeleton";
 import TowerOfTheDay from "@/components/homepage/TowerOfTheDay";
 import LocationPermissionPrompt from "@/components/shared/LocationPermissionPrompt";
 import { getRandomTowers, getTowerRatingAndCount } from "@/data/tower/towers";
+import { serializeJsonLd } from "@/utils/structuredData";
 
 export const metadata: Metadata = {
     title: HOMEPAGE_TITLE,
@@ -65,7 +66,7 @@ async function HomePage() {
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }}
+                dangerouslySetInnerHTML={{ __html: serializeJsonLd(homepageJsonLd) }}
             />
             <main className="flex flex-col justify-center">
                 <Hero />

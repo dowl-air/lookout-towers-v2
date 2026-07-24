@@ -4,7 +4,12 @@ import test from "node:test";
 import { TowerTypeEnum } from "@/constants/towerType";
 import { OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
-import { getCollectionPageJsonLd, getMapJsonLd, getTowerJsonLd } from "@/utils/structuredData";
+import {
+    getCollectionPageJsonLd,
+    getMapJsonLd,
+    getTowerJsonLd,
+    serializeJsonLd,
+} from "@/utils/structuredData";
 
 const tower: Tower = {
     country: "CZ",
@@ -166,4 +171,11 @@ test("creates page-level structured data for the catalog and map", () => {
     assert.equal(catalog["@type"], "CollectionPage");
     assert.equal(map["@type"], "Map");
     assert.equal(map.mainEntity?.numberOfItems, 123);
+});
+
+test("escapes script-closing text in JSON-LD", () => {
+    const serialized = serializeJsonLd({ name: "</script><script>alert(1)</script>" });
+
+    assert.equal(serialized.includes("</script>"), false);
+    assert.equal(JSON.parse(serialized).name, "</script><script>alert(1)</script>");
 });

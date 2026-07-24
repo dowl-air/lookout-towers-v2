@@ -17,6 +17,10 @@ export async function proxy(req: Request) {
         return NextResponse.redirect(new URL("/403", req.url));
     }
 
+    if (req.url.includes("pridat-rozhlednu") && !isAdmin) {
+        return NextResponse.redirect(new URL("/403", req.url));
+    }
+
     if (req.url.includes("admin") && !isAdmin) {
         return NextResponse.redirect(new URL("/403", req.url));
     }

@@ -30,8 +30,8 @@ export async function sendMail({
 }) {
     try {
         await transporter.verify();
-    } catch (error) {
-        console.error("Something Went Wrong", SMTP_SERVER_USERNAME, SMTP_SERVER_PASSWORD, error);
+    } catch {
+        console.error("Unable to verify SMTP transport.");
         return;
     }
     const info = await transporter.sendMail({

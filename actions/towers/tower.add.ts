@@ -3,7 +3,7 @@
 import { addDoc, collection, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
 import { updateTag } from "next/cache";
 
-import { checkAuth } from "@/actions/checkAuth";
+import { checkAdmin } from "@/actions/checkAdmin";
 import { getTowerObjectByNameID } from "@/data/tower/towers";
 import { OpeningHoursType } from "@/types/OpeningHours";
 import { Tower } from "@/types/Tower";
@@ -13,8 +13,7 @@ import { resolveUniqueNameID } from "@/utils/nameID";
 import { getTowerValidationError } from "@/utils/towerValidation";
 
 export const addTower = async (tower: Tower) => {
-    const user = await checkAuth();
-    if (!user) throw new Error("Unauthorized");
+    if (!(await checkAdmin())) throw new Error("Unauthorized");
 
     const validationError = getTowerValidationError(tower);
     if (validationError) throw new Error(validationError);

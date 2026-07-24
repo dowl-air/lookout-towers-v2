@@ -76,7 +76,7 @@ The `scrape:add-tower` script opens a Mapy.com place detail and writes the resul
 
 The exported `name` removes a leading Czech type label such as `Rozhledna`, `Výhledna`, `Pozorovatelna`, `Věž`, or `Vyhlídková věž`; occurrences later in the name are preserved. `nameID` uses the existing project format and is checked against the `towers` Firestore collection: a collision first adds the county suffix and then a numeric suffix. Unmapped Mapy.com key-value attributes are not stored; the script reports each as a warning on standard error. It collects up to eight random unique gallery images as full-size URLs in `photos`; if the gallery contains fewer images, it keeps all of them. `mainPhotoUrl` is randomly selected from this collected photo set. When both identifiers are available, `urls` also includes the canonical Mapy.com detail URL containing only `source` and `id`.
 
-On `/pridat-rozhlednu`, authenticated users can select a ready document from `towers_scraped`. Its data and photo URLs prefill the existing form; after a successful final import, the scraped document is marked as imported.
+On `/pridat-rozhlednu`, administrators can select a ready document from `towers_scraped`. Its data and photo URLs prefill the existing form; after a successful final import, the scraped document is marked as imported.
 
 Known `content-keyval` attributes are mapped to fields compatible with `Tower`: `výška` to `height`, `nadmořská výška` to `elevation`, and `počet schodů` to `stairs`. Any unknown or invalid value remains a `keyValues` label/value pair for later mapping.
 

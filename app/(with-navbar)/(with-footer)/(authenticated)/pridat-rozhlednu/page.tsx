@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import { revalidateTowerByIDOrNameID } from "@/actions/cache/purge.tower.action";
-import { uploadPhoto } from "@/actions/photos/upload.action";
+import { uploadPhoto, uploadPhotoFromUrl } from "@/actions/photos/upload.action";
 import { addTower } from "@/actions/towers/tower.add";
 import { changeTowerMainPhoto } from "@/actions/towers/tower.change";
 import {
@@ -62,7 +62,8 @@ const AddTowerPage = () => {
         const scrapedTower = scrapedTowers.find((item) => item.id === id);
 
         setPhotos([]);
-        setMainIndex(0);
+        setPhotos(scrapedTower.photos);
+        setMainIndex(Math.max(scrapedTower.photos.indexOf(scrapedTower.mainPhotoUrl ?? ""), 0));
         setOpeningHoursText("");
         setTariffesText("{}");
         setStructuredDataError("");
@@ -73,8 +74,7 @@ const AddTowerPage = () => {
         }
 
         replaceTower(mapScrapedTowerToForm(scrapedTower));
-        setPhotos(scrapedTower.photos);
-        setMainIndex(Math.max(scrapedTower.photos.indexOf(scrapedTower.mainPhotoUrl ?? ""), 0));
+        setMainIndex(0);
         setOpeningHoursText(JSON.stringify(scrapedTower.openingHours ?? {}, null, 2));
         setTariffesText(JSON.stringify(scrapedTower.admission?.tariffes ?? {}, null, 2));
     };
@@ -176,7 +176,10 @@ const AddTowerPage = () => {
             setIsUploadingPhotos(true);
 
             const uploadPromises = photos.map(async (photo, index) => {
-                const publicURL = await uploadPhoto(photo, newID, true, index === mainIndex);
+                const publicURL =
+                    photo instanceof File
+                        ? await uploadPhoto(photo, newID, true, index === mainIndex)
+                        : await uploadPhotoFromUrl(photo, newID, true, index === mainIndex);
                 setUploadedPhotosCount((count) => count + 1);
                 return publicURL;
             });

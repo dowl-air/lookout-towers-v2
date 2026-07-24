@@ -3,6 +3,7 @@
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { updateTag } from "next/cache";
 
+import { checkAdmin } from "@/actions/checkAdmin";
 import { getChange } from "@/data/change/changes";
 import { Tower } from "@/types/Tower";
 import { CacheTag, getCacheTagSpecific } from "@/utils/cacheTags";
@@ -39,6 +40,8 @@ export const changeTower = async (changeID: string, tower: Tower) => {
 };
 
 export const changeTowerMainPhoto = async (towerID: string, mainPhotoUrl: string) => {
+    if (!(await checkAdmin())) throw new Error("Unauthorized");
+
     const towerDoc = await doc(db, "towers", towerID);
     await updateDoc(towerDoc, {
         mainPhotoUrl,

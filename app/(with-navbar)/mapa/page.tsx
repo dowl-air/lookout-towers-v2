@@ -8,7 +8,7 @@ import { getAllTowersForMap } from "@/data/tower/towers-map";
 import { getAllUserFavouritesIds } from "@/data/user/user-favourites";
 import { getAllUserVisits } from "@/data/user/user-visits";
 import { SITE_URL } from "@/utils/constants";
-import { getMapJsonLd } from "@/utils/structuredData";
+import { getMapJsonLd, serializeJsonLd } from "@/utils/structuredData";
 
 const MAP_TITLE = "Mapa rozhleden a vyhlídek";
 const MAP_DESCRIPTION =
@@ -74,7 +74,7 @@ async function MapContent() {
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(mapJsonLd) }}
+                dangerouslySetInnerHTML={{ __html: serializeJsonLd(mapJsonLd) }}
             />
             <div className="flex justify-center items-stretch grow h-[calc(100dvh-66px)] md:h-[calc(100dvh-69px)]">
                 <MapProvider>

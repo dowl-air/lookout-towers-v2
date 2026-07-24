@@ -31,7 +31,7 @@ import { Tower } from "@/types/Tower";
 import { SITE_URL } from "@/utils/constants";
 import { formatCountyName, formatProvinceName } from "@/utils/geography";
 import { normalizeOpeningHours } from "@/utils/openingHours";
-import { getTowerJsonLd } from "@/utils/structuredData";
+import { getTowerJsonLd, serializeJsonLd } from "@/utils/structuredData";
 import { getTowerHeroDescription, getTowerSeoDescription } from "@/utils/towerDescriptions";
 import { getCanonicalTowerPath, isCanonicalTowerType } from "@/utils/towerRoute";
 
@@ -128,7 +128,7 @@ async function TowerPage({ params }: { params: Promise<{ type: string; nameID: s
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
             />
             <div className="w-full px-4">
                 <div className="mx-auto grid w-full max-w-[1720px] gap-4 2xl:grid-cols-[minmax(8rem,1fr)_minmax(0,80rem)_minmax(8rem,1fr)]">
