@@ -55,6 +55,35 @@ test("createScrapedTowerDocument omits missing stairs and preserves an explicit 
     assert.equal(resultWithZeroStairs.stairs, 0);
 });
 
+test("createScrapedTowerDocument omits missing height and preserves an explicit zero", () => {
+    const parsedDetail = parseDetailHtml('<section id="detail"><h1>Rozhledna Test</h1></section>');
+    const geography = { country: "CZ" as const };
+    const mapycom = { id: null, name: null, source: null };
+    const createdAt = "2026-07-24T00:00:00.000Z";
+
+    const resultWithoutHeight = createScrapedTowerDocument(
+        parsedDetail,
+        geography,
+        mapycom,
+        "test",
+        [],
+        [],
+        createdAt
+    );
+    const resultWithZeroHeight = createScrapedTowerDocument(
+        { ...parsedDetail, height: 0 },
+        geography,
+        mapycom,
+        "test",
+        [],
+        [],
+        createdAt
+    );
+
+    assert.equal("height" in resultWithoutHeight, false);
+    assert.equal(resultWithZeroHeight.height, 0);
+});
+
 test("parseDetailHtml extracts Tower URLs and skips Mapy links", () => {
     const result = parseDetailHtml(`
         <section id="detail">

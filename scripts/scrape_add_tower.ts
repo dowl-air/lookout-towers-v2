@@ -701,7 +701,7 @@ export function createScrapedTowerDocument(
         contact: parsedDetail.contact,
         elevation: parsedDetail.elevation ?? 0,
         gps: parsedDetail.gps,
-        height: parsedDetail.height ?? 0,
+        ...(parsedDetail.height === undefined ? {} : { height: parsedDetail.height }),
         mainPhotoUrl: selectMainPhoto(photos),
         ...(mapycz ? { mapycz } : {}),
         material: parsedDetail.material ?? [],

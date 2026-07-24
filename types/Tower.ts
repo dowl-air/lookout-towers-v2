@@ -7,6 +7,7 @@ import type { OpeningHours } from "@/types/OpeningHours";
 import type { TowerTag } from "@/types/TowerTags";
 
 type MapyCz = {
+    description?: string;
     href: string;
     id: string;
     lastMapped: string | Date;
