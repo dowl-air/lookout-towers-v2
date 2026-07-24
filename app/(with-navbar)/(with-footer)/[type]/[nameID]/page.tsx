@@ -119,7 +119,6 @@ async function TowerPage({ params }: { params: Promise<{ type: string; nameID: s
         url: towerUrl,
         description: seoDescription,
         images: towerImages,
-        rating: { average: avg, count },
         countyLabel,
         provinceLabel,
     });

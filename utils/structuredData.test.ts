@@ -28,23 +28,18 @@ const tower: Tower = {
     type: TowerTypeEnum.ROZHLEDNA,
 };
 
-test("adds breadcrumbs, aggregate rating, and always-open hours to a tower", () => {
+test("adds breadcrumbs and always-open hours without a review snippet to a tower", () => {
     const jsonLd = getTowerJsonLd({
         tower,
         url: "https://www.rozhlednovysvet.cz/rozhledna/testovaci-rozhledna",
         description: "Testovací popis.",
         images: [],
-        rating: { average: 4.5, count: 2 },
     });
 
     const attraction = jsonLd["@graph"][0];
     const breadcrumbs = jsonLd["@graph"][1];
 
-    assert.deepEqual(attraction.aggregateRating, {
-        "@type": "AggregateRating",
-        ratingValue: 4.5,
-        reviewCount: 2,
-    });
+    assert.equal("aggregateRating" in attraction, false);
     assert.deepEqual(attraction.openingHoursSpecification, [
         {
             "@type": "OpeningHoursSpecification",
@@ -84,7 +79,7 @@ test("adds breadcrumbs, aggregate rating, and always-open hours to a tower", () 
     ]);
 });
 
-test("omits seasonal opening hours and ratings without reviews", () => {
+test("omits seasonal opening hours and review snippets", () => {
     const jsonLd = getTowerJsonLd({
         tower: {
             ...tower,
@@ -104,7 +99,6 @@ test("omits seasonal opening hours and ratings without reviews", () => {
         url: "https://www.rozhlednovysvet.cz/rozhledna/testovaci-rozhledna",
         description: "Testovací popis.",
         images: [],
-        rating: { average: 0, count: 0 },
     });
 
     const attraction = jsonLd["@graph"][0];
@@ -136,7 +130,6 @@ test("normalizes year-round schedules and lunch breaks into opening specificatio
         url: "https://www.rozhlednovysvet.cz/rozhledna/testovaci-rozhledna",
         description: "Testovací popis.",
         images: [],
-        rating: { average: 0, count: 0 },
     });
 
     assert.deepEqual(jsonLd["@graph"][0].openingHoursSpecification, [

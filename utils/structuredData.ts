@@ -28,12 +28,6 @@ type OpeningHoursSpecification = {
     closes: string;
 };
 
-type AggregateRating = {
-    "@type": "AggregateRating";
-    ratingValue: number;
-    reviewCount: number;
-};
-
 type BreadcrumbList = {
     "@type": "BreadcrumbList";
     itemListElement: {
@@ -63,7 +57,6 @@ type TouristAttraction = {
     sameAs: string[];
     touristType: string[];
     url: string;
-    aggregateRating?: AggregateRating;
     openingHoursSpecification?: OpeningHoursSpecification[];
 };
 
@@ -158,22 +151,11 @@ const getOpeningHoursSpecification = (openingHours: OpeningHours): OpeningHoursS
     return ranges.flatMap(getRangeOpeningHoursSpecifications);
 };
 
-const getAggregateRating = (average: number, count: number): AggregateRating | undefined => {
-    if (!Number.isFinite(average) || average < 1 || average > 5 || count < 1) return undefined;
-
-    return {
-        "@type": "AggregateRating",
-        ratingValue: average,
-        reviewCount: count,
-    };
-};
-
 export const getTowerJsonLd = ({
     tower,
     url,
     description,
     images,
-    rating,
     countyLabel,
     provinceLabel,
 }: {
@@ -181,11 +163,9 @@ export const getTowerJsonLd = ({
     url: string;
     description: string;
     images: string[];
-    rating: { average: number; count: number };
     countyLabel?: string;
     provinceLabel?: string;
 }): TowerJsonLd => {
-    const aggregateRating = getAggregateRating(rating.average, rating.count);
     const openingHoursSpecification = getOpeningHoursSpecification(tower.openingHours);
     const attraction: TouristAttraction = {
         "@id": `${url}#schema`,
@@ -210,7 +190,6 @@ export const getTowerJsonLd = ({
             tower.gmaps?.url,
             tower.urls?.find((item) => item.includes("wikipedia")),
         ].filter((item): item is string => Boolean(item)),
-        ...(aggregateRating ? { aggregateRating } : {}),
         ...(openingHoursSpecification.length ? { openingHoursSpecification } : {}),
     };
 
