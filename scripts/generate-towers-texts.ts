@@ -533,9 +533,15 @@ async function generateTextsForTower(
                 reasoning: {
                     effort: "minimal",
                 },
+                stream: false,
                 temperature: 0.2,
             },
         });
+
+        if (!("choices" in response)) {
+            throw new Error("Expected a non-streaming OpenRouter chat response.");
+        }
+
         const content = extractTextContent(response.choices[0]?.message?.content);
 
         if (!content) {

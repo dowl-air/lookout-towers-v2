@@ -63,8 +63,13 @@ async function main() {
                     content: "Jaký je smysl života?",
                 },
             ],
+            stream: false,
         },
     });
+
+    if (!("choices" in response)) {
+        throw new Error("Expected a non-streaming OpenRouter chat response.");
+    }
 
     console.log(response.choices[0]?.message?.content ?? "No response content returned.");
 }
