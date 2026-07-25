@@ -230,6 +230,7 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
     const [primaryOpeningHoursRow, ...otherOpeningHoursRows] = orderedRows;
     const accessTags = getTowerTagsByCategory(tower, "access");
     const equipmentTags = getTowerTagsByCategory(tower, "equipment");
+    const openingHoursDetailText = tower.openingHours?.detailText?.trim();
 
     return (
         <section className="w-full" aria-labelledby="practical-info-heading">
@@ -268,6 +269,11 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                                             value={primaryOpeningHoursRow.value}
                                         />
                                     </dl>
+                                ) : null}
+                                {openingHoursDetailText ? (
+                                    <p className="text-sm leading-relaxed text-base-content/75">
+                                        {openingHoursDetailText}
+                                    </p>
                                 ) : null}
                                 {tower.openingHours?.detailUrl ? (
                                     <Link

@@ -46,7 +46,9 @@ export const formatOpeningHour = (hour: number): string => {
 };
 
 export const formatOpeningHoursDays = (days: number[]): string => {
-    const selectedDays = [...new Set(days)].filter(isValidWeekday).sort((dayA, dayB) => dayA - dayB);
+    const selectedDays = [...new Set(days)]
+        .filter(isValidWeekday)
+        .sort((dayA, dayB) => dayA - dayB);
 
     if (selectedDays.length === 7) return "Každý den";
 
@@ -97,10 +99,7 @@ const isRangeComplete = (range: Partial<OpeningHoursRange>): range is OpeningHou
 
 export const getOpeningHoursRanges = (openingHours: OpeningHours): OpeningHoursRange[] => {
     if (Array.isArray(openingHours.ranges) && openingHours.ranges.length > 0) {
-        return [...openingHours.ranges].sort((rangeA, rangeB) => {
-            if (rangeA.monthFrom !== rangeB.monthFrom) return rangeA.monthFrom - rangeB.monthFrom;
-            return rangeA.monthTo - rangeB.monthTo;
-        });
+        return [...openingHours.ranges];
     }
 
     if (!isOpeningHoursTypeWithRanges(openingHours.type)) return [];
