@@ -58,6 +58,10 @@ Open `http://localhost:3000`.
 
 Authenticated users can edit their display name and profile photo on `/profil`. Display names must contain 1 to 50 characters after trimming surrounding whitespace. Profile photos must be JPG, PNG, or WebP files no larger than 5 MB.
 
+## Administration
+
+The ID-based administrator can irreversibly remove a tower through `/remove-tower`. The action requires typing the exact tower name and removes the tower document, linked photos, favourites, ratings, visits, and change proposals, together with tower files in Firebase Storage.
+
 ## Available scripts
 
 - `npm run dev` — start the development server

@@ -21,6 +21,10 @@ export async function proxy(req: Request) {
         return NextResponse.redirect(new URL("/403", req.url));
     }
 
+    if (req.url.includes("remove-tower") && !isAdmin) {
+        return NextResponse.redirect(new URL("/403", req.url));
+    }
+
     if (req.url.includes("admin") && !isAdmin) {
         return NextResponse.redirect(new URL("/403", req.url));
     }
@@ -34,6 +38,7 @@ export const config = {
         "/pridat-rozhlednu/:path*",
         "/profil/:path*",
         "/purge-cache/:path*",
+        "/remove-tower/:path*",
         "/zmeny/:path*",
         "/admin/:path*",
     ],

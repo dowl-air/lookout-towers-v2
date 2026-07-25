@@ -76,6 +76,8 @@ Only the ID-based administrator may delete user accounts. Account deletion must 
 
 When deleting an account, remove the user document, Auth.js accounts and sessions, the user avatar, and personal `visits`, `favourites`, and `ratings` records. Keep `changes` records and tower photos in `photos` (including their Storage files), even when they were created by the deleted user. UI that resolves a user for retained history must render a neutral fallback such as "Deleted user" when the user document no longer exists. Any new user-owned data collection must be explicitly classified as deleted with the account or retained as a documented exception.
 
+Only the ID-based administrator may delete towers through `/remove-tower`. Tower deletion is irreversible and must require confirmation of the exact tower name. It deletes the tower document, linked `photos`, `favourites`, `ratings`, `visits`, and `changes` records, plus Firebase Storage files under both `towers/{towerId}/` and `towers_users/{towerId}/`. Invalidate global and tower-specific cache tags, including affected users' favourites, ratings, visits, and change-history tags.
+
 Protected routes currently include:
 
 - `/navstivene`
@@ -84,6 +86,7 @@ Protected routes currently include:
 - `/pridat-rozhlednu`
 - `/profil`
 - `/purge-cache`
+- `/remove-tower`
 - `/zmeny`
 - `/admin`
 
