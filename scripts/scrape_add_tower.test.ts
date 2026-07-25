@@ -84,6 +84,35 @@ test("createScrapedTowerDocument omits missing height and preserves an explicit 
     assert.equal(resultWithZeroHeight.height, 0);
 });
 
+test("createScrapedTowerDocument omits missing elevation and preserves an explicit zero", () => {
+    const parsedDetail = parseDetailHtml('<section id="detail"><h1>Rozhledna Test</h1></section>');
+    const geography = { country: "CZ" as const };
+    const mapycom = { id: null, name: null, source: null };
+    const createdAt = "2026-07-24T00:00:00.000Z";
+
+    const resultWithoutElevation = createScrapedTowerDocument(
+        parsedDetail,
+        geography,
+        mapycom,
+        "test",
+        [],
+        [],
+        createdAt
+    );
+    const resultWithZeroElevation = createScrapedTowerDocument(
+        { ...parsedDetail, elevation: 0 },
+        geography,
+        mapycom,
+        "test",
+        [],
+        [],
+        createdAt
+    );
+
+    assert.equal("elevation" in resultWithoutElevation, false);
+    assert.equal(resultWithZeroElevation.elevation, 0);
+});
+
 test("parseDetailHtml extracts Tower URLs and skips Mapy links", () => {
     const result = parseDetailHtml(`
         <section id="detail">
@@ -389,7 +418,7 @@ test("parseDetailHtml maps known tower attributes and preserves unknown key-valu
                 <table>
                     <tbody>
                         <tr><td class="text">výška:</td><td>15 m</td></tr>
-                        <tr><td class="text">nadmořská výška:</td><td>301 m</td></tr>
+                        <tr><td class="text">nadmořská výška:</td><td>1 143 m</td></tr>
                         <tr><td class="text">počet schodů:</td><td>72</td></tr>
                         <tr><td class="text">materiál:</td><td>konstrukční ocel, dřevo</td></tr>
                         <tr><td class="text">architekt:</td><td>Jan Novák</td></tr>
@@ -401,7 +430,7 @@ test("parseDetailHtml maps known tower attributes and preserves unknown key-valu
     `);
 
     assert.equal(result.height, 15);
-    assert.equal(result.elevation, 301);
+    assert.equal(result.elevation, 1143);
     assert.equal(result.stairs, 72);
     assert.deepEqual(result.material, ["kov", "dřevo"]);
     assert.deepEqual(result.keyValues, [{ label: "architekt", value: "Jan Novák" }]);

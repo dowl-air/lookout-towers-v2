@@ -63,9 +63,9 @@ export const getTowerFallbackDescription = (
     tower: Pick<Tower, "elevation" | "height" | "openingHours" | "stairs" | "type">
 ) => {
     const type = capitalizeFirstLetter(getTowerTypeName(tower.type)) || "Rozhledna";
-    const height = tower.height || -1;
-    const stairs = tower.stairs || -1;
-    const elevation = tower.elevation || 0;
+    const height = tower.height ?? -1;
+    const stairs = tower.stairs ?? -1;
+    const elevation = tower.elevation ?? -1;
 
     return `${formatHeight(height, type)} ${formatStairs(stairs)} ${formatElevation(elevation)} a ${formatAccess(tower)}`;
 };

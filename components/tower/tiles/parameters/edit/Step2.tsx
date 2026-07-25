@@ -59,7 +59,7 @@ const Step2 = ({
                     {type === "number" && (
                         <input
                             type="number"
-                            value={newValue || ""}
+                            value={newValue ?? ""}
                             className="input input-bordered w-full rounded-lg bg-base-100"
                             onChange={(e) => setNewValue(e.target.value)}
                         />

@@ -24,7 +24,7 @@ export const formatParameterValue = (
         case "object":
             return "Neznámé";
         case "number":
-            return value ? value.toString() : "Neznámé";
+            return value == null || !Number.isFinite(Number(value)) ? "Neznámé" : value.toString();
         case "text":
             return value ? value : "Neznámé";
         default:
@@ -34,7 +34,7 @@ export const formatParameterValue = (
 
 export const isUnknownParameterValue = (value: any, type?: EditableParameterType): boolean => {
     if (type === "array") return !Array.isArray(value) || value.length === 0;
-    if (type === "number") return value == null || Number(value) === 0;
+    if (type === "number") return value == null || !Number.isFinite(Number(value));
 
     return value == null || value === "";
 };

@@ -490,13 +490,13 @@ function parseOpeningHours($: cheerio.CheerioAPI): OpeningHours {
 }
 
 function parseTowerNumber(value: string, requiredUnit?: string) {
-    const match = value.trim().match(/^(\d+(?:[.,]\d+)?)\s*([^\d\s]+)?(?:\s+.*)?$/i);
+    const match = value.trim().match(/^(\d(?:[\d\s]*\d)?(?:[.,]\d+)?)\s*([^\d\s]+)?(?:\s+.*)?$/i);
     if (!match) return null;
 
     const unit = match[2]?.toLocaleLowerCase("cs");
     if (requiredUnit && unit !== requiredUnit) return null;
 
-    const parsed = Number.parseFloat(match[1].replace(",", "."));
+    const parsed = Number.parseFloat(match[1].replace(/\s/g, "").replace(",", "."));
     return Number.isFinite(parsed) ? parsed : null;
 }
 
@@ -699,8 +699,8 @@ export function createScrapedTowerDocument(
     return {
         admission: parsedDetail.admission,
         contact: parsedDetail.contact,
-        elevation: parsedDetail.elevation ?? 0,
         gps: parsedDetail.gps,
+        ...(parsedDetail.elevation === undefined ? {} : { elevation: parsedDetail.elevation }),
         ...(parsedDetail.height === undefined ? {} : { height: parsedDetail.height }),
         mainPhotoUrl: selectMainPhoto(photos),
         ...(mapycz ? { mapycz } : {}),

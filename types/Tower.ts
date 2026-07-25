@@ -52,7 +52,7 @@ export type Tower = {
     county?: string;
     created: string | Date;
     contact?: TowerContact;
-    elevation: number;
+    elevation?: number;
     gps:
         | GeoPoint
         | {
@@ -60,7 +60,7 @@ export type Tower = {
               longitude: number;
           };
     gpshash?: string;
-    height: number;
+    height?: number;
     history?: string; //todo make it structured
     id: string;
     locationText?: string; //todo merge to description
@@ -76,7 +76,7 @@ export type Tower = {
     openingHours: OpeningHours;
     owner?: string;
     province?: string;
-    stairs: number;
+    stairs?: number;
     tags?: TowerTag[];
     texts?: TowerTexts;
     type: TowerTypeEnum;

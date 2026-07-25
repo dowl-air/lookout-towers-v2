@@ -206,13 +206,13 @@ const TowerOfTheDay = async () => {
                                 <div className="rounded-2xl bg-base-200 px-4 py-3">
                                     <dt className="text-base-content/55">Výška</dt>
                                     <dd className="mt-1 font-semibold text-base-content">
-                                        {tower.height} m
+                                        {tower.height == null ? "neznámá" : `${tower.height} m`}
                                     </dd>
                                 </div>
                                 <div className="rounded-2xl bg-base-200 px-4 py-3">
                                     <dt className="text-base-content/55">Schody</dt>
                                     <dd className="mt-1 font-semibold text-base-content">
-                                        {tower.stairs}
+                                        {tower.stairs ?? "neznámé"}
                                     </dd>
                                 </div>
                                 <div className="rounded-2xl bg-base-200 px-4 py-3">

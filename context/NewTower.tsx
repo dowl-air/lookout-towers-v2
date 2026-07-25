@@ -15,7 +15,19 @@ export const NewTowerProvider = ({ children }) => {
     const [tower, setFormData] = useState({});
 
     const updateTower = (newData: Partial<Tower>) => {
-        setFormData((prev) => ({ ...prev, ...newData }));
+        setFormData((prev) => {
+            const updatedTower = { ...prev };
+
+            for (const [key, value] of Object.entries(newData)) {
+                if (value === undefined) {
+                    delete updatedTower[key as keyof Tower];
+                } else {
+                    updatedTower[key as keyof Tower] = value;
+                }
+            }
+
+            return updatedTower;
+        });
     };
 
     const replaceTower = (newData: Partial<Tower>) => {

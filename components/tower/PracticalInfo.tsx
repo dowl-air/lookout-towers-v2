@@ -432,17 +432,19 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                         <SummaryInfoLine
                             label="Výška"
                             value={generateHeightText(tower.height)}
-                            isUnknown={tower.height == null || tower.height === 0}
+                            isUnknown={tower.height == null}
                         />
                         <SummaryInfoLine
                             label="Schody"
-                            value={tower.stairs >= 0 ? tower.stairs : "neznámé"}
-                            isUnknown={tower.stairs == null || tower.stairs === 0}
+                            value={tower.stairs ?? "neznámé"}
+                            isUnknown={tower.stairs == null}
                         />
                         <SummaryInfoLine
                             label="Nadmořská výška"
-                            value={`${tower.elevation} m n. m.`}
-                            isUnknown={tower.elevation == null || tower.elevation === 0}
+                            value={
+                                tower.elevation == null ? "neznámá" : `${tower.elevation} m n. m.`
+                            }
+                            isUnknown={tower.elevation == null}
                         />
                         <SummaryInfoLine
                             label="Zpřístupnění"
@@ -456,9 +458,11 @@ const PracticalInfo = ({ tower }: { tower: Tower }) => {
                         <SummaryInfoLine
                             label="Výška výhledu"
                             value={
-                                tower.viewHeight ? generateHeightText(tower.viewHeight) : "neznámé"
+                                tower.viewHeight == null
+                                    ? "neznámé"
+                                    : generateHeightText(tower.viewHeight)
                             }
-                            isUnknown={tower.viewHeight == null || tower.viewHeight === 0}
+                            isUnknown={tower.viewHeight == null}
                         />
                         <SummaryInfoLine
                             label="Plošiny"

@@ -44,13 +44,13 @@ const getTowerHeroTags = (tower: Tower) =>
         .map((tag) => ({ tag, ...TOWER_TAG_DETAILS[tag] }))
         .filter(({ Icon }) => Icon);
 
-const formatHeroHeight = (height: number) => {
-    if (height < 0) return "výška neznámá";
+const formatHeroHeight = (height?: number) => {
+    if (height == null || height < 0) return "výška neznámá";
     return `${height} m`;
 };
 
-const formatHeroStairs = (stairs: number) => {
-    if (stairs < 0) return "schody neznámé";
+const formatHeroStairs = (stairs?: number) => {
+    if (stairs == null || stairs < 0) return "schody neznámé";
     if (stairs === 1) return "1 schod";
     if (stairs >= 2 && stairs <= 4) return `${stairs} schody`;
     return `${stairs} schodů`;
@@ -62,8 +62,8 @@ const formatHeroVisits = (visits: number) => {
     return `${visits} návštěv`;
 };
 
-const formatHeroElevation = (elevation: number) => {
-    if (elevation < 0) return "n. m. neznámá";
+const formatHeroElevation = (elevation?: number) => {
+    if (elevation == null || elevation < 0) return "n. m. neznámá";
     return `${elevation} m n. m.`;
 };
 

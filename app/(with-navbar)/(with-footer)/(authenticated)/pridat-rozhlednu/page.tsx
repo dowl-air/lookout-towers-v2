@@ -409,7 +409,14 @@ const AddTowerPage = () => {
                                 className="w-full"
                                 type="number"
                                 value={tower.height ?? ""}
-                                onChange={(e) => updateTower({ height: +e.target.value || 0 })}
+                                onChange={(event) =>
+                                    updateTower({
+                                        height:
+                                            event.target.value === ""
+                                                ? undefined
+                                                : +event.target.value,
+                                    })
+                                }
                             />
                         </label>
 
@@ -426,7 +433,14 @@ const AddTowerPage = () => {
                                 className="w-full"
                                 type="number"
                                 value={tower.viewHeight ?? ""}
-                                onChange={(e) => updateTower({ viewHeight: +e.target.value || 0 })}
+                                onChange={(event) =>
+                                    updateTower({
+                                        viewHeight:
+                                            event.target.value === ""
+                                                ? undefined
+                                                : +event.target.value,
+                                    })
+                                }
                             />
                         </label>
 
@@ -462,7 +476,14 @@ const AddTowerPage = () => {
                                 className="w-full"
                                 type="number"
                                 value={tower.elevation ?? ""}
-                                onChange={(e) => updateTower({ elevation: +e.target.value || 0 })}
+                                onChange={(event) =>
+                                    updateTower({
+                                        elevation:
+                                            event.target.value === ""
+                                                ? undefined
+                                                : +event.target.value,
+                                    })
+                                }
                             />
                         </label>
 
@@ -479,7 +500,14 @@ const AddTowerPage = () => {
                                 className="w-full"
                                 type="number"
                                 value={tower.stairs ?? ""}
-                                onChange={(e) => updateTower({ stairs: +e.target.value || 0 })}
+                                onChange={(event) =>
+                                    updateTower({
+                                        stairs:
+                                            event.target.value === ""
+                                                ? undefined
+                                                : +event.target.value,
+                                    })
+                                }
                             />
                         </label>
 
