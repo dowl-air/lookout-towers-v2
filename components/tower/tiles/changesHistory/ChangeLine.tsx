@@ -12,7 +12,10 @@ import { extractDomainAndPath } from "@/utils/extractDomain";
 import { formatParameterValue } from "@/utils/formatValue";
 import { getOpeningHoursTypeName } from "@/utils/openingHours";
 
-const formatChangeValue = (value: any, field: Change["field"], parameter: any) => {
+export const formatChangeValue = (value: any, field: Change["field"], parameter: any) => {
+    if (field === "admission") {
+        return getAdmissionTypeLabel(value?.type ?? "");
+    }
     if (field === "openingHours") {
         return getOpeningHoursTypeName(value?.type);
     }
@@ -21,9 +24,11 @@ const formatChangeValue = (value: any, field: Change["field"], parameter: any) =
         return values.length ? values.join(", ") : "bez kontaktu";
     }
     if (field === "tags") {
-        return (value ?? [])
-            .map((tag: keyof typeof TOWER_TAG_DETAILS) => TOWER_TAG_DETAILS[tag]?.label ?? tag)
-            .join(", ") || "žádné tagy";
+        return (
+            (value ?? [])
+                .map((tag: keyof typeof TOWER_TAG_DETAILS) => TOWER_TAG_DETAILS[tag]?.label ?? tag)
+                .join(", ") || "žádné tagy"
+        );
     }
 
     return formatParameterValue(value, parameter.type, parameter.typeOptions);
@@ -40,7 +45,8 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
     if (change.field === "urls") parameter = { name: "urls", label: "Odkazům", type: "array" };
     if (change.field === "admission")
         parameter = { name: "admission", label: "Vstupné", type: "object" };
-    if (change.field === "contact") parameter = { name: "contact", label: "Kontakt", type: "object" };
+    if (change.field === "contact")
+        parameter = { name: "contact", label: "Kontakt", type: "object" };
     if (change.field === "tags")
         parameter = { name: "tags", label: "Přístup a vybavení", type: "array" };
 
@@ -77,9 +83,6 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                         {"[ "}
                         <span className={cn({ "line-through": isApproved })}>
                             {formatChangeValue(change.old_value, change.field, parameter)}
-                            {change.field === "admission" ? (
-                                <span className="text-neutral-500">{` ${getAdmissionTypeLabel(change.old_value?.type)}`}</span>
-                            ) : null}
                         </span>
                     </span>
                     <svg
@@ -104,9 +107,6 @@ const ChangeLine = ({ change, idx, user }: { change: Change; idx: number; user: 
                             })}
                         >
                             {formatChangeValue(change.new_value, change.field, parameter)}
-                            {change.field === "admission" ? (
-                                <span className="text-neutral-500">{` ${getAdmissionTypeLabel(change.new_value.type)}`}</span>
-                            ) : null}
                         </span>
 
                         {" ]"}
