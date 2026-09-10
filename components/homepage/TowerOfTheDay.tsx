@@ -95,7 +95,10 @@ const TowerOfTheDay = async () => {
     const towerTypeName =
         towerTypes.find((towerType) => towerType.value === tower.type)?.name ?? tower.type;
     const countyLabel = formatCountyName(tower.county);
-    const [, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours);
+    const [, openingHoursText] = getOpeningHoursStateAndShortText(
+        tower.openingHours,
+        new Date(date)
+    );
     const openedYear = tower.opened ? new Date(tower.opened).getFullYear() : null;
     const materialsText = tower.material.length
         ? joinCzechList(

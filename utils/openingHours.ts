@@ -309,12 +309,15 @@ const getNextOpenRange = (
     return null;
 };
 
-export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [boolean, string] => {
+export const getOpeningHoursStateAndShortText = (
+    openingHours: OpeningHours,
+    date = new Date()
+): [boolean, string] => {
     const { type, isLockedAtNight, forbiddenType } = openingHours;
     switch (type) {
         case OpeningHoursType.NonStop:
             if (isLockedAtNight) {
-                const isNight = new Date().getHours() < 7 || new Date().getHours() > 20;
+                const isNight = date.getHours() < 7 || date.getHours() > 20;
                 return [!isNight, isNight ? "Otevírá ráno" : "Otevřeno do večera"];
             }
             return [true, "Volně přístupná"];
@@ -338,10 +341,10 @@ export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [b
         case OpeningHoursType.SomeMonths:
         case OpeningHoursType.EveryMonth:
             const ranges = getOpeningHoursRanges(openingHours);
-            const activeRange = getActiveRange(ranges);
+            const activeRange = getActiveRange(ranges, date);
 
             if (activeRange) {
-                const currentTime = getCurrentTime();
+                const currentTime = getCurrentTime(date);
                 const isLunchBreak =
                     activeRange.lunchBreak &&
                     currentTime >= activeRange.lunchFrom &&
@@ -354,7 +357,7 @@ export const getOpeningHoursStateAndShortText = (openingHours: OpeningHours): [b
                 }
             }
 
-            const nextOpenRange = getNextOpenRange(ranges);
+            const nextOpenRange = getNextOpenRange(ranges, date);
             if (nextOpenRange) {
                 const nextDay = getCurrentWeekday(nextOpenRange.date);
                 return [
