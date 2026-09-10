@@ -11,6 +11,7 @@ Lookout Towers is a Czech community site for lookout towers, observatories, and 
 - Tailwind CSS 4 + daisyUI.
 - Auth.js / NextAuth v5 beta with Firebase adapter.
 - Firestore + Firebase Storage.
+- Client-side Czech QR Payment generation with `qrcode`.
 - ESLint flat config with import ordering enforced.
 
 ## Repository map
@@ -89,6 +90,8 @@ Protected routes currently include:
 - `/remove-tower`
 - `/zmeny`
 - `/admin`
+
+The `/podporit` route is public. It generates SPD QR Payment data in the browser from fixed values in `constants/support.ts`; never accept the destination account from URL parameters or other user input. The displayed domestic account and encoded IBAN must always refer to the same account.
 
 ## Critical repository rules
 
@@ -186,6 +189,7 @@ Before writing new Firestore queries, look for an existing function in `data/` o
 - Only the administrator may add towers or update a tower's `mainPhotoUrl`.
 - URL-based photo import is administrator-only and is used exclusively by the `/pridat-rozhlednu` workflow. Do not expose it to regular users because it creates an SSRF boundary.
 - Serialize every JSON-LD value rendered with `dangerouslySetInnerHTML` through `serializeJsonLd` from `@/utils/structuredData`.
+- The support payment destination is configured in `constants/support.ts`. Keep the domestic account and IBAN synchronized and validate the IBAN checksum after any change.
 
 ## Safe change checklist
 

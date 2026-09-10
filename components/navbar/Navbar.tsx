@@ -5,6 +5,7 @@ import Link from "next/link";
 import CommunityLink from "@/components/navbar/links/CommunityLink";
 import NavbarUserDesktop from "@/components/navbar/NavbarUserDesktop";
 import NavbarUserMobile from "@/components/navbar/NavbarUserMobile";
+import SupportLink from "@/components/navbar/SupportLink";
 import ThemeChanger from "@/components/navbar/ThemeChanger";
 import TowerSearch from "@/components/shared/TowerSearch";
 
@@ -64,6 +65,7 @@ function Navbar() {
                 </nav>
 
                 <div className="navbar-end items-center gap-3 hidden md:flex">
+                    <SupportLink />
                     <ThemeChanger />
                     <NavbarUserDesktop />
                 </div>

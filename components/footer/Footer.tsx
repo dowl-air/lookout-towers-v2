@@ -1,3 +1,4 @@
+import { Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -61,6 +62,17 @@ function Footer() {
                             <Suspense fallback={null}>
                                 <FooterCommunityLink />
                             </Suspense>
+                            <Link className="link-hover link w-fit" href="/podporit">
+                                Podpořit projekt
+                            </Link>
+                            <a
+                                className="link-hover link w-fit"
+                                href="https://www.instagram.com/rozhlednovysvet/"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                Instagram
+                            </a>
                         </nav>
                     </div>
 
@@ -83,21 +95,24 @@ function Footer() {
                         </ul>
                     </div>
 
-                    <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 shadow-lg shadow-black/10">
-                        <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-content/60">
-                            Instagram
-                        </h3>
+                    <div className="flex flex-col gap-4 rounded-lg border border-white/15 bg-white/5 p-5 shadow-lg shadow-black/10">
+                        <Heart
+                            aria-hidden="true"
+                            size={27}
+                            className="text-error"
+                            fill="currentColor"
+                        />
+                        <h3 className="text-xl font-bold">Web zůstává zdarma</h3>
                         <p className="text-sm leading-6 text-neutral-content/75 sm:text-base">
-                            Sledujte nové tipy, výhledy a dění kolem projektu na oficiálním profilu.
+                            Dobrovolnou podporou pomáháte hradit provoz a další rozvoj Rozhlednového
+                            světa.
                         </p>
-                        <a
-                            href="https://www.instagram.com/rozhlednovysvet/"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="btn btn-outline btn-sm w-fit border-white/20 text-white hover:border-white hover:bg-white hover:text-neutral"
+                        <Link
+                            href="/podporit"
+                            className="btn btn-outline btn-sm w-fit rounded-lg border-white/25 text-white hover:border-white hover:bg-white hover:text-neutral"
                         >
-                            Instagram @rozhlednovysvet
-                        </a>
+                            Podpořit projekt
+                        </Link>
                     </div>
                 </div>
 

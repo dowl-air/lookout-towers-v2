@@ -1,4 +1,4 @@
-import { House, LayoutList, Map, X } from "lucide-react";
+import { Heart, House, LayoutList, Map, X } from "lucide-react";
 
 import CommunityLink from "@/components/navbar/links/CommunityLink";
 import LoginLink from "@/components/navbar/links/LoginLink";
@@ -47,6 +47,12 @@ const NavbarDrawer = ({ children }: { children: React.ReactNode }) => {
                             </NavbarSideLink>
                         </li>
                         <CommunityLink variant="mobile" />
+                        <li>
+                            <NavbarSideLink href="/podporit">
+                                <Heart />
+                                Podpořit projekt
+                            </NavbarSideLink>
+                        </li>
 
                         <VisitedTowersLink />
                         <ProgressLink />

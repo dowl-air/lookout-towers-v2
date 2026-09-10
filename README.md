@@ -4,7 +4,7 @@ Lookout Towers is a Czech community website for lookout towers, observatories, a
 
 ## Highlights
 
-- Public pages for homepage, map, tower detail, listing, and search.
+- Public pages for homepage, map, tower detail, listing, search, and voluntary project support.
 - Authenticated user flows for visits, favourites, ratings, personal progress, profile history, and profile editing.
 - Community and moderation-oriented features, including tower submissions and change tracking.
 - Firestore-backed data model with server-side caching and tag-based invalidation.
@@ -17,6 +17,7 @@ Lookout Towers is a Czech community website for lookout towers, observatories, a
 - Auth.js / NextAuth v5 beta with Firebase adapter.
 - Firebase Firestore + Firebase Storage.
 - Typesense for search.
+- `qrcode` for client-side Czech QR Payment generation.
 
 ## Quick start
 
@@ -57,6 +58,10 @@ Open `http://localhost:3000`.
 ## Profile settings
 
 Authenticated users can edit their display name and profile photo on `/profil`. Display names must contain 1 to 50 characters after trimming surrounding whitespace. Profile photos must be JPG, PNG, or WebP files no larger than 5 MB.
+
+## Project support
+
+The public `/podporit` page explains that the website remains free and offers an optional contribution by Czech bank transfer. The selected amount is encoded into an SPD QR Payment locally in the browser; no payment details are submitted to the application or stored in the database. The domestic account number and its corresponding IBAN are fixed in `constants/support.ts` and must be updated together.
 
 ## Administration
 

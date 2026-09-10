@@ -19,6 +19,7 @@ import ImageSliderSkeleton from "@/components/homepage/ImageSliderSkeleton";
 import SearchSection from "@/components/homepage/SearchSection";
 import Stats from "@/components/homepage/Stats";
 import StatsSkeleton from "@/components/homepage/StatsSkeleton";
+import SupportCta from "@/components/homepage/SupportCta";
 import TowerOfTheDay from "@/components/homepage/TowerOfTheDay";
 import LocationPermissionPrompt from "@/components/shared/LocationPermissionPrompt";
 import { getRandomTowers, getTowerRatingAndCount } from "@/data/tower/towers";
@@ -100,6 +101,7 @@ async function HomePage() {
                 </Suspense>
                 <TowerOfTheDay />
                 <AboutMe />
+                <SupportCta />
             </main>
         </>
     );

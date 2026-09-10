@@ -143,3 +143,29 @@
     margin: 0 auto;
     padding: 0 10px;
 }
+
+@keyframes support-heartbeat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.18);
+    }
+    45% {
+        transform: scale(0.96);
+    }
+    70% {
+        transform: scale(1.12);
+    }
+}
+
+.support-heart:hover svg {
+    animation: support-heartbeat 700ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .support-heart:hover svg {
+        animation: none;
+    }
+}
