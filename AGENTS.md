@@ -94,7 +94,7 @@ Protected routes currently include:
 - `/zmeny`
 - `/admin`
 
-The `/podporit` route is public. It generates SPD QR Payment data in the browser from fixed values in `constants/support.ts`; never accept the destination account from URL parameters or other user input. The displayed domestic account and encoded IBAN must always refer to the same account.
+The `/podporit` route is public. It generates SPD QR Payment data in the browser from fixed values in `constants/support.ts`; never accept the destination account from URL parameters or other user input. On mobile layouts, expose PNG QR sharing only when the browser's Web Share API confirms file-sharing support. The displayed domestic account and encoded IBAN must always refer to the same account.
 
 ## Critical repository rules
 

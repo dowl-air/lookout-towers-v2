@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, QrCode } from "lucide-react";
+import { Check, Copy, QrCode, Share2 } from "lucide-react";
 import Image from "next/image";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import {
     SUPPORT_IBAN_FORMATTED,
     SUPPORT_MAX_AMOUNT,
 } from "@/constants/support";
+import { createShareableQrFile } from "@/utils/shareQrCode";
 
 const DEFAULT_AMOUNT = SUPPORT_AMOUNTS[1];
 
@@ -21,12 +22,15 @@ function SupportPayment() {
     const [qrCode, setQrCode] = useState("");
     const [qrError, setQrError] = useState(false);
     const [accountCopied, setAccountCopied] = useState(false);
+    const [shareData, setShareData] = useState<{ amount: number; file: File } | null>(null);
+    const [shareError, setShareError] = useState(false);
 
     useEffect(() => {
         let isCurrent = true;
+        setShareData(null);
+        setShareError(false);
 
-        QRCode.toString(createSupportPaymentPayload(amount), {
-            type: "svg",
+        QRCode.toDataURL(createSupportPaymentPayload(amount), {
             width: 320,
             margin: 2,
             errorCorrectionLevel: "M",
@@ -35,11 +39,27 @@ function SupportPayment() {
                 light: "#ffffff",
             },
         })
-            .then((svg) => {
+            .then(async (dataUrl) => {
                 if (!isCurrent) return;
 
-                setQrCode(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
+                setQrCode(dataUrl);
                 setQrError(false);
+
+                if (
+                    typeof navigator.share !== "function" ||
+                    typeof navigator.canShare !== "function"
+                )
+                    return;
+
+                try {
+                    const file = await createShareableQrFile(dataUrl, `qr-platba-${amount}-kc.png`);
+
+                    if (isCurrent && navigator.canShare({ files: [file] })) {
+                        setShareData({ amount, file });
+                    }
+                } catch {
+                    setShareData(null);
+                }
             })
             .catch(() => {
                 if (!isCurrent) return;
@@ -67,6 +87,22 @@ function SupportPayment() {
             parsedAmount <= SUPPORT_MAX_AMOUNT
         ) {
             setAmount(parsedAmount);
+        }
+    };
+
+    const shareQrCode = async () => {
+        if (shareData?.amount !== amount || typeof navigator.share !== "function") return;
+
+        try {
+            await navigator.share({
+                files: [shareData.file],
+                title: "QR platba pro Rozhlednový svět",
+                text: `QR platba ve výši ${amount} Kč na podporu Rozhlednového světa.`,
+            });
+            setShareError(false);
+        } catch (error) {
+            if (error instanceof DOMException && error.name === "AbortError") return;
+            setShareError(true);
         }
     };
 
@@ -213,6 +249,21 @@ function SupportPayment() {
                 <p className="text-center text-3xl font-bold" aria-live="polite">
                     {amount.toLocaleString("cs-CZ")} Kč
                 </p>
+                {shareData?.amount === amount ? (
+                    <button
+                        type="button"
+                        onClick={shareQrCode}
+                        className="btn mt-5 rounded-lg border-primary-content/35 bg-primary-content text-primary shadow-lg shadow-black/10 md:hidden"
+                    >
+                        <Share2 aria-hidden="true" size={18} />
+                        Sdílet QR kód
+                    </button>
+                ) : null}
+                {shareError ? (
+                    <p className="mt-3 text-center text-sm text-primary-content" role="alert">
+                        QR kód se nepodařilo sdílet. Zkuste to prosím znovu.
+                    </p>
+                ) : null}
                 <p className="mt-3 max-w-xs text-center text-sm leading-6 text-primary-content/70">
                     Před potvrzením vždy zkontrolujte částku a příjemce v bankovní aplikaci.
                 </p>

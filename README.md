@@ -61,7 +61,7 @@ Authenticated users can edit their display name and profile photo on `/profil`. 
 
 ## Project support
 
-The public `/podporit` page explains that the website remains free and offers an optional contribution by Czech bank transfer. The selected amount is encoded into an SPD QR Payment locally in the browser; no payment details are submitted to the application or stored in the database. The domestic account number and its corresponding IBAN are fixed in `constants/support.ts` and must be updated together.
+The public `/podporit` page explains that the website remains free and offers an optional contribution by Czech bank transfer. The selected amount is encoded into an SPD QR Payment locally in the browser; no payment details are submitted to the application or stored in the database. On mobile layouts, browsers that support sharing files through the Web Share API can send the generated PNG QR code to a compatible banking application. The domestic account number and its corresponding IBAN are fixed in `constants/support.ts` and must be updated together.
 
 ## Administration
 
