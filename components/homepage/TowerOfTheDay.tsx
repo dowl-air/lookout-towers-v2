@@ -13,49 +13,9 @@ import { getMostRecentTowerVisit } from "@/data/user/user-visits";
 import { formatDate } from "@/utils/date";
 import { formatCountyName } from "@/utils/geography";
 import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
+import { getTowerFactDescription } from "@/utils/towerDescriptions";
 
 export const revalidate = 3600;
-
-const MATERIAL_GENITIVE_MAP: Record<string, string> = {
-    beton: "betonu",
-    dřevo: "dřeva",
-    kámen: "kamene",
-    kov: "kovu",
-    netradiční: "netradičních materiálů",
-    zdivo: "zdiva",
-};
-
-function joinCzechList(items: string[]) {
-    if (items.length === 0) {
-        return "";
-    }
-
-    if (items.length === 1) {
-        return items[0];
-    }
-
-    if (items.length === 2) {
-        return `${items[0]} a ${items[1]}`;
-    }
-
-    return `${items.slice(0, -1).join(", ")} a ${items[items.length - 1]}`;
-}
-
-function formatObservationDecks(count?: number) {
-    if (!count) {
-        return null;
-    }
-
-    if (count === 1) {
-        return "Má 1 vyhlídkovou plošinu";
-    }
-
-    if (count >= 2 && count <= 4) {
-        return `Má ${count} vyhlídkové plošiny`;
-    }
-
-    return `Má ${count} vyhlídkových plošin`;
-}
 
 function TowerOfTheDayActionsFallback() {
     return (
@@ -100,24 +60,7 @@ const TowerOfTheDay = async () => {
         new Date(date)
     );
     const openedYear = tower.opened ? new Date(tower.opened).getFullYear() : null;
-    const materialsText = tower.material.length
-        ? joinCzechList(
-              tower.material.map((material) => MATERIAL_GENITIVE_MAP[material] ?? material)
-          )
-        : null;
-    const introSegments = [
-        `${tower.name} je ${towerTypeName}`,
-        openedYear ? `postavená roku ${openedYear}` : null,
-        materialsText ? `z ${materialsText}` : null,
-    ].filter(Boolean);
-    const detailSegments = [
-        formatObservationDecks(tower.observationDecksCount),
-        openingHoursText ? `je ${openingHoursText.toLowerCase()}` : null,
-    ].filter(Boolean);
-    const featuredSentence =
-        detailSegments.length > 0
-            ? `${introSegments.join(" ")}. ${detailSegments.join(" a ")}.`
-            : `${introSegments.join(" ")}.`;
+    const featuredSentence = getTowerFactDescription(tower, openingHoursText);
 
     const [{ avg, count }, { count: visitsCount }, towerRecentVisit] = await Promise.all([
         getTowerRatingAndCount(tower.id),

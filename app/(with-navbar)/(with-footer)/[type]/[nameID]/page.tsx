@@ -96,6 +96,7 @@ const formatHeroAccess = (tower: Tower) => {
 
 async function TowerPage({ params }: { params: Promise<{ type: string; nameID: string }> }) {
     const { type, nameID } = await params;
+    const requestDate = new Date();
     const tower = await getTowerObjectByNameID(nameID);
     if (!tower) notFound();
     if (!isCanonicalTowerType(type, tower)) {
@@ -197,7 +198,7 @@ async function TowerPage({ params }: { params: Promise<{ type: string; nameID: s
                                             {heroDescription ? (
                                                 <p>{heroDescription}</p>
                                             ) : (
-                                                <Legend tower={tower} />
+                                                <Legend tower={tower} date={requestDate} />
                                             )}
                                         </div>
                                     </div>

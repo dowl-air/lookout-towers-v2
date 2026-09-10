@@ -1,8 +1,13 @@
 import { Tower } from "@/types/Tower";
-import { getTowerFallbackDescription } from "@/utils/towerDescriptions";
+import { getOpeningHoursStateAndShortText } from "@/utils/openingHours";
+import { getTowerFactDescription } from "@/utils/towerDescriptions";
 
-function Legend({ tower }: { tower: Tower }) {
-    return <legend className="text-left">{getTowerFallbackDescription(tower)}</legend>;
+function Legend({ tower, date }: { tower: Tower; date: Date }) {
+    const [, openingHoursText] = getOpeningHoursStateAndShortText(tower.openingHours, date);
+
+    return (
+        <legend className="text-left">{getTowerFactDescription(tower, openingHoursText)}</legend>
+    );
 }
 
 export default Legend;

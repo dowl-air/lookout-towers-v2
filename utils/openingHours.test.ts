@@ -54,6 +54,6 @@ test("uses the supplied date when evaluating opening hours", () => {
     );
     assert.deepEqual(
         getOpeningHoursStateAndShortText(openingHours, new Date("2026-09-10T18:00:00")),
-        [false, "Otevírá v Pá 9h"]
+        [false, "Otevírá v pá 9h"]
     );
 });

@@ -359,10 +359,12 @@ export const getOpeningHoursStateAndShortText = (
 
             const nextOpenRange = getNextOpenRange(ranges, date);
             if (nextOpenRange) {
-                const nextDay = getCurrentWeekday(nextOpenRange.date);
+                const nextDay = DAYS_CZECH[getCurrentWeekday(nextOpenRange.date)]
+                    .slice(0, 2)
+                    .toLocaleLowerCase("cs-CZ");
                 return [
                     false,
-                    `Otevírá v ${DAYS_CZECH[nextDay].slice(0, 2)} ${formatOpeningHour(nextOpenRange.range.dayFrom)}h`,
+                    `Otevírá v ${nextDay} ${formatOpeningHour(nextOpenRange.range.dayFrom)}h`,
                 ];
             }
 
