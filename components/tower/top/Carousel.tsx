@@ -15,6 +15,7 @@ import "yet-another-react-lightbox/plugins/counter.css";
 
 import { Photo } from "@/types/Photo";
 import { Tower } from "@/types/Tower";
+import { isSamePhotoUrl } from "@/utils/photoUrl";
 
 const Carousel = ({
     images,
@@ -43,7 +44,7 @@ const Carousel = ({
         setOpen(true);
     };
 
-    const allImagesWithMainFirst: Photo[] = [
+    const allImages: Photo[] = [
         ...images.map((image) => ({
             url: image,
             created: new Date(),
@@ -54,10 +55,20 @@ const Carousel = ({
             isMain: false,
         })),
         ...userImages,
-    ].sort((a, b) => {
-        if (a.isMain === b.isMain) return 0;
-        if (a.isMain) return -1;
-        return 1;
+    ];
+    const hasConfiguredMainPhoto = allImages.some((image) =>
+        isSamePhotoUrl(image.url, tower.mainPhotoUrl)
+    );
+    const allImagesWithMainFirst = allImages.sort((left, right) => {
+        const leftIsMain = hasConfiguredMainPhoto
+            ? isSamePhotoUrl(left.url, tower.mainPhotoUrl)
+            : Boolean(left.isMain);
+        const rightIsMain = hasConfiguredMainPhoto
+            ? isSamePhotoUrl(right.url, tower.mainPhotoUrl)
+            : Boolean(right.isMain);
+
+        if (leftIsMain === rightIsMain) return 0;
+        return leftIsMain ? -1 : 1;
     });
     const sideImages = allImagesWithMainFirst.slice(1, 3);
 

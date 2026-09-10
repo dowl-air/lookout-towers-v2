@@ -79,6 +79,8 @@ When deleting an account, remove the user document, Auth.js accounts and session
 
 Only the ID-based administrator may delete towers through `/remove-tower`. Tower deletion is irreversible and must require confirmation of the exact tower name. It deletes the tower document, linked `photos`, `favourites`, `ratings`, `visits`, and `changes` records, plus Firebase Storage files under both `towers/{towerId}/` and `towers_users/{towerId}/`. Invalidate global and tower-specific cache tags, including affected users' favourites, ratings, visits, and change-history tags.
 
+Only the ID-based administrator may manage gallery photos through `/<type>/<nameID>/edit-photos`. The page combines legacy files from `towers/{towerId}/` with public documents from `photos`. Setting the main photo updates `mainPhotoUrl`; deleting the current main photo is blocked until another photo is selected. Every mutation must invalidate the tower, gallery, photo, map, random-tower, and tower-of-the-day cache tags.
+
 Protected routes currently include:
 
 - `/navstivene`
@@ -88,6 +90,7 @@ Protected routes currently include:
 - `/profil`
 - `/purge-cache`
 - `/remove-tower`
+- `/:type/:nameID/edit-photos`
 - `/zmeny`
 - `/admin`
 

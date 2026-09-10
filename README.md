@@ -67,6 +67,8 @@ The public `/podporit` page explains that the website remains free and offers an
 
 The ID-based administrator can irreversibly remove a tower through `/remove-tower`. The action requires typing the exact tower name and removes the tower document, linked photos, favourites, ratings, visits, and change proposals, together with tower files in Firebase Storage.
 
+Tower detail pages show the administrator an `Upravit fotografie` button leading to `/<type>/<nameID>/edit-photos`. The page lists every public gallery photo with its source and allows the administrator to select `mainPhotoUrl` or permanently delete a photo. The current main photo must be replaced before it can be deleted.
+
 ## Available scripts
 
 - `npm run dev` — start the development server

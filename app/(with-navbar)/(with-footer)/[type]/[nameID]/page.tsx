@@ -1,5 +1,6 @@
-import { Footprints, ListOrdered, Mountain, Ruler, Star, Unlock } from "lucide-react";
+import { Footprints, Images, ListOrdered, Mountain, Ruler, Star, Unlock } from "lucide-react";
 import { Metadata } from "next";
+import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 
 import PageViewTracker from "@/components/shared/analytics/PageViewTracker";
@@ -19,6 +20,7 @@ import LocationBreadcrumbs from "@/components/tower/top/LocationBreadcrumbs";
 import NearbyTowers from "@/components/tower/top/NearbyTowers";
 import { TOWER_TAG_DETAILS } from "@/constants/towerTags";
 import { MapProvider } from "@/context/MapContext";
+import { checkUser } from "@/data/auth";
 import { listTowerPhotos } from "@/data/photo/tower-photos";
 import { getNearestTowers } from "@/data/tower/nearest-towers";
 import { getUrlsTowerGallery } from "@/data/tower/tower-gallery";
@@ -102,20 +104,28 @@ async function TowerPage({ params }: { params: Promise<{ type: string; nameID: s
     if (!isCanonicalTowerType(type, tower)) {
         permanentRedirect(getCanonicalTowerPath(tower));
     }
-    const [towerImages, towerUserImages, nearbyTowers, { count, avg }, { count: visitsCount }] =
-        await Promise.all([
-            getUrlsTowerGallery(tower.id),
-            listTowerPhotos(tower.id),
-            getNearestTowers(tower.id, tower.gps.latitude, tower.gps.longitude),
-            getTowerRatingAndCount(tower.id),
-            getTowerVisitsCount(tower.id),
-        ]);
+    const [
+        towerImages,
+        towerUserImages,
+        nearbyTowers,
+        { count, avg },
+        { count: visitsCount },
+        { isAdmin },
+    ] = await Promise.all([
+        getUrlsTowerGallery(tower.id),
+        listTowerPhotos(tower.id),
+        getNearestTowers(tower.id, tower.gps.latitude, tower.gps.longitude),
+        getTowerRatingAndCount(tower.id),
+        getTowerVisitsCount(tower.id),
+        checkUser(),
+    ]);
     const heroDescription = getTowerHeroDescription(tower);
     const seoDescription = getTowerSeoDescription(tower);
     const towerHeroTags = getTowerHeroTags(tower);
     const countyLabel = formatCountyName(tower.county);
     const provinceLabel = formatProvinceName(tower.country, tower.province);
-    const towerUrl = `${SITE_URL}${getCanonicalTowerPath(tower)}`;
+    const towerPath = getCanonicalTowerPath(tower);
+    const towerUrl = `${SITE_URL}${towerPath}`;
     const jsonLd = getTowerJsonLd({
         tower,
         url: towerUrl,
@@ -207,6 +217,15 @@ async function TowerPage({ params }: { params: Promise<{ type: string; nameID: s
                                         <div className="max-w-2xl">
                                             <Buttons tower={tower} />
                                         </div>
+                                        {isAdmin ? (
+                                            <Link
+                                                href={`${towerPath}/edit-photos`}
+                                                className="btn btn-sm w-fit"
+                                            >
+                                                <Images className="size-4" aria-hidden="true" />
+                                                Upravit fotografie
+                                            </Link>
+                                        ) : null}
                                     </div>
                                 </div>
                             </Carousel>

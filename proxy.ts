@@ -25,6 +25,10 @@ export async function proxy(req: Request) {
         return NextResponse.redirect(new URL("/403", req.url));
     }
 
+    if (req.url.includes("edit-photos") && !isAdmin) {
+        return NextResponse.redirect(new URL("/403", req.url));
+    }
+
     if (req.url.includes("admin") && !isAdmin) {
         return NextResponse.redirect(new URL("/403", req.url));
     }
@@ -39,6 +43,7 @@ export const config = {
         "/profil/:path*",
         "/purge-cache/:path*",
         "/remove-tower/:path*",
+        "/:type/:nameID/edit-photos",
         "/zmeny/:path*",
         "/admin/:path*",
     ],
