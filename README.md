@@ -69,6 +69,8 @@ The ID-based administrator can irreversibly remove a tower through `/remove-towe
 - `npm run generate-towers-texts` — generate `heroDescription` and `seoDescription` drafts for towers with OpenRouter
 - `npm run scrape:add-tower -- <Mapy.cz URL>` — scrape a Mapy.cz place detail into a JSON document
 - `npm run scrape:add-tower:test` — run focused parser tests for the Mapy.cz scraper
+- `npm run scrape:sync-mapy-towers -- --write --start-index 50 --limit 10` — interactively apply Mapy.com tower data updates
+- `npm run scrape:sync-mapy-towers:test` — run focused tests for the Mapy.com tower sync
 - `npm run build` — create a production build
 - `npm start` — run the production build
 - `npm run lint` — run ESLint
@@ -82,7 +84,7 @@ The exported `name` removes a leading Czech type label such as `Rozhledna`, `Vý
 
 On `/pridat-rozhlednu`, administrators can select a ready document from `towers_scraped`. Its data and photo URLs prefill the existing form; after a successful final import, the scraped document is marked as imported.
 
-Known `content-keyval` attributes are mapped to fields compatible with `Tower`: `výška` to `height`, `nadmořská výška` to `elevation`, and `počet schodů` to `stairs`. Any unknown or invalid value remains a `keyValues` label/value pair for later mapping.
+Known `content-keyval` attributes are mapped to fields compatible with `Tower`: `výška` to `height`, `nadmořská výška` to `elevation`, `počet schodů` to `stairs`, and `datum dokončení`, `datum založení`, or `datum otevření` to `opened`. Dates take precedence in that order when multiple values are present. Dates accept a four-digit year, ISO `YYYY-MM-DD`, numeric Czech `DD.MM.YYYY` or `DD/MM/YYYY`, and Czech textual-month forms such as `30. srpna 2020`; invalid or ambiguous values remain a `keyValues` label/value pair for later mapping.
 
 `materiál` maps to the values in `MATERIALS` using Czech word roots, for example `ocel` to `kov`, `dřev` to `dřevo`, `beton` to `beton`, and `zdiv` to `zdivo`. Any source material that cannot be identified remains in `keyValues`.
 
@@ -104,6 +106,14 @@ npm run scrape:add-tower -- --write "https://mapy.cz/..."
 ```
 
 JSON is written to standard output and operational logs are written to standard error, so callers can safely pipe the JSON to another process. Use `--output path/to/tower.json` to write the document to a file, and `--wait 15` to change the page-content timeout in seconds.
+
+## Mapy.com tower data sync
+
+`scrape:sync-mapy-towers` processes a stable Firestore batch ordered by document ID. Use `--start-index` (zero-based) and `--limit` to select the batch; both default to `0` and `10`. Each tower-specific log begins with its stable batch index, for example `[20]`. Each selected tower needs `mapycz.source` and `mapycz.id`, which are used to construct its current Mapy.com detail URL. Without `--write`, it runs as a dry run and never changes Firestore or cache. Add `--auto` to skip towers with missing Mapy.com IDs, scraping failures, or no usable differences, and to approve every proposed update automatically; `--write` is still required to persist the approved updates.
+
+The script uses the existing Mapy.com detail parser but skips gallery downloads, geocoding, and `nameID` generation. It proposes every usable difference for admission, stairs, material, owner, and contact. It proposes height only when the stored height is absent or zero, elevation only when its stored value is absent, `null`, `0`, or `1`, opening hours only when they are absent or `Unknown`, and `opened` only when the stored field is absent or `null`. Unknown or empty Mapy.com values are ignored. Before proposing a contact update, it removes `utm_*` tracking parameters from the official website URL while preserving other query parameters. Existing opening-hours `detailText` and `detailUrl` values are retained when Mapy.com does not provide replacements. It never writes the `mapycz` object; each proposed database update requires confirmation. For contact and admission, details absent from Mapy.com are preserved from the database. For every selected tower it prompts before moving on; when values are proposed, answer `y`, `yes`, `a`, or `ano` to approve them. Only an approved proposal passed with `--write` updates `modified` and purges that tower's cached detail.
+
+Chrome must be available on the host. Firebase admin credentials are loaded from `.env.local`. Set `MAPY_TOWERS_SYNC_APP_URL` only when cache invalidation should target a local or staging app; it otherwise uses the production site URL.
 
 ## Project structure
 

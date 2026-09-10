@@ -17,7 +17,9 @@ import {
     createScrapedTowerId,
     createScrapedTowerDocument,
     extractMapyCzDetails,
+    formatWarningLog,
     parseCliOptions,
+    parseCompletionDate,
     parseDetailHtml,
     parseGpsCoordinates,
     resolveGeography,
@@ -25,6 +27,13 @@ import {
     selectMainPhoto,
     selectRandomPhotos,
 } from "./scrape_add_tower";
+
+test("formatWarningLog colorizes scraper warnings yellow", () => {
+    assert.equal(
+        formatWarningLog("Warning: found unused key-value: architekt - Jan Novák"),
+        "\u001B[33m[scrape_add_tower] Warning: found unused key-value: architekt - Jan Novák\u001B[0m"
+    );
+});
 
 test("createScrapedTowerDocument omits missing stairs and preserves an explicit zero", () => {
     const parsedDetail = parseDetailHtml('<section id="detail"><h1>Rozhledna Test</h1></section>');
@@ -420,6 +429,7 @@ test("parseDetailHtml maps known tower attributes and preserves unknown key-valu
                         <tr><td class="text">výška:</td><td>15 m</td></tr>
                         <tr><td class="text">nadmořská výška:</td><td>1 143 m</td></tr>
                         <tr><td class="text">počet schodů:</td><td>72</td></tr>
+                        <tr><td class="text">datum dokončení:</td><td>2009</td></tr>
                         <tr><td class="text">materiál:</td><td>konstrukční ocel, dřevo</td></tr>
                         <tr><td class="text">architekt:</td><td>Jan Novák</td></tr>
                     </tbody>
@@ -431,9 +441,47 @@ test("parseDetailHtml maps known tower attributes and preserves unknown key-valu
 
     assert.equal(result.height, 15);
     assert.equal(result.elevation, 1143);
+    assert.equal(result.opened, "2009-01-01T00:00:00.000Z");
     assert.equal(result.stairs, 72);
     assert.deepEqual(result.material, ["kov", "dřevo"]);
     assert.deepEqual(result.keyValues, [{ label: "architekt", value: "Jan Novák" }]);
+});
+
+test("parseCompletionDate accepts years and unambiguous calendar dates", () => {
+    assert.equal(parseCompletionDate("2009"), "2009-01-01T00:00:00.000Z");
+    assert.equal(parseCompletionDate("2009-06-15"), "2009-06-15T00:00:00.000Z");
+    assert.equal(parseCompletionDate("15. 6. 2009"), "2009-06-15T00:00:00.000Z");
+    assert.equal(parseCompletionDate("15/06/2009"), "2009-06-15T00:00:00.000Z");
+    assert.equal(parseCompletionDate("30. srpna 2020"), "2020-08-30T00:00:00.000Z");
+    assert.equal(parseCompletionDate("31. 2. 2009"), null);
+    assert.equal(parseCompletionDate("jaro 2009"), null);
+});
+
+test("parseDetailHtml maps opening date fallback with completion and foundation precedence", () => {
+    const foundationOnly = parseDetailHtml(`
+        <section id="detail"><div class="content-keyval"><table><tbody>
+            <tr><td class="text">datum založení:</td><td>30. srpna 2020</td></tr>
+        </tbody></table></div></section>
+    `);
+    const openingOnly = parseDetailHtml(`
+        <section id="detail"><div class="content-keyval"><table><tbody>
+            <tr><td class="text">datum otevření:</td><td>3. června 1894</td></tr>
+        </tbody></table></div></section>
+    `);
+    const allDates = parseDetailHtml(`
+        <section id="detail"><div class="content-keyval"><table><tbody>
+            <tr><td class="text">datum otevření:</td><td>3. června 1894</td></tr>
+            <tr><td class="text">datum založení:</td><td>30. srpna 2020</td></tr>
+            <tr><td class="text">datum dokončení:</td><td>2021</td></tr>
+        </tbody></table></div></section>
+    `);
+
+    assert.equal(foundationOnly.opened, "2020-08-30T00:00:00.000Z");
+    assert.equal(openingOnly.opened, "1894-06-03T00:00:00.000Z");
+    assert.equal(allDates.opened, "2021-01-01T00:00:00.000Z");
+    assert.deepEqual(foundationOnly.keyValues, []);
+    assert.deepEqual(openingOnly.keyValues, []);
+    assert.deepEqual(allDates.keyValues, []);
 });
 
 test("parseDetailHtml normalizes Mapy.com type and extracts description", () => {

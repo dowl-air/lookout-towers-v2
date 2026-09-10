@@ -18,7 +18,7 @@ import {
     type OpeningHoursRange,
 } from "@/types/OpeningHours";
 import type { Tower, TowerContact } from "@/types/Tower";
-import { DAYS_CZECH, MONTHS_CZECH_4, SITE_URL } from "@/utils/constants";
+import { DAYS_CZECH, MONTHS_CZECH, MONTHS_CZECH_4, SITE_URL } from "@/utils/constants";
 import { findInfoByGPS, isValidCountryCode } from "@/utils/geography";
 import { createNameID, resolveUniqueNameID } from "@/utils/nameID";
 
@@ -29,6 +29,10 @@ const GALLERY_SCROLLS = 3;
 const MAX_PHOTOS = 8;
 const PRODUCTION_APP_URL = SITE_URL;
 const CLOSED_HOURS_VALUES = new Set(["zavřeno", "uzavřeno"]);
+const ANSI = {
+    reset: "\u001B[0m",
+    yellow: "\u001B[33m",
+} as const;
 const MATERIAL_ROOTS: { material: (typeof MATERIALS)[number]; roots: string[] }[] = [
     { material: "dřevo", roots: ["drev"] },
     { material: "kámen", roots: ["kamen", "zula", "piskovec"] },
@@ -73,6 +77,7 @@ export type ParsedDetail = {
     keyValues: ScrapedKeyValue[];
     material?: string[];
     name: string | null;
+    opened?: string;
     openingHours: OpeningHours;
     owner?: string;
     photos: string[];
@@ -92,8 +97,22 @@ export type ScrapedTowerDocument = Omit<Partial<Tower>, "gps"> & {
     photos: string[];
 };
 
+export type ScrapeDetailPageOptions = {
+    includeGalleryPhotos?: boolean;
+    resolveGeography?: boolean;
+    resolveNameId?: boolean;
+};
+
 function log(message: string) {
     console.error(`[scrape_add_tower] ${message}`);
+}
+
+export function formatWarningLog(message: string) {
+    return `${ANSI.yellow}[scrape_add_tower] ${message}${ANSI.reset}`;
+}
+
+function warn(message: string) {
+    console.error(formatWarningLog(message));
 }
 
 function formatError(error: unknown) {
@@ -500,6 +519,67 @@ function parseTowerNumber(value: string, requiredUnit?: string) {
     return Number.isFinite(parsed) ? parsed : null;
 }
 
+function createUtcDateString(year: number, month: number, day: number) {
+    if (year < 1000 || year > 9999 || month < 1 || month > 12 || day < 1 || day > 31) {
+        return null;
+    }
+
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    if (
+        date.getUTCFullYear() !== year ||
+        date.getUTCMonth() !== month - 1 ||
+        date.getUTCDate() !== day
+    ) {
+        return null;
+    }
+
+    return date.toISOString();
+}
+
+export function parseCompletionDate(value: string) {
+    const normalizedValue = value.trim();
+    const yearMatch = normalizedValue.match(/^(\d{4})$/);
+
+    if (yearMatch) {
+        return createUtcDateString(Number(yearMatch[1]), 1, 1);
+    }
+
+    const isoDateMatch = normalizedValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoDateMatch) {
+        return createUtcDateString(
+            Number(isoDateMatch[1]),
+            Number(isoDateMatch[2]),
+            Number(isoDateMatch[3])
+        );
+    }
+
+    const czechDateMatch = normalizedValue.match(/^(\d{1,2})[./]\s*(\d{1,2})[./]\s*(\d{4})$/);
+    if (czechDateMatch) {
+        return createUtcDateString(
+            Number(czechDateMatch[3]),
+            Number(czechDateMatch[2]),
+            Number(czechDateMatch[1])
+        );
+    }
+
+    const czechTextDateMatch = normalizedValue.match(/^(\d{1,2})\.\s*([\p{L}]+)\s+(\d{4})$/u);
+    if (!czechTextDateMatch) return null;
+
+    const normalizedMonth = normalizeCzechText(czechTextDateMatch[2]);
+    const month = [...MONTHS_CZECH, ...MONTHS_CZECH_4].findIndex(
+        (candidate) => normalizeCzechText(candidate) === normalizedMonth
+    );
+
+    if (month < 0) return null;
+
+    return createUtcDateString(
+        Number(czechTextDateMatch[3]),
+        (month % MONTHS_CZECH.length) + 1,
+        Number(czechTextDateMatch[1])
+    );
+}
+
 function parseMaterials(value: string) {
     const parts = value
         .split(/[,;/]+/)
@@ -527,7 +607,11 @@ function parseMaterials(value: string) {
 
 function mapTowerKeyValues($: cheerio.CheerioAPI) {
     const keyValues: ScrapedKeyValue[] = [];
-    const mapped: Pick<ParsedDetail, "elevation" | "height" | "material" | "owner" | "stairs"> = {};
+    const mapped: Pick<
+        ParsedDetail,
+        "elevation" | "height" | "material" | "opened" | "owner" | "stairs"
+    > = {};
+    let openedPriority = 0;
 
     $("div.content-keyval tr").each((_, row) => {
         const cells = $(row).find("td");
@@ -540,6 +624,26 @@ function mapTowerKeyValues($: cheerio.CheerioAPI) {
         if (normalizedLabel === "provozovatel") {
             mapped.owner = value;
             return;
+        }
+        const normalizedAsciiLabel = normalizeCzechText(label);
+        const openedPriorityForLabel =
+            normalizedAsciiLabel === "datum dokonceni"
+                ? 3
+                : normalizedAsciiLabel === "datum zalozeni"
+                  ? 2
+                  : normalizedAsciiLabel === "datum otevreni"
+                    ? 1
+                    : 0;
+        if (openedPriorityForLabel > 0) {
+            const opened = parseCompletionDate(value);
+
+            if (opened) {
+                if (openedPriorityForLabel > openedPriority) {
+                    mapped.opened = opened;
+                    openedPriority = openedPriorityForLabel;
+                }
+                return;
+            }
         }
         if (normalizedLabel === "materiál") {
             const parsedMaterials = parseMaterials(value);
@@ -707,6 +811,7 @@ export function createScrapedTowerDocument(
         material: parsedDetail.material ?? [],
         name: parsedDetail.name ?? "",
         nameID: nameID ?? "",
+        ...(parsedDetail.opened ? { opened: parsedDetail.opened } : {}),
         openingHours: parsedDetail.openingHours,
         ...(parsedDetail.owner ? { owner: parsedDetail.owner } : {}),
         photos,
@@ -862,7 +967,8 @@ async function scrapeGalleryPhotos(driver: WebDriver, waitTimeSeconds: number) {
 
 export async function scrapeDetailPage(
     url: string,
-    waitTimeSeconds = DEFAULT_WAIT_TIME_SECONDS
+    waitTimeSeconds = DEFAULT_WAIT_TIME_SECONDS,
+    options: ScrapeDetailPageOptions = {}
 ): Promise<ScrapedTowerDocument> {
     log(`Opening URL: ${url}`);
     const driver = await createChromeDriver();
@@ -897,7 +1003,7 @@ export async function scrapeDetailPage(
             : parsedDetail.urls;
         let geography: ScrapedGeography = {};
 
-        if (parsedDetail.gps) {
+        if (parsedDetail.gps && options.resolveGeography !== false) {
             try {
                 log("Resolving country, province, and county with Nominatim.");
                 geography = await resolveGeography(parsedDetail.gps);
@@ -912,7 +1018,7 @@ export async function scrapeDetailPage(
         }
         let nameID: string | null = null;
 
-        if (parsedDetail.name) {
+        if (parsedDetail.name && options.resolveNameId !== false) {
             log("Checking nameID uniqueness in Firebase.");
             nameID = await resolveUniqueNameID(
                 parsedDetail.name,
@@ -932,7 +1038,7 @@ export async function scrapeDetailPage(
         log(`Mapped opening-hours type: ${OpeningHoursType[parsedDetail.openingHours.type]}.`);
 
         for (const keyValue of parsedDetail.keyValues) {
-            log(`Warning: found unused key-value: ${keyValue.label} - ${keyValue.value}`);
+            warn(`Warning: found unused key-value: ${keyValue.label} - ${keyValue.value}`);
         }
 
         if (urls.length === 0) {
@@ -945,10 +1051,12 @@ export async function scrapeDetailPage(
 
         let photos: string[] = [];
 
-        try {
-            photos = await scrapeGalleryPhotos(driver, waitTimeSeconds);
-        } catch (error) {
-            log(`Photo gallery scraping failed: ${formatError(error)}.`);
+        if (options.includeGalleryPhotos !== false) {
+            try {
+                photos = await scrapeGalleryPhotos(driver, waitTimeSeconds);
+            } catch (error) {
+                log(`Photo gallery scraping failed: ${formatError(error)}.`);
+            }
         }
         return createScrapedTowerDocument(parsedDetail, geography, mapycom, nameID, urls, photos);
     } finally {

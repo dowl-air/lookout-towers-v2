@@ -8,6 +8,8 @@
         "generate-towers-texts": "tsx scripts/generate-towers-texts.ts",
         "scrape:add-tower": "tsx scripts/scrape_add_tower.ts",
         "scrape:add-tower:test": "tsx --test scripts/scrape_add_tower.test.ts",
+        "scrape:sync-mapy-towers": "tsx scripts/towers_mapy_sync.ts",
+        "scrape:sync-mapy-towers:test": "tsx --test scripts/towers_mapy_sync.test.ts",
         "build": "next build",
         "start": "next start",
         "lint": "npx eslint .",
